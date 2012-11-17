@@ -134,8 +134,9 @@ define(["dojo/_base/declare",
 				var btnSave = new Button({"label":"保存", style:"float:right"}); // TODO:i18n
 				btnSave.placeAt(btnContainer);
 				
-				var btnCancel = new Button({"label":"不做了",style:"float:right"});
-				btnCancel.placeAt(btnContainer);
+				var aCancel = domConstruct.create("a",{style:"float:right",innerHTML:"取消",href:"#"},btnContainer)
+				//var btnCancel = new Button({"label":"取消",style:"float:right"});
+				//btnCancel.placeAt(btnContainer);
 				btnSave.on("click", lang.hitch(this,function(e){
 					var answerData = {};
 					answerData.exerId = exerciseInfo.id;
@@ -174,7 +175,8 @@ define(["dojo/_base/declare",
 					}));
 				}));
 				
-				btnCancel.on("click", lang.hitch(this,function(e){
+				on(aCancel,"click", lang.hitch(this,function(e){
+					event.stop(e);
 					// 删除答题面板
 					this._destroyAnswerPane();
 					// 恢复之前的状态，所以需要提取出数据，并将这些数据缓存起来。
@@ -198,7 +200,7 @@ define(["dojo/_base/declare",
 				var answerWidget = this._answerWidget = [];
 				answerWidget.push(editor);
 				answerWidget.push(btnSave);
-				answerWidget.push(btnCancel);
+				//answerWidget.push(btnCancel);
 				
 				// 把加载数据放在最后
 				xhr.get("/answers/",{query:{exerId:exerciseId},handleAs:"json"}).then(lang.hitch(this,function(data){
