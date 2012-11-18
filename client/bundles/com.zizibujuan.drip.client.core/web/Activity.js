@@ -15,6 +15,7 @@ define(["dojo/_base/declare",
         "dijit/form/Button",
         "dojo/store/JsonRest",
         "classCode",
+        "prettyDate",
         "drip/Editor",
         "dojo/text!/templates/ActivityNode.html",
         "dojo/text!/templates/ActivityList.html"], function(
@@ -34,6 +35,7 @@ define(["dojo/_base/declare",
         		Button,
         		JsonRest,
         		classCode,
+        		prettyDate,
         		Editor,
         		nodeTemplate,
         		listTemplate){
@@ -268,14 +270,11 @@ define(["dojo/_base/declare",
 			var userName = data.displayUserName;
 			this.userInfo.innerHTML = userName;
 			this.action.innerHTML = classCode.ActionTypeMap[data.actionType];
-			this.time.innerHTML = this._prettyTime(data.createTime);
-			this.time.title = data.createTime;
+			this.time.innerHTML = prettyDate.pretty(data.createTime);
+			this.time.title = data.createTime.replace("T", " ");
+			this.time.datetime = data.createTime;
 		},
 		
-		_prettyTime: function(date){
-			return date;
-		},
-
 		_createExercise: function(exerciseInfo){
 			var _contentDiv = domConstruct.create("div", {innerHTML:exerciseInfo.content,"class":"content"},this.exerciseNode);
 			
@@ -342,6 +341,8 @@ define(["dojo/_base/declare",
 					 });
 					 this.domNode.appendChild(node.domNode);
 				 }));
+				 // 隔上一分钟更新一下。
+				 prettyDate.setInterval(this.domNode, 1000*60);
 				 // 使用mathjax进行呈现
 				 MathJax.Hub.Queue(["Typeset",MathJax.Hub, this.domNode]);
 			 }
