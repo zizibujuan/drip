@@ -1,5 +1,6 @@
 package com.zizibujuan.drip.server.dao;
 
+import java.sql.Connection;
 import java.util.Map;
 
 /**
@@ -54,5 +55,36 @@ public interface AnswerDao {
 	 * </pre>
 	 */
 	void saveOpUpdate(Long userId, Map<String, Object> answer);
+
+	/**
+	 * 新增习题答案和习题解析
+	 * @param userId 用户标识
+	 * @param answerInfo 答案信息
+	 * <pre>
+	 * map结构：
+	 * 		exerId: 习题标识
+	 * 		guide: 习题解析
+	 * 		detail：答案详情 Array
+	 * 			optionId：选项标识
+	 * 			content: 答案内容
+	 * </pre>
+	 */
+	void save(Long userId, Map<String, Object> answerInfo);
+	
+	/**
+	 * 新增习题答案和习题解析
+	 * @param conn 数据库链接
+	 * @param userId 用户标识
+	 * @param answerInfo 答案信息
+	 * <pre>
+	 * map结构：
+	 * 		exerId: 习题标识
+	 * 		guide: 习题解析
+	 * 		detail：答案详情 Array
+	 * 			optionId：选项标识
+	 * 			content: 答案内容
+	 * </pre>
+	 */
+	void save(Connection con, Long userId, Map<String, Object> answerInfo);
 
 }

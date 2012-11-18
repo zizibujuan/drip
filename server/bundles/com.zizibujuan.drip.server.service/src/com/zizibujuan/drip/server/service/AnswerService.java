@@ -29,6 +29,14 @@ public interface AnswerService {
 	 * 新增习题答案和习题解析
 	 * @param userId 用户标识
 	 * @param answerInfo 答案信息
+	 * <pre>
+	 * map结构：
+	 * 		exerId: 习题标识
+	 * 		guide: 习题解析
+	 * 		detail：答案详情 Array
+	 * 			optionId：选项标识
+	 * 			content: 答案内容
+	 * </pre>
 	 */
 	void save(Long userId, Map<String, Object> answerInfo);
 

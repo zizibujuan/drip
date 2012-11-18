@@ -23,6 +23,7 @@
   </appender>
 
   <!-- Prints information on locating and reading the server configuration file -->
+  <logger name="com.zizibujuan.drip.server.util" level="DEBUG"/>
   <logger name="com.zizibujuan.drip.server.servlet" level="DEBUG"/>
   <logger name="com.zizibujuan.drip.server.dao.mysql" level="DEBUG"/>
   <logger name="com.zizibujuan.drip.server.service.impl" level="DEBUG"/>

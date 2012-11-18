@@ -26,8 +26,7 @@ public class AnswerServiceImpl implements AnswerService {
 
 	@Override
 	public void save(Long userId, Map<String, Object> answerInfo) {
-		// TODO Auto-generated method stub
-		
+		answerDao.save(userId, answerInfo);
 	}
 
 	@Override

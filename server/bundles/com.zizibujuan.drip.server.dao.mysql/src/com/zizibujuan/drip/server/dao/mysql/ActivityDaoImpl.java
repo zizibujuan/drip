@@ -30,7 +30,7 @@ public class ActivityDaoImpl extends AbstractDao implements ActivityDao {
 			"DRIP_ACTIVITY b," +
 			"DRIP_USER_INFO c" +
 			" where " +
-			"a.USER_ID = ? AND a.WATCH_USER_ID=b.USER_ID AND a.WATCH_USER_ID=c.DBID ORDER BY b.CRT_TM DESC";
+			"a.USER_ID = ? AND a.WATCH_USER_ID=b.USER_ID AND a.WATCH_USER_ID=c.DBID ORDER BY b.DBID DESC";
 
 	@Override
 	public List<Map<String, Object>> get(Long userId, PageInfo pageInfo) {
@@ -49,6 +49,11 @@ public class ActivityDaoImpl extends AbstractDao implements ActivityDao {
 		Object isInHome = activityInfo.get("IS_IN_HOME");
 		Object contentId = activityInfo.get("CONTENT_ID");
 		return DatabaseUtil.insert(con, SQL_INSERT_ACTIVITY, userId,actionType,isInHome,contentId);
+	}
+	@Override
+	public Long add(Connection con, Long userId, Long contentId,
+			String actionType, boolean showInHome) {
+		return DatabaseUtil.insert(con, SQL_INSERT_ACTIVITY, userId, actionType, showInHome, contentId);
 	}
 
 }

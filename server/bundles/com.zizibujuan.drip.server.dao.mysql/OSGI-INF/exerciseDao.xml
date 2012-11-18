@@ -9,6 +9,7 @@
 	     interface="com.zizibujuan.dbaccess.mysql.service.DataSourceService" 
 	     name="dataSourceService" 
 	     policy="dynamic"/>
+	     
  	<reference 
    		bind="setUserDao" 
    		unbind="unsetUserDao" 
@@ -16,12 +17,21 @@
    		interface="com.zizibujuan.drip.server.dao.UserDao" 
    		name="userDao" 
    		policy="dynamic"/>
+   		
    <reference 
    		bind="setActivityDao" 
    		unbind="unsetActivityDao" 
    		cardinality="0..1" 
    		interface="com.zizibujuan.drip.server.dao.ActivityDao" 
    		name="activityDao" 
+   		policy="dynamic"/>
+
+	<reference 
+   		bind="setAnswerDao" 
+   		unbind="unsetAnswerDao" 
+   		cardinality="0..1" 
+   		interface="com.zizibujuan.drip.server.dao.AnswerDao" 
+   		name="answerDao" 
    		policy="dynamic"/>
    		
    <service>

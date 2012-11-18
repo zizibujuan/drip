@@ -43,4 +43,15 @@ public interface ActivityDao {
 	 * @return 活动标识
 	 */
 	Long add(Connection con, Map<String,Object> activityInfo);
+	
+	/**
+	 * 添加一个新的活动
+	 * @param con 数据库链接
+	 * @param userId 用户标识
+	 * @param contentId 活动内容标识
+	 * @param actionType 操作类型 参考 {@link ActionType}
+	 * @param showInHome 是否在个人首页中显示，true 显示; false 不显示
+	 * @return 活动标识
+	 */
+	Long add(Connection con, Long userId, Long contentId, String actionType, boolean showInHome);
 }

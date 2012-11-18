@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.dao.ActivityDao;
+import com.zizibujuan.drip.server.dao.AnswerDao;
 import com.zizibujuan.drip.server.dao.ExerciseDao;
 import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.exception.dao.DataAccessException;
@@ -28,6 +29,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 	private static final Logger logger = LoggerFactory.getLogger(ExerciseDaoImpl.class);
 	private UserDao userDao;
 	private ActivityDao activityDao;
+	private AnswerDao answerDao;
 	
 	private static final String SQL_LIST_EXERCISE = 
 			"SELECT DBID, CONTENT, CRT_TM, CRT_USER_ID FROM DRIP_EXERCISE ORDER BY CRT_TM DESC";
@@ -85,29 +87,24 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			// 如果存在答案，则添加答案
 			Object oAnswer = exerciseInfo.get("answer");
 			if(oAnswer != null){
-				Map<String,Object> answerMap = (Map<String,Object>)oAnswer;
-				ArrayList<String> detail = (ArrayList<String>)answerMap.get("detail");
-				List<Long> optIds = null;
-				if(detail != null && detail.size()>0){
-					if(ExerciseType.SINGLE_OPTION.equals(exerType)){
-						if(optionIds != null){
-							optIds = new ArrayList<Long>();
-							for(String i : detail){
-								optIds.add(optionIds.get(Integer.valueOf(i)));
+				Map<String,Object> answerInfo = (Map<String,Object>)oAnswer;
+				if(!answerInfo.isEmpty()){
+					answerInfo.put("exerId", exerId);
+					ArrayList<Map<String, Object>> detail = (ArrayList<Map<String, Object>>)answerInfo.get("detail");
+					// 在新增习题的同时保存答案，因为选项的值是刚加的，所以需要在detail中为选项标识赋值。
+					if(detail != null && detail.size()>0){
+						if(ExerciseType.SINGLE_OPTION.equals(exerType)){
+							if(optionIds != null){
+								for(Map<String,Object> each : detail){
+									int seq = Integer.valueOf(each.get("seq").toString());
+									each.put("optionId", optionIds.get(seq));
+									each.put("content", null);
+								}
 							}
 						}
 					}
-					
+					answerDao.save(con, userId, answerInfo);
 				}
-				// 如果存在习题解析，则添加习题解析
-				Object oGuide = answerMap.get("guide");
-				Long answerId = null;
-				answerId = this.addAnswer(con, exerId, oUserId, optIds, detail,exerType,oGuide);
-				// 答案回答完成后，在用户的“已回答的习题数”上加1
-				// 同时修改后端和session中缓存的该记录
-				userDao.increaseAnswerCount(con, userId);
-				// 在活动表中插入一条记录
-				addActivity(con, userId,answerId,ActionType.ANSWER_EXERCISE);
 			}
 			
 			con.commit();
@@ -158,45 +155,6 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 		return result;
 	}
 	
-//	private static final String SQL_INSERT_EXER_GUIDE = "INSERT INTO DRIP_EXER_GUIDE " +
-//			"(EXER_ID, CONTENT,CRT_TM, CRT_USER_ID) VALUES (?,?,now(),?)";
-//	private void addGuide(Connection con, Long exerId, Object oUserId, Object oGuide){
-//		DatabaseUtil.insert(con, SQL_INSERT_EXER_GUIDE, exerId, oGuide, oUserId);
-//	}
-	
-	private static final String SQL_INSERT_EXER_ANSWER = "INSERT INTO DRIP_ANSWER " +
-			"(EXER_ID,GUIDE,CRT_TM,CRT_USER_ID) VALUES " +
-			"(?,?,now(),?)";
-	private static final String SQL_INSERT_EXER_ANSWER_DETAIL = "INSERT INTO DRIP_ANSWER_DETAIL " +
-			"(ANSWER_ID,OPT_ID,CONTENT) VALUES " +
-			"(?,?,?)";
-	// TODO：移到AnswerDao中？
-	private Long addAnswer(Connection con, Long exerId, Object oUserId, List<Long> optIds, List<String> answers, String exerType, Object guide){
-		Long answerId = DatabaseUtil.insert(con, SQL_INSERT_EXER_ANSWER, exerId,guide, oUserId);
-		
-		if(optIds == null){
-			if(answers != null){
-				for(String content : answers){
-					DatabaseUtil.insert(con, SQL_INSERT_EXER_ANSWER_DETAIL, answerId, null,content);
-				}
-			}
-		}else{
-			if(exerType.equals(ExerciseType.SINGLE_OPTION) || exerType.equals(ExerciseType.MULTI_OPTION)){
-				// 如果是选择题，则不要往content中写任何内容
-				for(Long optId : optIds){
-					DatabaseUtil.insert(con, SQL_INSERT_EXER_ANSWER_DETAIL, answerId, optId,null);
-				}
-			}else if(exerType.equals(ExerciseType.FILL)){
-				int i = 0;
-				for(String content : answers){
-					DatabaseUtil.insert(con, SQL_INSERT_EXER_ANSWER_DETAIL, answerId, optIds.get(i),content);
-					i++;
-				}
-			}
-		}
-		return answerId;
-	}
-
 	// TODO:不在sql中联合查询编码，而是从缓存中获取编码对应的文本信息
 	private static final String SQL_GET_EXERCISE = "SELECT " +
 			"DBID \"id\"," +
@@ -260,6 +218,18 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 		if (this.activityDao == activityDao) {
 			logger.info("注销ActivityDao");
 			this.activityDao = null;
+		}
+	}
+	
+	public void setAnswerDao(AnswerDao answerDao) {
+		logger.info("注入AnswerDao");
+		this.answerDao = answerDao;
+	}
+
+	public void unsetAnswerDao(AnswerDao answerDao) {
+		if (this.answerDao == answerDao) {
+			logger.info("注销AnswerDao");
+			this.answerDao = null;
 		}
 	}
 }

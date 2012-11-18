@@ -1,9 +1,20 @@
 package com.zizibujuan.drip.server.dao.mysql;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.zizibujuan.drip.server.dao.ActivityDao;
 import com.zizibujuan.drip.server.dao.AnswerDao;
+import com.zizibujuan.drip.server.dao.UserDao;
+import com.zizibujuan.drip.server.exception.dao.DataAccessException;
+import com.zizibujuan.drip.server.util.ActionType;
 import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 
@@ -14,6 +25,9 @@ import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
  * @since 0.0.1
  */
 public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
+	private static final Logger logger = LoggerFactory.getLogger(AnswerDaoImpl.class);
+	private UserDao userDao;
+	private ActivityDao activityDao;
 	
 	private static final String SQL_GET_ANSWER = "SELECT " +
 			"DBID \"id\"," +
@@ -75,4 +89,110 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 		return result;
 	}
 
+	@Override
+	public void save(Long userId, Map<String, Object> answerInfo) {
+		Connection con = null;
+		
+		try {
+			con = getDataSource().getConnection();
+			con.setAutoCommit(false);
+			this.save(con, userId, answerInfo);
+			con.commit();
+		} catch (SQLException e) {
+			DatabaseUtil.safeRollback(con);
+			throw new DataAccessException(e);
+		}finally{
+			DatabaseUtil.closeConnection(con);
+		}
+	}
+
+	private static final String SQL_INSERT_ANSWER = "INSERT INTO DRIP_ANSWER (EXER_ID,GUIDE,CRT_TM,CRT_USER_ID) VALUES (?,?,now(),?)";
+	private static final String SQL_INSERT_ANSWER_DETAIL = "INSERT INTO DRIP_ANSWER_DETAIL (ANSWER_ID,OPT_ID,CONTENT) VALUES (?,?,?)";
+	@Override
+	public void save(Connection con, Long userId, Map<String, Object> answerInfo) {
+		Object exerId = answerInfo.get("exerId");
+		Object guide = answerInfo.get("guide");
+		Long answerId = DatabaseUtil.insert(con, SQL_INSERT_ANSWER, exerId, guide, userId);
+		
+		Object oDetail = answerInfo.get("detail");
+		if(oDetail != null){
+			@SuppressWarnings("unchecked")
+			List<Map<String,Object>> detail = (List<Map<String, Object>>) oDetail;
+			try {
+				addAnswerDetail(con, answerId, detail);
+			} catch (SQLException e) {
+				throw new DataAccessException(e);
+			}
+		}
+		
+		// 答案回答完成后，在用户的“已回答的习题数”上加1
+		// 同时修改后端和session中缓存的该记录
+		userDao.increaseAnswerCount(con, userId);
+		// 在活动表中插入一条记录
+		activityDao.add(con, userId, answerId, ActionType.ANSWER_EXERCISE, true);
+		// 插入答案概述
+		
+				// 插入答案详情
+				
+				// 在活动列表中插入一条
+				
+				// 增加用户的回答次数
+				
+				// TODO：exerciseDao中的插入答案的方法要使用这里的接口。
+				// 保持接口一致。
+	}
+
+
+	private void addAnswerDetail(Connection con, Long answerId,
+			List<Map<String, Object>> detail) throws SQLException {
+		PreparedStatement pst = con.prepareStatement(SQL_INSERT_ANSWER_DETAIL);
+		for(Map<String,Object> each : detail){
+			pst.setLong(1, answerId);
+			Object oOptId = each.get("optionId");
+			if(oOptId == null){
+				pst.setNull(2, Types.NUMERIC);
+			}else{
+				pst.setLong(2, Long.valueOf(oOptId.toString()));
+			}
+			
+			Object oContent = each.get("content");
+			if(oContent == null){
+				pst.setNull(3, Types.VARCHAR);
+			}else{
+				String content = oContent.toString();
+				if(content.trim().isEmpty()){
+					pst.setNull(3, Types.VARCHAR);
+				}else{
+					pst.setString(3, content);
+				}
+			}
+			pst.addBatch();
+		}
+		pst.executeBatch();
+	}
+	
+
+	public void setUserDao(UserDao userDao) {
+		logger.info("注入userDao");
+		this.userDao = userDao;
+	}
+
+	public void unsetUserDao(UserDao userDao) {
+		if (this.userDao == userDao) {
+			logger.info("注销userDao");
+			this.userDao = null;
+		}
+	}
+	
+	public void setActivityDao(ActivityDao activityDao) {
+		logger.info("注入ActivityDao");
+		this.activityDao = activityDao;
+	}
+
+	public void unsetActivityDao(ActivityDao activityDao) {
+		if (this.activityDao == activityDao) {
+			logger.info("注销ActivityDao");
+			this.activityDao = null;
+		}
+	}
 }

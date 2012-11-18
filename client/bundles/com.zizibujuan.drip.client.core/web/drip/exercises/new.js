@@ -76,7 +76,7 @@ define(["dojo/_base/declare",
 			var answerDetail = [];
 			query("[name="+this._optionName+"]:checked", this.tblOption).forEach(function(inputEl, index){
 				console.log(inputEl, index);
-				answerDetail.push(inputEl.value);
+				answerDetail.push({seq: inputEl.value});
 			});
 			
 			if(answerDetail.length > 0){

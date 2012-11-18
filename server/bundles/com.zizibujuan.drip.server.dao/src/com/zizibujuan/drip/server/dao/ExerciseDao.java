@@ -28,8 +28,12 @@ public interface ExerciseDao {
 	 * 		exerCategory: 习题所属科目中的分类
 	 * 		content： 习题内容
 	 * 		options：Array  题目选项
-	 * 		answers: Array  习题答案列表
-	 * 		guide: 习题解析
+	 * 		answer:  习题答案
+	 * 			guide: 习题解析
+	 * 			detail: 答案详情
+	 * 				seq: 对应option的顺序
+	 * 				optionId: 选项标识
+	 * 				content: 内容
 	 * </pre>
 	 * @param exerciseInfo 习题信息
 	 * @return 新增习题的标识,如果返回-1，则新增用户失败。
