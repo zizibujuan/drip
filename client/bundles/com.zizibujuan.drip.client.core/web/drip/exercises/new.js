@@ -5,9 +5,11 @@ define(["dojo/_base/declare",
         "dojo/request/xhr",
         "dijit/_WidgetBase",
         "dijit/registry",
-        "dojo/dom-construct",
-        "dojo/dom-style",
+        "dojo/dom",
         "dojo/dom-attr",
+        "dojo/dom-style",
+        "dojo/dom-class",
+        "dojo/dom-construct",
         "dojo/on",
         "dojo/query",
         "dojo/json",
@@ -20,9 +22,11 @@ define(["dojo/_base/declare",
         		xhr,
         		_WidgetBase,
         		registry,
-        		domConstruct,
-        		domStyle,
+        		dom,
         		domAttr,
+        		domStyle,
+        		domClass,
+        		domConstruct,
         		on,
         		query,
         		JSON,
@@ -47,7 +51,6 @@ define(["dojo/_base/declare",
 		
 		postCreate: function(){
 			this.inherited(arguments);
-			
 			
 			this._createExerciseTypeBar();
 			// 默认选中
@@ -134,39 +137,116 @@ define(["dojo/_base/declare",
 		 */
 		
 		_createExerciseTypeBar: function(){
-			
+			// 绑定事件
+			var singleEl = dom.byId("single");
+			this._toggleSelection(singleEl);
+			on(singleEl,"click",lang.hitch(this, this._showSingleSelectForm));
+			on(dom.byId("multiple"),"click",lang.hitch(this, this._showMultipleSelectForm));
+			on(dom.byId("fill"),"click",lang.hitch(this, this._showFillForm));
+			on(dom.byId("essayQuestion"),"click",lang.hitch(this, this._showEssayQuestionForm));
+		},
+		
+		_toggleSelection: function(target){
+			if(this._selectedExerTypeElement){
+				domClass.remove(this._selectedExerTypeElement,"selected");
+			}
+			this._selectedExerTypeElement = target;
+			domClass.add(this._selectedExerTypeElement,"selected");
+		},
+		
+		_showSingleSelectForm: function(e){
+			if(e.target == this._selectedExerTypeElement){
+				return;
+			}
+			this._toggleSelection(e.target);
+			this._createSingleSelectForm();
+		},
+		
+		_showMultipleSelectForm: function(e){
+			if(e.target == this._selectedExerTypeElement){
+				return;
+			}
+			this._toggleSelection(e.target);
+			this._createMultipleSelectForm();
+		},
+		
+		_showFillForm: function(e){
+			if(e.target == this._selectedExerTypeElement){
+				return;
+			}
+			this._toggleSelection(e.target);
+		},
+		
+		_showEssayQuestionForm: function(e){
+			if(e.target == this._selectedExerTypeElement){
+				return;
+			}
+			this._toggleSelection(e.target);
+			this._createEssayQuestionForm();
 		},
 		
 		_createSingleSelectForm: function(){
 			// summary:
 			//		创建单选题form
 			this.data.exerType = classCode.ExerciseType.SINGLE_OPTION;
+			if(this.optionPane){
+				if(this.optionPane.style.display == "none"){
+					this.optionPane.style.display = "";
+				}
+				if(this.optionPane.style.display == ""){
+					query("input", this.optionPane).forEach(function(el,index){
+						el.type="radio";
+					});
+				}
+			}else{
+				this._createSelectForm("radio");
+			}
+		},
+		
+		_createMultipleSelectForm: function(){
+			this.data.exerType = classCode.ExerciseType.MULTI_OPTION;
+			if(this.optionPane){
+				if(this.optionPane.style.display == "none"){
+					this.optionPane.style.display = "";
+				}
+				if(this.optionPane.style.display == ""){
+					query("input", this.optionPane).forEach(function(el,index){
+						el.type="checkbox";
+					});
+				}
+			}else{
+				this._createSelectForm("checkbox");
+			}
 			
+		},
+		
+		_createSelectForm: function(type){
 			this._createContentInput();
 			this._createImageInput();
-			this._createOptionPane();
+			this._createOptionPane(type);
 			this._createGuideInput();
+		},
+		
+		_createEssayQuestionForm: function(){
+			if(this.optionPane && this.optionPane.style.display == ""){
+				this.optionPane.style.display = "none";
+			}
 		},
 		
 		_createContentInput: function(){
 			// summary:
 			//		创建习题内容输入框
 			
-			domConstruct.place('<div class="drip-title">内容</div>', this.domNode);
-			this.editorExerContent = this._createEditor(this.domNode,150);
+			var contentPane = domConstruct.create("div", null, this.domNode);
+			domConstruct.place('<div class="drip-title">内容</div>', contentPane);
+			this.editorExerContent = this._createEditor(contentPane,150);
 		},
 		
 		_createEditor: function(parentNode, height, width){
-			var outer = domConstruct.place('<div style="padding: 3px; margin-bottom: 10px; border-radius: 3px; background: #eee"></div>', parentNode);
-			if(width){
-				domStyle.set(outer,{"width":width+"px"});
-			}
-			var inner = domConstruct.place('<div style="border: 1px solid #cacaca; background: #fbfbfb; padding-left: 10px; padding-right: 10px">',outer);
-			var focusNode = domConstruct.place('<div style="padding-top: 5px; padding-bottom: 10px;"></div>',inner);
 			var parms = {};
-			parms.style = "height:"+height+"px;";
+			parms.style = "height:"+height+"px; width:"+width+"px";
 			var editor = new Editor(parms);
-			editor.placeAt(focusNode);
+			editor.placeAt(parentNode);
 			return editor;
 		},
 		
@@ -174,23 +254,26 @@ define(["dojo/_base/declare",
 			// summary:
 			//		创建图片上传输入框与图片编辑器。
 			
-			var title = domConstruct.place('<div class="drip-title" style="margin-bottom: 5px;"></div>', this.domNode);
+			var imagePane = domConstruct.create("div", null, this.domNode);
+			var title = domConstruct.place('<div class="drip-title" style="margin-bottom: 5px;"></div>', imagePane);
 			var aTitle = domConstruct.place('<a href="#">附图？</a>', title);
-			var imageContainer = domConstruct.place('<div style="display: none">提供上传图片，或者直接在本地画图.当需要添加的时候，再撑开。</div>', this.domNode);
+			var imageContainer = domConstruct.place('<div style="display: none">提供上传图片，或者直接在本地画图.当需要添加的时候，再撑开。</div>', imagePane);
 		},
 		
-		_createOptionPane: function(){
+		_createOptionPane: function(type){
 			// summary:
 			//		创建习题选项面板
 			
-			domConstruct.place('<div class="drip-title">选项和答案</div>', this.domNode);
-			var container = domConstruct.place('<div></div>', this.domNode);
+			// 在最外围添加一个div容器
+			var optionPane = this.optionPane = domConstruct.create("div", null, this.domNode);
+			domConstruct.place('<div class="drip-title">选项和答案</div>', optionPane);
+			var container = domConstruct.place('<div></div>', optionPane);
 			
 			// 创建选项
 			var table = this.tblOption = domConstruct.place('<table class="drip-exercise-option"></table', container);
 			var defaultOptionLength = this.optionLength;
 			for(var i = 0; i < defaultOptionLength; i++){
-				this._createOption(table,i, "radio");
+				this._createOption(table,i, type);
 			}
 			this._refreshOption();
 			
@@ -199,7 +282,7 @@ define(["dojo/_base/declare",
 			
 			var aAdd = domConstruct.place('<a href="#"><img src="/resources/images/add_20.png"/></a>', addContainer);
 			on(aAdd, "click", lang.hitch(this, function(e){
-				this._createOption(table, this.optionLength++, "radio");
+				this._createOption(table, this.optionLength++, type);
 				event.stop(e);
 			}));
 		},
@@ -220,7 +303,8 @@ define(["dojo/_base/declare",
 			var td2 = domConstruct.place('<td></td>', tr);
 			var label = domConstruct.place('<label>'+optionLabel.charAt(index)+'</label>', td2);
 			var td3 = domConstruct.place('<td></td>', tr);
-			var editor = this._createEditor(td3,15,550);
+			// TODO:添加一个属性，设置行数，而不是直接设置行高。
+			var editor = this._createEditor(td3,25,550);
 			var td4 = domConstruct.place('<td></td>', tr);
 			var aDel = domConstruct.place('<a href="#"><img alt="删除" src="/resources/images/delete.png"></a>', td4);
 			var aDown = domConstruct.place('<a href="#"><img alt="下移" src="/resources/images/arrow_down.gif"></a>', td4);
@@ -280,8 +364,17 @@ define(["dojo/_base/declare",
 			// summary:
 			//		创建习题解析输入框
 			
-			domConstruct.place('<div class="drip-title">习题解析</div>', this.domNode);
-			this.editorGuide = this._createEditor(this.domNode, 100);
+			var guidePane = domConstruct.create("div", null, this.domNode);
+			domConstruct.place('<div class="drip-title">习题解析</div>', guidePane);
+			this.editorGuide = this._createEditor(guidePane, 100);
+		},
+		
+		_destroyForm: function(){
+			var formPanel = this.domNode;
+			registry.findWidgets(formPanel).forEach(function(w,index){
+				w.destroyRecursive();
+			});
+			domConstruct.empty(formPanel);
 		}
 		
 	});
