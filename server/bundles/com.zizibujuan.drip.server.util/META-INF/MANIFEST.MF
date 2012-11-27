@@ -24,5 +24,6 @@ Export-Package: com.zizibujuan.drip.server.util,
  com.zizibujuan.drip.server.util.io,
  com.zizibujuan.drip.server.util.servlet,
  org.apache.commons.codec.digest,
+ org.apache.commons.io,
  org.apache.commons.io.output,
  org.apache.commons.validator.routines

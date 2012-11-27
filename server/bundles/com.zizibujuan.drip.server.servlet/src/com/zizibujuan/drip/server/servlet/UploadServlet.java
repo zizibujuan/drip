@@ -20,9 +20,12 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import com.zizibujuan.drip.server.util.servlet.DripServlet;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
+import com.zizibujuan.drip.server.util.servlet.UserSession;
 
 /**
- * 删除图片
+ * 习题图片.
+ * 将图片管理功能专门做一个项目，使用专门的域名维护。
+ * 并可以将这个管理图片的服务公开，供外部使用。
  * @author jzw
  * @since 0.0.1
  */
@@ -30,10 +33,32 @@ public class UploadServlet extends DripServlet {
 
 	private static final long serialVersionUID = 8688828330683061302L;
 
+	/**
+	 * items.length=5
+	 * 
+	 * name:jbpm.png 
+	 * fieldName:uploadedfiles[]
+	 * 
+	 * name:null 
+	 * fieldName:index 
+	 * string:0
+	 * 
+	 * name:null 
+	 * fieldName:name 
+	 * string:jbpm.png
+	 * 
+	 * name:null 
+	 * fieldName:size 
+	 * string:164548
+	 * 
+	 * name:null 
+	 * fieldName:type 
+	 * string:image/png
+	 */
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-
+		traceRequest(req);
 		String pathInfo = req.getPathInfo();
 		if(pathInfo != null && !pathInfo.equals("/")){
 			System.out.println(pathInfo);
@@ -53,56 +78,15 @@ public class UploadServlet extends DripServlet {
 					// 根目录
 					String dataFilePath = "/home/jzw/drip/";
 					// 放置习题配图
-					String exercisePath = "exercise/users/";
+					String exercisePath = "exercise/users/"+UserSession.getUserId(req)+"/";
 					// TODO：用profile放置用户上传的头像
 					// FIXME：是否使用用户标识分组图像，如果使用的话，便于管理；但是不利于底层共享。
 					// 因为在检索图片时，还需要在路径中增加上传用户的信息。
-					
-					// TODO:加上文件名后缀
 					
 					File dir = new File(dataFilePath+ exercisePath);
 					if(!dir.exists()){
 						dir.mkdirs();
 					}
-					
-					
-					//File file = new File("/home/jzw/a.jpg");
-					
-					
-					
-					System.out.println("items.length="+items.size());
-					
-					/*
-					 /exerciseImage
-items.length=5
-
-name:jbpm.png
-fieldName:uploadedfiles[]
-
-name:null
-fieldName:index
-string:0
-
-name:null
-fieldName:name
-string:jbpm.png
-
-name:null
-fieldName:size
-string:164548
-
-name:null
-fieldName:type
-string:image/png
-					 */
-					
-					/*
-					 result.put("name", "a.jpg");
-				result.put("file", "path/a.jpg");
-				// width; height;
-				result.put("type", "JPG");
-					 */
-					List<File> files = new ArrayList<File>();
 					
 					for(FileItem item : items){
 						System.out.println();
@@ -122,35 +106,21 @@ string:image/png
 							if(ext!=null){
 								newFileName += ext;
 							}
-							
-							/*
-							 result.put("name", "a.jpg");
-						result.put("file", "path/a.jpg");
-						// width; height;
-						result.put("type", "JPG");
-							 */
 							Map<String,Object> map = new HashMap<String, Object>();
 							map.put("name", item.getName());
 							// map.put("file", null); 
-							
-							System.out.println("name:"+item.getName());
-							System.out.println("fieldName:"+item.getFieldName());
-							System.out.println("size:"+item.getSize());
-							//System.out.println("string:"+item.getString());
+							map.put("type", ext != null?ext.substring(1).toUpperCase():null);
+							map.put("size", item.getSize());
+							map.put("fieldName", item.getFieldName());
+							map.put("url", "/userImages/exercise/"+UserSession.getUserId(req)+"/"+newFileName);
+							result.add(map);
 							File file = new File(dir, newFileName);
 							item.write(file);
-							
-							//item.write(file);
 						}
-						
-						
-						
 					}
 				} catch (FileUploadException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				

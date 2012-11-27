@@ -55,6 +55,10 @@
       		alias="/uploads"
       		class="com.zizibujuan.drip.server.servlet.UploadServlet">
       </servlet>
+      <servlet 
+      		alias="/userImages"
+      		class="com.zizibujuan.drip.server.servlet.ImageServlet">
+      </servlet>
     </extension>
 
 	<extension

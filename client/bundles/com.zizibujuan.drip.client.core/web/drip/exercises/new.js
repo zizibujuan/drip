@@ -18,7 +18,7 @@ define(["dojo/_base/declare",
         "dojox/form/Uploader",
         "dojox/form/uploader/plugins/Flash",
         "dojox/form/uploader/plugins/IFrame",
-        "dojox/form/uploader/FileList"
+        "widget/form/uploader/FileList"
         ], function(
         		declare,
         		lang,
