@@ -14,7 +14,12 @@ define(["dojo/_base/declare",
         "dojo/query",
         "dojo/json",
         "drip/Editor",
-        "classCode"], function(
+        "classCode",
+        "dojox/form/Uploader",
+        "dojox/form/uploader/plugins/Flash",
+        "dojox/form/uploader/plugins/IFrame",
+        "dojox/form/uploader/FileList"
+        ], function(
         		declare,
         		lang,
         		array,
@@ -31,7 +36,11 @@ define(["dojo/_base/declare",
         		query,
         		JSON,
         		Editor,
-        		classCode){
+        		classCode,
+        		Uploader,
+        		uFlash,
+        		uFrame,
+        		FileList){
 	
 	var optionLabel = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	
@@ -228,6 +237,7 @@ define(["dojo/_base/declare",
 		},
 		
 		_createEssayQuestionForm: function(){
+			this.data.exerType = classCode.ExerciseType.ESSAY_QUESTION;
 			if(this.optionPane && this.optionPane.style.display == ""){
 				this.optionPane.style.display = "none";
 			}
@@ -256,8 +266,53 @@ define(["dojo/_base/declare",
 			
 			var imagePane = domConstruct.create("div", null, this.domNode);
 			var title = domConstruct.place('<div class="drip-title" style="margin-bottom: 5px;"></div>', imagePane);
-			var aTitle = domConstruct.place('<a href="#">附图？</a>', title);
-			var imageContainer = domConstruct.place('<div style="display: none">提供上传图片，或者直接在本地画图.当需要添加的时候，再撑开。</div>', imagePane);
+//			var form = domConstruct.place("<form method='post' enctype='multipart/form-data'></form>", title);
+//			form.action = "a";
+			//, 'dojox/form/uploader/plugins/Flash'
+//			require(['dojox/form/Uploader'], function(Uploader){
+//			    myUploader = new dojox.form.Uploader({
+//			    	name:"attachFile",
+//			    	type:"file",
+//			    	label:"附图"
+//			    });
+//			    myUploader.placeAt(form);
+			   
+//			dojo.require("dojox.form.Uploader");
+//			dojo.require("dojox.embed.Flash");
+//			if(dojox.embed.Flash.available){
+//			  dojo.require("dojox.form.uploader.plugins.Flash");
+//			}else{
+//			  dojo.require("dojox.form.uploader.plugins.IFrame");
+//			}
+			
+				var u = new dojox.form.Uploader({
+				    label: "附图",
+				    multiple: true,
+				    type:"file",
+				    uploadOnSelect: true,
+				    url: "/uploads/exerciseImage",
+				  });
+				u.placeAt(title);
+				u.startup();
+				
+				var list = new dojox.form.uploader.FileList({uploader:u});
+				list.placeAt(title);
+				//list.startup();
+				
+				
+	//		});
+			//var toAttach = domConstruct.place('<a href="#">附图</a>', title);
+		//	var toDraw = domConstruct.place('<a href="#" style="margin-left:5px">绘图</a>', title);
+			
+			// 上传图片和录入习题内容，两个过程分离
+			// 以防用户忘了附加图片，可专门添加一个附加图片功能。
+			/*
+			 <form method="post" action="UploadFile.php" id="myForm" enctype="multipart/form-data" >
+			   <input name="uploadedfile" multiple="true" type="file" data-dojo-type="dojox.form.Uploader" label="Select Some Files" id="uploader" />
+			   <input type="submit" label="Submit" data-dojo-type="dijit.form.Button" />
+			</form>
+			 */
+			//var imageContainer = domConstruct.place('<div style="display: none">提供上传图片，或者直接在本地画图.当需要添加的时候，再撑开。</div>', imagePane);
 		},
 		
 		_createOptionPane: function(type){
