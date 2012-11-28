@@ -5,11 +5,23 @@ define([
 	"dojo/_base/declare",
 	"dojo/_base/lang",
 	"dojo/_base/array",
+	"dojo/on",
 	"dijit/_base/manager",
 	"dojox/form/uploader/Base",
 	"dojo/text!templates/FileList.html"
-],function(fx, domStyle, domClass, declare, lang, array, manager, formUploaderBase,template){
+],function(
+		fx, 
+		domStyle, 
+		domClass, 
+		declare, 
+		lang, 
+		array,
+		on,
+		manager, 
+		formUploaderBase,
+		template){
 
+	
 return declare("dojox.form.uploader.FileList", [formUploaderBase], {
 	// summary:
 	//		A simple widget that provides a list of the files currently selected by
@@ -98,6 +110,16 @@ return declare("dojox.form.uploader.FileList", [formUploaderBase], {
 				//hide the size header
 				this.sizeHeader.style.display="none";
 			}
+			
+			on(this.deleteNode,"click", lang.hitch(this,function(e){
+				alert("delete");
+				// 并不删除后台上传的图片，而是在界面清空并隐藏上传文件列表，重要的是清除当前文件名称。
+				//domStyle.set(this.domNode, "display", "none");
+				// TODO:删除img节点
+				
+				// 在新增时插入img节点。
+				
+			}));
 		}else{
 			this._upCheckCnt++;
 			setTimeout(lang.hitch(this, "setUploader"), 250);
