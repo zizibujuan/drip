@@ -1,0 +1,3 @@
+[submodule "client/bundles/com.zizibujuan.drip.client.dojo/static/dojo"]
+	path = client/bundles/com.zizibujuan.drip.client.dojo/static/dojo
+	url = git://github.com/dojo/dojo.git
