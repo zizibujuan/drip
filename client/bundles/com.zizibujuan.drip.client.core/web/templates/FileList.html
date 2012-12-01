@@ -1,16 +1,36 @@
 <div class="dojoxUploaderFileList" style="display: none">
-<div style="height:10px">
-	<span data-dojo-attach-point="imageNameNode">aaa</span>
-	<span data-dojo-attach-point="progressNode"
-		class="">
-		<span style="border: solid 1px black;width:200px;height: 15px;display: inline-block;">
-		<span data-dojo-attach-point="percentBarNode"
-			class="" style="background: #89B5E9;border-left: 8px solid white;border-right: 1px solid #78A3D2;;height: 15px;display: inline-block;"></span>
-		</span>
-		<span data-dojo-attach-point="percentTextNode"
-			class="">0%</span>
-	</span>
-	<span><a href="#" data-dojo-attach-point="deleteNode">删除</a></span>
+<div>
+	<div class="drip_upload_item">
+		<table>
+			<tbody>
+				<tr>
+					<td style="padding:0px">
+						<div>
+							<div class="drip_upload_image_name" data-dojo-attach-point="imageNameNode">portal.png</div>
+							<div class="drip_upload_image_size" data-dojo-attach-point="imageSizeNode">(309 K)</div>
+						</div>
+					</td>
+					<td>
+						<div>
+							<div>
+								<div class="drip_upload_progress">
+									<div class="drip_upload_percent_bar" data-dojo-attach-point="percentBarNode"></div>
+								</div>
+							</div>
+						</div>
+					</td>
+					<td>
+						<div class="drip_upload_delete_icon" data-dojo-attach-point="deleteNode"></div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<img alt="" src="" style="max-height: 200px; max-width: 200px; padding-left: 10px" data-dojo-attach-point="imageNode">
 </div>
-<img alt="" src="" style="max-height: 200px; max-width: 200px" data-dojo-attach-point="imageNode">
+<!-- 上传完成后，在对象数组中赋值 -->
 </div>
+
+
+
+

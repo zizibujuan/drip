@@ -295,7 +295,7 @@ define(["dojo/_base/declare",
 				u.placeAt(title);
 				u.startup();
 				
-				var list = new dojox.form.uploader.FileList({uploader:u});
+				var list = new widget.form.uploader.FileList({uploader:u});
 				list.placeAt(title);
 				//list.startup();
 				

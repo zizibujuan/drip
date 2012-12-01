@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link type="text/css" rel="stylesheet" href="/dijit/themes/claro/claro.css" />
+<link type="text/css" rel="stylesheet" href="/dojo/resources/dojo.css" />
+<link type="text/css" rel="stylesheet" href="/resources/UploaderFileList.css" />
+<title>测试FileList</title>
+<script type="text/javascript" 
+	data-dojo-config="
+		async:true,
+		parseOnLoad:true,
+		isDebug:true" 
+	src="/dojo/dojo.js"></script>
+<script type="text/javascript">
+require(["dojo/parser",
+         "dojo/ready",
+         "dojo/dom",
+         "dojox/form/Uploader",
+         "dojox/form/uploader/plugins/Flash",
+         "dojox/form/uploader/plugins/IFrame",
+         "widget/form/uploader/FileList",
+         "dojo/domReady!"],function(
+        		 parser,
+        		 ready,
+        		 dom,
+        		 Uploader,
+        		 uFlash,
+        		 uFrame,
+        		 FileList){
+	
+	ready(function(){
+		
+		var mainDiv = dom.byId("main");
+		var u = new dojox.form.Uploader({
+		    label: "附图",
+		    multiple: false,
+		    type:"file",
+		    uploadOnSelect: true,
+		    url: "/uploads/exerciseImage",
+		  });
+		u.placeAt(mainDiv);
+		u.startup();
+		debugger;
+		var list = new widget.form.uploader.FileList({uploader:u});
+		list.placeAt(mainDiv);
+	});
+	
+});
+</script>
+<script type="text/javascript">
+</script>
+</head>
+<body class="claro">
+<div id="main"></div>
+</body>
+</html>

@@ -113,6 +113,7 @@ public class UploadServlet extends DripServlet {
 							map.put("size", item.getSize());
 							map.put("fieldName", item.getFieldName());
 							map.put("url", "/userImages/exercise/"+UserSession.getUserId(req)+"/"+newFileName);
+							map.put("fileId", newFileName);
 							result.add(map);
 							File file = new File(dir, newFileName);
 							item.write(file);
