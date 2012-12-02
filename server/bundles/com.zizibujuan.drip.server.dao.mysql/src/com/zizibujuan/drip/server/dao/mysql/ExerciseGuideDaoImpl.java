@@ -3,7 +3,6 @@ package com.zizibujuan.drip.server.dao.mysql;
 import java.util.Map;
 
 import com.zizibujuan.drip.server.dao.ExerciseGuideDao;
-import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 
 /**

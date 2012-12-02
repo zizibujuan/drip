@@ -3,14 +3,6 @@
 	name="com.zizibujuan.drip.server.dao.mysql.answerDaoImpl">
    <implementation class="com.zizibujuan.drip.server.dao.mysql.AnswerDaoImpl"/>
    <reference 
-	     bind="setDataSourceService" 
-	     unbind="unsetDataSourceService" 
-	     cardinality="0..1" 
-	     interface="com.zizibujuan.dbaccess.mysql.service.DataSourceService" 
-	     name="dataSourceService" 
-	     policy="dynamic"/>
-   
-   <reference 
    		bind="setUserDao" 
    		unbind="unsetUserDao" 
    		cardinality="0..1" 

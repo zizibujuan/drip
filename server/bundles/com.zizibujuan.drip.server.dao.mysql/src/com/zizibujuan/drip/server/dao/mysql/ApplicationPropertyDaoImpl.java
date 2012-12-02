@@ -3,7 +3,6 @@ package com.zizibujuan.drip.server.dao.mysql;
 import java.util.Locale;
 
 import com.zizibujuan.drip.server.dao.ApplicationPropertyDao;
-import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 
 /**
@@ -34,6 +33,14 @@ public class ApplicationPropertyDaoImpl extends AbstractDao implements
 	public void addGroup(String groupName, String displayName, Locale locale) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	private static final String SQL_GET_PROPERTY_STRING_VALUE = "SELECT b.PROPERTY_VALUE FROM " +
+			"DRIP_PROPERTY_KEY a, DRIP_PROPERTY_VALUE_STRING b " +
+			"WHERE a.DBID = b.KEY_ID AND a.PROPERTY_KEY=?";
+	@Override
+	public String getForString(String propertyName) {
+		return DatabaseUtil.queryForString(getDataSource(), SQL_GET_PROPERTY_STRING_VALUE, propertyName);
 	}
 
 }
