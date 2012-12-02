@@ -20,4 +20,6 @@ Require-Bundle: javax.servlet;bundle-version="3.0.0"
 Service-Component: OSGI-INF/*.xml
 Export-Package: com.zizibujuan.drip.server.servlet
 Bundle-ClassPath: commons-fileupload-1.2.2.jar,
- .
+ .,
+ Renren-api-java-sdk.jar,
+ json-simple-1.1.1.jar

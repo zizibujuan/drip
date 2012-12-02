@@ -53,4 +53,13 @@
 		interface="com.zizibujuan.drip.server.service.AnswerService" 
 		name="answerService" 
 		policy="dynamic" />
+		
+	<reference 
+		bind="setOAuthUserMapService" 
+		unbind="unsetOAuthUserMapService" 
+		cardinality="0..1" 
+		interface="com.zizibujuan.drip.server.service.OAuthUserMapService" 
+		name="oAuthUserMapService" 
+		policy="dynamic" />
+		
 </scr:component>

@@ -12,5 +12,12 @@ public interface ApplicationPropertyService {
 	 * @return 匿名用户标识
 	 */
 	Long getNextAnonymouseId();
+	
+	/**
+	 * 获取指定的key对应的字符串值
+	 * @param propertyName 键
+	 * @return 值
+	 */
+	String getForString(String propertyName);
 
 }

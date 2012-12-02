@@ -3,6 +3,8 @@ package com.zizibujuan.drip.server.servlet;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+import com.renren.api.client.RenrenApiConfig;
+
 public class Activator implements BundleActivator {
 
 	private static BundleContext context;
@@ -17,6 +19,13 @@ public class Activator implements BundleActivator {
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
+		
+		/*
+		 RenrenApiConfig.renrenApiKey = AppConfig.API_KEY;
+		RenrenApiConfig.renrenApiSecret = AppConfig.APP_SECRET;
+		 */
+		RenrenApiConfig.renrenApiKey = "";
+		RenrenApiConfig.renrenApiSecret = "";
 	}
 
 	/*

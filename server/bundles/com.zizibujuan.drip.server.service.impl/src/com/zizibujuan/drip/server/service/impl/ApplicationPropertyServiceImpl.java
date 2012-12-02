@@ -27,6 +27,11 @@ public class ApplicationPropertyServiceImpl implements
 		return id;
 	}
 	
+	@Override
+	public String getForString(String propertyName) {
+		return applicationPropertyDao.getForString(propertyName);
+	}
+	
 	public void setApplicationPropertyDao(ApplicationPropertyDao applicationPropertyDao) {
 		logger.info("注入ApplicationPropertyDao");
 		this.applicationPropertyDao = applicationPropertyDao;

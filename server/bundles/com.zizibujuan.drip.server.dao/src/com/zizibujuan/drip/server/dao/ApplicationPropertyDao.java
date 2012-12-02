@@ -31,4 +31,11 @@ public interface ApplicationPropertyDao {
 	 */
 	void addGroup(String groupName, String displayName, Locale locale);
 
+	/**
+	 * 获取指定的key对应的字符串值
+	 * @param propertyName 键
+	 * @return 值
+	 */
+	String getForString(String propertyName);
+
 }
