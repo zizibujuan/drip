@@ -32,12 +32,19 @@ public interface UserService {
 	 * @return 如果登录失败则返回null，否则返回用户信息
 	 */
 	Map<String,Object> login(String email, String password);
+	
+	/**
+	 * 用户登录，主要是记录使用第三方网站进行登录
+	 * @param userId 用户标识
+	 * @return 如果登录失败则返回null，否则返回用户信息
+	 */
+	Map<String, Object> login(Long userId);
 
 	/**
 	 * 获取用户登录信息，返回到客户端的，所以不能包含用户隐私信息。
 	 * @param userId 用户标识
 	 * @return <pre>用户登录信息
-	 * 		realName : 用户真实姓名
+	 * 		nickName : 昵称，如果没有昵称，则显示登录名
 	 * 		userId : 用户标识
 	 * </pre> 
 	 */
@@ -62,7 +69,8 @@ public interface UserService {
 	 * authSiteId：第三方网站标识 {@link OAuthConstants}
 	 * authUserId: 第三方网站的用户标识
 	 * </pre>
-	 * @return 该网站的用户信息 
+	 * @return 该网站的用户标识
 	 */
-	Map<String, Object> importUser(Map<String, Object> userInfo);
+	Long importUser(Map<String, Object> userInfo);
+
 }

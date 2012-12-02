@@ -48,9 +48,14 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public Map<String, Object> importUser(Map<String, Object> userInfo) {
-		Long userId = userDao.importUser(userInfo);
-		return userDao.getLoginInfo(userId);
+	public Map<String, Object> login(Long userId) {
+		userDao.updateLastLoginTime(userId);
+		return userDao.get(userId);
+	}
+	
+	@Override
+	public Long importUser(Map<String, Object> userInfo) {
+		return userDao.importUser(userInfo);
 	}
 
 	@Override

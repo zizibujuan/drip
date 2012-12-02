@@ -11,9 +11,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.zizibujuan.drip.server.util.WebConstants;
 import com.zizibujuan.drip.server.util.servlet.UserSession;
 
@@ -26,7 +23,7 @@ import com.zizibujuan.drip.server.util.servlet.UserSession;
  */
 public class WelcomeFileFilter implements Filter {
 
-	private static final Logger logger = LoggerFactory.getLogger(WelcomeFileFilter.class);
+	//private static final Logger logger = LoggerFactory.getLogger(WelcomeFileFilter.class);
 	
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
@@ -34,8 +31,7 @@ public class WelcomeFileFilter implements Filter {
 		final HttpServletRequest httpRequest = (HttpServletRequest) request;
 		final HttpServletResponse httpResponse = (HttpServletResponse)response;
 		final String requestPath = httpRequest.getServletPath() + (httpRequest.getPathInfo() == null ? "" : httpRequest.getPathInfo()); //$NON-NLS-1$
-		logger.info("跳转到WelcomeFileFilter中，请求路径为:"+requestPath);
-		System.out.println("跳转到WelcomeFileFilter中，请求路径为:'"+requestPath+"'");
+		//logger.info("跳转到WelcomeFileFilter中，请求路径为:"+requestPath);
 		if (requestPath.equals("/")) { //$NON-NLS-1$
 			System.out.println("初步满足跳转要求");
 			String fileName = "";

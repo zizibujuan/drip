@@ -20,7 +20,7 @@ public class ActivityDaoImpl extends AbstractDao implements ActivityDao {
 
 	private static final String SQL_LIST_ACTIVITY_INDEX = "select " +
 				"a.WATCH_USER_ID \"userId\"," +
-				"c.REAL_NM \"displayUserName\", " +
+				"c.REAL_NAME \"displayUserName\", " +
 				"b.CRT_TM \"createTime\"," +
 				"b.CONTENT_ID \"contentId\"," +
 				"b.ACTION_TYPE \"actionType\"" +

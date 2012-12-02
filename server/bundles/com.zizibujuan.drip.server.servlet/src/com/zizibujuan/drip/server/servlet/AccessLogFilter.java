@@ -80,6 +80,7 @@ public class AccessLogFilter implements Filter {
 			
 			// 获取用户访问的上一个页面
 			String urlFrom = httpServletRequest.getHeader("Referer");
+			System.out.println(urlFrom);
 			
 			// 获取用户当前访问的一个页面
 			String urlAccess = httpServletRequest.getRequestURI();

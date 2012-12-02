@@ -58,38 +58,45 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	// 这里只查询出需要在界面上显示的用户信息，主要存储在当前用户的session中。
 	private static final String SQL_GET_USER_FOR_SESSION = "SELECT " +
 			"DBID \"id\"," +
-			//"LOGIN_NM," +
-			"LOGIN_EMAIL \"email\"," +
+			//"LOGIN_NAME," +
+			"EMAIL \"email\"," +
 			//"LOGIN_PWD," + 登录密码，不在session中缓存
 			"MOBILE \"mobile\"," +
-			"REAL_NM \"displayName\"," +
+			"REAL_NAME \"displayName\"," +
 			//"CRT_TM \"createTime\" " +
 			"FAN_COUNT \"fanCount\","+
 			"FOLLOW_COUNT \"followCount\","+
 			"EXER_DRAFT_COUNT \"exerDraftCount\","+
 			"EXER_PUBLISH_COUNT \"exerPublishCount\", "+
 			"ANSWER_COUNT \"answerCount\" "+
-			"FROM DRIP_USER_INFO " +
-			"WHERE LOGIN_EMAIL = ? AND LOGIN_PWD = ?";
+			"FROM DRIP_USER_INFO ";
+	private static final String SQL_GET_USER_FOR_SESSION_BY_PWD = SQL_GET_USER_FOR_SESSION + "WHERE EMAIL = ? AND LOGIN_PWD = ?";
 	@Override
 	public Map<String, Object> get(String email, String md5Password) {
-		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_USER_FOR_SESSION, email, md5Password);
+		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_USER_FOR_SESSION_BY_PWD, email, md5Password);
 	}
 	
-	private static final String SQL_UPDATE_USER = "UPDATE DRIP_USER_INFO SET LAST_LOGIN_TM = now() " +
+	private static final String SQL_GET_USER_FOR_SESSION_BY_ID = SQL_GET_USER_FOR_SESSION + "WHERE DBID=?";
+	@Override
+	public Map<String, Object> get(Long userId) {
+		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_USER_FOR_SESSION_BY_ID, userId);
+	}
+	
+	private static final String SQL_UPDATE_USER = "UPDATE DRIP_USER_INFO SET LAST_LOGIN_TIME = now() " +
 			"WHERE DBID=?";
 	@Override
 	public void updateLastLoginTime(Long userId) {
 		DatabaseUtil.update(getDataSource(), SQL_UPDATE_USER, userId);
 	}
 	
-	private static final String SQL_GET_LOGIN = "SELECT DBID \"userId\", REAL_NM \"realName\" FROM DRIP_USER_INFO WHERE DBID=?";
+	// 在插入记录时，如果nickName为空，则插入登录名
+	private static final String SQL_GET_LOGIN = "SELECT DBID \"userId\", REAL_NAME \"realName\", NICK_NAME \"nickName\" FROM DRIP_USER_INFO WHERE DBID=?";
 	@Override
 	public Map<String, Object> getLoginInfo(Long userId) {
 		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_LOGIN, userId);
 	}
 	
-	private static final String SQL_EMAIL_EXIST = "select 1 from DRIP_USER_INFO where LOGIN_EMAIL = ? limit 1";
+	private static final String SQL_EMAIL_EXIST = "select 1 from DRIP_USER_INFO where EMAIL = ? limit 1";
 	@Override
 	public boolean emailIsExist(String email) {
 		String result = DatabaseUtil.queryForString(getDataSource(), SQL_EMAIL_EXIST, email);

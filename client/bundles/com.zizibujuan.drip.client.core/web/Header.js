@@ -36,7 +36,7 @@ define(["dojo/_base/declare",
 		        menu.addChild(menuLogout);
 
 		        var button = new DropDownButton({
-		            label: response.realName,
+		            label: response.nickName,
 		            dropDown: menu
 		        });
 		        this.userMenu.appendChild(button.domNode);

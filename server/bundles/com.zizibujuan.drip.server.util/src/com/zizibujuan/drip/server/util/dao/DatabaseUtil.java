@@ -166,7 +166,7 @@ public abstract class DatabaseUtil {
 	
 	public static Long queryForLong(DataSource ds,
 			String sql, Object... inParams) {
-		Long result=0l;
+		Long result=null;
 		PreparedStatement stmt = null;
 		ResultSet rst = null;
 		Connection con = null;

@@ -15,6 +15,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import com.renren.api.client.RenrenApiClient;
+import com.renren.api.client.RenrenApiConfig;
 import com.renren.api.client.utils.HttpURLUtils;
 import com.zizibujuan.drip.server.service.ApplicationPropertyService;
 import com.zizibujuan.drip.server.service.OAuthUserMapService;
@@ -64,7 +65,12 @@ public class LoginServlet extends DripServlet {
 				if(code != null && !code.isEmpty()){
 					String key = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_APP_KEY);
 					String secret = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_APP_SECRET);
-					String uri = "http://www.zizibujuan/login/renren";
+					
+					// TODO:只应初始化一次
+					RenrenApiConfig.renrenApiKey  = key;
+					RenrenApiConfig.renrenApiSecret = secret;
+					
+					String uri = "http://zizibujuan.com/login/renren";
 					String renrenOAuthTokenEndPoint = "https://graph.renren.com/oauth/token";
 					Map<String,String> parameters = new HashMap<String, String>();
 					parameters.put("client_id",key);
@@ -94,20 +100,21 @@ public class LoginServlet extends DripServlet {
 								
 //								//判断帐号关联表里有没有现成的关联
 								Long dripUserId = oAuthUserMapService.getUserId(OAuthConstants.RENREN, rrUid);
-								Map<String,Object> userInfo = null;
+								
 								if(dripUserId == null){
 									//在帐号关联表里没有记录，用户是第一次来；为这个用户创建一个User对象
 									Map<String,Object> renrenUserInfo = new HashMap<String, Object>();
 									renrenUserInfo.put("nickName", name);
 									renrenUserInfo.put("loginName", name);
 									renrenUserInfo.put("headUrl", headurl);
+									renrenUserInfo.put("authSiteId", OAuthConstants.RENREN);
+									renrenUserInfo.put("authUserId", rrUid);
 									// TODO:装换更多的用户详细信息
 									
-									userInfo = userService.importUser(renrenUserInfo);
-									
-								}else{
-									userInfo = userService.getLoginInfo(dripUserId);
+									dripUserId = userService.importUser(renrenUserInfo);
 								}
+								Map<String,Object> userInfo = userService.login(dripUserId);
+								// TODO：登记用户登录时间
 								UserSession.setUser(req, userInfo);
 								// 跳转到个人首页
 								resp.sendRedirect("/");

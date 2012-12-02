@@ -27,12 +27,19 @@ public interface UserDao {
 	Long add(Map<String,Object> userInfo);
 
 	/**
-	 * 获取用户信息
+	 * 获取用户基本信息，主要往用户session中保存。
 	 * @param email 电子邮箱
 	 * @param md5Password 加密后的密码
 	 * @return 如果系统中存在该用户信息则返回，否则返回空的map对象
 	 */
 	Map<String, Object> get(String email, String md5Password);
+	
+	/**
+	 * 获取用户基本信息，主要往用户session中保存。
+	 * @param userId 用户标识
+	 * @return 如果系统中存在该用户信息则返回，否则返回空的map对象
+	 */
+	Map<String, Object> get(Long userId);
 
 	/**
 	 * 更新用户的最近登录时间
@@ -85,5 +92,5 @@ public interface UserDao {
 	 * @return 该网站生成的用户标识
 	 */
 	Long importUser(Map<String, Object> userInfo);
-	
+
 }
