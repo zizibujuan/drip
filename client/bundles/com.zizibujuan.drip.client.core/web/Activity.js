@@ -276,7 +276,8 @@ define(["dojo/_base/declare",
 		},
 		
 		_createExercise: function(exerciseInfo){
-			var _contentDiv = domConstruct.create("div", {innerHTML:exerciseInfo.content,"class":"content"},this.exerciseNode);
+			
+			var _contentDiv = domConstruct.create("div", {innerHTML:exerciseInfo.content.replace(/&amp;/g,"&"),"class":"content"},this.exerciseNode);
 			
 			var options = exerciseInfo.options;
 			if(options && options.length > 0){

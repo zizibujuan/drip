@@ -11,6 +11,13 @@
 <link type="text/css" rel="stylesheet" href="/dojo/resources/dojo.css" />
 <link type="text/css" rel="stylesheet" href="/resources/main.css" />
 <title>孜孜不倦 · 全民学习(高等数学篇)</title>
+
+<!-- qq登录脚本 -->
+<script type="text/javascript"
+src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js" 
+data-appid="100339592" 
+data-redirecturi="http://zizibujuan.com" charset="utf-8"></script>
+
 <script type="text/javascript" 
 	data-dojo-config="
 		async:true,
@@ -19,6 +26,7 @@
 	src="/dojo/dojo.js"></script>
 <script type="text/javascript">
 require(["dojo/ready",
+         "dojo/dom",
          "dojo/dom-form",
          "dojo/dom-style",
          "dojo/store/JsonRest",
@@ -32,6 +40,7 @@ require(["dojo/ready",
          "dojo/parser",
          "dojo/domReady!"],function(
         		 ready,
+        		 dom,
         		 domForm,
         		 domStyle,
         		 JsonRest,
@@ -93,6 +102,10 @@ require(["dojo/ready",
 		registry.byId("btnExercises").on("click", function(e){
 			window.location.href = "/exercises";
 		});
+		
+		//href="https://graph.renren.com/oauth/authorize?
+		//client_id=${appId}&response_type=code&redirect_uri=${redirectUri}&display=page"
+		//dom.byId("login_renren")
 		
 	});
 	
@@ -159,10 +172,23 @@ require(["dojo/ready",
 			</div>
 		</div>
 		<div>
+			<p>使用其他帐号登录</p>
 			<div>
-				使用其他帐号登录
+				<a id="login_renren" href="/login/renren">
+					<img style="border:0px;" alt="用人人帐号登录" src="/resources/images/renren_login_blue_133x22.png">
+				</a>
 			</div>
-			<div>
+				<div>
+					<!-- 使用qq帐号登录 -->
+					<span id="qqLoginBtn"></span>
+					<script type="text/javascript">
+						QC.Login({
+							btnId : "qqLoginBtn", //插入按钮的节点id
+							size: "A_M" //按钮尺寸，可用值[A_XL| A_L| A_M| A_S|  B_M| B_S| C_S]，可选，默认B_S
+						});
+					</script>
+				</div>
+				<div>
 				人人、QQ、weibo
 			</div>
 		</div>
