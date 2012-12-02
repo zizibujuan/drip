@@ -15,7 +15,7 @@ public interface OAuthUserMapService {
 	 * @param userId 用户标识
 	 * @return 用户名
 	 */
-	String getUserName(int authSiteId, String userId);
+	Long getUserId(int authSiteId, String userId);
 	
 	/**
 	 * 从帐号关联表中获取用户名
@@ -23,6 +23,6 @@ public interface OAuthUserMapService {
 	 * @param userId 用户标识
 	 * @return 用户名
 	 */
-	String getUserName(int authSiteId, int userId);
+	Long getUserId(int authSiteId, int userId);
 
 }

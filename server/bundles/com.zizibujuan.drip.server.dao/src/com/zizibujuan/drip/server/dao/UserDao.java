@@ -3,6 +3,8 @@ package com.zizibujuan.drip.server.dao;
 import java.sql.Connection;
 import java.util.Map;
 
+import com.zizibujuan.drip.server.util.OAuthConstants;
+
 /**
  * 用户数据访问接口
  * @author jinzw
@@ -68,5 +70,20 @@ public interface UserDao {
 	 * @param userId 用户标识
 	 */
 	void increaseAnswerCount(Connection con, Long userId);
+
+	/**
+	 * 导入第三网站的用户信息
+	 * @param userInfo 用户详细信息
+	 * <pre>
+	 * map结构
+	 * loginName:登录名
+	 * nickName:昵称
+	 * headUrl:头像链接
+	 * authSiteId：第三方网站标识 {@link OAuthConstants}
+	 * authUserId: 第三方网站的用户标识
+	 * </pre>
+	 * @return 该网站生成的用户标识
+	 */
+	Long importUser(Map<String, Object> userInfo);
 	
 }

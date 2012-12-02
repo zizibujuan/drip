@@ -2,6 +2,8 @@ package com.zizibujuan.drip.server.service;
 
 import java.util.Map;
 
+import com.zizibujuan.drip.server.util.OAuthConstants;
+
 /**
  * 用户 服务接口
  * @author jinzw
@@ -47,4 +49,20 @@ public interface UserService {
 	 * @return 已存在则返回<code>true</code>；否则返回<code>false</code>
 	 */
 	boolean emailIsExist(String email);
+
+	
+	/**
+	 * 导入第三网站的用户信息
+	 * @param userInfo 用户详细信息
+	 * <pre>
+	 * map结构
+	 * loginName:登录名
+	 * nickName:昵称
+	 * headUrl:头像链接
+	 * authSiteId：第三方网站标识 {@link OAuthConstants}
+	 * authUserId: 第三方网站的用户标识
+	 * </pre>
+	 * @return 该网站的用户信息 
+	 */
+	Map<String, Object> importUser(Map<String, Object> userInfo);
 }

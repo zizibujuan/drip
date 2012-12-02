@@ -4,9 +4,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.zizibujuan.drip.server.dao.OAuthUserMapDao;
 import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.dao.UserRelationDao;
 import com.zizibujuan.drip.server.exception.dao.DataAccessException;
@@ -20,11 +22,12 @@ import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 public class UserDaoImpl extends AbstractDao implements UserDao {
 	private static final Logger logger = LoggerFactory.getLogger(UserDaoImpl.class);
 	private UserRelationDao userRelationDao;
+	private OAuthUserMapDao oAuthUserMapDao;
 	
 	private static final String SQL_INSERT_USER = "INSERT INTO DRIP_USER_INFO " +
-			"(LOGIN_NM,LOGIN_EMAIL,LOGIN_PWD,MOBILE,REAL_NM,CRT_TM) " +
+			"(LOGIN_NAME,NICK_NAME,EMAIL,LOGIN_PWD,MOBILE,REAL_NAME,CREATE_TIME) " +
 			"VALUES " +
-			"(?,?,?,?,?,now())";
+			"(?,?,?,?,?,?,now())";
 	
 	@Override
 	public Long add(Map<String, Object> userInfo) {
@@ -109,6 +112,42 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		DatabaseUtil.update(con, SQL_UPDATE_ANSWER_COUNT, userId);
 	}
 	
+	@Override
+	public Long importUser(Map<String, Object> userInfo) {
+		Long userId = null;
+		
+		Connection con = null;
+		
+		int authSiteId = Integer.valueOf(userInfo.get("authSiteId").toString());
+		String authUserId = userInfo.get("authUserId").toString();
+		try{
+			con = getDataSource().getConnection();
+			con.setAutoCommit(false);
+			userId = this.addUser(con, userInfo);
+			oAuthUserMapDao.mapUserId(con, authSiteId, authUserId, userId);
+			con.commit();
+		}catch(SQLException e){
+			DatabaseUtil.safeRollback(con);
+			throw new DataAccessException(e);
+		}finally{
+			DatabaseUtil.closeConnection(con);
+		}
+		return userId;
+	}
+	
+	
+	private Long addUser(Connection con, Map<String,Object> userInfo){
+		// TODO:继续添加更详细的用户信息。
+		String loginName = userInfo.get("loginName").toString();
+		String nickName = userInfo.get("nickName").toString();
+		String email = ObjectUtils.toString(userInfo.get("email"));
+		String password = null;
+		String mobile = ObjectUtils.toString(userInfo.get("mobile"));
+		String realName = ObjectUtils.toString(userInfo.get("realName"));
+		
+		return DatabaseUtil.insert(con, SQL_INSERT_USER, loginName,nickName,email,password,mobile,realName);
+	}
+	
 	public void setUserRelationDao(UserRelationDao userRelationDao) {
 		logger.info("注入userRelationDao");
 		this.userRelationDao = userRelationDao;
@@ -118,6 +157,18 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		if (this.userRelationDao == userRelationDao) {
 			logger.info("注销userRelationDao");
 			this.userRelationDao = null;
+		}
+	}
+	
+	public void setOAuthUserMapDao(OAuthUserMapDao oAuthUserMapDao) {
+		logger.info("注入oAuthUserMapDao");
+		this.oAuthUserMapDao = oAuthUserMapDao;
+	}
+
+	public void unsetOAuthUserMapDao(OAuthUserMapDao oAuthUserMapDao) {
+		if (this.oAuthUserMapDao == oAuthUserMapDao) {
+			logger.info("注销oAuthUserMapDao");
+			this.oAuthUserMapDao = null;
 		}
 	}
 

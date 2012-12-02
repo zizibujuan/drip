@@ -76,41 +76,33 @@ public class LoginServlet extends DripServlet {
 					//调用人人网API获得用户信息
 					RenrenApiClient apiClient = new RenrenApiClient(accessToken, true);
 					int rrUid = apiClient.getUserService().getLoggedInUser();
-					JSONArray userInfo = apiClient.getUserService().getInfo(String.valueOf(rrUid), "name,email_hash,headurl");
-					if (userInfo != null && userInfo.size() > 0) {
-						JSONObject currentUser = (JSONObject) userInfo.get(0);
+					JSONArray userInfoArray = apiClient.getUserService().getInfo(String.valueOf(rrUid), "name,email_hash,headurl");
+					if (userInfoArray != null && userInfoArray.size() > 0) {
+						JSONObject currentUser = (JSONObject) userInfoArray.get(0);
 						if (currentUser != null) {
 							String name = (String) currentUser.get("name");
 							String headurl = (String) currentUser.get("headurl");
-							String email = (String)currentUser.get("email_hash");
+							//String email = (String)currentUser.get("email_hash");
+							
 //							//判断帐号关联表里有没有现成的关联
-							String userName = oAuthUserMapService.getUserName(OAuthConstants.RENREN, rrUid);
-//							User user;
-//							if (username == null) {
-//								//在帐号关联表里没有记录，用户是第一次来；为这个用户创建一个User对象
-//								User newUser = new User();
-//								newUser.setName(name);
-//								newUser.setHeadurl(headurl);
-//								//自动拼装一个username并随即生成一个password；实际实现时，这里应该保证
-//		                                                  拼装出来的username不与其它帐号冲突
-//								username = "renren-" + rrUid;
-//								String password = UUID.randomUUID().toString();
-//								newUser.setUsername(username);
-//								newUser.setPassword(password);
-//								//保存到用户表, 也许加入的用户设置为未激活更好些，保证该名字的唯一性，并允许修改该名称，同时更新帐号关联表中的名称
-//								UserDAO.getInstance().addUser(newUser);
-//								//保存到帐号关联表
-//								RenrenUserMappingDAO.getInstance().addMapping(rrUid, username);
-//								user = newUser;
-//							}
-//							else {
-//								//用户不是第一次来了，已经在帐号关联表里有了
-//								user = UserDAO.getInstance().getUser(username);
-//							}
-//							//将用户身份信息保存在会话里
-//							request.getSession().setAttribute("user", user);
-//							//已登录，跳转到个人主页
-//							response.sendRedirect("/profile");
+							Long dripUserId = oAuthUserMapService.getUserId(OAuthConstants.RENREN, rrUid);
+							Map<String,Object> userInfo = null;
+							if(dripUserId == null){
+								//在帐号关联表里没有记录，用户是第一次来；为这个用户创建一个User对象
+								Map<String,Object> renrenUserInfo = new HashMap<String, Object>();
+								renrenUserInfo.put("nickName", name);
+								renrenUserInfo.put("loginName", name);
+								renrenUserInfo.put("headUrl", headurl);
+								// TODO:装换更多的用户详细信息
+								
+								userInfo = userService.importUser(renrenUserInfo);
+								
+							}else{
+								userInfo = userService.getLoginInfo(dripUserId);
+							}
+							UserSession.setUser(req, userInfo);
+							// 跳转到个人首页
+							resp.sendRedirect("/");
 							return;
 						}
 					}

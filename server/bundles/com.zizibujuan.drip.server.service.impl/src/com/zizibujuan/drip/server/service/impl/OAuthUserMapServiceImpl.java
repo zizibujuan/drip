@@ -18,14 +18,14 @@ public class OAuthUserMapServiceImpl implements OAuthUserMapService {
 	private OAuthUserMapDao oAuthUserMapDao;
 	
 	@Override
-	public String getUserName(int authSiteId, String userId) {
-		return oAuthUserMapDao.getUserName(authSiteId, userId);
+	public Long getUserId(int authSiteId, String userId) {
+		return oAuthUserMapDao.getUserId(authSiteId, userId);
 	}
 
 	@Override
-	public String getUserName(int authSiteId, int userId) {
+	public Long getUserId(int authSiteId, int userId) {
 		String sUserId = String.valueOf(userId);
-		return oAuthUserMapDao.getUserName(authSiteId, sUserId);
+		return oAuthUserMapDao.getUserId(authSiteId, sUserId);
 	}
 	
 	
