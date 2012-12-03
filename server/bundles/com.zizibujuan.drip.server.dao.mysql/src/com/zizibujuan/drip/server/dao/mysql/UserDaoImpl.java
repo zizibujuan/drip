@@ -147,7 +147,8 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		// TODO:继续添加更详细的用户信息。
 		String loginName = userInfo.get("loginName").toString();
 		String nickName = userInfo.get("nickName").toString();
-		String email = ObjectUtils.toString(userInfo.get("email"));
+		// 注意为EMAIL字段添加了唯一性约束字段，所以如果email不存在，要置为null，而不是转化为一个空的字符串。
+		Object email  = userInfo.get("email");
 		String password = null;
 		String mobile = ObjectUtils.toString(userInfo.get("mobile"));
 		String realName = ObjectUtils.toString(userInfo.get("realName"));
