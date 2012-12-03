@@ -39,6 +39,8 @@ public class LoginServlet extends DripServlet {
 	private UserService userService = null;
 	private ApplicationPropertyService applicationPropertyService = null;
 	private OAuthUserMapService oAuthUserMapService = null;
+	
+	private static final String REDIRECT_URI_RENREN = "http://zizibujuan.com/login/renren";
 
 	public LoginServlet() {
 		userService = ServiceHolder.getDefault().getUserService();
@@ -70,12 +72,11 @@ public class LoginServlet extends DripServlet {
 					RenrenApiConfig.renrenApiKey  = key;
 					RenrenApiConfig.renrenApiSecret = secret;
 					
-					String uri = "http://zizibujuan.com/login/renren";
 					String renrenOAuthTokenEndPoint = "https://graph.renren.com/oauth/token";
 					Map<String,String> parameters = new HashMap<String, String>();
 					parameters.put("client_id",key);
 					parameters.put("client_secret", secret);
-					parameters.put("redirect_uri", uri);
+					parameters.put("redirect_uri", REDIRECT_URI_RENREN);
 					parameters.put("grant_type", "authorization_code");
 					parameters.put("code", code);
 					String tokenResult = HttpURLUtils.doPost(renrenOAuthTokenEndPoint, parameters);
@@ -126,7 +127,7 @@ public class LoginServlet extends DripServlet {
 				}else{
 					// TODO:将这个链接配置在数据库中，所有参数的key值也配置在数据库中。
 					String appId = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_APP_ID);
-					String redirectUri = URLEncoder.encode("http://zizibujuan.com/login/renren", "UTF-8");
+					String redirectUri = URLEncoder.encode(REDIRECT_URI_RENREN, "UTF-8");
 					String hrefTemplate="https://graph.renren.com/oauth/authorize?client_id={0}&response_type=code&redirect_uri={1}&display=page";
 					String href=MessageFormat.format(hrefTemplate, appId,redirectUri);
 					resp.sendRedirect(href);
