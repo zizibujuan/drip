@@ -33,7 +33,7 @@ public class WelcomeFileFilter implements Filter {
 		final String requestPath = httpRequest.getServletPath() + (httpRequest.getPathInfo() == null ? "" : httpRequest.getPathInfo()); //$NON-NLS-1$
 		//logger.info("跳转到WelcomeFileFilter中，请求路径为:"+requestPath);
 		if (requestPath.equals("/")) { //$NON-NLS-1$
-			System.out.println("初步满足跳转要求");
+			//System.out.println("初步满足跳转要求");
 			String fileName = "";
 			if(UserSession.getUser(httpRequest)==null){
 				fileName = requestPath + WebConstants.PUBLIC_WELCOME_FILE_NAME;
@@ -47,8 +47,8 @@ public class WelcomeFileFilter implements Filter {
 			
 			return;
 		}
-		HttpServletResponse resp = (HttpServletResponse) response;
-		System.out.println("状态码为："+resp.getStatus());
+		//HttpServletResponse resp = (HttpServletResponse) response;
+		//System.out.println("状态码为："+resp.getStatus());
 		chain.doFilter(request, response);
 	}
 
