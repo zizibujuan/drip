@@ -28,6 +28,7 @@
    <plugins>
       <plugin id="ch.qos.logback.classic"/>
       <plugin id="ch.qos.logback.core"/>
+      <plugin id="ch.qos.logback.slf4j" fragment="true"/>
       <plugin id="com.zizibujuan.dbaccess.mysql"/>
       <plugin id="com.zizibujuan.drip.client.core"/>
       <plugin id="com.zizibujuan.drip.client.dojo"/>
@@ -76,12 +77,12 @@
    </features>
 
    <configurations>
-      <plugin id="ch.qos.logback.classic" autoStart="false" startLevel="0" />
-      <plugin id="ch.qos.logback.core" autoStart="false" startLevel="0" />
+      <plugin id="ch.qos.logback.classic" autoStart="true" startLevel="0" />
+      <plugin id="ch.qos.logback.core" autoStart="true" startLevel="0" />
       <plugin id="com.zizibujuan.dbaccess.mysql" autoStart="true" startLevel="0" />
       <plugin id="com.zizibujuan.drip.client.core" autoStart="true" startLevel="0" />
       <plugin id="com.zizibujuan.drip.client.dojo" autoStart="true" startLevel="0" />
-      <plugin id="com.zizibujuan.drip.client.editor" autoStart="false" startLevel="0" />
+      <plugin id="com.zizibujuan.drip.client.editor" autoStart="true" startLevel="0" />
       <plugin id="com.zizibujuan.drip.client.mathjax" autoStart="true" startLevel="0" />
       <plugin id="com.zizibujuan.drip.server.configurator" autoStart="true" startLevel="0" />
       <plugin id="com.zizibujuan.drip.server.dao" autoStart="true" startLevel="0" />
@@ -116,7 +117,7 @@
       <plugin id="org.eclipse.osgi" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.osgi.services" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.osgi.util" autoStart="true" startLevel="0" />
-      <plugin id="org.slf4j.api" autoStart="false" startLevel="0" />
+      <plugin id="org.slf4j.api" autoStart="true" startLevel="0" />
       <plugin id="osgi.enterprise" autoStart="true" startLevel="0" />
    </configurations>
 
