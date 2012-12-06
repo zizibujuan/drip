@@ -1,6 +1,7 @@
 package com.zizibujuan.drip.server.servlet;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -40,8 +41,6 @@ public class LoginServlet extends DripServlet {
 	private ApplicationPropertyService applicationPropertyService = null;
 	private OAuthUserMapService oAuthUserMapService = null;
 	
-	private static final String REDIRECT_URI_RENREN = "http://zizibujuan.com/login/renren";
-
 	public LoginServlet() {
 		userService = ServiceHolder.getDefault().getUserService();
 		applicationPropertyService = ServiceHolder.getDefault().getApplicationPropertyService();
@@ -54,93 +53,99 @@ public class LoginServlet extends DripServlet {
 		traceRequest(req);
 		String pathInfo = req.getPathInfo();
 		
-		if(pathInfo == null || pathInfo.equals("/")){
-			
-		}else if (pathInfo != null && !pathInfo.equals("/")) {
-			String[] pathes = pathInfo.split("/");
-
-			String to = pathes[1];
-			if (to.equals("renren")) {
-				
-
+		if (pathInfo != null && !pathInfo.equals("/")) {
+			if (pathInfo.equals("/renren")) {
 				String code = req.getParameter("code");
 				if(code != null && !code.isEmpty()){
-					String key = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_APP_KEY);
-					String secret = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_APP_SECRET);
-					
-					// TODO:只应初始化一次
-					RenrenApiConfig.renrenApiKey  = key;
-					RenrenApiConfig.renrenApiSecret = secret;
-					
-					String renrenOAuthTokenEndPoint = "https://graph.renren.com/oauth/token";
-					Map<String,String> parameters = new HashMap<String, String>();
-					parameters.put("client_id",key);
-					parameters.put("client_secret", secret);
-					parameters.put("redirect_uri", REDIRECT_URI_RENREN);
-					parameters.put("grant_type", "authorization_code");
-					parameters.put("code", code);
-					String tokenResult = HttpURLUtils.doPost(renrenOAuthTokenEndPoint, parameters);
-					JSONObject tokenJson = (JSONObject)JSONValue.parse(tokenResult);
-					if(tokenJson!=null){
-
-						String accessToken = (String) tokenJson.get("access_token");
-						Long expiresIn = (Long) tokenJson.get("expires_in");//距离过期时的时间段（秒数）
-						long currentTime = System.currentTimeMillis() / 1000;
-						long expiresTime = currentTime + expiresIn;//即将过期的时间点（秒数）
-						req.getSession().setAttribute("expiresTime", expiresTime);
-						//调用人人网API获得用户信息
-						RenrenApiClient apiClient = new RenrenApiClient(accessToken, true);
-						int rrUid = apiClient.getUserService().getLoggedInUser();
-						JSONArray userInfoArray = apiClient.getUserService().getInfo(String.valueOf(rrUid), "name,email_hash,headurl");
-						if (userInfoArray != null && userInfoArray.size() > 0) {
-							JSONObject currentUser = (JSONObject) userInfoArray.get(0);
-							if (currentUser != null) {
-								String name = (String) currentUser.get("name");
-								String headurl = (String) currentUser.get("headurl");
-								//String email = (String)currentUser.get("email_hash");
-								
-//								//判断帐号关联表里有没有现成的关联
-								Long dripUserId = oAuthUserMapService.getUserId(OAuthConstants.RENREN, rrUid);
-								
-								if(dripUserId == null){
-									//在帐号关联表里没有记录，用户是第一次来；为这个用户创建一个User对象
-									Map<String,Object> renrenUserInfo = new HashMap<String, Object>();
-									renrenUserInfo.put("nickName", name);
-									renrenUserInfo.put("loginName", name);
-									renrenUserInfo.put("headUrl", headurl);
-									renrenUserInfo.put("authSiteId", OAuthConstants.RENREN);
-									renrenUserInfo.put("authUserId", rrUid);
-									// TODO:装换更多的用户详细信息
-									
-									dripUserId = userService.importUser(renrenUserInfo);
-								}
-								Map<String,Object> userInfo = userService.login(dripUserId);
-								// TODO：登记用户登录时间
-								UserSession.setUser(req, userInfo);
-								// 跳转到个人首页
-								resp.sendRedirect("/");
-								return;
-							}
-						}
-					}
-					return;
+					processRenrenLogin(req, resp, code);
 				}else{
-					// TODO:将这个链接配置在数据库中，所有参数的key值也配置在数据库中。
-					String appId = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_APP_ID);
-					String redirectUri = URLEncoder.encode(REDIRECT_URI_RENREN, "UTF-8");
-					String hrefTemplate="https://graph.renren.com/oauth/authorize?client_id={0}&response_type=code&redirect_uri={1}&display=page";
-					String href=MessageFormat.format(hrefTemplate, appId,redirectUri);
-					resp.sendRedirect(href);
-					return;
+					redirectToRenrenLoginPage(resp);
 				}
-				
-			} else if (to.equals("qq")) {
+				return;
+			} else if (pathInfo.equals("qq")) {
 
 				return;
 			}
 		}
 		
 		super.doGet(req, resp);
+	}
+
+	private void processRenrenLogin(HttpServletRequest req,
+			HttpServletResponse resp, String code) throws IOException {
+		
+		String redirectUri = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_REDIRECT_URL);
+		String renrenOAuthTokenEndPoint = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_OAUTH_TOKEN_END_POINT);
+		
+		Map<String,String> parameters = new HashMap<String, String>();
+		parameters.put("client_id",RenrenApiConfig.renrenApiKey);
+		parameters.put("client_secret", RenrenApiConfig.renrenApiSecret);
+		parameters.put("redirect_uri", redirectUri);
+		parameters.put("grant_type", "authorization_code");
+		parameters.put("code", code);
+		String tokenResult = HttpURLUtils.doPost(renrenOAuthTokenEndPoint, parameters);
+		JSONObject tokenJson = (JSONObject)JSONValue.parse(tokenResult);
+		
+		if(tokenJson == null){
+			// TODO:处理异常
+			return;
+		}
+		
+		String accessToken = (String) tokenJson.get("access_token");
+		Long expiresIn = (Long) tokenJson.get("expires_in");//距离过期时的时间段（秒数）
+		long currentTime = System.currentTimeMillis() / 1000;
+		long expiresTime = currentTime + expiresIn;//即将过期的时间点（秒数）
+		req.getSession().setAttribute("expiresTime", expiresTime);
+		//调用人人网API获得用户信息
+		RenrenApiClient apiClient = new RenrenApiClient(accessToken, true);
+		int rrUid = apiClient.getUserService().getLoggedInUser();
+		JSONArray userInfoArray = apiClient.getUserService().getInfo(String.valueOf(rrUid), "name,email_hash,headurl");
+		
+		if(userInfoArray == null || userInfoArray.size() == 0){
+			// TODO:处理异常
+			return;
+		}
+		
+		JSONObject currentUser = (JSONObject) userInfoArray.get(0);
+		if(currentUser == null){
+			// TODO:处理异常
+			return;
+		}
+
+		String name = (String) currentUser.get("name");
+		String headurl = (String) currentUser.get("headurl");
+		//String email = (String)currentUser.get("email_hash");
+		
+		//判断帐号关联表里有没有现成的关联
+		Long dripUserId = oAuthUserMapService.getUserId(OAuthConstants.RENREN, rrUid);
+		
+		if(dripUserId == null){
+			//在帐号关联表里没有记录，用户是第一次来；为这个用户创建一个User对象
+			Map<String,Object> renrenUserInfo = new HashMap<String, Object>();
+			renrenUserInfo.put("nickName", name);
+			renrenUserInfo.put("loginName", name);
+			renrenUserInfo.put("headUrl", headurl);
+			renrenUserInfo.put("authSiteId", OAuthConstants.RENREN);
+			renrenUserInfo.put("authUserId", rrUid);
+			// TODO:装换更多的用户详细信息
+			
+			dripUserId = userService.importUser(renrenUserInfo);
+		}
+		Map<String,Object> userInfo = userService.login(dripUserId);
+		UserSession.setUser(req, userInfo);
+		// 跳转到个人首页
+		resp.sendRedirect("/");
+	}
+
+	private void redirectToRenrenLoginPage(HttpServletResponse resp)
+			throws UnsupportedEncodingException, IOException {
+		String appId = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_APP_ID);
+		String hrefTemplate= applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_LOGIN_PAGE_URL_TMPL);
+		String redirectUri = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_REDIRECT_URL);
+		redirectUri = URLEncoder.encode(redirectUri, "UTF-8");
+		
+		String href=MessageFormat.format(hrefTemplate, appId,redirectUri);
+		resp.sendRedirect(href);
 	}
 
 
