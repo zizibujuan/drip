@@ -107,12 +107,14 @@ public class ServiceHolder {
 		}
 	}
 
+	// 经测试，这里注入的applicationPropertyService与Activator中的applicationPropertyService是同一个对象实例
 	private ApplicationPropertyService applicationPropertyService;
 	public ApplicationPropertyService getApplicationPropertyService() {
 		return applicationPropertyService;
 	}
 	public void setApplicationPropertyService(ApplicationPropertyService applicationPropertyService) {
 		logger.info("注入ApplicationPropertyService");
+		logger.info("applicationPropertyService In ServiceHolder:"+applicationPropertyService);
 		this.applicationPropertyService = applicationPropertyService;
 	}
 
