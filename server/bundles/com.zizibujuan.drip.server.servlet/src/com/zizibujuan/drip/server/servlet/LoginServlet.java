@@ -120,27 +120,36 @@ public class LoginServlet extends DripServlet {
 
 		//判断帐号关联表里有没有现成的关联
 		Long dripUserId = oAuthUserMapService.getUserId(OAuthConstants.RENREN, rrUid);
-		
 		if(dripUserId == null){
-			String name = (String) currentUser.get("name");
-			String headurl = (String) currentUser.get("headurl");
-			
-			// name,sex,birthday,tinyurl,headurl,mainurl,hometown_location,work_history,university_history
-			//在帐号关联表里没有记录，用户是第一次来；为这个用户创建一个User对象
-			Map<String,Object> renrenUserInfo = new HashMap<String, Object>();
-			renrenUserInfo.put("nickName", name);
-			renrenUserInfo.put("loginName", name);
-			renrenUserInfo.put("headUrl", headurl);
-			renrenUserInfo.put("authSiteId", OAuthConstants.RENREN);
-			renrenUserInfo.put("authUserId", rrUid);
-			// TODO:装换更多的用户详细信息
-			
+			Map<String, Object> renrenUserInfo = renrenUserToDripUser(currentUser);
 			dripUserId = userService.importUser(renrenUserInfo);
 		}
 		Map<String,Object> userInfo = userService.login(dripUserId);
 		UserSession.setUser(req, userInfo);
 		// 跳转到个人首页
 		resp.sendRedirect("/");
+	}
+
+	/**
+	 * 将人人上的用户信息的格式转换为drip用户的格式。
+	 * @param renrenUser 人人用户信息
+	 * @return drip用户信息
+	 */
+	private Map<String, Object> renrenUserToDripUser(JSONObject renrenUser) {
+		int rrUid = Integer.valueOf(renrenUser.get("uid").toString());
+		String name = (String) renrenUser.get("name");
+		String headurl = (String) renrenUser.get("headurl");
+		
+		
+		// name,sex,birthday,tinyurl,headurl,mainurl,hometown_location,work_history,university_history
+		//在帐号关联表里没有记录，用户是第一次来；为这个用户创建一个User对象
+		Map<String,Object> renrenUserInfo = new HashMap<String, Object>();
+		renrenUserInfo.put("nickName", name);
+		renrenUserInfo.put("loginName", name);
+		renrenUserInfo.put("headUrl", headurl);
+		renrenUserInfo.put("authSiteId", OAuthConstants.RENREN);
+		renrenUserInfo.put("authUserId", rrUid);
+		return renrenUserInfo;
 	}
 
 	private void redirectToRenrenLoginPage(HttpServletResponse resp)

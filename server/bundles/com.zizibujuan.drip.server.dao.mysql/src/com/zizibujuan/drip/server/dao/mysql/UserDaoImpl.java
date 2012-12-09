@@ -132,6 +132,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			con.setAutoCommit(false);
 			userId = this.addUser(con, userInfo);
 			oAuthUserMapDao.mapUserId(con, authSiteId, authUserId, userId);
+			userRelationDao.watch(con, userId, userId);
 			con.commit();
 		}catch(SQLException e){
 			DatabaseUtil.safeRollback(con);

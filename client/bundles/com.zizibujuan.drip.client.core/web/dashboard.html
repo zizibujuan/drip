@@ -83,9 +83,22 @@ require(["dojo/ready",
 				</div>
 				<div>
 					<!-- 可能感兴趣的人,同时提供“下一组”和“找人” -->
-					<h3>可能感兴趣的人</h3>
+					<!-- 如果我的好友，已经是本网站用户，则剔除 -->
+					<h3>邀请人人好友，<span style="font-weight: bolder;color: green;">一起学习</span></h3>
 					<div>
-						<!-- 推荐人列表 -->
+						<!-- 推荐人列表 ，显示前12个-->
+						<ul>
+							<li>
+								<div>
+									<div>图片</div>
+									<div>名称</div>
+									<a href="#">邀请</a>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div>
+						<a href="#">邀请更多好友>></a>
 					</div>
 				</div>
 			</div>
