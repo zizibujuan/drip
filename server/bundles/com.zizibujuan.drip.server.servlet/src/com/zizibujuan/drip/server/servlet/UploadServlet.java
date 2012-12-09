@@ -55,6 +55,7 @@ public class UploadServlet extends DripServlet {
 	 * fieldName:type 
 	 * string:image/png
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {

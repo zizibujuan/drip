@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.renren.api.client.RenrenApiClient;
 import com.renren.api.client.RenrenApiConfig;
@@ -35,6 +37,7 @@ import com.zizibujuan.drip.server.util.servlet.UserSession;
  * @since 0.0.1
  */
 public class LoginServlet extends DripServlet {
+	private static final Logger logger = LoggerFactory.getLogger(LoginServlet.class);
 
 	private static final long serialVersionUID = 3186980773671995338L;
 	private UserService userService = null;
@@ -99,7 +102,10 @@ public class LoginServlet extends DripServlet {
 		//调用人人网API获得用户信息
 		RenrenApiClient apiClient = new RenrenApiClient(accessToken, true);
 		int rrUid = apiClient.getUserService().getLoggedInUser();
-		JSONArray userInfoArray = apiClient.getUserService().getInfo(String.valueOf(rrUid), "name,email_hash,headurl");
+		String fields = "name,sex,birthday,tinyurl,headurl,mainurl,hometown_location,work_history,university_history";
+		JSONArray userInfoArray = apiClient.getUserService().getInfo(String.valueOf(rrUid), fields);
+		logger.info("fields:"+userInfoArray.toJSONString());
+		
 		
 		if(userInfoArray == null || userInfoArray.size() == 0){
 			// TODO:处理异常
@@ -112,14 +118,14 @@ public class LoginServlet extends DripServlet {
 			return;
 		}
 
-		String name = (String) currentUser.get("name");
-		String headurl = (String) currentUser.get("headurl");
-		//String email = (String)currentUser.get("email_hash");
-		
 		//判断帐号关联表里有没有现成的关联
 		Long dripUserId = oAuthUserMapService.getUserId(OAuthConstants.RENREN, rrUid);
 		
 		if(dripUserId == null){
+			String name = (String) currentUser.get("name");
+			String headurl = (String) currentUser.get("headurl");
+			
+			// name,sex,birthday,tinyurl,headurl,mainurl,hometown_location,work_history,university_history
 			//在帐号关联表里没有记录，用户是第一次来；为这个用户创建一个User对象
 			Map<String,Object> renrenUserInfo = new HashMap<String, Object>();
 			renrenUserInfo.put("nickName", name);
