@@ -28,6 +28,7 @@ public class SessionFilter implements Filter {
 	
 	// 存放不需要授权的页面
 	private final List<String> excludes = new ArrayList<String>();
+	private final List<String> excludeRestUrls = new ArrayList<String>();
 
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
@@ -40,6 +41,7 @@ public class SessionFilter implements Filter {
 				// 跳转到登录界面
 				String fileName = "/" + WebConstants.PUBLIC_WELCOME_FILE_NAME;
 				if(RequestUtil.isAjax(httpRequest)){
+					// TODO:增加测试用例
 					String script = "<script>window.location.href='/';</script>";
 					ResponseUtil.toHTML(httpRequest, httpResponse, script);
 				}else{
@@ -65,6 +67,11 @@ public class SessionFilter implements Filter {
 				excludes.add(token);
 			}
 		}
+		
+		excludeRestUrls.add("/signup_check/email");
+		excludeRestUrls.add("/users/");
+		excludeRestUrls.add("/login/");
+		excludeRestUrls.add("/login/renren");
 	}
 	
 	/**
@@ -75,7 +82,18 @@ public class SessionFilter implements Filter {
 	private boolean isAuthenticatedPage(String requestPath) {
 		// 只要不在排除列表中的页面，都是需要授权访问的页面
 		//String excludePattern = "^(js|css|png|jpg|ico)";
+		
+		// 只有两种资源才是有效的程序模块：
+		//		1. 路径中不包含templates的html页面
+		// 		2. restful风格的链接
+		
 		System.out.println(requestPath);
+		
+		// 如果是restful路径
+		if(requestPath.indexOf(".") == -1){
+			return !excludeRestUrls.contains(requestPath);
+		}
+		
 		if(!requestPath.endsWith(".html"))return false;
 		if(requestPath.endsWith(".html") && requestPath.contains("/templates/")) return false;
 		
