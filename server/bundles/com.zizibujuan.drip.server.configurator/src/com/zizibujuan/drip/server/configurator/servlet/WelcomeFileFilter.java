@@ -33,10 +33,10 @@ public class WelcomeFileFilter implements Filter {
 		// 判断是否访问首页地址
 		if (requestPath.equals("/")) { //$NON-NLS-1$
 			String fileName = "";
-			if(UserSession.getUser(httpRequest)==null){
-				fileName = requestPath + WebConstants.PUBLIC_WELCOME_FILE_NAME;
-			}else{
+			if(UserSession.isLogged(httpRequest)){
 				fileName = requestPath + WebConstants.PRIVATE_WELCOME_FILE_NAME;
+			}else{
+				fileName = requestPath + WebConstants.PUBLIC_WELCOME_FILE_NAME;
 			}
 			httpResponse.setHeader("Cache-Control", "no-cache"); //$NON-NLS-1$ //$NON-NLS-2$
 			httpResponse.setHeader("Cache-Control", "no-store"); //$NON-NLS-1$ //$NON-NLS-2$

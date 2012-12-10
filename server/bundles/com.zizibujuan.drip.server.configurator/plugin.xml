@@ -43,6 +43,11 @@
             alias="/signup_check"
             class="com.zizibujuan.drip.server.servlet.SignUpCheckServlet">
       </servlet>
+      <!-- 邀请好友 -->
+      <servlet
+            alias="/invites"
+            class="com.zizibujuan.drip.server.servlet.InviteServlet">
+      </servlet>
       <servlet 
       		alias="/activities"
       		class="com.zizibujuan.drip.server.servlet.DashboardServlet">
@@ -104,6 +109,19 @@
             class="com.zizibujuan.drip.server.configurator.servlet.WelcomeFileFilter">
       </filter>
       
+      <!-- 在进行rest转换后触发-->
+      <filter
+            alias="/"
+            class="com.zizibujuan.drip.server.configurator.servlet.SessionFilter">
+            <!-- 用户无需登录，就可以访问的页面，用逗号隔开。注意开头的/不能删除 -->
+            <init-param
+               name="excludes"
+               value="/,/index.html,/signup.html,/drip/exercises/list.html">
+         	</init-param>
+         	<!-- TODO：判断哪些资源可以看作有效的资源 -->
+      </filter>
+      
+      
       <filter
             alias="/"
             class="com.zizibujuan.drip.server.servlet.AccessLogFilter">
@@ -113,5 +131,6 @@
             alias="/"
             class="org.eclipse.jetty.servlets.GzipFilter">
       </filter>
+      
    </extension>
 </plugin>
