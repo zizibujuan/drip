@@ -16,24 +16,22 @@ import com.zizibujuan.drip.server.util.servlet.UserSession;
 
 /**
  * 指向欢迎页面的过滤器。
- * 使用org.eclipse.orion.server.configurator中的WelcomeFileFilter.java 谢谢。
+ * 当访问首页时，如果用户没有登录，则跳转到公共首页；如果用户已经登录，则跳转到个人首页。
  * 
  * @author jinzw
  * @since 0.0.1
  */
 public class WelcomeFileFilter implements Filter {
 
-	//private static final Logger logger = LoggerFactory.getLogger(WelcomeFileFilter.class);
-	
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
 		final HttpServletRequest httpRequest = (HttpServletRequest) request;
 		final HttpServletResponse httpResponse = (HttpServletResponse)response;
 		final String requestPath = httpRequest.getServletPath() + (httpRequest.getPathInfo() == null ? "" : httpRequest.getPathInfo()); //$NON-NLS-1$
-		//logger.info("跳转到WelcomeFileFilter中，请求路径为:"+requestPath);
+		
+		// 判断是否访问首页地址
 		if (requestPath.equals("/")) { //$NON-NLS-1$
-			//System.out.println("初步满足跳转要求");
 			String fileName = "";
 			if(UserSession.getUser(httpRequest)==null){
 				fileName = requestPath + WebConstants.PUBLIC_WELCOME_FILE_NAME;
@@ -47,21 +45,18 @@ public class WelcomeFileFilter implements Filter {
 			
 			return;
 		}
-		//HttpServletResponse resp = (HttpServletResponse) response;
-		//System.out.println("状态码为："+resp.getStatus());
+		
 		chain.doFilter(request, response);
 	}
 
 	@Override
 	public void destroy() {
 		// do nothing
-
 	}
 
 	@Override
 	public void init(FilterConfig arg0) throws ServletException {
-		// TODO Auto-generated method stub
-		
+		// do nothing
 	}
 
 }
