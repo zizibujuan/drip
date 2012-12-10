@@ -29,14 +29,26 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			"VALUES " +
 			"(?,?,?,?,?,?,now())";
 	
+	// TODO:在注册用户分支中添加用户注册功能
 	@Override
 	public Long add(Map<String, Object> userInfo) {
 		Connection con = null;
 		try {
 			con = getDataSource().getConnection();
 			con.setAutoCommit(false);
-			Long userId = DatabaseUtil.insert(con, SQL_INSERT_USER, null,
-					userInfo.get("login"),
+			
+			String email = userInfo.get("login").toString();
+			Object oNickName = userInfo.get("realName");
+			String nickName = "";
+			if(oNickName==null){
+				nickName = email;
+			}else{
+				nickName = oNickName.toString();
+			}
+			
+			Long userId = DatabaseUtil.insert(con, SQL_INSERT_USER, email,
+					nickName,
+					email,
 					userInfo.get("md5Password"),
 					userInfo.get("mobile"),
 					userInfo.get("realName"));
