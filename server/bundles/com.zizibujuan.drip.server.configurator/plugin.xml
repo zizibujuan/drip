@@ -116,7 +116,7 @@
             <!-- 用户无需登录，就可以访问的页面，用逗号隔开。注意开头的/不能删除 -->
             <init-param
                name="excludes"
-               value="/,/index.html,/signup.html,/drip/exercises/list.html">
+               value="/,/index.html,/signup.html,/drip/exercises/list.html,/closeRenrenInviteWindow.html">
          	</init-param>
          	<!-- TODO：判断哪些资源可以看作有效的资源 -->
       </filter>
