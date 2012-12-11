@@ -13,7 +13,7 @@ function(lang, win, dom, declare, arr, domGeom, domAttr, Color, g, gs, pathLib){
 	// touching nodes with text
 	var uagent = navigator.userAgent,
 		safMobile = uagent.match(/(iPhone|iPod|iPad)/),
-		android = parseFloat(uagent.split("Android ")[1]);
+		android = parseFloat(uagent.split("Android ")[1]),
 		textRenderingFix = (!android || android<4) ? "optimizeLegibility" : "auto";// #16099
 
 	function _createElementNS(ns, nodeType){
@@ -701,6 +701,11 @@ else
 	});
 	svg.TextPath.nodeType = "text";
 
+	// Fix for setDimension bug:
+	// http://bugs.dojotoolkit.org/ticket/16100
+	// (https://code.google.com/p/chromium/issues/detail?id=162628)
+	var hasSvgSetAttributeBug = (function(){ var matches = /WebKit\/(\d*)/.exec(uagent); return matches ? matches[1] : 0})() > 534;
+
 	svg.Surface = declare("dojox.gfx.svg.Surface", gs.Surface, {
 		// summary:
 		//		a surface object to be used for drawings (SVG)
@@ -724,6 +729,10 @@ else
 			if(!this.rawNode){ return this; }
 			this.rawNode.setAttribute("width",  width);
 			this.rawNode.setAttribute("height", height);
+			if(hasSvgSetAttributeBug){
+				this.rawNode.style.width =  width;
+				this.rawNode.style.height =  height;
+			}
 			return this;	// self
 		},
 		getDimensions: function(){

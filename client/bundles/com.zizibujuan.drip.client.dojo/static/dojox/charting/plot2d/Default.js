@@ -375,8 +375,8 @@ define(["dojo/_base/lang", "dojo/_base/declare", "dojo/_base/array",
 						}, this);
 						run.dyn.markerFill = markerTheme.marker.fill;
 						run.dyn.markerStroke = markerTheme.marker.stroke;
-						if(!markerBox){
-							markerBox = frontMarkers[i].getBoundingBox();
+						if(!markerBox && this.opt.labels){
+							markerBox = frontMarkers[0].getBoundingBox();
 						}
 						if(events){
 							arr.forEach(frontMarkers, function(s, i){
@@ -392,10 +392,10 @@ define(["dojo/_base/lang", "dojo/_base/declare", "dojo/_base/array",
 								};
 								if(indexed){
 									o.x = i + rsegment.index + 1;
-									o.y = rsegment.rseg[i];
+									o.y = run.data[i + rsegment.index];
 								}else{
 									o.x = rsegment.rseg[i].x;
-									o.y = rsegment.rseg[i].y;
+									o.y = run.data[i + rsegment.index].y;
 								}
 								this._connectEvents(o);
 								eventSeries[i + rsegment.index] = o;
