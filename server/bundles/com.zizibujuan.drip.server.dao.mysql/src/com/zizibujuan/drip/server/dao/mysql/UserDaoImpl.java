@@ -73,6 +73,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			//"LOGIN_NAME," +
 			"EMAIL \"email\"," +
 			//"LOGIN_PWD," + 登录密码，不在session中缓存
+			//支持三种大小的头像信息
 			"MOBILE \"mobile\"," +
 			"REAL_NAME \"displayName\"," +
 			//"CRT_TM \"createTime\" " +

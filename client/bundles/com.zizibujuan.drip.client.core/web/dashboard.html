@@ -15,7 +15,8 @@
 	src="/dojo/dojo.js"></script>
 <script type="text/javascript"
    src="/mathjax/MathJax.js?config=MML_HTMLorMML">
-</script>	
+</script>
+<script type="text/javascript" src="renren.js"></script>
 <script type="text/javascript">
 require(["dojo/ready",
          "dojo/dom",
@@ -40,9 +41,34 @@ require(["dojo/ready",
 			window.location.href = "/exercises";
 		});
 	});
-	
 });
 </script>
+
+<script type="text/javascript">
+function sendRenrenRequest(){
+	var uiOptions = {
+		url: "request",
+		display: "iframe",//popup
+		params: { // TODO：这里的文本需要反复优化
+			"accept_url":"http://www.zizibujuan.com/renren",// 接受邀请按钮url
+			"accept_label":"好的,一起学习",//接受文本
+			"redirect_uri":"http://www.zizibujuan.com/redirect.html",// 点击确定或取消后跳转的url,需要在这个url中在drip中保存数据。 TODO
+			"actiontext":"邀请好友一起学习",// 好友喊你来学习
+			"selector_mode":"1",//2,3
+			"app_msg":"孜孜不倦诚邀您与大家一起学习",
+			"send_btn_label":"真诚邀请"
+		},
+		onSuccess: function(a,b,c){
+			console.log(a,b,c);
+		},
+		onFailure: function(a,b,c){
+			console.log(a,b,c);
+		}
+	};
+	Renren.ui(uiOptions);
+}
+</script>
+
 </head>
 <body  class="claro">
 	<div data-dojo-type="Header" id="header">
@@ -77,6 +103,20 @@ require(["dojo/ready",
 		<div id="dashboard">
 			<div data-dojo-type="Activity"></div>
 			<div style="float:right;width: 240px;margin-top: 15px">
+				<!-- 用户名，drip等级  -->
+				<!-- 列出关注人数和粉丝人数 -->
+				<div class="profile" id="userProfile">
+				</div>
+				<div>
+					<!-- 图片，名称，邀请人人好友按钮 -->
+					<!-- 把邀请按钮，做的突出些 -->
+					<!-- 当然用人人登录后，也支持邀请weibo帐号上的好友 -->
+					<script type="text/javascript">
+						// TODO：appId不能在这里硬编码
+						Renren.init({appId:220706});
+					</script>
+					<a href="javascript:sendRenrenRequest();" >邀请人人好友一起学习</a>
+				</div>
 				<div>
 					<!-- 提供完善信息链接，如果用户已经设置，则不再显示该链接 -->
 					
@@ -84,9 +124,18 @@ require(["dojo/ready",
 				<div>
 					<!-- 可能感兴趣的人,同时提供“下一组”和“找人” -->
 					<!-- 如果我的好友，已经是本网站用户，则剔除 -->
+					<!-- 如果是人人帐号登录，则邀请人人好友 -->
+					<!-- 推荐人列表 ，显示前12个-->
+					
+					<!-- 因为技术问题，这种更友好的方式，在精通人人API之后再添加 -->
+					<!-- 
 					<h3>邀请人人好友，<span style="font-weight: bolder;color: green;">一起学习</span></h3>
 					<div>
-						<!-- 推荐人列表 ，显示前12个-->
+						<iframe src="invites/renren"></iframe>
+					</div>
+					
+					
+					<div>
 						<ul>
 							<li>
 								<div>
@@ -100,6 +149,7 @@ require(["dojo/ready",
 					<div>
 						<a href="#">邀请更多好友>></a>
 					</div>
+					 -->
 				</div>
 			</div>
 		</div>

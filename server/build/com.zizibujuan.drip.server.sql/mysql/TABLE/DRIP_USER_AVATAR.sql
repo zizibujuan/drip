@@ -16,3 +16,5 @@ CREATE  TABLE IF NOT EXISTS `drip`.`DRIP_USER_AVATAR` (
   PRIMARY KEY (`DBID`))
 ENGINE = InnoDB
 COMMENT = '存储用户图像信息';
+
+-- TODO:  需要加上网站标识

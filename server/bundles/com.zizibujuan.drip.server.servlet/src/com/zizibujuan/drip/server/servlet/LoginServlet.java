@@ -125,6 +125,15 @@ public class LoginServlet extends DripServlet {
 			dripUserId = userService.importUser(renrenUserInfo);
 		}
 		Map<String,Object> userInfo = userService.login(dripUserId);
+		// 在用户session中保存从第三方网站过来的最新数据，而不是从本地的数据库中获取这些数据，
+		// 避免用户已经在第三方网站修改了用户信息，但是drip没能及时更新的问题。
+		// session中存储的值一部分来自drip，一部分来自第三方网站
+		
+		userInfo.put("displayName", currentUser.get("name"));
+		userInfo.put("tinyUrl", currentUser.get("tinyurl"));
+		userInfo.put("headUrl", currentUser.get("headurl"));
+		userInfo.put("mainUrl", currentUser.get("mainurl"));
+		
 		UserSession.setUser(req, userInfo);
 		// 跳转到个人首页
 		resp.sendRedirect("/");
@@ -171,9 +180,8 @@ public class LoginServlet extends DripServlet {
 		traceRequest(req);
 		String pathInfo = req.getPathInfo();
 		if (isNullOrSeparator(pathInfo)) {
-			// 获取用户登录信息
-			Long userId = UserSession.getUserId(req);
-			Map<String,Object> loginInfo = userService.getLoginInfo(userId);
+			// 从session中获取用户登录信息
+			Map<String,Object> loginInfo = UserSession.getUser(req);
 			if(loginInfo.isEmpty()){
 				// 用户未登录
 				Map<String,Object> map = new HashMap<String, Object>();
@@ -182,7 +190,6 @@ public class LoginServlet extends DripServlet {
 				// 用户已登录
 				ResponseUtil.toJSON(req, resp, loginInfo);
 			}
-			
 			return;
 		}else{
 			if(pathInfo.equals("/form")){

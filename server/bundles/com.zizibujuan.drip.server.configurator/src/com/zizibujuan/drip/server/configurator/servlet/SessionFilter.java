@@ -14,6 +14,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.zizibujuan.drip.server.util.WebConstants;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
@@ -25,6 +28,7 @@ import com.zizibujuan.drip.server.util.servlet.UserSession;
  * @since 0.0.1
  */
 public class SessionFilter implements Filter {
+	private static final Logger logger = LoggerFactory.getLogger(SessionFilter.class);
 	
 	// 存放不需要授权的页面
 	private final List<String> excludes = new ArrayList<String>();
@@ -72,6 +76,7 @@ public class SessionFilter implements Filter {
 		excludeRestUrls.add("/users/");
 		excludeRestUrls.add("/login/");
 		excludeRestUrls.add("/login/renren");
+		excludeRestUrls.add("/login/form");
 	}
 	
 	/**
@@ -87,7 +92,7 @@ public class SessionFilter implements Filter {
 		//		1. 路径中不包含templates的html页面
 		// 		2. restful风格的链接
 		
-		System.out.println(requestPath);
+		logger.info("访问路径是"+requestPath);
 		
 		// 如果是restful路径
 		if(requestPath.indexOf(".") == -1){
