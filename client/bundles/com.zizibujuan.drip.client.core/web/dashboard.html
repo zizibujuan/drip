@@ -48,11 +48,11 @@ require(["dojo/ready",
 function sendRenrenRequest(){
 	var uiOptions = {
 		url: "request",
-		display: "popup",//popup
+		display: "popup",
 		params: { // TODO：这里的文本需要反复优化
-			"accept_url":"http://www.zizibujuan.com/renren",// 接受邀请按钮url
+			"accept_url":"http://www.zizibujuan.com/login/renren",// 接受邀请按钮url
 			"accept_label":"好的,一起学习",//接受文本
-			"redirect_uri":"http://www.zizibujuan.com/redirect.html",// 点击确定或取消后跳转的url,需要在这个url中在drip中保存数据。 TODO
+			//"redirect_uri":"http://www.zizibujuan.com/redirect.html",// 点击确定或取消后跳转的url,需要在这个url中在drip中保存数据。 TODO
 			"actiontext":"邀请好友一起学习",// 好友喊你来学习
 			"selector_mode":"1",//2,3
 			"app_msg":"孜孜不倦诚邀您与大家一起学习",
