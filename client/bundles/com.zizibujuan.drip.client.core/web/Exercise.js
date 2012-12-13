@@ -24,7 +24,6 @@ define(["dojo/_base/declare",
 	
 	var ExerciseNode = declare("ExerciseNode",[_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin],{
 		 templateString: nodeTemplate,
-		 widgetsInTemplate: true,
 		 
 		 // content: String
 		 //		使用html格式描述的习题

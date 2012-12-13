@@ -12,11 +12,12 @@
 <link type="text/css" rel="stylesheet" href="/resources/main.css" />
 <title>孜孜不倦 · 全民学习(高等数学篇)</title>
 
-<!-- qq登录脚本 -->
+<!-- qq登录脚本 
 <script type="text/javascript"
 src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js" 
 data-appid="100339592" 
 data-redirecturi="http://zizibujuan.com" charset="utf-8"></script>
+-->
 
 <script type="text/javascript" 
 	data-dojo-config="
@@ -31,12 +32,12 @@ require(["dojo/ready",
          "dojo/dom-style",
          "dojo/store/JsonRest",
          "dijit/registry",
-         "dojo/keys",
          "dijit/form/Button",
          "dijit/form/Form",
          "dijit/form/ValidationTextBox",
          "dijit/form/CheckBox",
          "Exercise",
+         "widget/Login",
          "dojo/parser",
          "dojo/domReady!"],function(
         		 ready,
@@ -44,8 +45,7 @@ require(["dojo/ready",
         		 domForm,
         		 domStyle,
         		 JsonRest,
-        		 registry,
-        		 keys){
+        		 registry){
 	
 	ready(function(){
 		
@@ -54,59 +54,12 @@ require(["dojo/ready",
 			window.location.href = "/signup";
 		});
 		
-		var btnLogin = registry.byId("btnLogin");
-		var loginForm = registry.byId("login_form");
-		var jsonRest = new JsonRest({
-			target : "/login/form"
-		});
 		
-		function confirmLogin(e){
-			domStyle.set("errorMsg","display","none");
-			if(loginForm.validate()){
-				var sessionInfo = domForm.toObject(loginForm.domNode);
-				// POST
-				jsonRest.add(sessionInfo).then(function(response){
-					if(response.status == "1"){
-						window.location = "/";
-					}else if(response.status == "2"){
-						console.log("success",response);
-						domStyle.set("errorMsg","display","");
-						// 登录失败
-						// TODO：放在error中，还是放在这里呢？
-					}
-				}, function(error){
-					console.log("error", error);
-				});
-			}
-		}
-		
-		btnLogin.on("click",confirmLogin);
-		
-		var txtLogin = registry.byId("login");
-		var txtPwd = registry.byId("password");
-		
-		txtLogin.on("keyPress",function(e){
-			if(e.keyCode == keys.ENTER){
-				confirmLogin();
-			}
-		});
-		txtPwd.on("keyPress",function(e){
-			if(e.keyCode == keys.ENTER){
-				confirmLogin();
-			}
-		});
-		
-		txtLogin.focus();
 		
 		// 进入题库页面
 		registry.byId("btnExercises").on("click", function(e){
 			window.location.href = "/exercises";
 		});
-		
-		//href="https://graph.renren.com/oauth/authorize?
-		//client_id=${appId}&response_type=code&redirect_uri=${redirectUri}&display=page"
-		//dom.byId("login_renren")
-		
 	});
 	
 });
@@ -141,55 +94,29 @@ require(["dojo/ready",
 		</div>
 		<div>
 			<!-- 登录form -->
-			<div style="width: 250px">
-				<div id="errorMsg" style="color: red;font-weight: bold;text-align: center;display: none;">
-				无效的用户名或密码
-				</div>
-				<div data-dojo-type="dijit/form/Form" id="login_form">
-					<div data-dojo-type="dijit/form/ValidationTextBox"
-					id="login"
-					style="margin-bottom: 10px;display: block;padding: 8px;width:233px" 
-					data-dojo-props="'placeholder':'邮箱/手机号/用户名',
-					'required':true,
-					'name':'login',
-					'missingMessage':'请输入登录名'"></div>
-					<div data-dojo-type="dijit/form/ValidationTextBox"
-					id="password"
-					style="display: block;padding: 8px;width:233px" 
-					data-dojo-props="'type':'password',
-					'placeholder':'密码',
-					'required':true, 
-					'name':'password',
-					'missingMessage':'请输入密码'"></div>
-					<div style="padding-top: 3px; padding-bottom: 3px">
-						<div data-dojo-type="dijit/form/CheckBox" id="rememberMe"></div><label for="rememberMe">下次自动登录</label>
-						<span style="float: right"><a href="#">忘记密码？</a></span>
-					</div>
-					<div style="text-align: center;">
-						<div data-dojo-type="dijit/form/Button" style="font-size: 14px; margin-top: 10px;" id="btnLogin">登录</div>
-					</div>
-				</div>
-			</div>
+			<div data-dojo-type="widget/Login"></div>
 		</div>
 		<div>
 			<p>使用其他帐号登录</p>
 			<div>
 				<a id="login_renren" href="/login/renren">
+					<!-- TODO:使用最大的图片  -->
 					<img style="border:0px;" alt="用人人帐号登录" src="/resources/images/renren_login_blue_133x22.png">
 				</a>
 			</div>
-				<div>
-					<!-- 使用qq帐号登录 -->
-					<span id="qqLoginBtn"></span>
-					<script type="text/javascript">
-						QC.Login({
-							btnId : "qqLoginBtn", //插入按钮的节点id
-							size: "A_M" //按钮尺寸，可用值[A_XL| A_L| A_M| A_S|  B_M| B_S| C_S]，可选，默认B_S
-						});
-					</script>
-				</div>
-				<div>
+			<div>
+				<!-- 使用qq帐号登录 
+				<span id="qqLoginBtn"></span>
+				<script type="text/javascript">
+					QC.Login({
+						btnId : "qqLoginBtn", //插入按钮的节点id
+						size: "A_M" //按钮尺寸，可用值[A_XL| A_L| A_M| A_S|  B_M| B_S| C_S]，可选，默认B_S
+					});
+				</script>
 				人人、QQ、weibo
+				-->
+			</div>
+			<div>
 			</div>
 		</div>
 	</div>
