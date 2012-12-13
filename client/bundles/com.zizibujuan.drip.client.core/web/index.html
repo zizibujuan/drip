@@ -6,12 +6,7 @@
 <meta property="qc:admins" content="723131631212525166375" />
 <!-- sina weibo -->
 <meta property="wb:webmaster" content="76a2a86c8f477642" />
-
-<link type="text/css" rel="stylesheet" href="/dijit/themes/claro/claro.css" />
-<link type="text/css" rel="stylesheet" href="/dojo/resources/dojo.css" />
-<link type="text/css" rel="stylesheet" href="/resources/main.css" />
-<title>孜孜不倦 · 全民学习(高等数学篇)</title>
-
+<title>孜孜不倦 · 高等数学</title>
 <!-- qq登录脚本 
 <script type="text/javascript"
 src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js" 
@@ -19,128 +14,27 @@ data-appid="100339592"
 data-redirecturi="http://zizibujuan.com" charset="utf-8"></script>
 -->
 
-<script type="text/javascript" 
-	data-dojo-config="
-		async:true,
-		parseOnLoad:true,
-		isDebug:true" 
-	src="/dojo/dojo.js"></script>
-<script type="text/javascript">
-require(["dojo/ready",
-         "dojo/dom",
-         "dojo/dom-form",
-         "dojo/dom-style",
-         "dojo/store/JsonRest",
-         "dijit/registry",
-         "dijit/form/Button",
-         "dijit/form/Form",
-         "dijit/form/ValidationTextBox",
-         "dijit/form/CheckBox",
-         "Exercise",
-         "widget/Login",
-         "dojo/parser",
-         "dojo/domReady!"],function(
-        		 ready,
-        		 dom,
-        		 domForm,
-        		 domStyle,
-        		 JsonRest,
-        		 registry){
-	
-	ready(function(){
-		
-		var btnToSignup = registry.byId("btnToSignup");
-		btnToSignup.on("click",function(e){
-			window.location.href = "/signup";
-		});
-		
-		
-		
-		// 进入题库页面
-		registry.byId("btnExercises").on("click", function(e){
-			window.location.href = "/exercises";
-		});
-	});
-	
-});
-</script>
 </head>
-<body class="claro">
+<body>
 
-	<div id="header">
-		<div class="wrapper" style="display: block;">
-			<div class="top-logo">
-				<a href="/" title="去首页">孜孜不倦</a>
-			</div>
-
-			<div class="top-nav">
-				<!-- 进入此页，用户必须已登录 -->
-				<div id="userMenu"></div>
+	<div style="color:#00a300;margin:0 auto; width: 450px;margin-top: 90px;">
+		<div style="font-weight: bolder; font-size: 32px; background-color: #00a300;
+		color:white;padding-left: 10px; padding-top: 8px; padding-bottom: 4px;
+		border-radius:10px 10px 0px 0px;border:solid 1px #00a300;letter-spacing: 4px;">孜孜不倦</div>
+		
+		<div style="height:270px;border: solid 1px; border-radius:0px 0px 10px 10px">
+			<div style="font-weight:normal; font-size: 25px; height:180px; line-height:180px;text-align:center;">
+				亲，一起学习<span style="font-weight: bold;font-size: 26px">高等数学</span>吧!
 			</div>
 			
-			<div class="top-toolbar">
-				<!-- 这个区域的操作随着页面和用户权限的不同，动态改变 -->
-				<!-- 只有登录用户才可以进入该页面 -->
-				<div data-dojo-type="dijit/form/Button" id="btnExercises">题库</div>
-			</div>
-		</div>
-	</div>
-	
-<div style="padding-top:45px; margin:0 auto;width: 900px">
-	<div class="login-pane">
-		<div style="text-align: center;">
-			<!-- 立即注册 -->
-			<div data-dojo-type="dijit/form/Button" id="btnToSignup" style="font-size: 20px;margin-bottom: 15px;">立即注册</div>
-		</div>
-		<div>
-			<!-- 登录form -->
-			<div data-dojo-type="widget/Login"></div>
-		</div>
-		<div>
-			<p>使用其他帐号登录</p>
-			<div>
-				<a id="login_renren" href="/login/renren">
-					<!-- TODO:使用最大的图片  -->
-					<img style="border:0px;" alt="用人人帐号登录" src="/resources/images/renren_login_blue_133x22.png">
+			<div style="width:234px; margin: 0 auto">
+				<a href="/login/renren">
+					<img alt="用人人帐号登录" src="resources/images/renren_login_white_234_48.png" style="width:234px;height:48px;"></img>
 				</a>
-			</div>
-			<div>
-				<!-- 使用qq帐号登录 
-				<span id="qqLoginBtn"></span>
-				<script type="text/javascript">
-					QC.Login({
-						btnId : "qqLoginBtn", //插入按钮的节点id
-						size: "A_M" //按钮尺寸，可用值[A_XL| A_L| A_M| A_S|  B_M| B_S| C_S]，可选，默认B_S
-					});
-				</script>
-				人人、QQ、weibo
-				-->
-			</div>
-			<div>
+				<div style="font-size: 14px;margin-top: 3px;">不用注册，与<span style="color:#369;font-weight: bold;">人人</span>好友一起学习</div>
 			</div>
 		</div>
 	</div>
-	<div style="border: 1px solid #DDD; border-radius:5px;float: left; width: 640px">
-		<div style="padding-top: 5px; padding-left: 10px">
-			<h1><span style="color:green;">孜孜不倦</span>网上教育之<strong>高等数学篇</strong></h1>
-			<p style="font-size: 16px; margin-bottom: 20px; padding-bottom:30px; font-size: 30px">
-				一起交流学习心得，一起分享教育资源。
-			</p>
-			<p>
-				<!-- 到新浪微薄给出好的建议。 如果您想为教育事业出一份力，可以这样伸出援手 -->
-			</p>
-		</div>
-	</div>
-</div>
-
-<div style="color:red; margin-top: 300px; font-size: 25px; ">
- <div style="text-align: center;"><span style="color:green">孜孜不倦</span><span style="font-size: 30px;font-weight: bolder;" title="2012-12-21 15:14:35">世界末日</span>上线</div>
- <div style="text-align: center;margin-top: 10px">你我一起关注孩子的学习</div>
-</div>
-
-<div style="color: white;background-color: gray; margin-top: 150px; text-align: center;font-size: 20px">
- 孜孜不倦, 目前只支持<a href="https://www.google.com/intl/en/chrome/browser/" target="_blank" style="color:white">chrome</a>浏览器。等完成一些基本功能之后，开始兼容其他浏览器的测试。
-</div>
 
 </body>
 </html>
