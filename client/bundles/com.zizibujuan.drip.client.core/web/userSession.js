@@ -19,8 +19,10 @@ define(["dojo/dom",
 		if(userInfo != null)return userInfo;
 		
 		userInfo =  xhr("/login/",{method:"POST", handleAs:"json"}).then(function(data){
-			console.log(1,data);
+			console.log("user:",data);
 			return data;
+		},function(error){
+			console.error(error);
 		});
 		return userInfo;
 	};

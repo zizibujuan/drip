@@ -81,7 +81,8 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			"FOLLOW_COUNT \"followCount\","+
 			"EXER_DRAFT_COUNT \"exerDraftCount\","+
 			"EXER_PUBLISH_COUNT \"exerPublishCount\", "+
-			"ANSWER_COUNT \"answerCount\" "+
+			"ANSWER_COUNT \"answerCount\", "+
+			"EXER_DRAFT_COUNT+EXER_PUBLISH_COUNT \"exerciseCount\" " +
 			"FROM DRIP_USER_INFO ";
 	private static final String SQL_GET_USER_FOR_SESSION_BY_PWD = SQL_GET_USER_FOR_SESSION + "WHERE EMAIL = ? AND LOGIN_PWD = ?";
 	@Override

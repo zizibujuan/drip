@@ -6,7 +6,8 @@
 <link type="text/css" rel="stylesheet" href="/dojo/resources/dojo.css" />
 <link type="text/css" rel="stylesheet" href="/drip/Editor.css" />
 <link type="text/css" rel="stylesheet" href="/resources/main.css" />
-<title>个人首页 · 孜孜不倦(高等数学篇)</title>
+
+<title>我的首页 · 孜孜不倦</title>
 <script type="text/javascript" 
 	data-dojo-config="
 		async:true,
@@ -22,6 +23,7 @@ require(["dojo/ready",
          "dojo/dom",
          "dojo/request/xhr",
          "dijit/registry",
+         "userSession",
          "Header",
          "Activity",
          "dojo/parser",
@@ -29,8 +31,22 @@ require(["dojo/ready",
         		 ready,
         		 dom,
         		 xhr,
-        		 registry){
+        		 registry,
+        		 userSession){
+	// 加载左侧栏目中的数据，因为左侧没有用dijit部件，所无需放在ready方法中
+	userSession.getLoggedUserInfo().then(function(userInfo){
+		var profileImg = dom.byId("profileImg");
+		profileImg.alt = userInfo.displayName;
+		profileImg.src = userInfo.headUrl;
+		dom.byId("userName").innerHTML = userInfo.displayName;
+		dom.byId("follow_count").innerHTML = userInfo.followCount;
+		dom.byId("fan_count").innerHTML = userInfo.fanCount;
+		dom.byId("answer_count").innerHTML = userInfo.answerCount;
+		dom.byId("exer_count").innerHTML = userInfo.exerciseCount;
+	});
+	
 	ready(function(){
+		/*
 		var btnNewExercise = registry.byId("btnNewExercise");
 		btnNewExercise.on("click",function(e){
 			window.location.href = "/exercises/new";
@@ -40,6 +56,7 @@ require(["dojo/ready",
 		registry.byId("btnExercises").on("click", function(e){
 			window.location.href = "/exercises";
 		});
+		*/
 	});
 });
 </script>
@@ -70,93 +87,176 @@ function sendRenrenRequest(){
 }
 </script>
 
+<style type="text/css">
+html,body {
+	height: 100%;
+}
+
+a{
+	text-decoration: none;
+}
+
+a.logo {
+	font-weight: bolder;
+	font-size: 32px;
+	color: white;
+	letter-spacing: 4px;
+}
+
+.nav {
+	
+}
+
+.nav ul li {
+	position: relative;
+	color: white;
+	font-size: 14px;
+	color: white;
+}
+
+.menu-item {
+	
+}
+
+.menu-item .title {
+	color: #333;
+	text-decoration: none;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-left: 10px;
+	display: block;
+}
+
+.menu-item .title:hover {
+	background-color: #00d100;
+	color: white;
+}
+
+.menu-focus {
+	color: white;
+	background-color: #00a300;
+}
+
+.menu-focus .title{
+	color:white;
+}
+
+.menu-focus a {
+	color: white;
+}
+
+.menu-focus .title:hover {
+	color: white;
+	background-color: #00a300
+}
+
+.op {
+	position: absolute;
+	color: #69768C;
+	right: 18px;
+	top: 0px;
+	padding-left: 0px;
+	text-decoration: none;
+	padding-top: 3px;
+}
+
+.op:VISITED{
+color:#69768C;
+}
+
+.op:HOVER{
+	text-decoration: underline;
+	background-color: white;
+	
+}
+
+
+.count {
+	display: inline-block;
+	margin: 0 0 0 5px;
+	padding: 0 8px 1px 8px;
+	height: auto;
+	font-family: Helvetica, arial, freesans, clean, sans-serif;
+	font-size: 10px;
+	line-height: 14px;
+	text-align: center;
+	vertical-align: text-top;
+	color: #777;
+	background: white;
+	border-top: 1px solid #CCC;
+	border-radius: 8px;
+}
+</style>
+
 </head>
 <body  class="claro">
-	<div data-dojo-type="Header" id="header">
-		<div data-dojo-type="dijit/form/Button" style="margin: 0px;" id="btnExercises">题库</div>
-		<div data-dojo-type="dijit/form/Button" style="margin: 0px;" id="btnNewExercise">新建习题</div>
-	</div>
-	
-		<!-- 习题过滤算法 -->
-		<!-- FIXME:不要将width硬编码在Exercise部件中 -->
-		<!-- 
-		<div data-dojo-type="Exercise" id="exercises" style="margin-top: 45px"></div>
-		 -->
-	 
-	<div id="main" class="wrapper" style="margin-top: 50px;">
-		<ul class="tabs">
-			<li>
-				<a href="#" class="selected">首页</a>
-			</li>
-			<li>
-			<!--TODO： 这里要强调的应该是答案，想个更好的名字 -->
-				<a href="#">我回答的习题<span class="counter">0</span></a>
-			</li>
-			<li>
-				<a href="#">我录入的习题<span class="counter">0</span></a>
-			</li>
-			<li>
-				<a href="#">题库<span class="counter">0</span></a>
-			</li>
-		</ul>
-	</div>
-	<div class="wrapper">
-		<div id="dashboard">
-			<div data-dojo-type="Activity"></div>
-			<div style="float:right;width: 240px;margin-top: 15px">
-				<!-- 用户名，drip等级  -->
-				<!-- 列出关注人数和粉丝人数 -->
-				<div class="profile" id="userProfile">
-				</div>
-				<div>
-					<!-- 图片，名称，邀请人人好友按钮 -->
-					<!-- 把邀请按钮，做的突出些 -->
-					<!-- 当然用人人登录后，也支持邀请weibo帐号上的好友 -->
-					<script type="text/javascript">
-						// TODO：appId不能在这里硬编码
-						Renren.init({appId:220706});
-					</script>
-					<a href="javascript:sendRenrenRequest();" >邀请人人好友一起学习</a>
-				</div>
-				<div>
-					<!-- 提供完善信息链接，如果用户已经设置，则不再显示该链接 -->
-					
-				</div>
-				<div>
-					<!-- 可能感兴趣的人,同时提供“下一组”和“找人” -->
-					<!-- 如果我的好友，已经是本网站用户，则剔除 -->
-					<!-- 如果是人人帐号登录，则邀请人人好友 -->
-					<!-- 推荐人列表 ，显示前12个-->
-					
-					<!-- 因为技术问题，这种更友好的方式，在精通人人API之后再添加 -->
-					<!-- 
-					<h3>邀请人人好友，<span style="font-weight: bolder;color: green;">一起学习</span></h3>
-					<div>
-						<iframe src="invites/renren"></iframe>
-					</div>
-					
-					
-					<div>
-						<ul>
-							<li>
-								<div>
-									<div>图片</div>
-									<div>名称</div>
-									<a href="#">邀请</a>
-								</div>
-							</li>
-						</ul>
-					</div>
-					<div>
-						<a href="#">邀请更多好友>></a>
-					</div>
-					 -->
-				</div>
-			</div>
-		</div>
-	</div>
-	
-		
-	
+
+<div style="height:100%">
+ <div style="float:left;width:200px;border-right:solid 1px #00a300;height:100%; position: fixed;">
+ 	<div  style="padding-top: 10px; padding-left: 20px;padding-bottom: 10px;background-color: #00a300;">
+ 		<a href="/" style="text-decoration: none;" class="logo">孜孜不倦</a>
+ 	</div>
+ 	<div style="color:#00a300; font-weight: bold; padding-left: 20px;margin-top: 5px;margin-bottom: 5px;">
+ 		亲，一起学习高等数学吧！
+ 	</div>
+ 	<div class="profile" style="margin-left: 10px;margin-top: 10px;">
+ 		<div style="height:50px;">
+ 			<div style="float:left">
+ 				<a href="#">
+ 					<img id="profileImage" width="50px" height="50px">
+ 				</a>
+ 			</div>
+ 			<div style="padding-left: 10px; padding-top: 5px;float:left">
+ 				<a style="font-size: 14px; font-weight: bold;text-decoration: none;color: #333" id="userName"></a>
+ 				<div>
+ 					
+ 				</div>
+ 			</div>
+ 		</div>
+ 		<div style="height:20px">
+ 			<ul style="list-style: none;padding-left: 0px">
+				<li style="float:left">
+					<a href="#" style="text-decoration: none;color:#333">关注<span class="count" id="follow_count"></span></a>
+				</li>
+				<li style="float:left; margin-left: 10px;">
+					<a href="#" style="text-decoration: none;color:#333">粉丝<span class="count" id="fan_count"></span></a>
+				</li>
+			</ul>
+ 		</div>
+ 	</div>
+ 	<div>
+ 		<input value="邀请人人好友一起学习" style="width:100%; color:#00a300; padding-top: 8px; padding-bottom: 8px;
+ 		margin-top:10px; font-weight:bold;
+ 		font-size: 17px;cursor: pointer;" type="button" onclick="sendRenrenRequest();"/>
+ 	</div>
+ 	<div class="nav">
+ 	 <!-- 导航 -->
+ 	 <ul style="list-style: none;padding-left: 0px">
+ 	 	<li class="menu-item menu-focus"><a href="/" class="title">首页</a></li>
+ 	 	<li class="menu-item">
+ 	 		<a href="/answers" class="title">已答习题<span class="count" id="answer_count" style="margin-left:10px;"></span>
+ 	 		</a>
+ 	 	</li>
+ 	 	<li class="menu-item">
+ 	 		<a href="/exercises" class="title">已录习题<span class="count" style="margin-left:10px;" id="exer_count"></span></a>
+ 	 		<a href="/exercises/new" class="op" id="exer_input">录入</a>
+ 	 	</li>
+ 	 </ul>
+ 	</div>
+ 	
+ 	<div style="padding-left:10px; position: absolute;bottom: 30px;right:20px;font-size: 18px; ">
+ 		<a href="/logout" style="">退出</a>
+ 	</div>
+ </div>
+ <div style=" min-height: 100%;height: 1000px;position: relative;left: 210px;width: 600px;">
+ 	<div data-dojo-type="Activity"></div>
+ </div>
+ 
+ 
+</div>	
+
+<footer>
+一起交流学习心得，一起分享教育资源
+</footer>
 </body>
 </html>
