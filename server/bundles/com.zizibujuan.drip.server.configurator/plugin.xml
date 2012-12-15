@@ -117,6 +117,7 @@
             <init-param
                name="excludes"
                value="/,/index.html,/signup.html,/drip/exercises/list.html,/closeRenrenInviteWindow.html,/dashboard.html">
+               <!-- TODO:删掉/dashboard.html-->
          	</init-param>
          	<!-- TODO：判断哪些资源可以看作有效的资源 -->
       </filter>

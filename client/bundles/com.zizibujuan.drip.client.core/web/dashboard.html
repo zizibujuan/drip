@@ -35,7 +35,7 @@ require(["dojo/ready",
         		 userSession){
 	// 加载左侧栏目中的数据，因为左侧没有用dijit部件，所无需放在ready方法中
 	userSession.getLoggedUserInfo().then(function(userInfo){
-		var profileImg = dom.byId("profileImg");
+		var profileImg = dom.byId("profileImage");
 		profileImg.alt = userInfo.displayName;
 		profileImg.src = userInfo.headUrl;
 		dom.byId("userName").innerHTML = userInfo.displayName;
