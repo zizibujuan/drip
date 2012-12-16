@@ -182,7 +182,7 @@ public class LoginServlet extends DripServlet {
 		if (isNullOrSeparator(pathInfo)) {
 			// 从session中获取用户登录信息
 			Map<String,Object> loginInfo = UserSession.getUser(req);
-			if(loginInfo.isEmpty()){
+			if(loginInfo == null || loginInfo.isEmpty()){
 				// 用户未登录
 				Map<String,Object> map = new HashMap<String, Object>();
 				ResponseUtil.toJSON(req, resp, map,HttpServletResponse.SC_UNAUTHORIZED);

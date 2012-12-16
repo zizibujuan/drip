@@ -22,6 +22,11 @@ public abstract class UserSession {
 		return Long.valueOf(userInfo.get("id").toString());
 	}
 	
+	/**
+	 * 从session中哦呢获取用户登录信息
+	 * @param req
+	 * @return 如果用户已登录则返回登录信息，如果没有登录则返回null
+	 */
 	@SuppressWarnings("unchecked")
 	public static Map<String,Object> getUser(HttpServletRequest req){
 		HttpSession session = req.getSession();
