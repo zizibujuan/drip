@@ -5,8 +5,12 @@
 <title>关闭人人邀请弹出框</title>
 <script type="text/javascript">
 // 可通过判断链接中是否有senderId来确定是否点击了确定按钮。
-console.log("closeRenrenInviteWindow.html",window.location.href);
-parent.window.close();
+debugger;
+setTimeout(function(){
+	console.log("closeRenrenInviteWindow.html",window.location.href);
+	parent.window.close();
+},10000);
+
 </script>
 </head>
 <body>
