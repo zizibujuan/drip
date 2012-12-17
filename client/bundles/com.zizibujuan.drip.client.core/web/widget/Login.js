@@ -7,8 +7,11 @@ define(["dojo/_base/declare",
         "dijit/_WidgetBase",
         "dijit/_TemplatedMixin",
         "dijit/_WidgetsInTemplateMixin",
-        "dojo/text!/templates/Login.html"
-        ], function(
+        "dojo/text!/templates/Login.html",
+        "dijit/form/Form",
+        "dijit/form/ValidationTextBox",
+        "dijit/form/CheckBox",
+        "dijit/form/Button"], function(
         		declare,
         		lang,
         		keys,
