@@ -39,6 +39,8 @@ define(["dojo/dom",
 			var href = "#"
 			// 这里需要一个url和用户标识，点击这个链接后，进入一个页面，该页面只显示用户自己的操作，不显示关注好友的操作。
 			var aImg = domConstruct.create("a",{href:href},profileDiv);
+			// 系统中给出一个默认的头像
+			if(!user.headUrl)user.headUrl = "";
 			var imgUser = domConstruct.create("img",{alt:user.displayName,src:user.headUrl,width:"80px",height:"80px"},aImg);
 			
 			var aLabel = domConstruct.create("a",{href:href,alt:user.displayName,innerHTML:user.displayName},profileDiv);

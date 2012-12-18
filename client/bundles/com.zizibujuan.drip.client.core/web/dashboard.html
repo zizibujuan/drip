@@ -69,7 +69,7 @@ function sendRenrenRequest(){
 		params: { // TODO：这里的文本需要反复优化
 			"accept_url":"http://www.zizibujuan.com/login/renren",// 接受邀请按钮url
 			"accept_label":"好的,一起学习",//接受文本
-			//"redirect_uri":"http://www.zizibujuan.com/closeRenrenInviteWindow.html",// 点击确定或取消后跳转的url,需要在这个url中在drip中保存数据。 TODO
+			"redirect_uri":"http://www.zizibujuan.com/closeRenrenInviteWindow.html",// 点击确定或取消后跳转的url,需要在这个url中在drip中保存数据。 TODO
 			"actiontext":"邀请好友一起学习",// 好友喊你来学习
 			"selector_mode":"1",//2,3
 			"app_msg":"孜孜不倦诚邀您与大家一起学习",
@@ -190,6 +190,10 @@ color:#69768C;
 
 </head>
 <body  class="claro">
+<script type="text/javascript">
+	/* TODO：appId不能在这里硬编码*/
+	Renren.init({appId:220706});
+</script>
 
 <div style="height:100%">
  <div style="float:left;width:200px;border-right:solid 1px #00a300;height:100%; position: fixed;">
@@ -225,13 +229,9 @@ color:#69768C;
  		</div>
  	</div>
  	<div>
- 		<script type="text/javascript">
-			// TODO：appId不能在这里硬编码
-			Renren.init({appId:220706});
-		</script>
  		<input value="邀请人人好友一起学习" style="width:100%; color:#00a300; padding-top: 8px; padding-bottom: 8px;
  		margin-top:10px; font-weight:bold;
- 		font-size: 17px;cursor: pointer;" type="button" onclick="sendRenrenRequest();"/>
+ 		font-size: 17px;cursor: pointer;" type="button" onclick="sendRenrenRequest();"></input>
  	</div>
  	<div class="nav">
  	 <!-- 导航 -->
