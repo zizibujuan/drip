@@ -33,7 +33,6 @@ define(["dojo/_base/declare",
 		url: "/login/form", // 默认值
 		
 		postCreate: function(){
-			debugger;
 			this.btnLoginNode.on("click",lang.hitch(this,this._confirmLogin));
 			
 			this.txtLoginNode.on("keyPress",lang.hitch(this,function(e){

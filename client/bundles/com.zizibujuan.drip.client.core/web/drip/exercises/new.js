@@ -58,6 +58,8 @@ define(["dojo/_base/declare",
 		
 		_optionName:"exercise-option",
 		
+		_editors:{},
+		
 		postCreate: function(){
 			this.inherited(arguments);
 			
