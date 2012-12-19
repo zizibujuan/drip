@@ -11,17 +11,15 @@ define([
 	"./ProgressIndicator",
 	"./RoundRectList",
 	"./ScrollableView",
-	"./viewRegistry",
-	"dojo/has",
-	"dojo/has!dojo-bidi?dojox/mobile/bidi/TreeView"
-], function(kernel, array, declare, lang, win, domConstruct, registry, Heading, ListItem, ProgressIndicator, RoundRectList, ScrollableView, viewRegistry, has, BidiTreeView){
+	"./viewRegistry"
+], function(kernel, array, declare, lang, win, domConstruct, registry, Heading, ListItem, ProgressIndicator, RoundRectList, ScrollableView, viewRegistry){
 
 	// module:
 	//		dojox/mobile/TreeView
 
 	kernel.experimental("dojox.mobile.TreeView");
 
-	var TreeView = declare(has("dojo-bidi") ? "dojox.mobile.NonBidiTreeView" : "dojox.mobile.TreeView", ScrollableView, {
+	return declare("dojox.mobile.TreeView", ScrollableView, {
 		// summary:
 		//		A scrollable view with tree-style navigation.
 		// description:
@@ -33,9 +31,6 @@ define([
 			this._load();
 			this.inherited(arguments);
 		},
-		
-		_customizeListItem: function(listItemArgs){
-		},
 
 		_load: function(){
 			this.model.getRoot(
@@ -43,14 +38,12 @@ define([
 					var scope = this;
 					var list = new RoundRectList();
 					var node = {};
-					var listItemArgs = {
+					var listitem = new ListItem({
 						label: scope.model.rootLabel,
 						moveTo: '#',
 						onClick: function(){ scope.handleClick(this); },
 						item: item
-					};
-					this._customizeListItem(listItemArgs);
-					var listitem = new ListItem(listItemArgs);
+					});
 					list.addChild(listitem);
 					this.addChild(list);
 				})
@@ -88,7 +81,6 @@ define([
 							label: item[scope.model.store.label],
 							transition: "slide"
 						};
-						scope._customizeListItem(listItemArgs);
 						if(scope.model.mayHaveChildren(item)){
 							listItemArgs.moveTo = '#';
 							listItemArgs.onClick = function(){ scope.handleClick(this); };
@@ -115,6 +107,4 @@ define([
 			)
 		}
 	});
-	
-	return has("dojo-bidi") ? declare("dojox.mobile.TreeView", [TreeView, BidiTreeView]) : TreeView;		
 });

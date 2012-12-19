@@ -2,15 +2,13 @@ define([
 	"dojo/_base/array",
 	"dojo/_base/declare",
 	"./_StoreMixin",
-	"./ListItem",
-	"dojo/has",
-	"dojo/has!dojo-bidi?dojox/mobile/bidi/_StoreListMixin"
-], function(array, declare, StoreMixin, ListItem, has, BidiStoreListMixin){
+	"./ListItem"
+], function(array, declare, StoreMixin, ListItem){
 
 	// module:
 	//		dojox/mobile/_StoreListMixin
 
-	var _StoreListMixin = declare(has("dojo-bidi") ? "dojox.mobile._NonBidiStoreListMixin" : "dojox.mobile._StoreListMixin", StoreMixin, {
+	return declare("dojox.mobile._StoreListMixin", StoreMixin, {
 		// summary:
 		//		Mixin for widgets to generate the list items corresponding to
 		//		the dojo/store data provider object.
@@ -96,5 +94,4 @@ define([
 			this.getChildren()[removedFrom].destroyRecursive();
 		}
 	});
-	return has("dojo-bidi") ? declare("dojox.mobile._StoreListMixin", [_StoreListMixin, BidiStoreListMixin]) : _StoreListMixin;	
 });

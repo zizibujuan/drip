@@ -4,15 +4,13 @@ define([
 	"dojo/dom-geometry",
 	"dojo/dom-style",
 	"dijit/_Contained",
-	"dijit/_WidgetBase",
-	"dojo/has",	
-	"dojo/has!dojo-bidi?dojox/mobile/bidi/CarouselItem"
-], function(declare, domConstruct, domGeometry, domStyle, Contained, WidgetBase, has, BidiCarouselItem){
+	"dijit/_WidgetBase"
+], function(declare, domConstruct, domGeometry, domStyle, Contained, WidgetBase, iconUtils){
 
 	// module:
 	//		dojox/mobile/CarouselItem
 
-	var CarouselItem = declare(has("dojo-bidi") ? "dojox.mobile.NonBidiCarouselItem" : "dojox.mobile.CarouselItem", [WidgetBase, Contained], {
+	return declare("dojox.mobile.CarouselItem", [WidgetBase, Contained], {
 		// summary:
 		//		An item of dojox/mobile/Carousel.
 		// description:
@@ -100,5 +98,4 @@ define([
 			this.footerTextNode.innerHTML = this._cv ? this._cv(text) : text;
 		}
 	});
-	return has("dojo-bidi") ? declare("dojox.mobile.CarouselItem", [CarouselItem, BidiCarouselItem]) : CarouselItem;	
 });

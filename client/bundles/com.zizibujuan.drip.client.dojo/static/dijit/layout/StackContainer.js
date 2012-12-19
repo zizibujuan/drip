@@ -178,15 +178,12 @@ var StackContainer = declare("dijit.layout.StackContainer", _LayoutWidget, {
 		var idx = array.indexOf(this.getChildren(), page);
 
 		this.inherited(arguments);
-
-		// Remove the child widget wrapper we use to set aria roles.  This won't affect the page itself since it's
-		// already been detached from page._wrapper via the this.inherited(arguments) call above.
-		domConstruct.destroy(page._wrapper);
-		delete page._wrapper;
+		
+		domConstruct.destroy(page._wrapper);	// Remove the child widget wrapper we use to set aria roles
 
 		if(this._started){
-			// This will notify any tablists to remove a button; do this first because it may affect sizing.
-			topic.publish(this.id + "-removeChild", page);
+			// this will notify any tablists to remove a button; do this first because it may affect sizing
+			topic.publish(this.id + "-removeChild", page);	// publish
 		}
 
 		// If all our children are being destroyed than don't run the code below (to select another page),

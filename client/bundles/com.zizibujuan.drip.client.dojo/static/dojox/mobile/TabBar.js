@@ -9,15 +9,13 @@ define([
 	"dijit/_Contained",
 	"dijit/_Container",
 	"dijit/_WidgetBase",
-	"./TabBarButton",// to load TabBarButton for you (no direct references)
-	"dojo/has",
-	"dojo/has!dojo-bidi?dojox/mobile/bidi/TabBar"	
-], function(array, declare, win, domClass, domConstruct, domGeometry, domStyle, Contained, Container, WidgetBase, TabBarButton, has, BidiTabBar){
+	"./TabBarButton" // to load TabBarButton for you (no direct references)
+], function(array, declare, win, domClass, domConstruct, domGeometry, domStyle, Contained, Container, WidgetBase, TabBarButton){
 
 	// module:
 	//		dojox/mobile/TabBar
 
-	var TabBar =  declare(has("dojo-bidi") ? "dojox.mobile.NonBidiTabBar" : "dojox.mobile.TabBar", [WidgetBase, Container, Contained],{
+	return declare("dojox.mobile.TabBar", [WidgetBase, Container, Contained],{
 		// summary:
 		//		A bar widget that has buttons to control visibility of views.
 		// description:
@@ -184,6 +182,4 @@ define([
 			return true;
 		}
 	});
-	
-	return has("dojo-bidi")?declare("dojox.mobile.TabBar", [TabBar, BidiTabBar]):TabBar;	
 });

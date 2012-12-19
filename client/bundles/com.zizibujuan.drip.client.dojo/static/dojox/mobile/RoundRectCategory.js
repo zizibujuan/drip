@@ -3,15 +3,13 @@ define([
 	"dojo/_base/window",
 	"dojo/dom-construct",
 	"dijit/_Contained",
-	"dijit/_WidgetBase",
-	"dojo/has",
-	"dojo/has!dojo-bidi?dojox/mobile/bidi/RoundRectCategory"
-], function(declare, win, domConstruct, Contained, WidgetBase, has, BidiRoundRectCategory){
+	"dijit/_WidgetBase"
+], function(declare, win, domConstruct, Contained, WidgetBase){
 
 	// module:
 	//		dojox/mobile/RoundRectCategory
 
-	var RoundRectCategory = declare(has("dojo-bidi") ? "dojox.mobile.NonBidiRoundRectCategory" : "dojox.mobile.RoundRectCategory", [WidgetBase, Contained], {
+	return declare("dojox.mobile.RoundRectCategory", [WidgetBase, Contained], {
 		// summary:
 		//		A category header for a rounded rectangle list.
 
@@ -48,6 +46,4 @@ define([
 			this.domNode.innerHTML = this._cv ? this._cv(label) : label;
 		}
 	});
-
-	return has("dojo-bidi") ? declare("dojox.mobile.RoundRectCategory", [RoundRectCategory, BidiRoundRectCategory]) : RoundRectCategory;	
 });

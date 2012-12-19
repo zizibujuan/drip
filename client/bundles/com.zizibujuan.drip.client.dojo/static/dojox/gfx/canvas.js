@@ -59,7 +59,7 @@ function(g, lang, arr, declare, win, domGeom, dom, gfxBase, gs, pathLib, ga, m, 
 			if(!(i%2)){
 				ctx.beginPath();
 				ctx.arc(cx, cy, r, sa, sa+angle, ccw);
-				if(apply) ctx.stroke();
+				apply && ctx.stroke();
 			}
 			sa += angle;
 			++i;
@@ -271,7 +271,7 @@ function(g, lang, arr, declare, win, domGeom, dom, gfxBase, gs, pathLib, ga, m, 
 		switch(clipType){
 			case "ellipse":
 				return {
-					canvasEllipse: makeEllipse({shape:geometry}),
+					canvasEllipse: makeEllipse(geometry),
 					render: function(ctx){return canvas.Ellipse.prototype._renderShape.call(this, ctx);}
 				};
 			case "rect":
@@ -374,16 +374,15 @@ function(g, lang, arr, declare, win, domGeom, dom, gfxBase, gs, pathLib, ga, m, 
 				if(da instanceof Array){
 					da = da.slice();
 					this.canvasDash = da;
-					var i;
-					for(i = 0; i < da.length; ++i){
+					for(var i = 0; i < da.length; ++i){
 						da[i] *= st.width;
 					}
 					if(st.cap != "butt"){
-						for(i = 0; i < da.length; i += 2){
+						for(var i = 0; i < da.length; i += 2){
 							da[i] -= st.width;
 							if(da[i] < 1){ da[i] = 1; }
 						}
-						for(i = 1; i < da.length; i += 2){
+						for(var i = 1; i < da.length; i += 2){
 							da[i] += st.width;
 						}
 					}
@@ -453,32 +452,32 @@ function(g, lang, arr, declare, win, domGeom, dom, gfxBase, gs, pathLib, ga, m, 
 			ctx.closePath();
 		},
 		_renderDashedStroke: function(ctx, apply){
-			var s = this.shape, residue, r = Math.min(s.r, s.height / 2, s.width / 2),
+			var s = this.shape, r = Math.min(s.r, s.height / 2, s.width / 2),
 				xl = s.x, xr = xl + s.width, yt = s.y, yb = yt + s.height,
 				xl2 = xl + r, xr2 = xr - r, yt2 = yt + r, yb2 = yb - r;
 			if(r){
 				ctx.beginPath();
-				residue = toDashedLineTo(ctx, this, xl2, yt, xr2, yt);
+				var remain = toDashedLineTo(ctx, this, xl2, yt, xr2, yt);
 				if(apply) ctx.stroke();
-				residue = drawDashedArc(ctx, this.canvasDash, xr2, yt2, r, -halfPI, 0, false, apply, residue);
+				remain = drawDashedArc(ctx, this.canvasDash, xr2, yt2, r, -halfPI, 0, false, apply, remain);
 				ctx.beginPath();
-				residue = toDashedLineTo(ctx, this, xr, yt2, xr, yb2, residue);
+				remain = toDashedLineTo(ctx, this, xr, yt2, xr, yb2, remain);
 				if(apply) ctx.stroke();
-				residue = drawDashedArc(ctx, this.canvasDash, xr2, yb2, r, 0, halfPI, false, apply, residue);
+				remain = drawDashedArc(ctx, this.canvasDash, xr2, yb2, r, 0, halfPI, false, apply, remain);
 				ctx.beginPath();
-				residue = toDashedLineTo(ctx, this, xr2, yb, xl2, yb, residue);
+				remain = toDashedLineTo(ctx, this, xr2, yb, xl2, yb, remain);
 				if(apply) ctx.stroke();
-				residue = drawDashedArc(ctx, this.canvasDash, xl2, yb2, r, halfPI, pi, false, apply, residue);
+				remain = drawDashedArc(ctx, this.canvasDash, xl2, yb2, r, halfPI, pi, false, apply, remain);
 				ctx.beginPath();
-				residue = toDashedLineTo(ctx, this, xl, yb2, xl, yt2,residue);
+				remain = toDashedLineTo(ctx, this, xl, yb2, xl, yt2,remain);
 				if(apply) ctx.stroke();
-				drawDashedArc(ctx, this.canvasDash, xl2, yt2, r, pi, pi + halfPI, false, apply, residue);
+				drawDashedArc(ctx, this.canvasDash, xl2, yt2, r, pi, pi + halfPI, false, apply, remain);
 			}else{
 				ctx.beginPath();
-				residue = toDashedLineTo(ctx, this, xl2, yt, xr2, yt);
-				residue = toDashedLineTo(ctx, this, xr2, yt, xr, yb2, residue);
-				residue = toDashedLineTo(ctx, this, xr, yb2, xl2, yb, residue);
-				toDashedLineTo(ctx, this, xl2, yb, xl, yt2, residue);
+				var remain = toDashedLineTo(ctx, this, xl2, yt, xr2, yt);
+				remain = toDashedLineTo(ctx, this, xr2, yt, xr, yb2, remain);
+				remain = toDashedLineTo(ctx, this, xr, yb2, xl2, yb, remain);
+				toDashedLineTo(ctx, this, xl2, yb, xl, yt2, remain);
 				if(apply) ctx.stroke();
 			}
 		}
@@ -554,7 +553,7 @@ function(g, lang, arr, declare, win, domGeom, dom, gfxBase, gs, pathLib, ga, m, 
 					ctx.bezierCurveTo(curve[2],curve[3],curve[4],curve[5],curve[6],curve[7]);
 				}
 			}
-			if(apply) ctx.stroke();
+			apply && ctx.stroke();
 		}
 	});
 
@@ -574,7 +573,7 @@ function(g, lang, arr, declare, win, domGeom, dom, gfxBase, gs, pathLib, ga, m, 
 				if(!(i%2)){
 					ctx.beginPath();
 					ctx.arc(s.cx, s.cy, s.r, startAngle, startAngle+angle, 0);
-					if(apply) ctx.stroke();
+					apply && ctx.stroke();
 				}
 				startAngle+=angle;
 				++i;

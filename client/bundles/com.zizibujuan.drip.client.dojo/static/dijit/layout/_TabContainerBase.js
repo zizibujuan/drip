@@ -133,9 +133,9 @@ return declare("dijit.layout._TabContainerBase", [StackContainer, _TemplatedMixi
 		}
 	},
 
-	destroy: function(preserveDom){
+	destroy: function(){
 		if(this.tablist){
-			this.tablist.destroy(preserveDom);
+			this.tablist.destroy();
 		}
 		this.inherited(arguments);
 	}

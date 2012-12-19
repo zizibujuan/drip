@@ -5,13 +5,11 @@ define([
 	"dojo/dom-construct",
 	"dijit/_WidgetBase",
 	"dijit/form/_ButtonMixin",
-	"dijit/form/_FormWidgetMixin",
-	"dojo/has",
-	"dojo/has!dojo-bidi?dojox/mobile/bidi/Button"
-	],
-	function(array, declare, domClass, domConstruct, WidgetBase, ButtonMixin, FormWidgetMixin, has, BidiButton){
+	"dijit/form/_FormWidgetMixin"
+],
+	function(array, declare, domClass, domConstruct, WidgetBase, ButtonMixin, FormWidgetMixin){
 
-	var Button = declare(has("dojo-bidi") ? "dojox.mobile.NonBidiButton" : "dojox.mobile.Button", [WidgetBase, FormWidgetMixin, ButtonMixin], {
+	return declare("dojox.mobile.Button", [WidgetBase, FormWidgetMixin, ButtonMixin], {
 		// summary:
 		//		Non-templated BUTTON widget with a thin API wrapper for click 
 		//		events and for setting the label.
@@ -87,6 +85,4 @@ define([
 			this.inherited(arguments, [this._cv ? this._cv(content) : content]);
 		}
 	});
-
-	return has("dojo-bidi") ? declare("dojox.mobile.Button", [Button, BidiButton]) : Button;
 });

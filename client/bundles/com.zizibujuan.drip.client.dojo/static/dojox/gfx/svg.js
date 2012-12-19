@@ -1,6 +1,6 @@
-define(["dojo/_base/lang", "dojo/_base/sniff", "dojo/_base/window", "dojo/dom", "dojo/_base/declare", "dojo/_base/array",
+define(["dojo/_base/lang", "dojo/_base/window", "dojo/dom", "dojo/_base/declare", "dojo/_base/array",
   "dojo/dom-geometry", "dojo/dom-attr", "dojo/_base/Color", "./_base", "./shape", "./path"],
-function(lang, has, win, dom, declare, arr, domGeom, domAttr, Color, g, gs, pathLib){
+function(lang, win, dom, declare, arr, domGeom, domAttr, Color, g, gs, pathLib){
 
 	var svg = g.svg = {
 		// summary:
@@ -12,9 +12,9 @@ function(lang, has, win, dom, declare, arr, domGeom, domAttr, Color, g, gs, path
 	// Need to detect iOS in order to workaround bug when
 	// touching nodes with text
 	var uagent = navigator.userAgent,
-		safMobile = has("ios"),
-		android = has("android"),
-		textRenderingFix = has("chrome") || (android && android>=4) ? "auto" : "optimizeLegibility";// #16099, #16461
+		safMobile = uagent.match(/(iPhone|iPod|iPad)/),
+		android = parseFloat(uagent.split("Android ")[1]),
+		textRenderingFix = (!android || android<4) ? "optimizeLegibility" : "auto";// #16099
 
 	function _createElementNS(ns, nodeType){
 		// summary:
@@ -108,7 +108,7 @@ function(lang, has, win, dom, declare, arr, domGeom, domAttr, Color, g, gs, path
 				var clipPathProp = this.rawNode.getAttribute("clip-path");
 				if(clipPathProp){
 					var clipNode = dom.byId(clipPathProp.match(/gfx_clip[\d]+/)[0]);
-					if(clipNode){ clipNode.parentNode.removeChild(clipNode); }
+					clipNode && clipNode.parentNode.removeChild(clipNode);
 				}
 			}
 			this.rawNode = null;
@@ -207,16 +207,15 @@ function(lang, has, win, dom, declare, arr, domGeom, domAttr, Color, g, gs, path
 				}
 				if(da instanceof Array){
 					da = lang._toArray(da);
-					var i;
-					for(i = 0; i < da.length; ++i){
+					for(var i = 0; i < da.length; ++i){
 						da[i] *= s.width;
 					}
 					if(s.cap != "butt"){
-						for(i = 0; i < da.length; i += 2){
+						for(var i = 0; i < da.length; i += 2){
 							da[i] -= s.width;
 							if(da[i] < 1){ da[i] = 1; }
 						}
-						for(i = 1; i < da.length; i += 2){
+						for(var i = 1; i < da.length; i += 2){
 							da[i] += s.width;
 						}
 					}

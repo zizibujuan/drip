@@ -227,12 +227,11 @@ define([
 
 			this.inherited(arguments);
 
-			var keyboardEventNode = this.focusNode || this.domNode;
 			this.own(
 				on(this._buttonNode, "mousedown", lang.hitch(this, "_onDropDownMouseDown")),
 				on(this._buttonNode, "click", lang.hitch(this, "_onDropDownClick")),
-				on(keyboardEventNode, "keydown", lang.hitch(this, "_onKey")),
-				on(keyboardEventNode, "keyup", lang.hitch(this, "_onKeyUp"))
+				on(this.focusNode, "keydown", lang.hitch(this, "_onKey")),
+				on(this.focusNode, "keyup", lang.hitch(this, "_onKeyUp"))
 			);
 		},
 

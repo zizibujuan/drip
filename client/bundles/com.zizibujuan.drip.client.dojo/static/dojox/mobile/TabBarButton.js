@@ -10,14 +10,13 @@ define([
 	"./iconUtils",
 	"./_ItemBase",
 	"./Badge",
-	"./sniff",
-	"dojo/has!dojo-bidi?dojox/mobile/bidi/TabBarButton"
-], function(connect, declare, event, lang, dom, domClass, domConstruct, domStyle, iconUtils, ItemBase, Badge, has, BidiTabBarButton){
+	"./sniff"
+], function(connect, declare, event, lang, dom, domClass, domConstruct, domStyle, iconUtils, ItemBase, Badge, has){
 
 	// module:
 	//		dojox/mobile/TabBarButton
 
-	var TabBarButton = declare(has("dojo-bidi") ? "dojox.mobile.NonBidiTabBarButton" : "dojox.mobile.TabBarButton", ItemBase,{
+	return declare("dojox.mobile.TabBarButton", ItemBase,{
 		// summary:
 		//		A button widget that is placed in the TabBar widget.
 		// description:
@@ -254,6 +253,4 @@ define([
 			domClass.toggle(this.domNode, "mblTabBarButtonSelected", selected);
 		}
 	});
-
-	return has("dojo-bidi")?declare("dojox.mobile.TabBarButton", [TabBarButton, BidiTabBarButton]):TabBarButton;
 });

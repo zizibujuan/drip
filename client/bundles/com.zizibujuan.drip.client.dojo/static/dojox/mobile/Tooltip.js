@@ -8,12 +8,10 @@ define([
 	"dojo/dom-geometry",
 	"dojo/dom-style",
 	"dijit/place",
-	"dijit/_WidgetBase",
-	"dojo/has",
-	"dojo/has!dojo-bidi?dojox/mobile/bidi/Tooltip"
-], function(array, registry, declare, lang, domClass, domConstruct, domGeometry, domStyle, place, WidgetBase, has, BidiTooltip){
+	"dijit/_WidgetBase"
+], function(array, registry, declare, lang, domClass, domConstruct, domGeometry, domStyle, place, WidgetBase){
 
-	var Tooltip = declare(has("dojo-bidi") ? "dojox.mobile.NonBidiTooltip" : "dojox.mobile.Tooltip", WidgetBase, {
+	return declare("dojox.mobile.Tooltip", WidgetBase, {
 		// summary:
 		//		A non-templated popup bubble widget
 
@@ -103,6 +101,4 @@ define([
 			this.inherited(arguments);
 		}
 	});
-	
-	return has("dojo-bidi") ? declare("dojox.mobile.Tooltip", [Tooltip, BidiTooltip]) : Tooltip;		
 });

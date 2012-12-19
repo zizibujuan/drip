@@ -69,21 +69,24 @@ define([
 		//		CSS class of [x] close icon, used by event delegation code to tell when close button was clicked
 		buttonWidgetCloseClass: "dijitStackCloseButton",
 
-		pane2button: function(/*String*/ id){
+		constructor: function(params /*===== , srcNodeRef =====*/){
 			// summary:
-			//		Returns the button corresponding to the pane w/the given id.
-			// tags:
-			//		protected
-			return registry.byId(this.id + "_" + id);
+			//		Create the widget.
+			// params: Object|null
+			//		Hash of initialization parameters for widget, including scalar values (like title, duration etc.)
+			//		and functions, typically callbacks like onClick.
+			//		The hash can contain any of the widget's properties, excluding read-only properties.
+			// srcNodeRef: DOMNode|String?
+			//		If a srcNodeRef (DOM node) is specified, replace srcNodeRef with my generated DOM tree
+
+			this.pane2button = {};		// mapping from pane id to buttons
 		},
 
 		postCreate: function(){
 			this.inherited(arguments);
 
-			// Listen to notifications from StackContainer.  This is tricky because the StackContainer may not have
-			// been created yet, so abstracting it through topics.
-			// Note: for TabContainer we can do this through bubbled events instead of topics; maybe that's
-			// all we support for 2.0?
+			// Listen to notifications from StackContainer.
+			// TODO: do this through bubbled events instead of topics
 			this.subscribe(this.containerId+"-startup", "onStartup");
 			this.subscribe(this.containerId+"-addChild", "onAddChild");
 			this.subscribe(this.containerId+"-removeChild", "onRemoveChild");
@@ -124,7 +127,7 @@ define([
 
 			// Reflect events like page title changes to tab buttons
 			var containerNode = registry.byId(this.containerId).containerNode,
-				pane2button = lang.hitch(this, "pane2button"),
+				pane2button = this.pane2button,
 				paneToButtonAttr = {
 					"title": "label",
 					"showtitle": "showLabel",
@@ -136,7 +139,7 @@ define([
 				},
 				connectFunc = function(attr, buttonAttr){
 					return on(containerNode, "attrmodified-" + attr, function(evt){
-						var button = pane2button(evt.detail && evt.detail.widget && evt.detail.widget.id);
+						var button = pane2button[evt.detail && evt.detail.widget && evt.detail.widget.id];
 						if(button){
 							button.set(buttonAttr, evt.detail.newValue);
 						}
@@ -147,10 +150,17 @@ define([
 			}
 		},
 
-		destroy: function(preserveDom){
-			// Since the buttons are internal to the StackController widget, destroy() should remove them.
-			// When #5796 is fixed for 2.0 can get rid of this function completely.
-			this.destroyDescendants(preserveDom);
+		destroy: function(){
+			// Since the buttons are internal to the StackController widget, destroy() should remove them, which is
+			// done by calling onRemoveChild().
+			for(var pane in this.pane2button){
+				this.onRemoveChild(registry.byId(pane));
+			}
+
+			// TODO: destroyRecursive() will call destroy() on each child button twice.   Once from the above code,
+			// and once because _WidgetBase.destroyDescendants() deletes anything inside of this.containerNode.
+			// Probably shouldn't attach that DOMNode as this.containerNode.
+
 			this.inherited(arguments);
 		},
 
@@ -166,7 +176,7 @@ define([
 			var Cls = lang.isString(this.buttonWidget) ? lang.getObject(this.buttonWidget) : this.buttonWidget;
 			var button = new Cls({
 				id: this.id + "_" + page.id,
-				name: this.id + "_" + page.id,	// note: must match id used in pane2button()
+				name: this.id + "_" + page.id,
 				label: page.title,
 				disabled: page.disabled,
 				ownerDocument: this.ownerDocument,
@@ -181,6 +191,7 @@ define([
 			});
 
 			this.addChild(button, insertIndex);
+			this.pane2button[page.id] = button;
 			page.controlButton = button;	// this value might be overwritten if two tabs point to same container
 			if(!this._currentChild){
 				// If this is the first child then StackContainer will soon publish that it's selected,
@@ -207,9 +218,10 @@ define([
 
 			if(this._currentChild === page){ this._currentChild = null; }
 
-			var button = this.pane2button(page.id);
+			var button = this.pane2button[page.id];
 			if(button){
 				this.removeChild(button);
+				delete this.pane2button[page.id];
 				button.destroy();
 			}
 			delete page.controlButton;
@@ -224,12 +236,12 @@ define([
 			if(!page){ return; }
 
 			if(this._currentChild){
-				var oldButton = this.pane2button(this._currentChild.id);
+				var oldButton=this.pane2button[this._currentChild.id];
 				oldButton.set('checked', false);
 				oldButton.focusNode.setAttribute("tabIndex", "-1");
 			}
 
-			var newButton = this.pane2button(page.id);
+			var newButton=this.pane2button[page.id];
 			newButton.set('checked', true);
 			this._currentChild = page;
 			newButton.focusNode.setAttribute("tabIndex", "0");
@@ -242,7 +254,7 @@ define([
 			// tags:
 			//		private
 
-			var button = this.pane2button(page.id);
+			var button = this.pane2button[page.id];
 
 			// For TabContainer where the tabs are <span>, need to set focus explicitly when left/right arrow
 			focus.focus(button.focusNode);
@@ -264,7 +276,7 @@ define([
 			var container = registry.byId(this.containerId);
 			container.closeChild(page);
 			if(this._currentChild){
-				var b = this.pane2button(this._currentChild.id);
+				var b = this.pane2button[this._currentChild.id];
 				if(b){
 					focus.focus(b.focusNode || b.domNode);
 				}
@@ -281,7 +293,7 @@ define([
 			if(!this.isLeftToRight() && (!this.tabPosition || /top|bottom/.test(this.tabPosition))){ forward = !forward; }
 			// find currently focused button in children array
 			var children = this.getChildren();
-			var idx = array.indexOf(children, this.pane2button(this._currentChild.id)),
+			var idx = array.indexOf(children, this.pane2button[this._currentChild.id]),
 				current = children[idx];
 
 			// Pick next/previous non-disabled button to focus on.   If we get back to the original button it means

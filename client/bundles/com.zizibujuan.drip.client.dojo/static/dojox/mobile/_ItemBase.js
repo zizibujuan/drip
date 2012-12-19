@@ -11,14 +11,13 @@ define([
 	"dijit/_WidgetBase",
 	"./TransitionEvent",
 	"./iconUtils",
-	"./sniff",	
-	"dojo/has!dojo-bidi?dojox/mobile/bidi/_ItemBase"
-], function(array, declare, lang, win, domClass, touch, registry, Contained, Container, WidgetBase, TransitionEvent, iconUtils, has, BidiItemBase){
+	"./sniff"
+], function(array, declare, lang, win, domClass, touch, registry, Contained, Container, WidgetBase, TransitionEvent, iconUtils, has){
 
 	// module:
 	//		dojox/mobile/_ItemBase
 
-	var _ItemBase = declare(has("dojo-bidi") ? "dojox.mobile._NonBidiItemBase" : "dojox.mobile._ItemBase", [WidgetBase, Container, Contained], {
+	return declare("dojox.mobile._ItemBase", [WidgetBase, Container, Contained],{
 		// summary:
 		//		A base class for item classes (e.g. ListItem, IconItem, etc.).
 		// description:
@@ -450,5 +449,4 @@ define([
 			this._set("selected", selected);
 		}
 	});
-	return has("dojo-bidi") ? declare("dojox.mobile._ItemBase", [_ItemBase, BidiItemBase]) : _ItemBase;
 });

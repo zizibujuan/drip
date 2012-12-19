@@ -5,19 +5,18 @@ define([
 	"../_Container",
 	"./_ContentPaneResizeMixin",
 	"dojo/string", // string.substitute
-	"dojo/html", // html._ContentSetter
+	"dojo/html", // html._ContentSetter html._emptyNode
 	"dojo/i18n!../nls/loading",
 	"dojo/_base/array", // array.forEach
 	"dojo/_base/declare", // declare
 	"dojo/_base/Deferred", // Deferred
 	"dojo/dom", // dom.byId
 	"dojo/dom-attr", // domAttr.attr
-	"dojo/dom-construct", // empty()
 	"dojo/_base/xhr", // xhr.get
 	"dojo/i18n", // i18n.getLocalization
 	"dojo/when"
 ], function(kernel, lang, _Widget, _Container, _ContentPaneResizeMixin, string, html, nlsLoading,
-	array, declare, Deferred, dom, domAttr, domConstruct, xhr, i18n, when){
+	array, declare, Deferred, dom, domAttr, xhr, i18n, when){
 
 // module:
 //		dijit/layout/ContentPane
@@ -488,7 +487,7 @@ return declare("dijit.layout.ContentPane", [_Widget, _Container, _ContentPaneRes
 
 		// And then clear away all the DOM nodes
 		if(!preserveDom){
-			domConstruct.empty(this.containerNode);
+			html._emptyNode(this.containerNode);
 		}
 
 		// Delete any state information we have about current contents

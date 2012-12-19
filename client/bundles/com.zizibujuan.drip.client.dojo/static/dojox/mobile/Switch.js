@@ -10,14 +10,13 @@ define([
 	"dojo/touch",
 	"dijit/_Contained",
 	"dijit/_WidgetBase",
-	"./sniff", 
-	"dojo/has!dojo-bidi?dojox/mobile/bidi/Switch"	
-], function(array, connect, declare, event, win, domClass, domConstruct, domStyle, touch, Contained, WidgetBase, has, BidiSwitch){
+	"./sniff"
+], function(array, connect, declare, event, win, domClass, domConstruct, domStyle, touch, Contained, WidgetBase, has){
 
 	// module:
 	//		dojox/mobile/Switch
 
-	var Switch = declare(has("dojo-bidi") ? "dojox.mobile.NonBidiSwitch" : "dojox.mobile.Switch", [WidgetBase, Contained],{
+	return declare("dojox.mobile.Switch", [WidgetBase, Contained],{
 		// summary:
 		//		A toggle switch with a sliding knob.
 		// description:
@@ -270,6 +269,4 @@ define([
 			this.set("value", this._initialValue);
 		}
 	});
-
-	return has("dojo-bidi") ? declare("dojox.mobile.Switch", [Switch, BidiSwitch]) : Switch;		
 });

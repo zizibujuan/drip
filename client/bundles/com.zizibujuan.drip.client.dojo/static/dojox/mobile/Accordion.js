@@ -11,9 +11,8 @@ define([
 	"dijit/_WidgetBase",
 	"./iconUtils",
 	"./lazyLoadUtils",
-	"require",
-	"dojo/has!dojo-bidi?dojox/mobile/bidi/Accordion"
-], function(array, declare, lang, has, dom, domClass, domConstruct, Contained, Container, WidgetBase, iconUtils, lazyLoadUtils, require, BidiAccordion){
+	"require"
+], function(array, declare, lang, has, dom, domClass, domConstruct, Contained, Container, WidgetBase, iconUtils, lazyLoadUtils, require){
 
 	// module:
 	//		dojox/mobile/Accordion
@@ -173,7 +172,7 @@ define([
 		}
 	});
 
-	var Accordion = declare(has("dojo-bidi") ? "dojox.mobile.NonBidiAccordion" : "dojox.mobile.Accordion", [WidgetBase, Container, Contained], {
+	var Accordion = declare("dojox.mobile.Accordion", [WidgetBase, Container, Contained], {
 		// summary:
 		//		A layout widget that allows the user to freely navigate between panes.
 		// description:
@@ -467,6 +466,6 @@ define([
 	// into the base widget class.  (This is a hack, but it's effective.)
 	// This is for the benefit of the parser.   Remove for 2.0.  Also, hide from doc viewer.
 	lang.extend(WidgetBase, /*===== {} || =====*/ Accordion.ChildWidgetProperties);
-
-	return has("dojo-bidi") ? declare("dojox.mobile.Accordion", [Accordion, BidiAccordion]) : Accordion;	
+	
+	return Accordion;
 });

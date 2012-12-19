@@ -39,16 +39,8 @@ define(["dojo/_base/lang", "dojo/_base/declare", "dojo/_base/Color", "dojo/_base
 						DEFAULT_LUMINOSITY2 : DEFAULT_LUMINOSITY1;
 				}
 			}
-			var rcolor = c.fromHsl(x);
-			rcolor.a = a.a;
-			return rcolor;
-		},
-
-		spiderhl = function(color){
-			var r = hl(color);
-			r.a = 0.7;
-			return r;
-		}
+			return c.fromHsl(x);
+		};
 
 	return declare("dojox.charting.action2d.Highlight", PlotAction, {
 		// summary:
@@ -75,7 +67,8 @@ define(["dojo/_base/lang", "dojo/_base/declare", "dojo/_base/Color", "dojo/_base
 			// kwArgs: __HighlightCtorArgs?
 			//		Optional keyword arguments object for setting parameters.
 			var a = kwArgs && kwArgs.highlight;
-			this.colorFunc = a ? (lang.isFunction(a) ? a : cc(a)) : hl;
+			this.colorFun = a ? (lang.isFunction(a) ? a : cc(a)) : hl;
+
 			this.connect();
 		},
 
@@ -85,15 +78,6 @@ define(["dojo/_base/lang", "dojo/_base/declare", "dojo/_base/Color", "dojo/_base
 			// o: dojox/gfx/shape.Shape
 			//		The object on which to process the highlighting action.
 			if(!o.shape || !(o.type in this.overOutEvents)){ return; }
-
-			// if spider let's deal only with poly
-			if(o.element == "spider_circle" || o.element == "spider_plot"){
-				return;
-			}else if(o.element == "spider_poly" && this.colorFunc == hl){
-				// hardcode alpha for compatibility reasons
-				// TODO to remove in 2.0
-				this.colorFunc = spiderhl;
-			}
 
 			var runName = o.run.name, index = o.index, anim;
 
@@ -112,7 +96,7 @@ define(["dojo/_base/lang", "dojo/_base/declare", "dojo/_base/Color", "dojo/_base
 				}
 				this.anim[runName][index] = anim = {
 					start: color,
-					end:   this.colorFunc(color)
+					end:   this.colorFun(color)
 				};
 			}
 

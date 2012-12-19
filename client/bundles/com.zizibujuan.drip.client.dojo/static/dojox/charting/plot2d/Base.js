@@ -8,13 +8,6 @@ dojox.charting.plot2d.__PlotCtorArgs = {
 	//		Note that the parameters for this may change based on the
 	//		specific plot type (see the corresponding plot type for
 	//		details).
-
-	// tooltipFunc: Function?
-	//		An optional function used to compute tooltip text for this plot. It takes precedence over
-	//		the default function when available.
-	//	|		function tooltipFunc(o) { return "text"; }
-	//		`o`is the event object that triggered the tooltip.
-	tooltipFunc: null
 };
 =====*/
 return declare("dojox.charting.plot2d.Base", Element, {
@@ -27,10 +20,6 @@ return declare("dojox.charting.plot2d.Base", Element, {
 		//		The chart this plot belongs to.
 		// kwArgs: dojox.charting.plot2d.__PlotCtorArgs?
 		//		An optional arguments object to help define the plot.
-		// TODO does not work in markup
-		if(kwArgs.tooltipFunc){
-			this.tooltipFunc = kwArgs.tooltipFunc;
-		}
 	},
 	clear: function(){
 		// summary:
