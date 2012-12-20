@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link type="text/css" rel="stylesheet" href="/dijit/themes/claro/claro.css" />
+<link type="text/css" rel="stylesheet" href="/dojo/resources/dojo.css" />
+
+<link type="text/css" rel="stylesheet" href="/resources/UploaderFileList.css" />
+
+<script type="text/javascript" 
+	data-dojo-config="
+		async:true,
+		parseOnLoad:true,
+		isDebug:true" 
+	src="/dojo/dojo.js"></script>
+	
+<script type="text/javascript">
+require(["dojo/parser",
+         'dojo/ready',
+         "dojox/form/Uploader",
+         "dojox/form/uploader/plugins/Flash",
+         "dojox/form/uploader/plugins/IFrame",
+         "widget/form/uploader/FileList"],function(
+        		 parser,
+        		 ready,
+        		 Uploader,
+        		 uFlash,
+        		 uFrame,
+        		 FileList){
+	
+	ready(function(){
+		var u = new dojox.form.Uploader({
+		    label: "附图",
+		    multiple: true,
+		    type:"file",
+		    uploadOnSelect: true,
+		    url: "/uploads/exerciseImage"
+		});
+		u.placeAt(title);
+		u.startup();
+		
+	});
+	
+});
+</script>
+</head>
+<body class="claro">
+
+<div data-dojo-type="dojox/form/Uploader"></div>
+</body>
+</html>

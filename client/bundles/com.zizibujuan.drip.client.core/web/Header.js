@@ -1,6 +1,7 @@
 define(["dojo/_base/declare",
         "dojo/_base/lang",
         "dojo/request/xhr",
+        "dojo/on",
         "dijit/_WidgetBase",
         "dijit/form/DropDownButton", 
         "dijit/DropDownMenu", 
@@ -12,6 +13,7 @@ define(["dojo/_base/declare",
         		declare,
         		lang,
         		xhr,
+        		on,
         		_WidgetBase,
 	       		DropDownButton,
 	       		DropDownMenu,
@@ -26,40 +28,22 @@ define(["dojo/_base/declare",
 		templateString: headerTemplate,
 		
 		postCreate : function(){
-			userSession.showProfile();
-			
 			// 在服务器端的filter中判断用户是否登录，只有登录的用户才会进入该页面。
 			// 这里的功能只是从session中获取用户的登录信息。
-			userSession.getLoggedUserInfo().then(lang.hitch(this,function(response){
-				var menu = new DropDownMenu({ style: "display: none;"});
-//		        var menuSetting = new MenuItem({
-//		            label: "设置"
-//		        });
-//		        menu.addChild(menuSetting);
-//		        
-//		        menuSetting.on("click", function(e){
-//		        	window.location = "/settings";
-//		        });
-
-		        var menuLogout = new MenuItem({
-		            label: "注销"
-		        });
-		        menu.addChild(menuLogout);
-
-		        var button = new DropDownButton({
-		            label: response.displayName,
-		            dropDown: menu
-		        });
-		        this.userMenu.appendChild(button.domNode);
-		        
-		        
-		        menuLogout.on("click", function(e){
+			
+			// 显示用户头像，用户名和退出链接
+			userSession.getLoggedUserInfo().then(lang.hitch(this,function(userInfo){
+				this.userNode.href="#"; //TODO：进入用户自己的活动列表
+				this.userImageNode.alt = userInfo.displayName;
+				if(userInfo.tinyUrl){
+					this.userImageNode.src = userInfo.tinyUrl;
+				}
+				this.userNameNode.innerHTML = userInfo.displayName;
+				
+		        on(this.logoutNode, "click", function(e){
 		        	userSession.logout();
 		        });
-				
-			}),function(error){
-				window.location = "/";
-			});
+			}));
 		}
 	});
 });

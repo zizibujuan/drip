@@ -112,7 +112,7 @@ a:active {
 }
 
 #header {
-	background: #ededed;
+	background: #00a300;/*#ededed*/
 	position: fixed;
 	width: 100%;
 	top: 0;
@@ -140,7 +140,7 @@ a:active {
 }
 
 .top-logo a {
-	color: green;
+	color: white;
 	text-decoration: none;
 }
 

@@ -23,6 +23,8 @@ define(["dojo/dom",
 			return data;
 		},function(error){
 			console.error(error);
+			// 如果获取登录信息失败，则跳转到公共首页
+			window.location.href="/";
 		});
 		return userInfo;
 	};
