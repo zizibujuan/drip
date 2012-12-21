@@ -1,0 +1,149 @@
+/*暂时放置首页样式，但是每个class标注清楚，要通用*/
+@CHARSET "UTF-8";
+
+body{
+	color: #333;
+	background-color:white;
+	clear: both;
+	overflow:hidden;
+	cursor:default;
+}
+
+a, div{
+	padding: 0px;
+}
+
+ul{
+	padding: 0px;
+	/*margin: 0px;*/
+}
+
+h1{
+	border:0px;
+	margin: 0px;
+	padding: 0px;
+}
+
+a{
+	color:#00a300;
+	text-decoration: none;
+}
+
+.drip_version{
+	float: left;
+	font-size: 10px;
+	color:gray;
+	border: 1px solid;
+	border-radius:5px;
+	padding: 1px;
+}
+
+/*
+解决将div设置float样式后，父容器的高度收缩的问题。
+应用在父容器上。
+*/
+.clearfix:after{
+	display: block;
+	height: 0px;
+	visibility: hidden;
+	clear: both;
+	content: ".";
+}
+
+.container{
+	margin: 0 auto;
+	width: 920px;
+}
+
+/*TODO:确定主题色*/
+.drip_header{
+	background-color:white;
+	border-bottom: 1px solid #e5e5e5;
+	
+	
+}
+
+/*
+用户未登录时，页面顶部的样式
+*/
+.drip_header_logged_out{
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.drip_header_logo{
+	font-size: 30px;
+	font-weight:bold;
+	color: #00a300;
+	letter-spacing: 4px;
+	float: left;
+}
+
+
+
+.drip_top_nav{
+	float: left;
+	list-style-type: none;
+	list-style-image: none;
+}
+
+.drip_top_nav li{
+	float: left;
+}
+
+.drip_top_nav a{
+	color: #333333;
+	padding: 5px;
+	margin-left: 15px;
+}
+
+.drip_header_logged_out .drip_top_nav{
+	margin-bottom: 0px;	
+}
+
+/* 站点介绍版块 */
+.drip_site{
+	
+}
+
+.drip_welcome_area{
+	border-bottom:  1px solid #e5e5e5;
+	padding-top:50px;
+	padding-bottom: 40px;
+	margin-bottom:60px;
+	
+	background-color: #fafafa;
+	
+}
+
+.drip_home_signup{
+	float:right;
+	margin-top: 30px;
+}
+
+.drip_note{
+	color:#999;
+	margin-top: 7px;
+	font-size: 11px;
+}
+
+.drip_heading{
+	font-weight: normal;
+	font-size: 45px;
+}
+
+.drip_heading p{
+	padding: 0px;
+	margin: 0px;
+	margin-bottom: 10px;
+}
+
+.drip_heading .drip_heading_indent{
+	text-indent: 2em;
+}
+
+.drip_subheading{
+	color:#888;
+	font-size: 18px;
+	line-height: 1.5em;
+}
