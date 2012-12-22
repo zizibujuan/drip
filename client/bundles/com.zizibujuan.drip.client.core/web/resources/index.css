@@ -242,27 +242,11 @@ a{
 	background-color: #fafafa;
 }
 
-.drip_main_left{
-	width:150px;
-	
-}
 
-.drip_main_left_nav{
-	padding-top: 0px;
-	padding-bottom: 30px;
-	padding-left: 0px;
-	padding-right: 0px;
-}
-
-.drip_main_center_right{
-	float:left;
-	width:830px;
-	background-color: white;
-}
 
 .drip_main_center{
 	float: left;
-	width: 610px;
+	width: 760px;
 	min-height: 800px;
 	overflow: hidden;
 }
@@ -305,4 +289,61 @@ a{
 
 .drip_detail{
 	margin-left: 60px;
+}
+
+.drip_tab_nav {
+	margin-top:10px;
+	/*border-bottom: 1px solid #DDD;*/
+	height: 35px;
+}
+
+.drip_tab_nav .counter {
+	position: relative;
+	top: -1px;
+	margin: 0 0 0 5px;
+	padding: 1px 5px 2px 5px;
+	font-size: 10px;
+	font-weight: bold;
+	color: #666;
+	background: #E5E5E5;
+	border-radius: 10px;
+}
+
+.drip_tab_nav_tabs{
+	
+}
+
+.drip_tab_nav_tab {
+	display: inline-block;
+	margin-bottom: -1px;
+	padding: 8px 12px;
+	border: 1px solid transparent;
+	border-bottom: 0;
+	font-size: 14px;
+	color: #666;
+	text-decoration: none;
+}
+
+.drip_tab_nav_tab.selected {
+	border-color: #DDD;
+	border-radius: 3px 3px 0 0;
+	background-color: white;
+	color: #333;
+	font-weight: bold;
+}
+
+.drip_tab_nav .drip_tab_nav_tabs{
+	display: inline-block;
+}
+
+.drip_tab_nav .drip_tab_nav_tabs > li{
+	display: inline-block;
+	line-height: 1.4
+}
+
+.drip_activity_list{
+	border-top:1px solid #DDD;
+	border-right: 1px solid #DDD;
+	border-top-right-radius:5px;
+	min-height: 500px;
 }

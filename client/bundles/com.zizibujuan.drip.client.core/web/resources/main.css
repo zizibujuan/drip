@@ -95,22 +95,6 @@ h3{
 
 
 
-a:link {
-	color: black;
-}
-
-a:visited {
-	color: black;
-}
-
-a:hover {
-	color: green;
-}
-
-a:active {
-	color: green;
-}
-
 #header {
 	background: #00a300;/*#ededed*/
 	position: fixed;
@@ -217,7 +201,7 @@ a:active {
 
 
 .activities{
-	width: 560px;
+	/*width: 560px;*/
 }
 
 .activities .item:first-child{

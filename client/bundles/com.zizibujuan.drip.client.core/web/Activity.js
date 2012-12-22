@@ -333,7 +333,7 @@ define(["dojo/_base/declare",
 		 
 		 _load : function(items){
 			 if(items.length == 0){
-				 this.domNode.innerHTML = "没有活动";
+				 this.domNode.innerHTML = "没有活动，快去录入新题目，或到题库中解答习题";
 			 }else{
 				 console.log(items);
 				 array.forEach(items, lang.hitch(this,function(item, index){
