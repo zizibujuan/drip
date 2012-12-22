@@ -6,6 +6,7 @@
 <link type="text/css" rel="stylesheet" href="/dojo/resources/dojo.css" />
 <link type="text/css" rel="stylesheet" href="/drip/Editor.css" />
 <link type="text/css" rel="stylesheet" href="/resources/main.css" />
+<link type="text/css" rel="stylesheet" href="/resources/index.css" />
 
 <title>我的首页 · 孜孜不倦</title>
 <script type="text/javascript" 
@@ -119,36 +120,28 @@ a.logo {
 }
 
 .menu-item .title {
-	color: #333;
-	text-decoration: none;
-	padding-top: 3px;
-	padding-bottom: 3px;
-	padding-left: 10px;
 	display: block;
-}
-
-.menu-item .title:hover {
-	background-color: #00d100;
-	color: white;
-}
-
-.menu-focus {
-	color: white;
-	background-color: #00a300;
+	padding: 8px 10px;
+	margin: 0 0 5px 0;
+	font-size: 14px;
+	border-radius: 3px;
+	text-decoration: none;
+	color: #777;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .menu-focus .title{
-	color:white;
+	font-weight:bold;
+	background-color: #EDEDED;
 }
 
-.menu-focus a {
-	color: white;
+.menu-item .title:hover {
+	background-color: #EDEDED;
 }
 
-.menu-focus .title:hover {
-	color: white;
-	background-color: #00a300
-}
+
 
 .op {
 	position: absolute;
@@ -188,12 +181,116 @@ color:#69768C;
 }
 </style>
 
+
+ 
 </head>
 <body  class="claro">
 <script type="text/javascript">
 	/* TODO：appId不能在这里硬编码*/
 	Renren.init({appId:220706});
 </script>
+
+<div id="wrapper" class="drip_body">
+	<div class="drip_header drip_header_logged_in" style="position: fixed; width: 100%">
+		<div class="container clearfix">
+			<a href="/" class="drip_header_logo">孜孜不倦</a>
+			<div class="divider-vertical"></div>
+			<ul class="drip_top_nav">
+				<li><a href="/" class="current">首页</a></li>
+				<li><a href="/exercises">题库</a></li>
+			</ul>
+			<ul class="drip_user_links">
+				<li>
+					<a href="#" class="drip_name">
+						<img width="20px" height="20px" src="#" alt="用户名">
+						<span>用户名</span>
+					</a>
+				</li>
+				<li><a href="#" title="录入新习题" class="drip_new_exercise">+习题</a></li>
+				<li><a href="#" title="退出">[退出]</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="container" style="padding-top: 60px">
+		<div>
+			<div class="drip_main">
+				<div class="clearfix">
+					<div class="drip_main_left">
+						<div class="drip_main_left_nav">
+							<div id="left_nav_common">
+								<div class="nav">
+								 	 <!-- 导航 -->
+								 	 <ul style="list-style: none;padding-left: 0px">
+								 	 	<li class="menu-item menu-focus"><a href="/" class="title">首页</a></li>
+								 	 	<li class="menu-item">
+								 	 		<a href="/answers" class="title">已答习题<span class="count" id="answer_count" style="margin-left:10px;"></span>
+								 	 		</a>
+								 	 	</li>
+								 	 	<li class="menu-item">
+								 	 		<a href="/exercises" class="title">已录习题<span class="count" style="margin-left:10px;" id="exer_count"></span></a>
+								 	 		<a href="/exercises/new" class="op" id="exer_input">录入</a>
+								 	 	</li>
+								 	 </ul>
+								 </div>
+							</div>
+						</div>
+					</div>
+					<div class="drip_main_center_right">
+						<div class="drip_main_center">
+							<div style="border-right:solid 1px #ddd; border-left:solid 1px #ddd;min-height: 800px">
+								<div data-dojo-type="Activity" style="padding-top: 10px;padding-left: 20px">加载中...</div>
+							</div>
+						</div>
+						<div class="drip_main_right">
+							<div style="padding-left:20px">
+								<div class="profile" style="margin-top: 10px;">
+							 		<div class="clearfix">
+							 			<div style="float:left">
+							 				<a href="#">
+							 					<img id="profileImage" width="80px" height="80px">
+							 				</a>
+							 			</div>
+							 			<div style="padding-left: 10px; padding-top: 5px;float:left">
+							 				<a style="font-size: 14px; font-weight: bold;text-decoration: none;color: #333" id="userName"></a>
+							 				<div>
+							 					
+							 				</div>
+							 			</div>
+							 		</div>
+							 		<div class="clearfix">
+							 			<ul style="list-style: none;padding-left: 0px; margin-top: 20px">
+											<li style="float:left">
+												<a href="#" style="text-decoration: none;color:#333">
+												<strong id="follow_count" style="display:block;font-size: 20px"></strong>
+												<span style="display: block;text-align: center;">关注</span>
+												</a>
+											</li>
+											<li style="float:left; margin-left: 10px;">
+												<a href="#" style="text-decoration: none;color:#333">
+													<strong id="fan_count" style="display:block;font-size: 20px"></strong>
+													<span style="display: block;text-align: center;">粉丝</span>
+												</a>
+											</li>
+										</ul>
+							 		</div>
+								 </div>
+							 	<div style="margin-top: 20px;">
+							 		<input value="邀请人人好友一起学习" style="width:100%; color:#00a300; padding-top: 8px; padding-bottom: 8px;
+							 		margin-top:10px; font-weight:bold;
+							 		font-size: 17px;cursor: pointer;" type="button" onclick="sendRenrenRequest();"></input>
+							 	</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	
+	<div class="footer">footer</div>
+</div>
 
 <div style="height:100%">
  <div style="float:left;width:200px;border-right:solid 1px #00a300;height:100%; position: fixed;">
@@ -252,7 +349,7 @@ color:#69768C;
  		<a href="/logout" style="">退出</a>
  	</div>
  </div>
- <div style=" min-height: 100%;height: 1000px;position: relative;left: 210px;width: 600px;">
+ <div style=" min-height: 100%;position: relative;left: 210px;width: 600px;">
  	<div data-dojo-type="Activity"></div>
  </div>
  

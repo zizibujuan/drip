@@ -217,9 +217,7 @@ a:active {
 
 
 .activities{
-	float:left;
 	width: 560px;
-	margin-top: 15px;
 }
 
 .activities .item:first-child{
@@ -228,7 +226,7 @@ a:active {
 }
 
 .activities .item {
-	padding: 1em 0 1em 45px;
+	padding: 1em 0 1em 0px;
 	overflow: hidden;
 	position: relative;
 	border-top: 1px solid #F1F1F1;

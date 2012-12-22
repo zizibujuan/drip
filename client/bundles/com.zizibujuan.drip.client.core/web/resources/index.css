@@ -1,6 +1,12 @@
 /*暂时放置首页样式，但是每个class标注清楚，要通用*/
 @CHARSET "UTF-8";
 
+html, body, div, a, ul, li{
+	border: 0px;
+	padding: 0px;
+	margin: 0px;
+}
+
 body{
 	color: #333;
 	background-color:white;
@@ -36,6 +42,10 @@ a{
 	padding: 1px;
 }
 
+#wrapper{
+	min-height: 100%;
+}
+
 /*
 解决将div设置float样式后，父容器的高度收缩的问题。
 应用在父容器上。
@@ -53,12 +63,19 @@ a{
 	width: 920px;
 }
 
+.divider-vertical {
+	float: left;
+	width: 1px;
+	height: 40px;
+	margin: 0 10px;
+	background-color: #E5E5E5;
+	border-right: 1px solid white;
+}
+
 /*TODO:确定主题色*/
 .drip_header{
 	background-color:white;
 	border-bottom: 1px solid #e5e5e5;
-	
-	
 }
 
 /*
@@ -68,8 +85,18 @@ a{
 	padding-top: 10px;
 	padding-bottom: 10px;
 }
+/*
+用户登录时，页面顶部的样式
+*/
+.drip_header_logged_in{
+	background-color: #F3F3F3;
+	background-image: -moz-linear-gradient(#F9F9F9, #F3F3F3);
+	background-image: -webkit-linear-gradient(#F9F9F9, #F3F3F3);
+	background-image: linear-gradient(#F9F9F9, #F3F3F3);
+	background-repeat: repeat-x;
+}
 
-.drip_header_logo{
+.drip_header_logged_out .drip_header_logo{
 	font-size: 30px;
 	font-weight:bold;
 	color: #00a300;
@@ -77,12 +104,26 @@ a{
 	float: left;
 }
 
+.drip_header_logged_in .drip_header_logo{
+	font-size: 24px;
+	font-weight:bold;
+	color: #00a300;
+	letter-spacing: 4px;
+	float:left;
+	
+	padding-top: 8px;
+}
 
 
 .drip_top_nav{
 	float: left;
 	list-style-type: none;
 	list-style-image: none;
+}
+
+.drip_top_nav .current{
+	color: #00a300;
+	font-size: 16px;
 }
 
 .drip_top_nav li{
@@ -93,11 +134,18 @@ a{
 	color: #333333;
 	padding: 5px;
 	margin-left: 15px;
+	display: block;
 }
 
 .drip_header_logged_out .drip_top_nav{
-	margin-bottom: 0px;	
+	margin-top: 10px;
 }
+
+.drip_header_logged_in .drip_top_nav{
+	font-size:14px;
+	margin-top: 7px;
+}
+
 
 /* 站点介绍版块 */
 .drip_site{
@@ -144,4 +192,117 @@ a{
 	color:#888;
 	font-size: 18px;
 	line-height: 1.5em;
+}
+
+.drip_user_links {
+	float: right;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.drip_user_links li {
+	float: left;
+	margin-left: 10px;
+}
+
+.drip_user_links a {
+	display: block;
+	padding: 12px 5px 10px;
+	color: #333;
+	line-height: 16px;
+}
+
+.drip_user_links .drip_name img {
+	float: left;
+	margin: -2px 5px 0 0;
+	border-radius: 3px;
+}
+
+.drip_user_links .drip_name span {
+	font-weight: bold;
+	white-space: nowrap;
+}
+
+.drip_user_links .drip_new_exercise{
+	font-weight: bold;
+}
+
+/* 个人首页样式 */
+.drip_body{
+	
+}
+
+.drip_body .container{
+	margin: 0 auto;
+	width: 980px;
+}
+
+.drip_main{
+	background-color: #fafafa;
+}
+
+.drip_main_left{
+	width:150px;
+	
+}
+
+.drip_main_left_nav{
+	padding-top: 0px;
+	padding-bottom: 30px;
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+.drip_main_center_right{
+	float:left;
+	width:830px;
+	background-color: white;
+}
+
+.drip_main_center{
+	float: left;
+	width: 610px;
+	min-height: 800px;
+	overflow: hidden;
+}
+
+.drip_main_right{
+	float: right;
+	width: 220px;
+	overflow: hidden;	
+}
+
+.count {
+	display: inline-block;
+	margin: 0 0 0 5px;
+	padding: 0 8px 1px 8px;
+	height: auto;
+	font-family: Helvetica, arial, freesans, clean, sans-serif;
+	font-size: 10px;
+	line-height: 14px;
+	text-align: center;
+	vertical-align: text-top;
+	color: #777;
+	background: white;
+	border-top: 1px solid #CCC;
+	border-radius: 8px;
+}
+
+.profile img{
+	padding: 5px;
+	background-color: white;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+	border: 1px solid #DDD;
+	height:80px;
+	width:80px;
+}
+
+
+.drip_face{
+	float:left;
+}
+
+.drip_detail{
+	margin-left: 60px;
 }
