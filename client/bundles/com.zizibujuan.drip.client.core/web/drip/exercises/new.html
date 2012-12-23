@@ -8,6 +8,8 @@
 
 <link type="text/css" rel="stylesheet" href="/drip/Editor.css" />
 <link type="text/css" rel="stylesheet" href="/resources/UploaderFileList.css" />
+
+<link type="text/css" rel="stylesheet" href="/resources/index.css" />
 <title>新建习题 · 孜孜不倦(高等数学篇)</title>
 <script type="text/javascript" 
 	data-dojo-config="
@@ -19,63 +21,93 @@
    src="/mathjax/MathJax.js?config=MML_HTMLorMML">
 </script>
 <script type="text/javascript">
-require(["Header",
-         "dojo/ready", 
+require(["dojo/ready", 
+         "dojo/on",
+         "dojo/dom",
          "dojo/store/JsonRest",
          "dijit/registry",
          "drip/exercises/ExerciseForm",
+         "userSession",
          "dojo/parser",
          "dijit/form/Button",
          "dojo/domReady!"],function(
-        		 Header,
         		 ready,
+        		 on,
+        		 dom,
         		 JsonRest,
         		 registry,
-        		 ExerciseForm){
+        		 ExerciseForm,
+        		 userSession){
+	on(dom.byId("logout"),"click",userSession.logout);
+	
 	ready(function(){
 		var exerciseForm = new ExerciseForm();
 		exerciseForm.placeAt("leftForm");
-		
 	});
 	
 });
 </script>
 </head>
 <body class="claro">
-	<div data-dojo-type="Header" id="header">
+	<div id="wrapper" class="drip_body">
+		<div class="drip_header drip_header_logged_in" style="position: fixed; width: 100%">
+			<div class="container clearfix">
+				<a href="/" class="drip_header_logo">孜孜不倦</a>
+				<div class="divider-vertical"></div>
+				<ul class="drip_top_nav">
+					<li><a href="/" class="current">首页</a></li>
+					<li><a href="/exercises">题库</a></li>
+				</ul>
+				<ul class="drip_user_links">
+					<li>
+						<a href="#" class="drip_name">
+							<img width="20px" height="20px" src="#" alt="用户名">
+							<span>用户名</span>
+						</a>
+					</li>
+					<li><a href="/exercises/new" title="录入新习题" class="drip_new_exercise">+习题</a></li>
+					<li><a href="#" title="退出" id="logout">[退出]</a></li>
+				</ul>
+			</div>
+		</div>
+		<!-- 
+		<div data-dojo-type="Header" id="header">
+			
+		</div>
+		 -->
 		<div data-dojo-type="dijit/form/Button" style="margin: 0px;" id="btnNewExercise">保存</div>
-	</div>
-	
-	<div id="main" style=" margin: 0 auto;width: 920px;margin-top: 50px;">
-		<ul class="tabs">
-			<li>
-				<a href="#" class="selected" id="single">单项选择题</a>
-			</li>
-			<li>
-				<a href="#" id="multiple">多项选择题</a>
-			</li>
-			<!-- 暂时不实现 -->
-			<li style="display: none">
-				<a href="#" id="fill">填空题</a>
-			</li>
-			<li>
-				<a href="#" id="essayQuestion">问答题</a>
-			</li>
-		</ul>
-		<div style="margin-top: 10px;" id="formContainer">
-			<div style="width: 660px; float: left;" id="leftForm">
-			
-			</div>
-			
-			<div style="float: right; width:240px">
-				<!-- 提供系统标签，也允许用户自定义标签，放在各自的tab中 -->
-				<h3>选择科目</h3>
-				<div>高等数学</div>
-				<div>
-					树状结构展示更详细的分类。
+		<div id="main" class="container" style="padding-top: 60px;">
+			<ul class="tabs">
+				<li>
+					<a href="#" class="selected" id="single">单项选择题</a>
+				</li>
+				<li>
+					<a href="#" id="multiple">多项选择题</a>
+				</li>
+				<!-- 暂时不实现 -->
+				<li style="display: none">
+					<a href="#" id="fill">填空题</a>
+				</li>
+				<li>
+					<a href="#" id="essayQuestion">问答题</a>
+				</li>
+			</ul>
+			<div style="margin-top: 10px;" id="formContainer">
+				<div style="width: 660px; float: left;" id="leftForm">
+				
 				</div>
+				
+				
+				<div style="float: right; width:240px">
+					<!-- 提供系统标签，也允许用户自定义标签，放在各自的tab中 -->
+					<h3>选择科目</h3>
+					<div>高等数学</div>
+					<div>
+						树状结构展示更详细的分类。
+					</div>
+				</div>
+				
 			</div>
-			
 		</div>
 	</div>
 	<!-- 

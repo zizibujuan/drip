@@ -21,6 +21,7 @@
 <script type="text/javascript" src="renren.js"></script>
 <script type="text/javascript">
 require(["dojo/ready",
+		 "dojo/on",
          "dojo/dom",
          "dojo/request/xhr",
          "dijit/registry",
@@ -30,6 +31,7 @@ require(["dojo/ready",
          "dojo/parser",
          "dojo/domReady!"],function(
         		 ready,
+        		 on,
         		 dom,
         		 xhr,
         		 registry,
@@ -45,6 +47,8 @@ require(["dojo/ready",
 		dom.byId("answer_count").innerHTML = userInfo.answerCount;
 		dom.byId("exer_count").innerHTML = userInfo.exerciseCount;
 	});
+	
+	on(dom.byId("logout"),"click",userSession.logout);
 	
 	ready(function(){
 		/*
@@ -207,12 +211,12 @@ color:#69768C;
 					</a>
 				</li>
 				<li><a href="/exercises/new" title="录入新习题" class="drip_new_exercise">+习题</a></li>
-				<li><a href="#" title="退出">[退出]</a></li>
+				<li><a href="#" title="退出" id="logout">[退出]</a></li>
 			</ul>
 		</div>
 	</div>
 
-	<div class="container" style="padding-top: 60px">
+	<div class="container" style="padding-top: 60px;">
 		<div>
 			<div class="drip_main">
 				<div class="clearfix">
@@ -231,8 +235,8 @@ color:#69768C;
 									</li>
 								</ul>
 							</div>
-							<div class="drip_activity_list">
-								<div data-dojo-type="Activity" style="padding-top: 10px;padding-left: 20px">加载中...</div>
+							<div class="drip_activity_list" style="padding-top:20px">
+								<div data-dojo-type="Activity" style="padding-top: 10px;padding-left: 10px;padding-right:10px">加载中...</div>
 							</div>
 						</div>
 						<div class="drip_main_right">
