@@ -55,7 +55,7 @@ require(["dojo/ready",
 				<a href="/" class="drip_header_logo">孜孜不倦</a>
 				<div class="divider-vertical"></div>
 				<ul class="drip_top_nav">
-					<li><a href="/" class="current">首页</a></li>
+					<li><a href="/">首页</a></li>
 					<li><a href="/exercises">题库</a></li>
 				</ul>
 				<ul class="drip_user_links">
@@ -66,7 +66,7 @@ require(["dojo/ready",
 						</a>
 					</li>
 					<li><a href="/exercises/new" title="录入新习题" class="drip_new_exercise">+习题</a></li>
-					<li><a href="#" title="退出" id="logout">[退出]</a></li>
+					<li><button title="退出" id="logout" class="logout">退出</button></li>
 				</ul>
 			</div>
 		</div>
@@ -76,7 +76,7 @@ require(["dojo/ready",
 		</div>
 		 -->
 		<div data-dojo-type="dijit/form/Button" style="margin: 0px;" id="btnNewExercise">保存</div>
-		<div id="main" class="container" style="padding-top: 60px;">
+		<div id="main" class="container" style="padding-top: 40px;">
 			<ul class="tabs">
 				<li>
 					<a href="#" class="selected" id="single">单项选择题</a>

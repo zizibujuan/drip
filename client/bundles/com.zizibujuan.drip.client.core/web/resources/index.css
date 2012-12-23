@@ -146,6 +146,12 @@ a{
 	margin-top: 7px;
 }
 
+.drip_header_logged_in .logout{
+	margin: 10px 5px 10px;
+	padding: 0px 2px 0px 2px;
+	cursor: pointer;
+}
+
 
 /* 站点介绍版块 */
 .drip_site{

@@ -213,7 +213,7 @@ h3{
 	padding: 1em 0 1em 0px;
 	overflow: hidden;
 	position: relative;
-	border-top: 1px solid #F1F1F1;
+	border-top: 1px solid #DDD;
 }
 
 .activities .item .time {
@@ -232,7 +232,7 @@ h3{
 
 
 .exercise{
-	border: solid 1px #AEAEAE;
+	/*border: solid 1px #AEAEAE;*/
 	padding-top: 2px;
 	padding-bottom: 2px;
 }
