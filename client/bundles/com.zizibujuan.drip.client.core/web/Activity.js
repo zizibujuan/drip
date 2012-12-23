@@ -89,8 +89,6 @@ define(["dojo/_base/declare",
 			
 			// 解答按钮
 			on(this.btnAnswer,"click", lang.hitch(this, function(e){
-				event.stop(e);
-				
 				// TODO: 先查询用户是否已经回答过，如果已经回答过了，则将答案加载过来
 				// TODO：然后编辑答案，如果没有回答过，则直接新增
 				// 传递习题标识，然后在servlet中传递userId，注意，因为这里传过去的是习题标识，
@@ -131,15 +129,13 @@ define(["dojo/_base/declare",
 				editor.placeAt(guideDiv);
 				
 				// FIXME：当div中有float元素时，怎么让div的高度根据其中元素的高度自适应
-				var btnContainer = domConstruct.create("div",{style:"height:18px"},doAnswerPane);
-				
-				var btnSave = new Button({"label":"保存", style:"float:right"}); // TODO:i18n
-				btnSave.placeAt(btnContainer);
-				
-				var aCancel = domConstruct.create("a",{style:"float:right",innerHTML:"取消",href:"#"},btnContainer)
+				var btnContainer = domConstruct.create("div",{style:"width:98%;margin-top:5px;text-align:right"},doAnswerPane);
+				// TODO:i18n
+				var aCancel = domConstruct.create("a",{"class":"drip_op_cancel",innerHTML:"取消",href:"#"},btnContainer);
+				var btnSave = domConstruct.create("input",{type:"button",value:"保存"},btnContainer);
 				//var btnCancel = new Button({"label":"取消",style:"float:right"});
 				//btnCancel.placeAt(btnContainer);
-				btnSave.on("click", lang.hitch(this,function(e){
+				on(btnSave, "click", lang.hitch(this,function(e){
 					var answerData = {};
 					answerData.exerId = exerciseInfo.id;
 					answerData.detail = [];
@@ -172,6 +168,8 @@ define(["dojo/_base/declare",
 					// TODO：保存的时候进行判断，如果answerId已经存在，则执行put;如果不存在，则执行post
 					xhr.post("/answers/",{handleAs:"json",data:JSON.stringify(answerData)}).then(lang.hitch(this,function(response){
 						this._destroyAnswerPane();
+						// TODO：保存成功的时候，要从后台获取回答的次数，然后刷新答案个数
+						this._showAnswerArea(true);
 					}),lang.hitch(this,function(error){
 						// 出错时
 					}));
@@ -196,12 +194,13 @@ define(["dojo/_base/declare",
 							array.forEach(answerInfo.detail, lang.hitch(this,this._setOptionAnswer));
 						}
 					}
+					
+					this._showAnswerArea(true);
 				}));
 				
 				// 回答问题相关的dijit部件 
 				var answerWidget = this._answerWidget = [];
 				answerWidget.push(editor);
-				answerWidget.push(btnSave);
 				//answerWidget.push(btnCancel);
 				
 				// 把加载数据放在最后
@@ -220,7 +219,18 @@ define(["dojo/_base/declare",
 					}
 					
 				}));
+				
+				// 隐藏解答区域
+				this._showAnswerArea(false);
 			}));
+		},
+		
+		_showAnswerArea: function(show){
+			var display = "";
+			if(show==false){
+				display = "none";
+			}
+			domStyle.set(this.answerAreaNode,"display",display);
 		},
 		
 		_destroyAnswerPane: function(){
@@ -266,6 +276,7 @@ define(["dojo/_base/declare",
 		
 		_showActionLabel: function(){
 			var data = this.data;
+			console.log(data);
 			
 			var userName = data.displayUserName;
 			this.userInfo.innerHTML = userName;
@@ -273,6 +284,11 @@ define(["dojo/_base/declare",
 			this.time.innerHTML = prettyDate.pretty(data.createTime);
 			this.time.title = data.createTime.replace("T", " ");
 			this.time.datetime = data.createTime;
+			
+			// 用户头像
+			// TODO:每天晚上到人人上同步一下用户信息
+			//this.userLinkNode.href = "/users/"+data.userId;
+			this.userImageNode.src = data.mainUrl;
 		},
 		
 		_createExercise: function(exerciseInfo){

@@ -2,7 +2,7 @@
 	<div>
 		<div class="drip_face">
 			<!-- TODO：放置用户头像 -->
-			<a href="#"><img src="a" width="50px" height="50px"/></a>
+			<a href="#" data-dojo-attach-point="userLinkNode"><img data-dojo-attach-point="userImageNode" src="" width="50px" height="50px"/></a>
 		</div>
 		<div class="drip_detail">
 			<div>
@@ -22,8 +22,12 @@
 						<a href="#">收藏(100)</a>
 						<i style="margin-left:6px;margin-right:8px; color:#AEAEAE">|</i>
 					 -->
-						<!-- 解答是一个按钮，数字用一个框括住 -->
-						<a href="#" data-dojo-attach-point="btnAnswer">解答(100)</a>
+						<!-- 解答是一个按钮，数字用一个框括住。点击按钮后，隐藏；点击取消之后，再显示 -->
+						<span data-dojo-attach-point="answerAreaNode">
+							<!-- 解答 -->
+							<input type="button" value="解答" class="drip_to_answer" data-dojo-attach-point="btnAnswer"></input>
+							<a href="#" class="drip_answer_count">0</a>
+						</span>
 					</div>
 				</div>
 			</div>

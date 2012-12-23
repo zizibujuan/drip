@@ -65,6 +65,7 @@ define(["dojo/_base/declare",
 			this._createExerciseTypeBar();
 			// 默认选中
 			this._createSingleSelectForm();
+			//this._createEssayQuestionForm();
 			
 			// 为保存按钮绑定事件
 			var btnNewExercise = this.btnNewExercise = registry.byId("btnNewExercise");
