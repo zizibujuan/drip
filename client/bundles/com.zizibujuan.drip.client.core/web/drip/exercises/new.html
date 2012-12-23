@@ -39,6 +39,13 @@ require(["dojo/ready",
         		 ExerciseForm,
         		 userSession){
 	on(dom.byId("logout"),"click",userSession.logout);
+	userSession.getLoggedUserInfo().then(function(userInfo){
+		// 在顶部用户信息区域显示
+		var topProfileImage = dom.byId("topProfileImage");
+		topProfileImage.src = userInfo.tinyUrl;
+		topProfileImage.alt = userInfo.displayName;
+		dom.byId("topUserName").innerHTML = userInfo.displayName;
+	});
 	
 	ready(function(){
 		var exerciseForm = new ExerciseForm();
@@ -60,10 +67,10 @@ require(["dojo/ready",
 				</ul>
 				<ul class="drip_user_links">
 					<li>
-						<a href="#" class="drip_name">
-							<img width="20px" height="20px" src="#" alt="用户名">
-							<span>用户名</span>
-						</a>
+					<a href="#" class="drip_name">
+						<img width="20px" height="20px" id="topProfileImage">
+						<span id="topUserName"></span>
+					</a>
 					</li>
 					<li><a href="/exercises/new" title="录入新习题" class="drip_new_exercise">+习题</a></li>
 					<li><input type="button" title="退出" id="logout" value="退出" class="logout"></input></li>

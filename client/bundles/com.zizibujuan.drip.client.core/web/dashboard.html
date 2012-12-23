@@ -38,14 +38,21 @@ require(["dojo/ready",
         		 userSession){
 	// 加载左侧栏目中的数据，因为左侧没有用dijit部件，所无需放在ready方法中
 	userSession.getLoggedUserInfo().then(function(userInfo){
+		// 在右侧用户信息区域显示
 		var profileImg = dom.byId("profileImage");
 		profileImg.alt = userInfo.displayName;
 		profileImg.src = userInfo.headUrl;
 		dom.byId("userName").innerHTML = userInfo.displayName;
 		dom.byId("follow_count").innerHTML = userInfo.followCount;
 		dom.byId("fan_count").innerHTML = userInfo.fanCount;
-		dom.byId("answer_count").innerHTML = userInfo.answerCount;
-		dom.byId("exer_count").innerHTML = userInfo.exerciseCount;
+		// 在页面顶级tab中显示
+		dom.byId("my_answer_count").innerHTML = userInfo.answerCount;
+		dom.byId("my_exer_count").innerHTML = userInfo.exerciseCount;
+		// 在顶部用户信息区域显示
+		var topProfileImage = dom.byId("topProfileImage");
+		topProfileImage.src = userInfo.tinyUrl;
+		topProfileImage.alt = userInfo.displayName;
+		dom.byId("topUserName").innerHTML = userInfo.displayName;
 	});
 	
 	on(dom.byId("logout"),"click",userSession.logout);
@@ -206,8 +213,8 @@ color:#69768C;
 			<ul class="drip_user_links">
 				<li>
 					<a href="#" class="drip_name">
-						<img width="20px" height="20px" src="#" alt="用户名">
-						<span>用户名</span>
+						<img width="20px" height="20px" id="topProfileImage">
+						<span id="topUserName"></span>
 					</a>
 				</li>
 				<li><a href="/exercises/new" title="录入新习题" class="drip_new_exercise">+习题</a></li>
@@ -228,10 +235,10 @@ color:#69768C;
 										<a href="/" class="selected drip_tab_nav_tab">好友动态</a>
 									</li>
 									<li>
-										<a href="#" class="drip_tab_nav_tab">我答的习题 <span class="counter">10</span></a>
+										<a href="#" class="drip_tab_nav_tab">我答的习题 <span class="counter" id="my_answer_count">0</span></a>
 									</li>
 									<li>
-										<a href="#" class="drip_tab_nav_tab">我录的习题 <span class="counter">10</span></a>
+										<a href="#" class="drip_tab_nav_tab">我录的习题 <span class="counter" id="my_exer_count">0</span></a>
 									</li>
 								</ul>
 							</div>
