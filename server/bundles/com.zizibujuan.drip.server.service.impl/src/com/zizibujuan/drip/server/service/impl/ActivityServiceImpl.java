@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.zizibujuan.drip.server.dao.ActivityDao;
 import com.zizibujuan.drip.server.dao.AnswerDao;
 import com.zizibujuan.drip.server.dao.ExerciseDao;
+import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.service.ActivityService;
 import com.zizibujuan.drip.server.util.ActionType;
 import com.zizibujuan.drip.server.util.PageInfo;
@@ -24,22 +25,29 @@ public class ActivityServiceImpl implements ActivityService {
 	private ActivityDao activityDao;
 	private ExerciseDao exerciseDao;
 	private AnswerDao answerDao;
+	private UserDao userDao;
 	
 	@Override
 	public List<Map<String, Object>> get(Long userId, PageInfo pageInfo) {
 		// 获取用户的活动列表
 		List<Map<String,Object>> list = activityDao.get(userId, pageInfo);
-		// 然后循环着获取每个活动的详情,如果缓存中已存在，则从缓存中获取。
+		// TODO:然后循环着获取每个活动的详情,如果缓存中已存在，则从缓存中获取。
+		// 用户的详细信息也从缓存中获取
 		// 注意，新增的习题和答案，都要缓存起来。
-		System.out.println(list);
+		
+		logger.info(list.toString());
 		for(Map<String,Object> each : list){
+			Long watchedUserId = Long.valueOf(each.get("userId").toString());
+			Map<String,Object> userInfo = userDao.getSimple(watchedUserId);
+			each.put("userInfo", userInfo);
+			
 			Long contentId = Long.valueOf(each.get("contentId").toString());
 			String actionType = each.get("actionType").toString();
 			if(actionType.equals(ActionType.SAVE_EXERCISE)){
 				Map<String,Object> exercise = getExercise(contentId);
 				each.put("exercise", exercise);
 			}else if(actionType.equals(ActionType.ANSWER_EXERCISE)){
-				// TODO：将答案和习题解析看作一体，是用户在答题时写下的做题思路
+				// 将答案和习题解析看作一体，是用户在答题时写下的做题思路
 				Map<String,Object> answer = getAnswer(contentId);
 				Long exerciseId = Long.valueOf(answer.get("exerciseId").toString());
 				Map<String,Object> exercise = getExercise(exerciseId);
@@ -88,14 +96,28 @@ public class ActivityServiceImpl implements ActivityService {
 	}
 	
 	public void setAnswerDao(AnswerDao answerDao) {
-		logger.info("注入AnswerDao");
+		logger.info("注入answerDao");
 		this.answerDao = answerDao;
 	}
 
 	public void unsetAnswerDao(AnswerDao answerDao) {
 		if (this.answerDao == answerDao) {
-			logger.info("注销AnswerDao");
+			logger.info("注销answerDao");
 			this.answerDao = null;
 		}
 	}
+	
+	public void setUserDao(UserDao userDao) {
+		logger.info("注入userDao");
+		this.userDao = userDao;
+	}
+
+	public void unsetUserDao(UserDao userDao) {
+		if (this.userDao == userDao) {
+			logger.info("注销userDao");
+			this.userDao = null;
+		}
+	}
+	
+	
 }

@@ -7,8 +7,15 @@ package com.zizibujuan.drip.server.util;
  */
 public class OAuthConstants {
 	
-	// oauth 站点标识
-	public static final int RENREN = 1;
+	// oauth 站点标识,第三方网站的标识从100开始。
+	/**
+	 * 本网站标识 http://zizibujuan.com
+	 */
+	public static final int ZIZIBUJUAN = 1;
+	/**
+	 * 人人网站 http://renren.com
+	 */
+	public static final int RENREN = 101;
 	
 
 	public static final String KEY_RENREN_APP_ID = "renren.app.id";
