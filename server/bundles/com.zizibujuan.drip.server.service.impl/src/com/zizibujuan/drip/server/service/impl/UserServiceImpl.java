@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Map<String, Object> login(Long userId) {
 		userDao.updateLastLoginTime(userId);
-		return userDao.get(userId);
+		return userDao.getSimple(userId);
 	}
 	
 	@Override

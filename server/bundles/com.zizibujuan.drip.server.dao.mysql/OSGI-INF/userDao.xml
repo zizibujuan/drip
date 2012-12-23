@@ -19,6 +19,14 @@
    		name="oAuthUserMapDao" 
    		policy="dynamic"/>
    		
+   	<reference 
+   		bind="setUserAvatarDao" 
+   		unbind="unsetUserAvatarDao" 
+   		cardinality="0..1" 
+   		interface="com.zizibujuan.drip.server.dao.UserAvatarDao" 
+   		name="userAvatarDao" 
+   		policy="dynamic"/>
+   		
    <service>
       <provide interface="com.zizibujuan.drip.server.dao.UserDao"/>
    </service>

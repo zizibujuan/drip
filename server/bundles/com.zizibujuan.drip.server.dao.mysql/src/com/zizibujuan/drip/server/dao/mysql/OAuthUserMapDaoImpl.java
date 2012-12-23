@@ -20,8 +20,8 @@ public class OAuthUserMapDaoImpl extends AbstractDao implements OAuthUserMapDao 
 	
 	private static final String SQL_INSERT_AUTH_USER_MAP = "INSERT INTO DRIP_OAUTH_USER_MAP (OAUTH_SITE_ID,OAUTH_USER_ID,USER_ID) VALUE (?,?,?)";
 	@Override
-	public void mapUserId(Connection con, int authSiteId,String authUserId, Long userId) {
-		DatabaseUtil.insert(con, SQL_INSERT_AUTH_USER_MAP, authSiteId, authUserId, userId);
+	public Long mapUserId(Connection con, int authSiteId,String authUserId, Long userId) {
+		return DatabaseUtil.insert(con, SQL_INSERT_AUTH_USER_MAP, authSiteId, authUserId, userId);
 	}
 
 }

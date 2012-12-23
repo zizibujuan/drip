@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -133,6 +135,7 @@ public class LoginServlet extends DripServlet {
 		userInfo.put("tinyUrl", currentUser.get("tinyurl"));
 		userInfo.put("headUrl", currentUser.get("headurl"));
 		userInfo.put("mainUrl", currentUser.get("mainurl"));
+		userInfo.put("site", OAuthConstants.RENREN); // 注明是使用人人帐号登录的
 		
 		UserSession.setUser(req, userInfo);
 		// 跳转到个人首页
@@ -149,7 +152,6 @@ public class LoginServlet extends DripServlet {
 		String name = (String) renrenUser.get("name");
 		String headurl = (String) renrenUser.get("headurl");
 		
-		
 		// name,sex,birthday,tinyurl,headurl,mainurl,hometown_location,work_history,university_history
 		//在帐号关联表里没有记录，用户是第一次来；为这个用户创建一个User对象
 		Map<String,Object> renrenUserInfo = new HashMap<String, Object>();
@@ -158,6 +160,37 @@ public class LoginServlet extends DripServlet {
 		renrenUserInfo.put("headUrl", headurl);
 		renrenUserInfo.put("authSiteId", OAuthConstants.RENREN);
 		renrenUserInfo.put("authUserId", rrUid);
+		
+		// 用户头像列表
+		String tinyurl = (String)renrenUser.get("tinyurl");
+		String mainurl = (String)renrenUser.get("mainurl");
+		
+		List<Map<String,Object>> avatarList = new ArrayList<Map<String,Object>>();
+		
+		Map<String,Object> tinyUrlMap = new HashMap<String, Object>();
+		tinyUrlMap.put("urlName", "tinyUrl");
+		tinyUrlMap.put("width", 50);
+		tinyUrlMap.put("height", 50);
+		tinyUrlMap.put("url", tinyurl);
+		
+		Map<String,Object> headUrlMap = new HashMap<String, Object>();
+		tinyUrlMap.put("urlName", "headUrl");
+		tinyUrlMap.put("width", 100);
+		tinyUrlMap.put("height", 100);
+		tinyUrlMap.put("url", headurl);
+		
+		Map<String,Object> mainUrlMap = new HashMap<String, Object>();
+		tinyUrlMap.put("urlName", "mainUrl");
+		tinyUrlMap.put("width", 200);
+		tinyUrlMap.put("height", 200);
+		tinyUrlMap.put("url", mainurl);
+		
+		avatarList.add(tinyUrlMap);
+		avatarList.add(headUrlMap);
+		avatarList.add(mainUrlMap);
+		
+		renrenUserInfo.put("avatar", avatarList);
+		
 		return renrenUserInfo;
 	}
 

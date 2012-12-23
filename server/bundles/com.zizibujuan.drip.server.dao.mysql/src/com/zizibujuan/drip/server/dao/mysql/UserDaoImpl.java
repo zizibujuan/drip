@@ -2,6 +2,7 @@ package com.zizibujuan.drip.server.dao.mysql;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -9,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.dao.OAuthUserMapDao;
+import com.zizibujuan.drip.server.dao.UserAvatarDao;
 import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.dao.UserRelationDao;
 import com.zizibujuan.drip.server.exception.dao.DataAccessException;
@@ -23,9 +25,16 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	private static final Logger logger = LoggerFactory.getLogger(UserDaoImpl.class);
 	private UserRelationDao userRelationDao;
 	private OAuthUserMapDao oAuthUserMapDao;
+	private UserAvatarDao userAvatarDao;
 	
 	private static final String SQL_INSERT_USER = "INSERT INTO DRIP_USER_INFO " +
-			"(LOGIN_NAME,NICK_NAME,EMAIL,LOGIN_PWD,MOBILE,REAL_NAME,CREATE_TIME) " +
+			"(LOGIN_NAME," +
+			"NICK_NAME," +
+			"EMAIL," +
+			"LOGIN_PWD," +
+			"MOBILE," +
+			"REAL_NAME," +
+			"CREATE_TIME) " +
 			"VALUES " +
 			"(?,?,?,?,?,?,now())";
 	
@@ -92,11 +101,13 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	
 	private static final String SQL_GET_USER_FOR_SESSION_BY_ID = SQL_GET_USER_FOR_SESSION + "WHERE DBID=?";
 	@Override
-	public Map<String, Object> get(Long userId) {
+	public Map<String, Object> getSimple(Long userId) {
+		// TODO：如何添加用户头像？
 		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_USER_FOR_SESSION_BY_ID, userId);
 	}
 	
-	private static final String SQL_UPDATE_USER = "UPDATE DRIP_USER_INFO SET LAST_LOGIN_TIME = now() " +
+	private static final String SQL_UPDATE_USER = "UPDATE DRIP_USER_INFO " +
+			"SET LAST_LOGIN_TIME = now() " +
 			"WHERE DBID=?";
 	@Override
 	public void updateLastLoginTime(Long userId) {
@@ -104,7 +115,11 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	}
 	
 	// 在插入记录时，如果nickName为空，则插入登录名
-	private static final String SQL_GET_LOGIN = "SELECT DBID \"userId\", REAL_NAME \"realName\", NICK_NAME \"nickName\" FROM DRIP_USER_INFO WHERE DBID=?";
+	private static final String SQL_GET_LOGIN = "SELECT " +
+			"DBID \"userId\", " +
+			"REAL_NAME \"realName\", " +
+			"NICK_NAME \"nickName\" " +
+			"FROM DRIP_USER_INFO WHERE DBID=?";
 	@Override
 	public Map<String, Object> getLoginInfo(Long userId) {
 		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_LOGIN, userId);
@@ -141,12 +156,18 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		
 		int authSiteId = Integer.valueOf(userInfo.get("authSiteId").toString());
 		String authUserId = userInfo.get("authUserId").toString();
+		@SuppressWarnings("unchecked")
+		List<Map<String,Object>> avatarList = (List<Map<String, Object>>) userInfo.get("avatar");
 		try{
 			con = getDataSource().getConnection();
 			con.setAutoCommit(false);
 			userId = this.addUser(con, userInfo);
-			oAuthUserMapDao.mapUserId(con, authSiteId, authUserId, userId);
+			Long mapUserId = oAuthUserMapDao.mapUserId(con, authSiteId, authUserId, userId);
+			// FIXME:是记录drip用户标识，还是第三方用户标识？
 			userRelationDao.watch(con, userId, userId);
+			if(avatarList != null && avatarList.size()>0){
+				userAvatarDao.add(con, mapUserId, avatarList);
+			}
 			con.commit();
 		}catch(SQLException e){
 			DatabaseUtil.safeRollback(con);
@@ -171,11 +192,17 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		return DatabaseUtil.insert(con, SQL_INSERT_USER, loginName,nickName,email,password,mobile,realName);
 	}
 	
+	@Override
+	public Map<String, Object> getFull(Long userId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
 	public void setUserRelationDao(UserRelationDao userRelationDao) {
 		logger.info("注入userRelationDao");
 		this.userRelationDao = userRelationDao;
 	}
-
 	public void unsetUserRelationDao(UserRelationDao userRelationDao) {
 		if (this.userRelationDao == userRelationDao) {
 			logger.info("注销userRelationDao");
@@ -187,12 +214,23 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		logger.info("注入oAuthUserMapDao");
 		this.oAuthUserMapDao = oAuthUserMapDao;
 	}
-
 	public void unsetOAuthUserMapDao(OAuthUserMapDao oAuthUserMapDao) {
 		if (this.oAuthUserMapDao == oAuthUserMapDao) {
 			logger.info("注销oAuthUserMapDao");
 			this.oAuthUserMapDao = null;
 		}
 	}
+	
+	public void setUserAvatarDao(UserAvatarDao userAvatarDao) {
+		logger.info("注入userAvatarDao");
+		this.userAvatarDao = userAvatarDao;
+	}
+	public void unsetUserAvatarDao(UserAvatarDao userAvatarDao) {
+		if (this.userAvatarDao == userAvatarDao) {
+			logger.info("注销userAvatarDao");
+			this.userAvatarDao = null;
+		}
+	}
 
+	
 }
