@@ -77,6 +77,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	}
 
 	// 这里只查询出需要在界面上显示的用户信息，主要存储在当前用户的session中。
+	// 以下信息可以存在session中，但是有些信息不能显示在客户端，如email和mobile。
 	private static final String SQL_GET_USER_FOR_SESSION = "SELECT " +
 			"DBID \"id\"," +
 			//"LOGIN_NAME," +
@@ -102,8 +103,23 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	private static final String SQL_GET_USER_FOR_SESSION_BY_ID = SQL_GET_USER_FOR_SESSION + "WHERE DBID=?";
 	@Override
 	public Map<String, Object> getSimple(Long userId) {
-		// TODO：如何添加用户头像？
 		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_USER_FOR_SESSION_BY_ID, userId);
+	}
+	
+	private static final String SQL_GET_USER_FOR_PUBLIC = "SELECT " +
+			"DBID \"id\"," +
+			"REAL_NAME \"displayName\"," +
+			"FAN_COUNT \"fanCount\","+
+			"FOLLOW_COUNT \"followCount\","+
+			"EXER_DRAFT_COUNT \"exerDraftCount\","+
+			"EXER_PUBLISH_COUNT \"exerPublishCount\", "+
+			"ANSWER_COUNT \"answerCount\", "+
+			"EXER_DRAFT_COUNT+EXER_PUBLISH_COUNT \"exerciseCount\" " +
+			"FROM DRIP_USER_INFO WHERE DBID=?";
+	@Override
+	public Map<String, Object> getPublic(Long userId) {
+		// TODO：添加用户头像, 该使用drip用户标识，还是第三方网站的用户标识，使用第三方更灵活
+		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_USER_FOR_PUBLIC, userId);
 	}
 	
 	private static final String SQL_UPDATE_USER = "UPDATE DRIP_USER_INFO " +

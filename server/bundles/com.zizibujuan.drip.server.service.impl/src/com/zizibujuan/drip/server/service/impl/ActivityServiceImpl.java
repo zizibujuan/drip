@@ -38,7 +38,7 @@ public class ActivityServiceImpl implements ActivityService {
 		logger.info(list.toString());
 		for(Map<String,Object> each : list){
 			Long watchedUserId = Long.valueOf(each.get("userId").toString());
-			Map<String,Object> userInfo = userDao.getSimple(watchedUserId);
+			Map<String,Object> userInfo = userDao.getPublic(watchedUserId);
 			each.put("userInfo", userInfo);
 			
 			Long contentId = Long.valueOf(each.get("contentId").toString());
