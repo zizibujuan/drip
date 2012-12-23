@@ -117,7 +117,7 @@
             class="com.zizibujuan.drip.server.configurator.servlet.SessionFilter">
             <init-param
                name="excludes"
-               value="/,/index.html,/signup.html,/drip/exercises/list.html,/closeRenrenInviteWindow.html">
+               value="/,/index.html,/signup.html,/drip/exercises/list.html,/closeRenrenInviteWindow.html,/dripx/login_form.html">
          	</init-param>
       </filter>
       
