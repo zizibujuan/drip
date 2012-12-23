@@ -33,6 +33,13 @@ public class RestHtmlFilter implements Filter {
 		// nothing to do
 	}
 
+	/**
+	 * 
+	 * 如果是跳转请求：<br/>
+	 * 跳转请求，只用于请求资源。而注销操作，并没有请求资源，因此使用ajax请求。
+	 * 
+	 * 如果是ajax请求:<br/>
+	 */
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse resp,
 			FilterChain chain) throws IOException, ServletException {
