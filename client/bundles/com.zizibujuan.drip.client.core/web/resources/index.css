@@ -13,6 +13,8 @@ body{
 	clear: both;
 	overflow:hidden;
 	cursor:default;
+	line-height: 1.4;
+	font-family: Helvetica, arial, freesans, clean, sans-serif;
 }
 
 a, div{
@@ -37,7 +39,7 @@ a{
 
 .drip_version{
 	float: left;
-	font-size: 10px;
+	font-size: 12px;
 	color:gray;
 	padding: 1px;
 }
@@ -97,11 +99,12 @@ a{
 }
 
 .drip_header_logged_out .drip_header_logo{
-	font-size: 30px;
+	font-size: 35px;
 	font-weight:bold;
 	color: #00a300;
 	letter-spacing: 4px;
 	float: left;
+	font-family:STKaiti,BiauKai;
 }
 
 .drip_header_logged_in .drip_header_logo{
@@ -110,7 +113,6 @@ a{
 	color: #00a300;
 	letter-spacing: 4px;
 	float:left;
-	
 	padding-top: 8px;
 }
 
@@ -176,7 +178,7 @@ a{
 .drip_note{
 	color:#999;
 	margin-top: 7px;
-	font-size: 11px;
+	font-size: 12px;
 }
 
 .drip_heading{
