@@ -15,6 +15,9 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.zizibujuan.drip.server.exception.dao.DataAccessException;
 import com.zizibujuan.drip.server.util.PageInfo;
 
@@ -24,6 +27,8 @@ import com.zizibujuan.drip.server.util.PageInfo;
  * @since 0.0.1
  */
 public abstract class DatabaseUtil {
+	private static final Logger logger = LoggerFactory.getLogger(DatabaseUtil.class);
+	
 	private static String DEFAULT_ID = "DBID";
 	private static String SQL_DELETE_BY_IDENTITY = "DELETE FROM %s WHERE %s=?";
 	private static String SQL_GET_BY_IDENTITY = "SELECT * FROM %s WHERE %s=?";
@@ -515,10 +520,37 @@ public abstract class DatabaseUtil {
 			}
 			pst.executeUpdate();
 		}catch(SQLException e){
-			System.out.println(e);
+			logger.error("更新sql出错，sql语句是:" + sql, e);
 			throw new DataAccessException(e);
 		}finally{
 			DatabaseUtil.closeResultSet(rst);
+			DatabaseUtil.closeStatement(pst);
+		}
+	}
+	
+	/**
+	 * 批量更新数据库
+	 * @param con 数据库链接
+	 * @param sql sql脚本
+	 * @param bpss 匿名函数，在其中设置传递的参数值
+	 * @return 参照 {@link PreparedStatement#executeBatch()}的返回参数
+	 */
+	public static int[] batchUpdate(Connection con, String sql, BatchPreparedStatementSetter bpss) {
+		logger.debug("Executing SQL batch update [" + sql + "]");
+		
+		PreparedStatement pst = null;
+		try{
+			pst = con.prepareStatement(sql);
+			int count = bpss.getBatchSize();
+			for(int i = 0; i < count; i++){
+				bpss.setValues(pst, i);
+				pst.addBatch();
+			}
+			return pst.executeBatch();
+		}catch(SQLException e){
+			logger.error("批量更新sql出错，sql语句是:" + sql, e);
+			throw new DataAccessException(e);
+		}finally{
 			DatabaseUtil.closeStatement(pst);
 		}
 	}
