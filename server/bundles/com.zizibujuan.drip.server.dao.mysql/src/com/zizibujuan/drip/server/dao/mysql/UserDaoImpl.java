@@ -188,6 +188,9 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		}catch(SQLException e){
 			DatabaseUtil.safeRollback(con);
 			throw new DataAccessException(e);
+		}catch(Exception e){
+			DatabaseUtil.safeRollback(con);
+			throw new DataAccessException(e);
 		}finally{
 			DatabaseUtil.closeConnection(con);
 		}

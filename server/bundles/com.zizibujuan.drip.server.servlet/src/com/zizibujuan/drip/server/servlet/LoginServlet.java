@@ -166,32 +166,25 @@ public class LoginServlet extends DripServlet {
 		String mainurl = (String)renrenUser.get("mainurl");
 		
 		List<Map<String,Object>> avatarList = new ArrayList<Map<String,Object>>();
-		
-		Map<String,Object> tinyUrlMap = new HashMap<String, Object>();
-		tinyUrlMap.put("urlName", "tinyUrl");
-		tinyUrlMap.put("width", 50);
-		tinyUrlMap.put("height", 50);
-		tinyUrlMap.put("url", tinyurl);
-		
-		Map<String,Object> headUrlMap = new HashMap<String, Object>();
-		tinyUrlMap.put("urlName", "headUrl");
-		tinyUrlMap.put("width", 100);
-		tinyUrlMap.put("height", 100);
-		tinyUrlMap.put("url", headurl);
-		
-		Map<String,Object> mainUrlMap = new HashMap<String, Object>();
-		tinyUrlMap.put("urlName", "mainUrl");
-		tinyUrlMap.put("width", 200);
-		tinyUrlMap.put("height", 200);
-		tinyUrlMap.put("url", mainurl);
-		
-		avatarList.add(tinyUrlMap);
-		avatarList.add(headUrlMap);
-		avatarList.add(mainUrlMap);
-		
+		addUserImage(avatarList,"tinyUrl",tinyurl,50,50);
+		addUserImage(avatarList,"headUrl",headurl,100,100);
+		addUserImage(avatarList,"mainUrl",mainurl,200,200);
 		renrenUserInfo.put("avatar", avatarList);
 		
 		return renrenUserInfo;
+	}
+
+	private void addUserImage(List<Map<String, Object>> avatarList,
+			String urlName,
+			String url,
+			int width,
+			int height) {
+		Map<String,Object> tinyUrlMap = new HashMap<String, Object>();
+		tinyUrlMap.put("urlName", urlName);
+		tinyUrlMap.put("url", url);
+		tinyUrlMap.put("width", width);
+		tinyUrlMap.put("height", height);
+		avatarList.add(tinyUrlMap);
 	}
 
 	private void redirectToRenrenLoginPage(HttpServletResponse resp)
