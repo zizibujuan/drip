@@ -481,7 +481,7 @@ public abstract class DatabaseUtil {
 		}
 	}
 	
-	public static long insert(Connection con, String sql, Object... inParams){
+	public static long insert(Connection con, String sql, Object... inParams) throws SQLException{
 		if(inParams == null){
 			inParams = new Object[]{};
 		}
@@ -498,15 +498,15 @@ public abstract class DatabaseUtil {
 			rst.next();         
 			return rst.getLong(1);
 		}catch(SQLException e){
-			System.out.println(e);
-			throw new DataAccessException(e);
+			logger.error("insert sql出错，sql语句是:" + sql, e);
+			throw e;
 		}finally{
 			DatabaseUtil.closeResultSet(rst);
 			DatabaseUtil.closeStatement(pst);
 		}
 	}
 
-	public static void update(Connection con, String sql, Object... inParams) {
+	public static void update(Connection con, String sql, Object... inParams) throws SQLException {
 		if(inParams == null){
 			inParams = new Object[]{};
 		}
@@ -521,7 +521,7 @@ public abstract class DatabaseUtil {
 			pst.executeUpdate();
 		}catch(SQLException e){
 			logger.error("更新sql出错，sql语句是:" + sql, e);
-			throw new DataAccessException(e);
+			throw e;
 		}finally{
 			DatabaseUtil.closeResultSet(rst);
 			DatabaseUtil.closeStatement(pst);
@@ -534,8 +534,9 @@ public abstract class DatabaseUtil {
 	 * @param sql sql脚本
 	 * @param bpss 匿名函数，在其中设置传递的参数值
 	 * @return 参照 {@link PreparedStatement#executeBatch()}的返回参数
+	 * @throws SQLException 
 	 */
-	public static int[] batchUpdate(Connection con, String sql, BatchPreparedStatementSetter bpss) {
+	public static int[] batchUpdate(Connection con, String sql, BatchPreparedStatementSetter bpss) throws SQLException {
 		logger.debug("Executing SQL batch update [" + sql + "]");
 		
 		PreparedStatement pst = null;
@@ -549,10 +550,41 @@ public abstract class DatabaseUtil {
 			return pst.executeBatch();
 		}catch(SQLException e){
 			logger.error("批量更新sql出错，sql语句是:" + sql, e);
-			throw new DataAccessException(e);
+			throw e;
 		}finally{
-			DatabaseUtil.closeStatement(pst);
+			closeStatement(pst);
 		}
 	}
-
+	
+	/**
+	 * 批量更新数据库
+	 * @param ds 数据源对象
+	 * @param sql sql脚本
+	 * @param bpss 匿名函数，在其中设置传递的参数值
+	 * @return 参照 {@link PreparedStatement#executeBatch()}的返回参数
+	 */
+	public static int[] batchUpdate(DataSource ds, String sql, BatchPreparedStatementSetter bpss) {
+		logger.debug("Executing SQL batch update [" + sql + "]");
+		int[] result = null;
+		Connection con = null;
+		PreparedStatement pst = null;
+		try{
+			con = ds.getConnection();
+			pst = con.prepareStatement(sql);
+			int count = bpss.getBatchSize();
+			for(int i = 0; i < count; i++){
+				bpss.setValues(pst, i);
+				pst.addBatch();
+			}
+			result = pst.executeBatch();
+			con.commit();
+			return result;
+		}catch(SQLException e){
+			logger.error("批量更新sql出错，sql语句是:" + sql, e);
+			throw new DataAccessException(e);
+		}finally{
+			closeStatement(pst);
+			closeConnection(con);
+		}
+	}
 }
