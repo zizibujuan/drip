@@ -3,16 +3,14 @@ package com.zizibujuan.drip.server.servlet;
 import java.io.IOException;
 import java.net.URLEncoder;
 
-import javax.security.auth.login.AppConfigurationEntry;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.renren.api.client.RenrenApiConfig;
 import com.zizibujuan.drip.server.util.servlet.DripServlet;
 
 /**
- * 邀请好友
+ * 邀请好友,暂时没有用到该类。
  * @author jzw
  * @since 0.0.1
  */

@@ -63,7 +63,8 @@ class UrlBasedDriverDataSource implements DataSource {
         return cls.isInstance(driver);
     }
     
-    public <T> T unwrap(Class<T> cls) { 
+    @SuppressWarnings("unchecked")
+	public <T> T unwrap(Class<T> cls) { 
         return (isWrapperFor(cls)) 
             ? (T) driver 
             : null;
