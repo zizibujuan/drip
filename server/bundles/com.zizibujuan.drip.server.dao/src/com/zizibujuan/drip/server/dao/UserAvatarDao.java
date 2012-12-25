@@ -1,6 +1,7 @@
 package com.zizibujuan.drip.server.dao;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +19,8 @@ public interface UserAvatarDao {
 	 * @param con 数据库链接
 	 * @param mapUserId drip用户与第三方网站用户映射的标识
 	 * @param avatarList 头像列表
+	 * @throws SQLException 
 	 */
-	void add(Connection con, Long mapUserId, List<Map<String, Object>> avatarList);
+	void add(Connection con, Long mapUserId, List<Map<String, Object>> avatarList) throws SQLException;
 
 }

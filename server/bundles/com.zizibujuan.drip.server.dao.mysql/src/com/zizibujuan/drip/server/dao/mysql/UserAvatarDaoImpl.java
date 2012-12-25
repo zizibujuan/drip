@@ -29,24 +29,21 @@ public class UserAvatarDaoImpl extends AbstractDao implements UserAvatarDao {
 			"VALUES (?,?,?,?,?,now())";
 	/**
 	 * 使用批量新增的方式插入
+	 * @throws SQLException 
 	 */
 	@Override
-	public void add(Connection con, final Long mapUserId, final List<Map<String, Object>> avatarList) {
+	public void add(Connection con, final Long mapUserId, final List<Map<String, Object>> avatarList) throws SQLException {
 		DatabaseUtil.batchUpdate(con, SQL_INSERT_USER_AVATAR, new BatchPreparedStatementSetter() {
 			
 			@Override
 			public void setValues(PreparedStatement ps, int index) throws SQLException {
 				Map<String,Object> avatar = avatarList.get(index);
 				ps.setLong(1, mapUserId);
-				Object oUrlName = avatar.get("urlName");
-				Object oWidth = avatar.get("width");
-				Object oHeight = avatar.get("height");
-				Object oUrl = avatar.get("url");
 				
-				ps.setObject(2, oUrlName);
-				ps.setObject(3, oWidth);
-				ps.setObject(4, oHeight);
-				ps.setObject(5, oUrl);
+				ps.setObject(2, avatar.get("urlName"));
+				ps.setObject(3, avatar.get("width"));
+				ps.setObject(4, avatar.get("height"));
+				ps.setObject(5, avatar.get("url"));
 			}
 			
 			@Override

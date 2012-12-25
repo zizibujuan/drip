@@ -1,6 +1,7 @@
 package com.zizibujuan.drip.server.dao;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Map;
 
 import com.zizibujuan.drip.server.util.OAuthConstants;
@@ -112,15 +113,17 @@ public interface UserDao {
 	 * 添加一道习题后，在用户的添加习题数上加1
 	 * @param con 数据库链接
 	 * @param userId 用户标识
+	 * @throws SQLException 
 	 */
-	void increaseExerciseCount(Connection con, Long userId);
+	void increaseExerciseCount(Connection con, Long userId) throws SQLException;
 	
 	/**
 	 * 用户回答了一套习题后，在用户回答的习题数上加1
 	 * @param con 数据库链接
 	 * @param userId 用户标识
+	 * @throws SQLException 
 	 */
-	void increaseAnswerCount(Connection con, Long userId);
+	void increaseAnswerCount(Connection con, Long userId) throws SQLException;
 
 	/**
 	 * 导入第三网站的用户信息

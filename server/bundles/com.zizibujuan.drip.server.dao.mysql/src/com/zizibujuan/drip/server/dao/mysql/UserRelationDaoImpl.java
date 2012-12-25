@@ -21,7 +21,7 @@ public class UserRelationDaoImpl extends AbstractDao implements UserRelationDao 
 			"VALUES " +
 			"(?,?,now())";
 	@Override
-	public void watch(Connection con, Long userId, Long watchUserId) {
+	public void watch(Connection con, Long userId, Long watchUserId) throws SQLException {
 		DatabaseUtil.insert(con, SQL_INSERT_USER_RELATION, userId, watchUserId);
 	}
 

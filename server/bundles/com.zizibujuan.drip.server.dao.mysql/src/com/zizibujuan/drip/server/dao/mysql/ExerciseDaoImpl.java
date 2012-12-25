@@ -119,7 +119,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 		return exerId;
 	}
 
-	private void addActivity(Connection con,Long userId, Long contentId, String actionType) {
+	private void addActivity(Connection con,Long userId, Long contentId, String actionType) throws SQLException {
 		// FIXME:是不是直接传各自的参数更好一些，而不是现在传入map对象，还需要两遍转换
 		Map<String,Object> activityInfo = new HashMap<String, Object>();
 		activityInfo.put("USER_ID", userId);
@@ -132,7 +132,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 	private static final String SQL_INSERT_EXERCISE = 
 			"INSERT INTO DRIP_EXERCISE (CONTENT,EXER_TYPE, EXER_CATEGORY, CRT_TM, CRT_USER_ID) VALUES (?,?,?,now(),?)";
 	// 1. 新增习题
-	private Long addExercise(Connection con, Map<String,Object> exerciseInfo){
+	private Long addExercise(Connection con, Map<String,Object> exerciseInfo) throws SQLException{
 		Object oContent = exerciseInfo.get("content");
 		Object oExerType = exerciseInfo.get("exerType");
 		Object oExerCategory = exerciseInfo.get("exerCategory");
@@ -144,7 +144,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			"(EXER_ID,CONTENT,OPT_SEQ) VALUES " +
 			"(?,?,?)";
 	// 2. 添加选项
-	private List<Long> addOptions(Connection con, Long exerId, List<String> optionContents){
+	private List<Long> addOptions(Connection con, Long exerId, List<String> optionContents) throws SQLException{
 		List<Long> result = new ArrayList<Long>();
 		int len = optionContents.size();
 		for(int i = 0; i < len; i++){

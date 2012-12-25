@@ -1,6 +1,7 @@
 package com.zizibujuan.drip.server.dao;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Map;
 
 /**
@@ -84,7 +85,8 @@ public interface AnswerDao {
 	 * 			optionId：选项标识
 	 * 			content: 答案内容
 	 * </pre>
+	 * @throws SQLException 
 	 */
-	void save(Connection con, Long userId, Map<String, Object> answerInfo);
+	void save(Connection con, Long userId, Map<String, Object> answerInfo) throws SQLException;
 
 }

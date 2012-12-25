@@ -1,6 +1,7 @@
 package com.zizibujuan.drip.server.dao;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import com.zizibujuan.drip.server.util.OAuthConstants;
 
@@ -26,7 +27,8 @@ public interface OAuthUserMapDao {
 	 * @param authUserId 外部网站用户标识
 	 * @param userId 本网站用户标识
 	 * @return 返回映射记录的标识，该标识不是第三方网站的用户标识，而是与drip用户关联后生成的一个新标识。
+	 * @throws SQLException 
 	 */
-	Long mapUserId(Connection conn, int authSiteId, String authUserId, Long userId);
+	Long mapUserId(Connection conn, int authSiteId, String authUserId, Long userId) throws SQLException;
 
 }

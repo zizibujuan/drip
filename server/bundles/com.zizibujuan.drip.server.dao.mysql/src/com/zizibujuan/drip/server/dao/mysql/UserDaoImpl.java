@@ -152,7 +152,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			"EXER_PUBLISH_COUNT=EXER_PUBLISH_COUNT+1 " +
 			"where DBID=?";
 	@Override
-	public void increaseExerciseCount(Connection con, Long userId) {
+	public void increaseExerciseCount(Connection con, Long userId) throws SQLException {
 		DatabaseUtil.update(con, SQL_UPDATE_EXERCISE_COUNT, userId);
 	}
 	
@@ -160,7 +160,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			"ANSWER_COUNT=ANSWER_COUNT+1 " +
 			"where DBID=?";
 	@Override
-	public void increaseAnswerCount(Connection con, Long userId) {
+	public void increaseAnswerCount(Connection con, Long userId) throws SQLException {
 		DatabaseUtil.update(con, SQL_UPDATE_ANSWER_COUNT, userId);
 	}
 	
@@ -179,7 +179,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			con.setAutoCommit(false);
 			userId = this.addUser(con, userInfo);
 			Long mapUserId = oAuthUserMapDao.mapUserId(con, authSiteId, authUserId, userId);
-			// FIXME:是记录drip用户标识，还是第三方用户标识？
+			// 自己关注自己时，使用drip用户标识
 			userRelationDao.watch(con, userId, userId);
 			if(avatarList != null && avatarList.size()>0){
 				userAvatarDao.add(con, mapUserId, avatarList);
@@ -198,7 +198,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	}
 	
 	
-	private Long addUser(Connection con, Map<String,Object> userInfo){
+	private Long addUser(Connection con, Map<String,Object> userInfo) throws SQLException{
 		// TODO:继续添加更详细的用户信息。
 		String loginName = userInfo.get("loginName").toString();
 		String nickName = userInfo.get("nickName").toString();

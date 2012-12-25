@@ -1,6 +1,7 @@
 package com.zizibujuan.drip.server.dao.mysql;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import com.zizibujuan.drip.server.dao.OAuthUserMapDao;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
@@ -20,7 +21,7 @@ public class OAuthUserMapDaoImpl extends AbstractDao implements OAuthUserMapDao 
 	
 	private static final String SQL_INSERT_AUTH_USER_MAP = "INSERT INTO DRIP_OAUTH_USER_MAP (OAUTH_SITE_ID,OAUTH_USER_ID,USER_ID) VALUE (?,?,?)";
 	@Override
-	public Long mapUserId(Connection con, int authSiteId,String authUserId, Long userId) {
+	public Long mapUserId(Connection con, int authSiteId,String authUserId, Long userId) throws SQLException {
 		return DatabaseUtil.insert(con, SQL_INSERT_AUTH_USER_MAP, authSiteId, authUserId, userId);
 	}
 

@@ -91,7 +91,6 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 	@Override
 	public void save(Long userId, Map<String, Object> answerInfo) {
 		Connection con = null;
-		
 		try {
 			con = getDataSource().getConnection();
 			con.setAutoCommit(false);
@@ -100,6 +99,9 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 		} catch (SQLException e) {
 			DatabaseUtil.safeRollback(con);
 			throw new DataAccessException(e);
+		} catch(DataAccessException e){
+			DatabaseUtil.safeRollback(con);
+			throw e;
 		}finally{
 			DatabaseUtil.closeConnection(con);
 		}
@@ -108,7 +110,7 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 	private static final String SQL_INSERT_ANSWER = "INSERT INTO DRIP_ANSWER (EXER_ID,GUIDE,CRT_TM,CRT_USER_ID) VALUES (?,?,now(),?)";
 	private static final String SQL_INSERT_ANSWER_DETAIL = "INSERT INTO DRIP_ANSWER_DETAIL (ANSWER_ID,OPT_ID,CONTENT) VALUES (?,?,?)";
 	@Override
-	public void save(Connection con, Long userId, Map<String, Object> answerInfo) {
+	public void save(Connection con, Long userId, Map<String, Object> answerInfo) throws SQLException {
 		Object exerId = answerInfo.get("exerId");
 		Object guide = answerInfo.get("guide");
 		Long answerId = DatabaseUtil.insert(con, SQL_INSERT_ANSWER, exerId, guide, userId);
