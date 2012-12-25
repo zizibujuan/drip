@@ -13,13 +13,34 @@ import javax.servlet.http.HttpSession;
 public abstract class UserSession {
 	
 	private static final String SESSION_KEY = "drip-user";
-
-	public static Long getUserId(HttpServletRequest req) {
+	public static final String KEY_LOCAL_USER_ID = "id";
+	public static final String KEY_MAPPED_USER_ID = "mapped_user_id";
+	
+	/**
+	 * 获取本网站的用户标识，我们的用户有来自第三方网站的，有在本网站注册的。
+	 * 每个用户都有三个标识，一个是对应到本网站的用户标识，一个第三方网站的用户标识，还有一个是关联本网站和第三方网站用户的关联标识。
+	 * @param req
+	 * @return 本网站的用户标识，如果没有取到，返回null
+	 */
+	public static Long getLocalUserId(HttpServletRequest req) {
 		Map<String,Object> userInfo = getUser(req);
 		if(userInfo == null){
 			return null;
 		}
-		return Long.valueOf(userInfo.get("id").toString());
+		return Long.valueOf(userInfo.get(KEY_LOCAL_USER_ID).toString());
+	}
+	
+	/**
+	 * 获取第三方网站用户与本网站用户关联的关联标识。注意在网站的所有活动中不使用第三方网站标识，而是使用这个关联标识。
+	 * @param req
+	 * @return 第三方网站用户与本网站用户关联的关联标识，如果没有取到，返回null
+	 */
+	public static Long getMappedUserId(HttpServletRequest req){
+		Map<String,Object> userInfo = getUser(req);
+		if(userInfo == null){
+			return null;
+		}
+		return Long.valueOf(userInfo.get(KEY_MAPPED_USER_ID).toString());
 	}
 	
 	/**
