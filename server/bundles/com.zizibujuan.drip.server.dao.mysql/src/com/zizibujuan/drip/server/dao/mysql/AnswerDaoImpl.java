@@ -89,12 +89,12 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 	}
 
 	@Override
-	public void save(Long userId, Map<String, Object> answerInfo) {
+	public void save(Long localUserId, Long mapUserId, Map<String, Object> answerInfo) {
 		Connection con = null;
 		try {
 			con = getDataSource().getConnection();
 			con.setAutoCommit(false);
-			this.save(con, userId, answerInfo);
+			this.save(con, localUserId, mapUserId, answerInfo);
 			con.commit();
 		} catch (SQLException e) {
 			DatabaseUtil.safeRollback(con);
@@ -110,7 +110,7 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 	private static final String SQL_INSERT_ANSWER = "INSERT INTO DRIP_ANSWER (EXER_ID,GUIDE,CRT_TM,CRT_USER_ID) VALUES (?,?,now(),?)";
 	private static final String SQL_INSERT_ANSWER_DETAIL = "INSERT INTO DRIP_ANSWER_DETAIL (ANSWER_ID,OPT_ID,CONTENT) VALUES (?,?,?)";
 	@Override
-	public void save(Connection con, Long userId, Map<String, Object> answerInfo) throws SQLException {
+	public void save(Connection con, Long userId, Long mapUserId, Map<String, Object> answerInfo) throws SQLException {
 		Object exerId = answerInfo.get("exerId");
 		Object guide = answerInfo.get("guide");
 		Long answerId = DatabaseUtil.insert(con, SQL_INSERT_ANSWER, exerId, guide, userId);
@@ -130,7 +130,7 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 		// 同时修改后端和session中缓存的该记录
 		userDao.increaseAnswerCount(con, userId);
 		// 在活动表中插入一条记录
-		activityDao.add(con, userId, answerId, ActionType.ANSWER_EXERCISE, true);
+		activityDao.add(con, userId, mapUserId, answerId, ActionType.ANSWER_EXERCISE, true);
 		// 插入答案概述
 		
 				// 插入答案详情

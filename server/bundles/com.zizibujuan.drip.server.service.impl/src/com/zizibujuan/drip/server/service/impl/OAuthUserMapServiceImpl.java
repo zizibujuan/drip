@@ -1,5 +1,7 @@
 package com.zizibujuan.drip.server.service.impl;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,14 +20,14 @@ public class OAuthUserMapServiceImpl implements OAuthUserMapService {
 	private OAuthUserMapDao oAuthUserMapDao;
 	
 	@Override
-	public Long getUserId(int authSiteId, String userId) {
-		return oAuthUserMapDao.getUserId(authSiteId, userId);
+	public Map<String,Object> getUserMapperInfo(int authSiteId, String oauthUserId) {
+		return oAuthUserMapDao.getUserMapperInfo(authSiteId, oauthUserId);
 	}
 
 	@Override
-	public Long getUserId(int authSiteId, int userId) {
-		String sUserId = String.valueOf(userId);
-		return oAuthUserMapDao.getUserId(authSiteId, sUserId);
+	public Map<String,Object> getUserMapperInfo(int authSiteId, int oauthUserId) {
+		String sOauthUserId = String.valueOf(oauthUserId);
+		return oAuthUserMapDao.getUserMapperInfo(authSiteId, sOauthUserId);
 	}
 	
 	

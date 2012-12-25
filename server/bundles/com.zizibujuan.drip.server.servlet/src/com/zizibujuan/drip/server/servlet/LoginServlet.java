@@ -121,12 +121,17 @@ public class LoginServlet extends DripServlet {
 		}
 
 		//判断帐号关联表里有没有现成的关联
-		Long dripUserId = oAuthUserMapService.getUserId(OAuthConstants.RENREN, rrUid);
-		if(dripUserId == null){
+		Map<String,Object> userMapperInfo = oAuthUserMapService.getUserMapperInfo(OAuthConstants.RENREN, rrUid);
+		Long localUserId = null;
+		Long mapUserId = null;
+		if(userMapperInfo.isEmpty()){
 			Map<String, Object> renrenUserInfo = renrenUserToDripUser(currentUser);
-			dripUserId = userService.importUser(renrenUserInfo);
+			Long.valueOf(userMapperInfo.get("LOCAL_USER_ID").toString());
+			
+			mapUserId = Long.valueOf(userMapperInfo.get("MAP_USER_ID").toString());
+			localUserId = userService.importUser(renrenUserInfo);
 		}
-		Map<String,Object> userInfo = userService.login(dripUserId);
+		Map<String,Object> userInfo = userService.login(localUserId);
 		// 在用户session中保存从第三方网站过来的最新数据，而不是从本地的数据库中获取这些数据，
 		// 避免用户已经在第三方网站修改了用户信息，但是drip没能及时更新的问题。
 		// session中存储的值一部分来自drip，一部分来自第三方网站
@@ -136,6 +141,7 @@ public class LoginServlet extends DripServlet {
 		userInfo.put("headUrl", currentUser.get("headurl"));
 		userInfo.put("mainUrl", currentUser.get("mainurl"));
 		userInfo.put("site", OAuthConstants.RENREN); // 注明是使用人人帐号登录的
+		userInfo.put(UserSession.KEY_MAPPED_USER_ID, mapUserId);
 		
 		UserSession.setUser(req, userInfo);
 		// 跳转到个人首页

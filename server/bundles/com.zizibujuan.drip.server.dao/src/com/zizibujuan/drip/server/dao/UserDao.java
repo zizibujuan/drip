@@ -50,10 +50,6 @@ public interface UserDao {
 	 * 		exerDraftCount： 习题草稿数
 	 * 		exerPublishCount：发布的习题数
 	 * 		answerCount： 习题总数 = 习题草稿数+发布的习题数
-	 * 		smallImageUrl: 小头像
-	 * 		largeImageUrl: 
-	 * 		largerImageUrl:
-	 * 		xLargeImageUrl:
 	 * </pre>
 	 */
 	Map<String, Object> getSimple(Long userId);
@@ -77,7 +73,7 @@ public interface UserDao {
 	 * 		xLargeImageUrl:
 	 * </pre>
 	 */
-	Map<String, Object> getPublic(Long userId);
+	Map<String, Object> getPublicInfo(Long userId);
 	
 	/**
 	 * 获取用户的完整信息

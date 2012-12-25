@@ -37,7 +37,7 @@ public class AnswerServlet extends DripServlet {
 			// TODO:从query parameters中获取参数
 			String sExerId = req.getParameter("exerId");
 			Long exerciseId = Long.valueOf(sExerId);
-			Long userId = UserSession.getUserId(req);
+			Long userId = UserSession.getLocalUserId(req);
 			Map<String,Object> answer = answerService.get(userId, exerciseId);
 			ResponseUtil.toJSON(req, resp, answer);
 			return;
@@ -53,8 +53,9 @@ public class AnswerServlet extends DripServlet {
 		String pathInfo = req.getPathInfo();
 		if(pathInfo == null || pathInfo.equals("/")){
 			Map<String,Object> data = RequestUtil.fromJsonObject(req);
-			Long userId = UserSession.getUserId(req);
-			answerService.save(userId, data);
+			Long localUserId = UserSession.getLocalUserId(req);
+			Long mapUserId = UserSession.getMappedUserId(req);
+			answerService.save(localUserId,mapUserId, data);
 			return;
 		}
 		super.doPost(req, resp);
@@ -68,7 +69,7 @@ public class AnswerServlet extends DripServlet {
 		if(pathInfo != null && !pathInfo.equals("/")){
 			Long answerId = Long.valueOf(pathInfo.split("/")[1]);
 			Map<String,Object> data = RequestUtil.fromJsonObject(req);
-			Long userId = UserSession.getUserId(req);
+			Long userId = UserSession.getLocalUserId(req);
 			answerService.update(answerId,userId, data);
 			return;
 		}

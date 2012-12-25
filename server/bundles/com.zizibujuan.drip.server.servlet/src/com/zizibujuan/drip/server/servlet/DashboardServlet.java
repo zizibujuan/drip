@@ -42,7 +42,7 @@ public class DashboardServlet extends DripServlet {
 			throws ServletException, IOException {
 		String pathInfo = req.getPathInfo();
 		if(pathInfo == null || pathInfo.equals("/")){
-			Long userId = UserSession.getUserId(req);
+			Long userId = UserSession.getLocalUserId(req);
 			PageInfo pageInfo = null;
 			List<Map<String,Object>> result = activityService.get(userId,pageInfo);
 			ResponseUtil.toJSON(req, resp, result);

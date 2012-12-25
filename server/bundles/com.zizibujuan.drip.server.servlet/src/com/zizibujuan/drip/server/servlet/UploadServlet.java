@@ -76,10 +76,10 @@ public class UploadServlet extends DripServlet {
 					// 放到配置文件中。
 					// 如果没有赋值，默认放在workspace下。
 					
-					// 根目录
+					// 根目录 TODO:改为可配置
 					String dataFilePath = "/home/jzw/drip/";
-					// 放置习题配图
-					String exercisePath = "exercise/users/"+UserSession.getUserId(req)+"/";
+					// 放置习题配图 FIXME：是否需要在路径中再加一层，mapUserId
+					String exercisePath = "exercise/users/"+UserSession.getLocalUserId(req)+"/";
 					// TODO：用profile放置用户上传的头像
 					// FIXME：是否使用用户标识分组图像，如果使用的话，便于管理；但是不利于底层共享。
 					// 因为在检索图片时，还需要在路径中增加上传用户的信息。
@@ -113,7 +113,7 @@ public class UploadServlet extends DripServlet {
 							map.put("type", ext != null?ext.substring(1).toUpperCase():null);
 							map.put("size", item.getSize());
 							map.put("fieldName", item.getFieldName());
-							map.put("url", "/userImages/exercise/"+UserSession.getUserId(req)+"/"+newFileName);
+							map.put("url", "/userImages/exercise/"+UserSession.getLocalUserId(req)+"/"+newFileName);
 							map.put("fileId", newFileName);
 							result.add(map);
 							File file = new File(dir, newFileName);

@@ -2,6 +2,7 @@ package com.zizibujuan.drip.server.dao;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Map;
 
 import com.zizibujuan.drip.server.util.OAuthConstants;
 
@@ -15,10 +16,17 @@ public interface OAuthUserMapDao {
 	/**
 	 * 从帐号关联表中获取用户名
 	 * @param 授权站点标识 {@link OAuthConstants}
-	 * @param authUserId 外部网站的用户标识
-	 * @return 本网站的用户标识
+	 * @param oauthUserId 第三方用户标识
+	 * @return 本网站用户与第三方网站用户映射信息
+	 * <pre>
+	 * map结构：
+	 * LOCAL_USER_ID: 本网站用户标识
+	 * MAP_USER_ID: 映射标识
+	 * OAUTH_SITE_ID：第三方网站标识
+	 * OAUTH_USER_ID：第三方网站用户标识
+	 * </pre>
 	 */
-	Long getUserId(int authSiteId, String authUserId);
+	Map<String,Object> getUserMapperInfo(int authSiteId, String oauthUserId);
 	
 	/**
 	 * 将外部网站的用户标识与本网站的用户进行关联

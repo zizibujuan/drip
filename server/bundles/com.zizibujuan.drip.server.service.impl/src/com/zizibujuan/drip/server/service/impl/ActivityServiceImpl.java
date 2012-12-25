@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 import com.zizibujuan.drip.server.dao.ActivityDao;
 import com.zizibujuan.drip.server.dao.AnswerDao;
 import com.zizibujuan.drip.server.dao.ExerciseDao;
-import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.service.ActivityService;
+import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.util.ActionType;
 import com.zizibujuan.drip.server.util.PageInfo;
 
@@ -25,11 +25,11 @@ public class ActivityServiceImpl implements ActivityService {
 	private ActivityDao activityDao;
 	private ExerciseDao exerciseDao;
 	private AnswerDao answerDao;
-	private UserDao userDao;
+	private UserService userService;
 	
 	@Override
 	public List<Map<String, Object>> get(Long userId, PageInfo pageInfo) {
-		// 获取用户的活动列表
+		// 获取关注用户的活动列表
 		List<Map<String,Object>> list = activityDao.get(userId, pageInfo);
 		// TODO:然后循环着获取每个活动的详情,如果缓存中已存在，则从缓存中获取。
 		// 用户的详细信息也从缓存中获取
@@ -37,8 +37,8 @@ public class ActivityServiceImpl implements ActivityService {
 		
 		logger.info(list.toString());
 		for(Map<String,Object> each : list){
-			Long watchedUserId = Long.valueOf(each.get("userId").toString());
-			Map<String,Object> userInfo = userDao.getPublic(watchedUserId);
+			Long mapUserId = Long.valueOf(each.get("mapUserId").toString());
+			Map<String,Object> userInfo = userService.getPublicInfo(mapUserId);
 			each.put("userInfo", userInfo);
 			
 			Long contentId = Long.valueOf(each.get("contentId").toString());
@@ -107,17 +107,15 @@ public class ActivityServiceImpl implements ActivityService {
 		}
 	}
 	
-	public void setUserDao(UserDao userDao) {
-		logger.info("注入userDao");
-		this.userDao = userDao;
+	public void setUserService(UserService userService) {
+		logger.info("注入userService");
+		this.userService = userService;
 	}
 
-	public void unsetUserDao(UserDao userDao) {
-		if (this.userDao == userDao) {
-			logger.info("注销userDao");
-			this.userDao = null;
+	public void unsetUserService(UserService userService) {
+		if (this.userService == userService) {
+			logger.info("注销userService");
+			this.userService = null;
 		}
 	}
-	
-	
 }

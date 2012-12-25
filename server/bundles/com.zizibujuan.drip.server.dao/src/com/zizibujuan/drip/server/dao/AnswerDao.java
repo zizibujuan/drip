@@ -59,7 +59,8 @@ public interface AnswerDao {
 
 	/**
 	 * 新增习题答案和习题解析
-	 * @param userId 用户标识
+	 * @param localUserId 本网站用户标识
+	 * @param mapUserId 与第三方网站用户映射的关联标识
 	 * @param answerInfo 答案信息
 	 * <pre>
 	 * map结构：
@@ -70,12 +71,13 @@ public interface AnswerDao {
 	 * 			content: 答案内容
 	 * </pre>
 	 */
-	void save(Long userId, Map<String, Object> answerInfo);
+	void save(Long localUserId, Long mapUserId,Map<String, Object> answerInfo);
 	
 	/**
 	 * 新增习题答案和习题解析
-	 * @param conn 数据库链接
-	 * @param userId 用户标识
+	 * @param con 数据库链接
+	 * @param localUserId 本网站用户标识
+	 * @param mapUserId 与第三方网站用户映射的关联标识
 	 * @param answerInfo 答案信息
 	 * <pre>
 	 * map结构：
@@ -87,6 +89,9 @@ public interface AnswerDao {
 	 * </pre>
 	 * @throws SQLException 
 	 */
-	void save(Connection con, Long userId, Map<String, Object> answerInfo) throws SQLException;
+	void save(Connection con, 
+			Long localUserId, 
+			Long mapUserId, 
+			Map<String, Object> answerInfo) throws SQLException;
 
 }

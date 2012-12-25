@@ -102,7 +102,8 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 							}
 						}
 					}
-					answerDao.save(con, userId, answerInfo);
+					Long mapUserId = Long.valueOf(exerciseInfo.get("MAP_USER_ID").toString());
+					answerDao.save(con, userId, mapUserId, answerInfo);
 				}
 			}
 			

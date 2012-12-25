@@ -27,7 +27,8 @@ public interface AnswerService {
 
 	/**
 	 * 新增习题答案和习题解析
-	 * @param userId 用户标识
+	 * @param localUserId 本网站用户标识
+	 * @param mapUserId 与第三方网站用户映射的关联标识
 	 * @param answerInfo 答案信息
 	 * <pre>
 	 * map结构：
@@ -38,7 +39,7 @@ public interface AnswerService {
 	 * 			content: 答案内容
 	 * </pre>
 	 */
-	void save(Long userId, Map<String, Object> answerInfo);
+	void save(Long localUserId, Long mapUserId, Map<String, Object> answerInfo);
 
 	/**
 	 * 编辑习题答案和习题解析

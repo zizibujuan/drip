@@ -6,6 +6,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.zizibujuan.drip.server.dao.UserAvatarDao;
 import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.service.UserService;
 
@@ -18,6 +19,7 @@ public class UserServiceImpl implements UserService {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	private UserDao userDao;
+	private UserAvatarDao userAvatarDao;
 	
 	// FIXME:学习如何加入salt，明白加入salt有哪些具体好处
 	@Override
@@ -45,6 +47,14 @@ public class UserServiceImpl implements UserService {
 			userDao.updateLastLoginTime(Long.valueOf(userId));
 			return userInfo;
 		}
+	}
+	
+	@Override
+	public Map<String, Object> getPublicInfo(Long mapUserId) {
+		Map<String,Object> userInfo = userDao.getPublicInfo(mapUserId);
+		Map<String,Object> avatarInfo = userAvatarDao.get(mapUserId);
+		userInfo.putAll(avatarInfo);
+		return userInfo;
 	}
 	
 	@Override
@@ -79,5 +89,17 @@ public class UserServiceImpl implements UserService {
 			this.userDao = null;
 		}
 	}
+	
+	public void setUserAvatarDao(UserAvatarDao userAvatarDao) {
+		logger.info("注入userAvatarDao");
+		this.userAvatarDao = userAvatarDao;
+	}
 
+	public void unsetUserAvatarDao(UserAvatarDao userAvatarDao) {
+		if (this.userAvatarDao == userAvatarDao) {
+			logger.info("注销userAvatarDao");
+			this.userAvatarDao = null;
+		}
+	}
+	
 }

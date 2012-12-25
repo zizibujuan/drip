@@ -117,7 +117,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			"EXER_DRAFT_COUNT+EXER_PUBLISH_COUNT \"exerciseCount\" " +
 			"FROM DRIP_USER_INFO WHERE DBID=?";
 	@Override
-	public Map<String, Object> getPublic(Long userId) {
+	public Map<String, Object> getPublicInfo(Long userId) {
 		// TODO：添加用户头像, 该使用drip用户标识，还是第三方网站的用户标识，使用第三方更灵活
 		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_USER_FOR_PUBLIC, userId);
 	}

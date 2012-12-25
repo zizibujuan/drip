@@ -15,7 +15,7 @@ import com.zizibujuan.dbaccess.mysql.ClientDataSourceFactory;
 import com.zizibujuan.drip.server.exception.dao.DataAccessException;
 
 /**
- * 获取数据库服务
+ * 获取数据库服务,TODO:这个因项目而异的配置不应该放在可通用的开发包中。
  * @author 金正伟
  * @since 0.0.1
  */

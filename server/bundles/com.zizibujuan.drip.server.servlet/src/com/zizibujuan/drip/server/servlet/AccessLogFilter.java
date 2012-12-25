@@ -57,7 +57,7 @@ public class AccessLogFilter implements Filter {
 			Long userId = null;
 			boolean anonymous = true;
 			if(UserSession.isLogged(httpServletRequest)){
-				userId = UserSession.getUserId(httpServletRequest);
+				userId = UserSession.getLocalUserId(httpServletRequest);
 				anonymous = false;
 			}else{
 				Cookie[] cookies = httpServletRequest.getCookies();

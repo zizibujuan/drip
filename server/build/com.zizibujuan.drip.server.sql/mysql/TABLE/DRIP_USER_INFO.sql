@@ -4,6 +4,12 @@
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `drip`.`DRIP_USER_INFO`;
 
+-- FIXME：
+-- 需要扩展，每个网站都有设置用户信息，需要把每个网站的用户基本信息都保存起来，
+-- 需要在这个表中加一个列
+-- 或者这个表专门存本网站登录信息，然后专门一个表存储各网站的用户信息，跟avatar表的结构一样。
+-- 而这个表就跟其他网站的用户表一样。
+
 CREATE  TABLE IF NOT EXISTS `drip`.`DRIP_USER_INFO` (
   `DBID` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键' ,
   `LOGIN_NAME` VARCHAR(56) NOT NULL COMMENT '登录名,邮箱/手机号/昵称',

@@ -36,7 +36,23 @@ public interface UserService {
 	/**
 	 * 用户登录，主要是记录使用第三方网站进行登录
 	 * @param userId 用户标识
-	 * @return 如果登录失败则返回null，否则返回用户信息
+	 * @return 如果系统中存在该用户信息则返回，否则返回空的map对象。
+	 * <pre>
+	 * 	map结构为：
+	 * 		id: 用户标识
+	 * 		email: 邮箱
+	 * 		mobile：手机号
+	 * 		displayName: 显示名
+	 * 		fanCount：粉丝数
+	 * 		followCount: 关注人数
+	 * 		exerDraftCount： 习题草稿数
+	 * 		exerPublishCount：发布的习题数
+	 * 		answerCount： 习题总数 = 习题草稿数+发布的习题数
+	 * 		smallImageUrl: 小头像
+	 * 		largeImageUrl: 
+	 * 		largerImageUrl:
+	 * 		xLargeImageUrl:
+	 * </pre>
 	 */
 	Map<String, Object> login(Long userId);
 
@@ -72,5 +88,27 @@ public interface UserService {
 	 * @return 该网站的用户标识
 	 */
 	Long importUser(Map<String, Object> userInfo);
+
+	/**
+	 * 获取用户基本信息，是用户可以对外公开的信息，剔除掉了用户的隐私信息。
+	 * 因为用户信息存储在多个表中，这里将一些基本的可公开的用户信息组合在一起
+	 * @param userId 用户标识
+	 * @return 如果系统中存在该用户信息则返回，否则返回空的map对象。
+	 * <pre>
+	 * 	map结构为：
+	 * 		id: 用户标识
+	 * 		displayName: 显示名
+	 * 		fanCount：粉丝数
+	 * 		followCount: 关注人数
+	 * 		exerDraftCount： 习题草稿数
+	 * 		exerPublishCount：发布的习题数
+	 * 		answerCount： 习题总数 = 习题草稿数+发布的习题数
+	 * 		smallImageUrl: 小头像
+	 * 		largeImageUrl: 
+	 * 		largerImageUrl:
+	 * 		xLargeImageUrl:
+	 * </pre>
+	 */
+	Map<String, Object> getPublicInfo(Long mapUserId);
 
 }
