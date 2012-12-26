@@ -52,5 +52,11 @@ public class UserAvatarDaoImpl extends AbstractDao implements UserAvatarDao {
 			}
 		});
 	}
+	
+	@Override
+	public Map<String, Object> get(Long mapUserId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

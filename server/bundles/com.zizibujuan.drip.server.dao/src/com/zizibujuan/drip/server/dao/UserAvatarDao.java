@@ -23,4 +23,6 @@ public interface UserAvatarDao {
 	 */
 	void add(Connection con, Long mapUserId, List<Map<String, Object>> avatarList) throws SQLException;
 
+	Map<String, Object> get(Long mapUserId);
+
 }
