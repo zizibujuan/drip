@@ -11,14 +11,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		<tycho-version>0.16.0</tycho-version>
 	</properties>
 	
-	<dependencies>
-	    <dependency>
-	      <groupId>com.google.code.gson</groupId>
-	      <artifactId>gson</artifactId>
-	      <version>2.2.2</version>
-	    </dependency>
-	</dependencies>
-
 	<modules>
 		<!-- features -->
 		<module>server/features/com.zizibujuan.drip-feature</module>
