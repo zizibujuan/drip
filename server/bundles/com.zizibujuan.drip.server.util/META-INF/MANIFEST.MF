@@ -18,7 +18,8 @@ Bundle-ClassPath: lib/struts2-json-plugin-2.3.4.jar,
  lib/xwork-core-2.3.4.jar,
  lib/commons-validator-1.4.0.jar,
  lib/commons-codec-1.7.jar
-Require-Bundle: javax.servlet;bundle-version="3.0.0"
+Require-Bundle: javax.servlet;bundle-version="3.0.0",
+ com.google.gson;bundle-version="2.2.2"
 Export-Package: com.zizibujuan.drip.server.util,
  com.zizibujuan.drip.server.util.dao,
  com.zizibujuan.drip.server.util.io,
