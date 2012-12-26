@@ -7,11 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.struts2.json.JSONException;
-import org.apache.struts2.json.JSONUtil;
 
-import com.zizibujuan.drip.server.exception.json.JSONAccessException;
 import com.zizibujuan.drip.server.util.HttpConstants;
+import com.zizibujuan.drip.server.util.JsonUtil;
 
 /**
  * 往response中输出内容的帮助类,支持以html或者json的格式输出到客户端
@@ -32,16 +30,7 @@ public abstract class ResponseUtil {
 		resp.setHeader("Cache-Control", "no-cache"); //$NON-NLS-1$ //$NON-NLS-2$
 		resp.setHeader("Cache-Control", "no-store"); //$NON-NLS-1$ //$NON-NLS-2$
 		resp.setContentType(HttpConstants.CONTENT_TYPE_JSON);
-		String response ="";
-		if(result instanceof String){
-			response = result.toString();
-		}else{
-			try {
-				response = JSONUtil.serialize(result);
-			} catch (JSONException e) {
-				throw new JSONAccessException("不是有效的json对象或数组",e);
-			}
-		}
+		String response = JsonUtil.toJson(result);
 		resp.getWriter().print(response);
 	}
 	

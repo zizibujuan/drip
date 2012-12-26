@@ -8,10 +8,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.struts2.json.JSONException;
-import org.apache.struts2.json.JSONUtil;
 
-import com.zizibujuan.drip.server.exception.json.JSONAccessException;
+import com.zizibujuan.drip.server.util.JsonUtil;
 
 /**
  * http请求帮助类
@@ -20,29 +18,20 @@ import com.zizibujuan.drip.server.exception.json.JSONAccessException;
  */
 public abstract class RequestUtil {
 
-	@SuppressWarnings("unchecked")
 	public static Map<String,Object> fromJsonObject(HttpServletRequest req) throws IOException{
-		Object o = deserializeJson(req);
-		Map<String,Object> result = (Map<String,Object>)o;
-		return result;
+		String jsonString = getJsonString(req);
+		return JsonUtil.fromJsonObject(jsonString);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public static List<Map<String,Object>> fromJsonArray(HttpServletRequest req) throws IOException{
-		Object o = deserializeJson(req);
-		return (List<Map<String,Object>>)o;
+		String jsonString = getJsonString(req);
+		return JsonUtil.fromJsonArray(jsonString);
 	}
 
-	private static Object deserializeJson(HttpServletRequest req) throws IOException {
+	private static String getJsonString(HttpServletRequest req) throws IOException {
 		StringWriter sw = new StringWriter();
 		IOUtils.copy(req.getInputStream(), sw,"UTF-8");
-		Object o = null;
-		try {
-			o = JSONUtil.deserialize(sw.toString());
-		} catch (JSONException e) {
-			throw new JSONAccessException(e);
-		}
-		return o;
+		return sw.toString();
 	}
 
 	private static final String HEADER_REQUESTED_WITH = "X-Requested-With";//$NON-NLS-1$
