@@ -323,9 +323,9 @@ public abstract class DatabaseUtil {
 		}
 	}
 
-	public static void closeStatement(PreparedStatement... params){
+	public static void closeStatement(Statement... params){
 		if(params != null){
-			for(PreparedStatement each : params){
+			for(Statement each : params){
 				if (each != null){
 					try {
 						each.close();

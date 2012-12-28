@@ -83,10 +83,11 @@ public interface UserDao {
 	Map<String, Object> getFull(Long userId);
 
 	/**
-	 * 更新用户的最近登录时间
+	 * 更新登录状态。已过期，使用 {@link UserAttributesDao#updateLoginState}
 	 * @param userId 用户标识
 	 */
-	void updateLastLoginTime(Long userId);
+	@Deprecated
+	void updateLoginState(Long userId);
 
 	/**
 	 * 获取用户登录信息，返回到客户端的，所以不能包含用户隐私信息。
@@ -133,7 +134,19 @@ public interface UserDao {
 	 * authUserId: 第三方网站的用户标识
 	 * </pre>
 	 * @return 该网站生成的用户标识
+	 * <pre>
+	 *  返回map的结构
+	 * 		LOCAL_USER_ID: 本网站用户标识
+	 * 		MAP_USER_ID: 映射标识
+	 * </pre>
 	 */
-	Long importUser(Map<String, Object> userInfo);
+	Map<String, Object> importUser(Map<String, Object> userInfo);
+
+	/**
+	 * 获取本地用户相关的统计数据，这些只是在客户端显示的统计项。
+	 * @param localUserId 本地用户标识
+	 * @return 返回基于用户的统计数据。
+	 */
+	Map<String, Object> getUserStatistics(Long localUserId);
 
 }

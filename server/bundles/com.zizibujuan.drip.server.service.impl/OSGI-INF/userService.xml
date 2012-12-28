@@ -11,11 +11,11 @@
    		policy="dynamic"/>
    		
    <reference 
-		bind="setConnectUserDao" 
-		unbind="unsetConnectUserDao" 
+		bind="setUserAttributesDao" 
+		unbind="unsetUserAttributesDao" 
 		cardinality="0..1" 
-		interface="com.zizibujuan.drip.server.dao.ConnectUserDao" 
-		name="connectUserDao" 
+		interface="com.zizibujuan.drip.server.dao.UserAttributesDao" 
+		name="userAttributesDao" 
 		policy="dynamic"/>
   
   <reference 

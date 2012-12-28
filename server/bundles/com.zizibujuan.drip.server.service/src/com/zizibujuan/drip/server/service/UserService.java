@@ -35,26 +35,30 @@ public interface UserService {
 	
 	/**
 	 * 用户登录，主要是记录使用第三方网站进行登录
-	 * @param userId 用户标识
+	 * @param localUserId 本网站用户标识
+	 * @param mapUserId 与第三方网站用户映射标识
 	 * @return 如果系统中存在该用户信息则返回，否则返回空的map对象。
 	 * <pre>
 	 * 	map结构为：
 	 * 		id: 用户标识
+	 *  这些信息，如果是本地用户从数据库中获取，如果是第三方用户，则从返回的记录中直接获取，不走后台
 	 * 		email: 邮箱
 	 * 		mobile：手机号
 	 * 		displayName: 显示名
+	 * 		smallImageUrl: 小头像
+	 * 		largeImageUrl: 
+	 * 		largerImageUrl:
+	 * 		xLargeImageUrl:
+	 * 
+	 * 以下字段从本地用户信息中获取
 	 * 		fanCount：粉丝数
 	 * 		followCount: 关注人数
 	 * 		exerDraftCount： 习题草稿数
 	 * 		exerPublishCount：发布的习题数
 	 * 		answerCount： 习题总数 = 习题草稿数+发布的习题数
-	 * 		smallImageUrl: 小头像
-	 * 		largeImageUrl: 
-	 * 		largerImageUrl:
-	 * 		xLargeImageUrl:
 	 * </pre>
 	 */
-	Map<String, Object> login(Long userId);
+	Map<String, Object> login(Long localUserId, Long mapUserId);
 
 	/**
 	 * 获取用户登录信息，返回到客户端的，所以不能包含用户隐私信息。
@@ -86,8 +90,13 @@ public interface UserService {
 	 * authUserId: 第三方网站的用户标识
 	 * </pre>
 	 * @return 该网站的用户标识
+	 * <pre>
+	 *  返回map的结构
+	 * 		LOCAL_USER_ID: 本网站用户标识
+	 * 		MAP_USER_ID: 映射标识
+	 * </pre>
 	 */
-	Long importUser(Map<String, Object> userInfo);
+	Map<String,Object> importUser(Map<String, Object> userInfo);
 
 	/**
 	 * 获取用户基本信息，是用户可以对外公开的信息，剔除掉了用户的隐私信息。

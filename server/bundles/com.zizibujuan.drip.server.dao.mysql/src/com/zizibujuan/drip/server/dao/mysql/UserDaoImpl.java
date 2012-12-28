@@ -2,10 +2,10 @@ package com.zizibujuan.drip.server.dao.mysql;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,6 +116,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			"ANSWER_COUNT \"answerCount\", "+
 			"EXER_DRAFT_COUNT+EXER_PUBLISH_COUNT \"exerciseCount\" " +
 			"FROM DRIP_USER_INFO WHERE DBID=?";
+	// FIXME:这些字段与下面的getUserStatics方法的字段大同小异，待重构
 	@Override
 	public Map<String, Object> getPublicInfo(Long userId) {
 		// TODO：添加用户头像, 该使用drip用户标识，还是第三方网站的用户标识，使用第三方更灵活
@@ -126,7 +127,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			"SET LAST_LOGIN_TIME = now() " +
 			"WHERE DBID=?";
 	@Override
-	public void updateLastLoginTime(Long userId) {
+	public void updateLoginState(Long userId) {
 		DatabaseUtil.update(getDataSource(), SQL_UPDATE_USER, userId);
 	}
 	
@@ -165,8 +166,10 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	}
 	
 	@Override
-	public Long importUser(Map<String, Object> userInfo) {
-		Long userId = null;
+	public Map<String,Object> importUser(Map<String, Object> userInfo) {
+		Map<String,Object> result = new HashMap<String, Object>();
+		Long localUserId = null;
+		Long mapUserId = null;
 		
 		Connection con = null;
 		
@@ -177,10 +180,15 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		try{
 			con = getDataSource().getConnection();
 			con.setAutoCommit(false);
-			userId = this.addUser(con, userInfo);
-			Long mapUserId = oAuthUserMapDao.mapUserId(con, authSiteId, authUserId, userId);
-			// 自己关注自己时，使用drip用户标识
-			userRelationDao.watch(con, userId, userId);
+			// 在本地用户表中建立一个只有标识的记录
+			localUserId = this.addLocalUserId(con);
+			// 在第三方用户表中存储用户信息
+			mapUserId = this.addConnectUser(con, userInfo);
+			// 将本地用户与第三方用户关联起来
+			
+			mapUserId = oAuthUserMapDao.mapUserId(con, authSiteId, authUserId, localUserId);
+			// 自己关注自己，使用drip用户标识
+			userRelationDao.watch(con, localUserId, localUserId);
 			if(avatarList != null && avatarList.size()>0){
 				userAvatarDao.add(con, mapUserId, avatarList);
 			}
@@ -194,27 +202,63 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		}finally{
 			DatabaseUtil.closeConnection(con);
 		}
-		return userId;
+		
+		if(localUserId != null){
+			result.put("LOCAL_USER_ID", localUserId);
+		}
+		if(mapUserId != null){
+			result.put("MAP_USER_ID", mapUserId);
+		}
+		return result;
 	}
 	
+	private static final String SQL_INSERT_USER_EMPTY = "INSERT INTO DRIP_USER_INFO " +
+			"(CREATE_TIME) VALUES (now())";
+	private Long addLocalUserId(Connection con) throws SQLException{
+		return DatabaseUtil.insert(con, SQL_INSERT_USER_EMPTY);
+	}
 	
-	private Long addUser(Connection con, Map<String,Object> userInfo) throws SQLException{
+	private static final String SQL_INSERT_CONNECT_USER = "INSERT INTO DRIP_CONNECT_USER_INFO " +
+			"(LOGIN_NAME," +
+			"NICK_NAME," +
+			"EMAIL," +
+			"MOBILE," +
+			"REAL_NAME," +
+			"CREATE_TIME) " +
+			"VALUES " +
+			"(?,?,?,?,?,?,now())";
+	
+	
+	private Long addConnectUser(Connection con, Map<String,Object> userInfo) throws SQLException{
 		// TODO:继续添加更详细的用户信息。
-		String loginName = userInfo.get("loginName").toString();
-		String nickName = userInfo.get("nickName").toString();
+		Object loginName = userInfo.get("loginName");
+		Object nickName = userInfo.get("nickName");
 		// 注意为EMAIL字段添加了唯一性约束字段，所以如果email不存在，要置为null，而不是转化为一个空的字符串。
 		Object email  = userInfo.get("email");
-		String password = null;
-		String mobile = ObjectUtils.toString(userInfo.get("mobile"));
-		String realName = ObjectUtils.toString(userInfo.get("realName"));
+		Object mobile = userInfo.get("mobile");
+		Object realName = userInfo.get("realName");
 		
-		return DatabaseUtil.insert(con, SQL_INSERT_USER, loginName,nickName,email,password,mobile,realName);
+		return DatabaseUtil.insert(con, SQL_INSERT_CONNECT_USER, loginName,nickName,email,mobile,realName);
 	}
 	
 	@Override
 	public Map<String, Object> getFull(Long userId) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private static final String SQL_GET_USER_STATISTICS = "SELECT " +
+			"DBID \"id\"," +
+			"FAN_COUNT \"fanCount\","+
+			"FOLLOW_COUNT \"followCount\","+
+			"EXER_DRAFT_COUNT \"exerDraftCount\","+
+			"EXER_PUBLISH_COUNT \"exerPublishCount\", "+
+			"ANSWER_COUNT \"answerCount\", "+
+			"EXER_DRAFT_COUNT+EXER_PUBLISH_COUNT \"exerciseCount\" " +
+			"FROM DRIP_USER_INFO WHERE DBID=?";
+	@Override
+	public Map<String, Object> getUserStatistics(Long localUserId) {
+		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_USER_STATISTICS, localUserId);
 	}
 	
 	
@@ -250,6 +294,5 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			this.userAvatarDao = null;
 		}
 	}
-
 	
 }

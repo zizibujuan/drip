@@ -6,6 +6,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.zizibujuan.drip.server.dao.UserAttributesDao;
 import com.zizibujuan.drip.server.dao.UserAvatarDao;
 import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.service.UserService;
@@ -19,6 +20,7 @@ public class UserServiceImpl implements UserService {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	private UserDao userDao;
+	private UserAttributesDao userAttributesDao;
 	private UserAvatarDao userAvatarDao;
 	
 	// FIXME:学习如何加入salt，明白加入salt有哪些具体好处
@@ -44,7 +46,7 @@ public class UserServiceImpl implements UserService {
 			return null;
 		}else{
 			String userId = userInfo.get("id").toString();
-			userDao.updateLastLoginTime(Long.valueOf(userId));
+			userAttributesDao.updateLoginState(Long.valueOf(userId));
 			return userInfo;
 		}
 	}
@@ -58,13 +60,21 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public Map<String, Object> login(Long userId) {
-		userDao.updateLastLoginTime(userId);
-		return userDao.getSimple(userId);
+	public Map<String, Object> login(Long localUserId, Long mapUserId) {
+		// 如果localUserId与mapUserId相等，则从drip_user_info中获取用户信息
+		// 如果不相等，则从drip_connect_user_info中获取
+		userAttributesDao.updateLoginState(mapUserId);
+		if(localUserId.equals(mapUserId)){
+			return userDao.getSimple(localUserId);
+		}else{
+			// 只获取统计信息，用户的其余信息实时来自第三方网站
+			return userDao.getUserStatistics(localUserId);
+		}
+		
 	}
 	
 	@Override
-	public Long importUser(Map<String, Object> userInfo) {
+	public Map<String,Object> importUser(Map<String, Object> userInfo) {
 		return userDao.importUser(userInfo);
 	}
 
@@ -87,6 +97,18 @@ public class UserServiceImpl implements UserService {
 		if (this.userDao == userDao) {
 			logger.info("注销userDao");
 			this.userDao = null;
+		}
+	}
+	
+	public void setUserAttributesDao(UserAttributesDao userAttributesDao) {
+		logger.info("注入userAttributesDao");
+		this.userAttributesDao = userAttributesDao;
+	}
+
+	public void unsetUserAttributesDao(UserAttributesDao userAttributesDao) {
+		if (this.userAttributesDao == userAttributesDao) {
+			logger.info("注销userAttributesDao");
+			this.userAttributesDao = null;
 		}
 	}
 	
