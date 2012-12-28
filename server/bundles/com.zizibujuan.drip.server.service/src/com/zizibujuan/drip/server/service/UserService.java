@@ -103,8 +103,16 @@ public interface UserService {
 
 	/**
 	 * 获取用户基本信息，是用户可以对外公开的信息，剔除掉了用户的隐私信息。
-	 * 因为用户信息存储在多个表中，这里将一些基本的可公开的用户信息组合在一起
-	 * @param userId 用户标识
+	 * 因为用户信息存储在多个表中，这里将一些基本的可公开的用户信息组合在一起。<br/>
+	 * 返回的信息包含三类信息:
+	 * <ul>
+	 * 	<li>基本信息</li>
+	 * 	<li>统计信息</li>
+	 *  <li>头像信息</li>
+	 * </ul>
+	 * 
+	 * @param localUserId 本网站用户标识
+	 * @param mapUserId 本网站用户与第三方用户的映射标识
 	 * @return 如果系统中存在该用户信息则返回，否则返回空的map对象。
 	 * <pre>
 	 * 	map结构为：
@@ -121,6 +129,6 @@ public interface UserService {
 	 * 		xLargeImageUrl:
 	 * </pre>
 	 */
-	Map<String, Object> getPublicInfo(Long mapUserId);
+	Map<String, Object> getPublicInfo(Long localUserId, Long mapUserId);
 
 }

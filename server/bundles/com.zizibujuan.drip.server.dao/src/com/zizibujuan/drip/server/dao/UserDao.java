@@ -151,4 +151,11 @@ public interface UserDao {
 	 */
 	Map<String, Object> getUserStatistics(Long localUserId);
 
+	/**
+	 * 判断这个映射标识对应的用户是不是本网站注册用户
+	 * @param mapUserId 映射标识
+	 * @return 如果是本网站注册用户则返回<code>true</code>;否则返回<code>false</code>
+	 */
+	boolean isLocalUser(Long mapUserId);
+
 }

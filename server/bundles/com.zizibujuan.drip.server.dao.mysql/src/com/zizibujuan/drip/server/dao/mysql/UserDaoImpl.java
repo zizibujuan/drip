@@ -14,6 +14,7 @@ import com.zizibujuan.drip.server.dao.UserAvatarDao;
 import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.dao.UserRelationDao;
 import com.zizibujuan.drip.server.exception.dao.DataAccessException;
+import com.zizibujuan.drip.server.util.OAuthConstants;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 
 /**
@@ -289,6 +290,14 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			logger.info("注销userAvatarDao");
 			this.userAvatarDao = null;
 		}
+	}
+
+	private static final String SQL_GET_OAUTH_SITE_ID = "SELECT OAUTH_SITE_ID FROM DRIP_OAUTH_USER_MAP WHERE DBID=?";
+	// 这个方法就在这里实现，更直观些，虽然数据存储在映射表中
+	@Override
+	public boolean isLocalUser(Long mapUserId) {
+		int siteId = DatabaseUtil.queryForInt(getDataSource(), SQL_GET_OAUTH_SITE_ID, mapUserId);
+		return siteId == OAuthConstants.ZIZIBUJUAN;
 	}
 	
 }

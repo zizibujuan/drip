@@ -22,7 +22,7 @@ public class ActivityDaoImpl extends AbstractDao implements ActivityDao {
 	// 这里要查处所有第三方网站用户的活动列表。
 	// 真正用到的用户信息是，如果用户已经有drip信息，则用drip信息；否则使用第三方网站的用户信息
 	private static final String SQL_LIST_ACTIVITY_INDEX = "select " +
-				"a.WATCH_USER_ID \"userId\"," + // 应该是活动用户标识，如果不是drip用户，则填写第三方网站用户与drip用户映射的关联标识。
+				"a.WATCH_USER_ID \"localUserId\"," +// 所关注的人的标识，必须填的是本网站用户的标识
 				"b.MAP_USER_ID \"mapUserId\"," +
 				"b.CRT_TM \"createTime\"," +
 				"b.CONTENT_ID \"contentId\"," +

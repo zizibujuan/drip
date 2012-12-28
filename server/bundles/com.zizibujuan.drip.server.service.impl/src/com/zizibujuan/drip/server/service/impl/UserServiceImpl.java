@@ -6,6 +6,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.zizibujuan.drip.server.dao.ConnectUserDao;
 import com.zizibujuan.drip.server.dao.UserAttributesDao;
 import com.zizibujuan.drip.server.dao.UserAvatarDao;
 import com.zizibujuan.drip.server.dao.UserDao;
@@ -23,6 +24,7 @@ public class UserServiceImpl implements UserService {
 	private UserDao userDao;
 	private UserAttributesDao userAttributesDao;
 	private UserAvatarDao userAvatarDao;
+	private ConnectUserDao connectUserDao;
 	
 	// FIXME:学习如何加入salt，明白加入salt有哪些具体好处
 	@Override
@@ -52,11 +54,20 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 	
+	// 获取基本信息
+	// 获取统计信息
+	// 获取头像信息
 	@Override
-	public Map<String, Object> getPublicInfo(Long mapUserId) {
-		 FIXME:这里要传递的不应该为映射用户标识
-		// 
-		Map<String,Object> userInfo = userDao.getPublicInfo(mapUserId);
+	public Map<String, Object> getPublicInfo(Long localUserId, Long mapUserId) {
+		// TODO：需要缓存
+		Map<String,Object> userInfo = null;
+		if(userDao.isLocalUser(mapUserId)){
+			userInfo = userDao.getPublicInfo(mapUserId);
+		}else{
+			userInfo = connectUserDao.get(mapUserId);
+			Map<String,Object> statistics = userDao.getUserStatistics(localUserId);
+			userInfo.putAll(statistics);
+		}
 		Map<String,Object> avatarInfo = userAvatarDao.get(mapUserId);
 		userInfo.putAll(avatarInfo);
 		return userInfo;

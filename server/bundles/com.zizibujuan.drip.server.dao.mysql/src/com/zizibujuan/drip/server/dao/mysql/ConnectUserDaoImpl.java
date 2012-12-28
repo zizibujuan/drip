@@ -1,5 +1,7 @@
 package com.zizibujuan.drip.server.dao.mysql;
 
+import java.util.Map;
+
 import com.zizibujuan.drip.server.dao.ConnectUserDao;
 
 /**
@@ -9,5 +11,11 @@ import com.zizibujuan.drip.server.dao.ConnectUserDao;
  * @since 0.0.1
  */
 public class ConnectUserDaoImpl implements ConnectUserDao {
+
+	@Override
+	public Map<String, Object> get(Long mapUserId) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
 
 }

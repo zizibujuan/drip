@@ -22,8 +22,8 @@ public interface ActivityDao {
 	 * @return 活动列表的索引，并不包含活动内容详情。如果不存在，则返回空列表。
 	 * <pre>
 	 * map值：
-	 * 		userId：被关注的用户标识
-	 * 		displayUserName：显示用的用户名
+	 * 		localUserId：被关注的用户对应的本网站用户标识
+	 * 		mapUserId：本网站用户与第三方网站用户的映射标识
 	 * 		createTime：活动发生的时间
 	 * 		contentId：活动输出的内容标识
 	 * 		actionType：活动类型
