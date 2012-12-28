@@ -38,6 +38,8 @@ public class ActivityServiceImpl implements ActivityService {
 		logger.info(list.toString());
 		for(Map<String,Object> each : list){
 			Long mapUserId = Long.valueOf(each.get("mapUserId").toString());
+			// FIXME:错误，这里不能传递mapUserId
+			// 这里既要考虑获取本地用户的信息，更要考虑获取第三方网站的用户信息。
 			Map<String,Object> userInfo = userService.getPublicInfo(mapUserId);
 			each.put("userInfo", userInfo);
 			

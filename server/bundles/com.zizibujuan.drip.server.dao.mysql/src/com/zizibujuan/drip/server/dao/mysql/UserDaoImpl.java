@@ -203,12 +203,8 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			DatabaseUtil.closeConnection(con);
 		}
 		
-		if(localUserId != null){
-			result.put("LOCAL_USER_ID", localUserId);
-		}
-		if(mapUserId != null){
-			result.put("MAP_USER_ID", mapUserId);
-		}
+		result.put("LOCAL_USER_ID", localUserId);
+		result.put("MAP_USER_ID", mapUserId);
 		return result;
 	}
 	

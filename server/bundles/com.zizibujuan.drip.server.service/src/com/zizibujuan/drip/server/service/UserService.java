@@ -37,6 +37,7 @@ public interface UserService {
 	 * 用户登录，主要是记录使用第三方网站进行登录
 	 * @param localUserId 本网站用户标识
 	 * @param mapUserId 与第三方网站用户映射标识
+	 * @param siteId 网站标识，参考 {@link OAuthConstants}
 	 * @return 如果系统中存在该用户信息则返回，否则返回空的map对象。
 	 * <pre>
 	 * 	map结构为：
@@ -45,6 +46,7 @@ public interface UserService {
 	 * 		email: 邮箱
 	 * 		mobile：手机号
 	 * 		displayName: 显示名
+	 * 这些字段是按照网站提供的图片大小从小到打排列的
 	 * 		smallImageUrl: 小头像
 	 * 		largeImageUrl: 
 	 * 		largerImageUrl:
@@ -58,7 +60,7 @@ public interface UserService {
 	 * 		answerCount： 习题总数 = 习题草稿数+发布的习题数
 	 * </pre>
 	 */
-	Map<String, Object> login(Long localUserId, Long mapUserId);
+	Map<String, Object> login(Long localUserId, Long mapUserId, int siteId);
 
 	/**
 	 * 获取用户登录信息，返回到客户端的，所以不能包含用户隐私信息。
@@ -83,11 +85,12 @@ public interface UserService {
 	 * @param userInfo 用户详细信息
 	 * <pre>
 	 * map结构
-	 * loginName:登录名
-	 * nickName:昵称
-	 * headUrl:头像链接
-	 * authSiteId：第三方网站标识 {@link OAuthConstants}
-	 * authUserId: 第三方网站的用户标识
+	 * 		loginName:登录名
+	 * 		nickName:昵称
+	 * 		headUrl:头像链接
+	 * 		authSiteId：第三方网站标识 {@link OAuthConstants}
+	 * 					如果是使用第三方网站的用户登录，则是第三方网站用户标识；如果是用本网站用户登录，则是本网站用户标识
+	 * 		authUserId: 第三方网站的用户标识
 	 * </pre>
 	 * @return 该网站的用户标识
 	 * <pre>

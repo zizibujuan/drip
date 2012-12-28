@@ -10,6 +10,7 @@ import com.zizibujuan.drip.server.dao.UserAttributesDao;
 import com.zizibujuan.drip.server.dao.UserAvatarDao;
 import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.service.UserService;
+import com.zizibujuan.drip.server.util.OAuthConstants;
 
 /**
  * 用户服务实现类
@@ -53,6 +54,8 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public Map<String, Object> getPublicInfo(Long mapUserId) {
+		 FIXME:这里要传递的不应该为映射用户标识
+		// 
 		Map<String,Object> userInfo = userDao.getPublicInfo(mapUserId);
 		Map<String,Object> avatarInfo = userAvatarDao.get(mapUserId);
 		userInfo.putAll(avatarInfo);
@@ -60,13 +63,23 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public Map<String, Object> login(Long localUserId, Long mapUserId) {
+	public Map<String, Object> login(Long localUserId, Long mapUserId, int siteId) {
 		// 如果localUserId与mapUserId相等，则从drip_user_info中获取用户信息
 		// 如果不相等，则从drip_connect_user_info中获取
 		userAttributesDao.updateLoginState(mapUserId);
-		if(localUserId.equals(mapUserId)){
-			return userDao.getSimple(localUserId);
+		
+		Map<String,Object> userInfo = null;
+		if(siteId == OAuthConstants.ZIZIBUJUAN){ // 本网站注册用户
+			// 获取基本信息和统计信息
+			userInfo = userDao.getSimple(localUserId);
+			// 获取头像信息
+			Map<String,Object> avatarInfo = userAvatarDao.get(mapUserId);
+			userInfo.putAll(avatarInfo);
+			return userInfo;
 		}else{
+			// 第三方网站注册用户
+			// 获取基本信息 （不需要，实时从第三方网站获取）
+			// 获取头像信息 （不需要，实时从第三方网站获取）
 			// 只获取统计信息，用户的其余信息实时来自第三方网站
 			return userDao.getUserStatistics(localUserId);
 		}

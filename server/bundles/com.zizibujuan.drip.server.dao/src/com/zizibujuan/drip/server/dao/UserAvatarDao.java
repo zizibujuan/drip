@@ -23,6 +23,18 @@ public interface UserAvatarDao {
 	 */
 	void add(Connection con, Long mapUserId, List<Map<String, Object>> avatarList) throws SQLException;
 
+	/**
+	 * 获取用户头像信息
+	 * @param mapUserId
+	 * @return 用户头像信息，如果没有则返回空的map
+	 * <pre>
+	 *  map结构：
+	 *		smallImageUrl: 小头像
+ 	 *		largeImageUrl: 
+ 	 *		largerImageUrl:
+ 	 *		xLargeImageUrl:
+	 * </pre>
+	 */
 	Map<String, Object> get(Long mapUserId);
 
 }

@@ -36,7 +36,7 @@ public interface UserDao {
 	Map<String, Object> get(String email, String md5Password);
 
 	/**
-	 * 获取用户基本信息，主要往用户session中保存。
+	 * 获取用户基本信息，主要往用户session中保存。其中包括了用户的邮箱，手机号等保密信息
 	 * @param userId 用户标识
 	 * @return 如果系统中存在该用户信息则返回，否则返回空的map对象。
 	 * <pre>
@@ -83,7 +83,7 @@ public interface UserDao {
 	Map<String, Object> getFull(Long userId);
 
 	/**
-	 * 更新登录状态。已过期，使用 {@link UserAttributesDao#updateLoginState}
+	 * 更新登录状态。已过期，将在0.0.2版本中删除，请使用 {@link UserAttributesDao#updateLoginState}
 	 * @param userId 用户标识
 	 */
 	@Deprecated
@@ -127,12 +127,14 @@ public interface UserDao {
 	 * @param userInfo 用户详细信息
 	 * <pre>
 	 * map结构
-	 * loginName:登录名
-	 * nickName:昵称
-	 * headUrl:头像链接
-	 * authSiteId：第三方网站标识 {@link OAuthConstants}
-	 * authUserId: 第三方网站的用户标识
+	 * 		loginName:登录名
+	 * 		nickName:昵称
+	 * 		headUrl:头像链接
+	 * 		authSiteId：第三方网站标识 {@link OAuthConstants} 
+	 * 				    如果是使用第三方网站的用户登录，则是第三方网站用户标识；如果是用本网站用户登录，则是本网站用户标识
+	 * 		authUserId: 第三方网站的用户标识
 	 * </pre>
+	 * 
 	 * @return 该网站生成的用户标识
 	 * <pre>
 	 *  返回map的结构

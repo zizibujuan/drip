@@ -123,7 +123,6 @@ public class LoginServlet extends DripServlet {
 		//判断帐号关联表里有没有现成的关联
 		Map<String,Object> userMapperInfo = oAuthUserMapService.getUserMapperInfo(OAuthConstants.RENREN, rrUid);
 		
-		
 		if(userMapperInfo.isEmpty()){
 			Map<String, Object> renrenUserInfo = renrenUserToDripUser(currentUser);
 			userMapperInfo = userService.importUser(renrenUserInfo);
@@ -133,15 +132,14 @@ public class LoginServlet extends DripServlet {
 		
 		// 记录登录次数，哪个帐号登录的就记在哪个下面。
 		// 这里调用肯定是用renren登录的。
-		Map<String,Object> userInfo = userService.login(localUserId, mapUserId);
+		Map<String,Object> userInfo = userService.login(localUserId, mapUserId, OAuthConstants.RENREN);
 		// 在用户session中保存从第三方网站过来的最新数据，而不是从本地的数据库中获取这些数据，
 		// 避免用户已经在第三方网站修改了用户信息，但是drip没能及时更新的问题。
 		// session中存储的值一部分来自drip，一部分来自第三方网站
-		
 		userInfo.put("displayName", currentUser.get("name"));
-		userInfo.put("tinyUrl", currentUser.get("tinyurl"));
-		userInfo.put("headUrl", currentUser.get("headurl"));
-		userInfo.put("mainUrl", currentUser.get("mainurl"));
+		userInfo.put("smallImageUrl", currentUser.get("tinyurl"));
+		userInfo.put("largeImageUrl", currentUser.get("headurl"));
+		userInfo.put("largerImageUrl", currentUser.get("mainurl"));
 		userInfo.put("site", OAuthConstants.RENREN); // 注明是使用人人帐号登录的
 		userInfo.put(UserSession.KEY_MAPPED_USER_ID, mapUserId);
 		
