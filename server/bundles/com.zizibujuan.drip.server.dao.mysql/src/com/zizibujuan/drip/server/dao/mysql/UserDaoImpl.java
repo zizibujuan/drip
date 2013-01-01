@@ -185,10 +185,12 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			con.setAutoCommit(false);
 			// 在本地用户表中建立一个只有标识的记录
 			localUserId = this.addLocalUserId(con);
-			// 在第三方用户表中存储用户信息
-			connectUserDao.add(con, userInfo);
 			// 将本地用户与第三方用户关联起来
 			mapUserId = oAuthUserMapDao.mapUserId(con, authSiteId, authUserId, localUserId);
+			// 在第三方用户表中存储用户信息
+			// 注意：这里先建立映射数据，然后将映射标识存储在第三方网站用户表中。
+			userInfo.put("mapUserId", mapUserId);
+			connectUserDao.add(con, userInfo);
 			// 自己关注自己，使用drip用户标识
 			userRelationDao.watch(con, localUserId, localUserId);
 			if(avatarList != null && avatarList.size()>0){

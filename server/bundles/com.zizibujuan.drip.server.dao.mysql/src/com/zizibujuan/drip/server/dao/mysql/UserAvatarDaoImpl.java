@@ -26,7 +26,7 @@ public class UserAvatarDaoImpl extends AbstractDao implements UserAvatarDao {
 	private static final Logger logger = LoggerFactory.getLogger(UserAvatarDaoImpl.class);
 
 	private static final String SQL_INSERT_USER_AVATAR = "INSERT INTO DRIP_USER_AVATAR " +
-			"(USER_MAP_ID, " +
+			"(MAP_USER_ID, " +
 			"URL_NAME, " +
 			"WIDTH, " +
 			"HEIGHT, " +

@@ -1,5 +1,11 @@
 -- 接入第三方网站的用户，存储第三方网站用户的基本信息
 -- 第三方网站不会告诉你密码
+-- 注意DRIP_CONNECT_USER_INFO,DRIP_USER_INFO和DRIP_OAUTH_USER_MAP
+-- 三个表之间的关系，map表本是建立DRIP_CONNECT_USER_INFO和DRIP_USER_INFO表之间的关系
+-- 但因为DRIP_CONNECT_USER_INFO中的信息可以即时从第三方服务器获取，并不是必须要的，
+-- 所以建立关系时，将MAP中的标识存储在DRIP_CONNECT_USER_INFO中，而不是将DRIP_CONNECT_USER_INFO
+-- 中的标识存储在DRIP_OAUTH_USER_MAP。
+-- 将必要的信息存储在DRIP_USER_INFO和DRIP_OAUTH_USER_MAP中
 
 -- -----------------------------------------------------
 -- Table `drip`.`DRIP_CONNECT_USER_INFO` 接入第三方网站的用户
@@ -8,7 +14,7 @@ DROP TABLE IF EXISTS `drip`.`DRIP_CONNECT_USER_INFO`;
 
 CREATE  TABLE IF NOT EXISTS `drip`.`DRIP_CONNECT_USER_INFO` (
   `DBID` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键' ,
-  `USER_MAP_ID` BIGINT UNSIGNED NOT NULL COMMENT '与第三方网站用户关联的映射信息标识' ,
+  `MAP_USER_ID` BIGINT UNSIGNED NOT NULL COMMENT '与第三方网站用户关联的映射信息标识' ,
   `LOGIN_NAME` VARCHAR(56) NOT NULL COMMENT '登录名,邮箱/手机号/昵称',
   `NICK_NAME` VARCHAR(56) NULL COMMENT '昵称',
   `EMAIL` VARCHAR(100) NULL COMMENT '邮箱',

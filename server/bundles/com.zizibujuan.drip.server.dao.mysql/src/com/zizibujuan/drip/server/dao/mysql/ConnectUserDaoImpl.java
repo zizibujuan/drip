@@ -22,7 +22,8 @@ public class ConnectUserDaoImpl implements ConnectUserDao {
 	}
 
 	private static final String SQL_INSERT_CONNECT_USER = "INSERT INTO DRIP_CONNECT_USER_INFO " +
-			"(LOGIN_NAME," +
+			"(MAP_USER_ID," +
+			"LOGIN_NAME," +
 			"NICK_NAME," +
 			"EMAIL," +
 			"MOBILE," +
@@ -33,6 +34,7 @@ public class ConnectUserDaoImpl implements ConnectUserDao {
 
 	@Override
 	public Long add(Connection con, Map<String, Object> connectUserInfo) throws SQLException {
+		Object mapUserId = connectUserInfo.get("mapUserId");
 		// TODO:继续添加更详细的用户信息。
 		Object loginName = connectUserInfo.get("loginName");
 		Object nickName = connectUserInfo.get("nickName");
@@ -41,6 +43,6 @@ public class ConnectUserDaoImpl implements ConnectUserDao {
 		Object mobile = connectUserInfo.get("mobile");
 		Object realName = connectUserInfo.get("realName");
 		
-		return DatabaseUtil.insert(con, SQL_INSERT_CONNECT_USER, loginName,nickName,email,mobile,realName);
+		return DatabaseUtil.insert(con, SQL_INSERT_CONNECT_USER, mapUserId, loginName,nickName,email,mobile,realName);
 	}
 }

@@ -24,8 +24,8 @@ public class UserAttributesDaoImpl extends AbstractDao implements UserAttributes
 
 	private static final Logger logger = LoggerFactory.getLogger(UserAttributesDaoImpl.class);
 	
-	private static final String SQL_UPDATE_LAST_LOGIN_MILLIS = "UPDATE DRIP_USER_ATTRIBUTES SET ATTR_VALUE=UNIX_TIMESTAMP(now()) WHERE USER_MAP_ID= %s AND ATTR_NAME='%s'";
-	private static final String SQL_UPDATE_LOGIN_COUNT = "UPDATE DRIP_USER_ATTRIBUTES SET ATTR_VALUE=(cast(ATTR_VALUE as SIGNED)+1) WHERE USER_MAP_ID= %s AND ATTR_NAME='%s'";
+	private static final String SQL_UPDATE_LAST_LOGIN_MILLIS = "UPDATE DRIP_USER_ATTRIBUTES SET ATTR_VALUE=UNIX_TIMESTAMP(now()) WHERE MAP_USER_ID= %s AND ATTR_NAME='%s'";
+	private static final String SQL_UPDATE_LOGIN_COUNT = "UPDATE DRIP_USER_ATTRIBUTES SET ATTR_VALUE=(cast(ATTR_VALUE as SIGNED)+1) WHERE MAP_USER_ID= %s AND ATTR_NAME='%s'";
 	@Override
 	public void updateLoginState(Long userId) {
 		Connection con = null;
@@ -51,7 +51,7 @@ public class UserAttributesDaoImpl extends AbstractDao implements UserAttributes
 	}
 
 	private static final String SQL_INSERT_USER_ATTRIBUTES = "INSERT INTO SYS_USER_ATTRIBUTES " +
-			"(USER_MAP_ID," +
+			"(MAP_USER_ID," +
 			"ATTR_NAME," +
 			"ATTR_VALUE)" +
 			"VALUES(?,?,?)";
