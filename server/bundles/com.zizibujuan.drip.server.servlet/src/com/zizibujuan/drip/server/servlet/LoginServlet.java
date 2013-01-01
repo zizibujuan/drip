@@ -67,7 +67,7 @@ public class LoginServlet extends DripServlet {
 					redirectToRenrenLoginPage(resp);
 				}
 				return;
-			} else if (pathInfo.equals("qq")) {
+			} else if (pathInfo.equals("/qq")) {
 
 				return;
 			}
@@ -136,7 +136,8 @@ public class LoginServlet extends DripServlet {
 		// 在用户session中保存从第三方网站过来的最新数据，而不是从本地的数据库中获取这些数据，
 		// 避免用户已经在第三方网站修改了用户信息，但是drip没能及时更新的问题。
 		// session中存储的值一部分来自drip，一部分来自第三方网站
-		userInfo.put("displayName", currentUser.get("name"));
+		String displayName = currentUser.get("name").toString();
+		userInfo.put("displayName", displayName);
 		userInfo.put("smallImageUrl", currentUser.get("tinyurl"));
 		userInfo.put("largeImageUrl", currentUser.get("headurl"));
 		userInfo.put("largerImageUrl", currentUser.get("mainurl"));
@@ -144,6 +145,7 @@ public class LoginServlet extends DripServlet {
 		userInfo.put(UserSession.KEY_MAPPED_USER_ID, mapUserId);
 		
 		UserSession.setUser(req, userInfo);
+		logger.info("使用人人帐号登录成功，人人标识是:{0},用户名是:{1}",rrUid,displayName);
 		// 跳转到个人首页
 		resp.sendRedirect("/");
 	}
