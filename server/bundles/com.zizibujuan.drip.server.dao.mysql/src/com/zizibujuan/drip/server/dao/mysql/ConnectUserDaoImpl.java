@@ -13,12 +13,16 @@ import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
  * @author jzw
  * @since 0.0.1
  */
-public class ConnectUserDaoImpl implements ConnectUserDao {
+public class ConnectUserDaoImpl extends AbstractDao implements ConnectUserDao {
 
+	private static final String SQL_GET_CONNECT_USER_PUBLIC = "SELECT " +
+			"MAP_USER_ID \"mapUserId\"," +
+			"NICK_NAME \"displayName\" " +
+			"FROM DRIP_CONNECT_USER_INFO " +
+			"WHERE MAP_USER_ID=?";
 	@Override
-	public Map<String, Object> get(Long mapUserId) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public Map<String, Object> getPublicInfo(Long mapUserId) {
+		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_CONNECT_USER_PUBLIC, mapUserId);
 	}
 
 	private static final String SQL_INSERT_CONNECT_USER = "INSERT INTO DRIP_CONNECT_USER_INFO " +
@@ -30,7 +34,7 @@ public class ConnectUserDaoImpl implements ConnectUserDao {
 			"REAL_NAME," +
 			"CREATE_TIME) " +
 			"VALUES " +
-			"(?,?,?,?,?,now())";
+			"(?,?,?,?,?,?,now())";
 
 	@Override
 	public Long add(Connection con, Map<String, Object> connectUserInfo) throws SQLException {

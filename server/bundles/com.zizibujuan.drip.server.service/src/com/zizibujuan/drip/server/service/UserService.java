@@ -111,12 +111,14 @@ public interface UserService {
 	 *  <li>头像信息</li>
 	 * </ul>
 	 * 
+	 * <p>在界面上可以直接通过mapUserId获取用户信息，无需id</p>
 	 * @param localUserId 本网站用户标识
 	 * @param mapUserId 本网站用户与第三方用户的映射标识
 	 * @return 如果系统中存在该用户信息则返回，否则返回空的map对象。
 	 * <pre>
 	 * 	map结构为：
-	 * 		id: 用户标识
+	 * 		id: 本地用户标识，即localUserId
+	 * 		mapUserId：用户映射标识
 	 * 		displayName: 显示名
 	 * 		fanCount：粉丝数
 	 * 		followCount: 关注人数

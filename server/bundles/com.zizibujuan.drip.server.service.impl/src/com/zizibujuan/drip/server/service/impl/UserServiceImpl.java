@@ -63,8 +63,10 @@ public class UserServiceImpl implements UserService {
 		Map<String,Object> userInfo = null;
 		if(userDao.isLocalUser(mapUserId)){
 			userInfo = userDao.getPublicInfo(mapUserId);
+			userInfo.put("mapUserId", mapUserId);
 		}else{
-			userInfo = connectUserDao.get(mapUserId);
+			userInfo = connectUserDao.getPublicInfo(mapUserId);
+			userInfo.put("id", localUserId);
 			Map<String,Object> statistics = userDao.getUserStatistics(localUserId);
 			userInfo.putAll(statistics);
 		}
