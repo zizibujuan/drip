@@ -145,7 +145,7 @@ public class LoginServlet extends DripServlet {
 		userInfo.put(UserSession.KEY_MAPPED_USER_ID, mapUserId);
 		
 		UserSession.setUser(req, userInfo);
-		logger.info("使用人人帐号登录成功，人人标识是:{0},用户名是:{1}",rrUid,displayName);
+		logger.info("使用人人帐号登录成功，人人标识是:"+rrUid+",用户名是:"+displayName+"。");
 		// 跳转到个人首页
 		resp.sendRedirect("/");
 	}

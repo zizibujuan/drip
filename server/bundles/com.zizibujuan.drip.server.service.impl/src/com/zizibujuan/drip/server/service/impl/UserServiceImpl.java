@@ -94,7 +94,10 @@ public class UserServiceImpl implements UserService {
 			// 获取基本信息 （不需要，实时从第三方网站获取）
 			// 获取头像信息 （不需要，实时从第三方网站获取）
 			// 只获取统计信息，用户的其余信息实时来自第三方网站
-			return userDao.getUserStatistics(localUserId);
+			userInfo = userDao.getUserStatistics(localUserId);
+			// 在session中使用id表示本地用户标识
+			userInfo.put("id", localUserId);
+			return userInfo;
 		}
 		
 	}
