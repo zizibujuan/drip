@@ -63,7 +63,8 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			Object oUserId = exerciseInfo.get("userId");
 			Object oExerType = exerciseInfo.get("exerType");
 			String exerType = oExerType.toString();
-			
+			Long mapUserId = Long.valueOf(exerciseInfo.get("MAP_USER_ID").toString());
+			// localUserId
 			Long userId = Long.valueOf(oUserId.toString());
 			
 			exerId = this.addExercise(con, exerciseInfo);
@@ -81,7 +82,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			// 同时修改后端和session中缓存的该记录
 			userDao.increaseExerciseCount(con, userId);
 			// 在活动表中插入一条记录
-			addActivity(con, userId,exerId,ActionType.SAVE_EXERCISE);
+			addActivity(con, userId, mapUserId, exerId,ActionType.SAVE_EXERCISE);
 			
 			// 如果存在答案，则添加答案
 			Object oAnswer = exerciseInfo.get("answer");
@@ -102,7 +103,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 							}
 						}
 					}
-					Long mapUserId = Long.valueOf(exerciseInfo.get("MAP_USER_ID").toString());
+					
 					answerDao.save(con, userId, mapUserId, answerInfo);
 				}
 			}
@@ -120,10 +121,11 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 		return exerId;
 	}
 
-	private void addActivity(Connection con,Long userId, Long contentId, String actionType) throws SQLException {
+	private void addActivity(Connection con,Long userId, Long mapUserId, Long contentId, String actionType) throws SQLException {
 		// FIXME:是不是直接传各自的参数更好一些，而不是现在传入map对象，还需要两遍转换
 		Map<String,Object> activityInfo = new HashMap<String, Object>();
 		activityInfo.put("USER_ID", userId);
+		activityInfo.put("MAP_USER_ID", mapUserId);
 		activityInfo.put("ACTION_TYPE", actionType);
 		activityInfo.put("IS_IN_HOME", 1);
 		activityInfo.put("CONTENT_ID", contentId);

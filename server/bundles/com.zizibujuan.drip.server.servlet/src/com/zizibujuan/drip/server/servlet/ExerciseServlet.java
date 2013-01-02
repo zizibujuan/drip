@@ -46,6 +46,7 @@ public class ExerciseServlet extends DripServlet{
 			Map<String,Object> exerciseInfo = RequestUtil.fromJsonObject(req);
 			// 如果保存成功，则返回一个成功的状态码
 			exerciseInfo.put("userId", UserSession.getLocalUserId(req));
+			exerciseInfo.put("MAP_USER_ID", UserSession.getMappedUserId(req));
 			exerciseService.add(exerciseInfo);
 			// 因为界面上常用的当前用户的统计数是从session中获取的，所以要更新session中的值
 			UserSession.increaseExerciseCount(req);

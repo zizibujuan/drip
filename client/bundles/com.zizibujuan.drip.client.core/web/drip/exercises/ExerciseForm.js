@@ -67,16 +67,17 @@ define(["dojo/_base/declare",
 			this._createSingleSelectForm();
 			//this._createEssayQuestionForm();
 			
-			// 为保存按钮绑定事件
-			var btnNewExercise = this.btnNewExercise = registry.byId("btnNewExercise");
-			btnNewExercise.on("click",lang.hitch(this, this.doSave));
+			// 创建保存按钮
+			var actionContainer = domConstruct.create("div",{"class":"drip_form_actions"},this.domNode);
+			var btnNewExercise = this.btnNewExercise = domConstruct.create("input",{type:"button",value:"保存"},actionContainer);
+			on(btnNewExercise,"click",lang.hitch(this, this.doSave));
 		},
 		
 		doSave: function(e){
 			// 保存之前要先校验
 			
 			// 失效保存按钮，防止重复提交
-			this.btnNewExercise.set("disabled",true);
+			domAttr.set(this.btnNewExercise,"disabled", true);
 			
 			var data = this.data;
 			data.content = this.editorExerContent.get("value");
@@ -108,10 +109,10 @@ define(["dojo/_base/declare",
 			xhr("/exercises/",{method:"POST", data:JSON.stringify(data)}).then(lang.hitch(this,function(response){
 				// 保存成功，在界面上清除用户输入数据，使处于新增状态。在页面给出保存成功的提示，在按钮旁边显示。
 				this._reset();
-				this.btnNewExercise.set("disabled",false);
+				domAttr.set(this.btnNewExercise,"disabled", false);
 			}),lang.hitch(this, function(error){
 				// 保存失败，不清除用户输入数据，并给出详尽的错误提示
-				this.btnNewExercise.set("disabled",false);
+				domAttr.set(this.btnNewExercise,"disabled", false);
 			}));
 		},
 		

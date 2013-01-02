@@ -105,6 +105,7 @@ margin-bottom: -268px;
 	background-image: -webkit-linear-gradient(#F9F9F9, #F3F3F3);
 	background-image: linear-gradient(#F9F9F9, #F3F3F3);
 	background-repeat: repeat-x;
+	z-index: 1000;
 }
 
 .drip_header_logged_out .drip_header_logo{
@@ -450,4 +451,18 @@ margin-bottom: -268px;
 
 .site_introduces h3, .site_introduces p {
 	padding-right: 10px;
+}
+
+
+.drip_form_actions{
+	text-align: right;
+	
+	margin-top: 10px;
+}
+
+.drip_form_actions input{
+	padding: 8px 15px;
+	font-weight: bold;
+	display: inline-block;
+	line-height: normal;
 }
