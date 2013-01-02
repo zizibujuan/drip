@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.dao.ConnectUserDao;
 import com.zizibujuan.drip.server.dao.OAuthUserMapDao;
+import com.zizibujuan.drip.server.dao.UserAttributesDao;
 import com.zizibujuan.drip.server.dao.UserAvatarDao;
 import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.dao.UserRelationDao;
@@ -29,6 +30,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	private OAuthUserMapDao oAuthUserMapDao;
 	private UserAvatarDao userAvatarDao;
 	private ConnectUserDao connectUserDao;
+	private UserAttributesDao userAttributesDao;
 	
 	private static final String SQL_INSERT_USER = "INSERT INTO DRIP_USER_INFO " +
 			"(LOGIN_NAME," +
@@ -64,6 +66,10 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 					userInfo.get("md5Password"),
 					userInfo.get("mobile"),
 					userInfo.get("realName"));
+			// 在关联表中添加一条记录，自己关联自己
+			Long mapUserId = oAuthUserMapDao.mapUserId(con, OAuthConstants.ZIZIBUJUAN, String.valueOf(userId), userId);
+			// 在用户属性表中初始化属性值
+			userAttributesDao.initUserState(con, mapUserId);
 			// 添加完用户之后，需要在用户关系表中，添加一条用户关注用户自己的记录
 			userRelationDao.watch(con, userId, userId);
 			con.commit();
@@ -191,6 +197,8 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			// 注意：这里先建立映射数据，然后将映射标识存储在第三方网站用户表中。
 			userInfo.put("mapUserId", mapUserId);
 			connectUserDao.add(con, userInfo);
+			// 初始化用户属性表
+			userAttributesDao.initUserState(con, mapUserId);
 			// 自己关注自己，使用drip用户标识
 			userRelationDao.watch(con, localUserId, localUserId);
 			if(avatarList != null && avatarList.size()>0){
@@ -290,6 +298,15 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		}
 	}
 	
+	public void setUserAttributesDao(UserAttributesDao userAttributesDao) {
+		logger.info("注入userAttributesDao");
+		this.userAttributesDao = userAttributesDao;
+	}
+	public void unsetUserAttributesDao(UserAttributesDao userAttributesDao) {
+		if (this.userAttributesDao == userAttributesDao) {
+			logger.info("注销userAttributesDao");
+			this.userAttributesDao = null;
+		}
+	}
 	
-
 }

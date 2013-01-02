@@ -50,7 +50,7 @@ public class UserAttributesDaoImpl extends AbstractDao implements UserAttributes
 		
 	}
 
-	private static final String SQL_INSERT_USER_ATTRIBUTES = "INSERT INTO SYS_USER_ATTRIBUTES " +
+	private static final String SQL_INSERT_USER_ATTRIBUTES = "INSERT INTO DRIP_USER_ATTRIBUTES " +
 			"(MAP_USER_ID," +
 			"ATTR_NAME," +
 			"ATTR_VALUE)" +
