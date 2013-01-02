@@ -11,3 +11,4 @@ Bundle-ClassPath: lib/httpunit.jar,
  lib/nekohtml-0.9.5.jar,
  lib/xercesImpl-2.6.1.jar,
  .
+Require-Bundle: org.junit;bundle-version="4.10.0"
