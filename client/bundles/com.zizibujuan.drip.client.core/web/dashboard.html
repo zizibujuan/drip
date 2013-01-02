@@ -41,7 +41,7 @@ require(["dojo/ready",
 		// 在右侧用户信息区域显示
 		var profileImg = dom.byId("profileImage");
 		profileImg.alt = userInfo.displayName;
-		profileImg.src = userInfo.headUrl;
+		profileImg.src = userInfo.largeImageUrl;
 		dom.byId("userName").innerHTML = userInfo.displayName;
 		dom.byId("follow_count").innerHTML = userInfo.followCount;
 		dom.byId("fan_count").innerHTML = userInfo.fanCount;
@@ -50,7 +50,7 @@ require(["dojo/ready",
 		dom.byId("my_exer_count").innerHTML = userInfo.exerciseCount;
 		// 在顶部用户信息区域显示
 		var topProfileImage = dom.byId("topProfileImage");
-		topProfileImage.src = userInfo.tinyUrl;
+		topProfileImage.src = userInfo.smallImageUrl;
 		topProfileImage.alt = userInfo.displayName;
 		dom.byId("topUserName").innerHTML = userInfo.displayName;
 	});
