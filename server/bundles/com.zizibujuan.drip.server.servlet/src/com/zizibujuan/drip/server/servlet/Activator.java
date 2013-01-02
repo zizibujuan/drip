@@ -2,7 +2,11 @@ package com.zizibujuan.drip.server.servlet;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.util.tracker.ServiceTrackerCustomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.renren.api.client.RenrenApiConfig;
 import com.zizibujuan.drip.server.service.ApplicationPropertyService;
@@ -14,13 +18,45 @@ import com.zizibujuan.drip.server.util.OAuthConstants;
  * @since 0.0.1
  */
 public class Activator implements BundleActivator {
+	private static final Logger logger = LoggerFactory.getLogger(Activator.class);
 
 	private static BundleContext context;
-	private ApplicationPropertyService applicationPropertyService;
 	private ServiceTracker<ApplicationPropertyService, ApplicationPropertyService> applicationPropertyServiceTracker;
 
 	static BundleContext getContext() {
 		return context;
+	}
+	
+	private class ApplicationPropertyServiceTracker extends ServiceTracker<ApplicationPropertyService, ApplicationPropertyService>{
+		public ApplicationPropertyServiceTracker(
+				BundleContext context,
+				String clazz,
+				ServiceTrackerCustomizer<ApplicationPropertyService, ApplicationPropertyService> customizer) {
+			super(context, clazz, customizer);
+		}
+
+		@Override
+		public ApplicationPropertyService addingService(
+				ServiceReference<ApplicationPropertyService> reference) {
+			ApplicationPropertyService applicationPropertyService = this.context.getService(reference);
+			logger.info("applicationPropertyService In activator:"+applicationPropertyService);
+			
+			String key = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_APP_KEY);
+			String secret = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_APP_SECRET);
+			
+			RenrenApiConfig.renrenApiKey  = key;
+			RenrenApiConfig.renrenApiSecret = secret;
+			return applicationPropertyService;
+		}
+
+		@Override
+		public void removedService(
+				ServiceReference<ApplicationPropertyService> reference,
+				ApplicationPropertyService service) {
+			this.context.ungetService(reference);
+			super.removedService(reference, service);
+		}
+		
 	}
 	
 	/*
@@ -29,17 +65,8 @@ public class Activator implements BundleActivator {
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
-		applicationPropertyServiceTracker = new ServiceTracker<ApplicationPropertyService, ApplicationPropertyService>(bundleContext, ApplicationPropertyService.class, null);
+		applicationPropertyServiceTracker = new ApplicationPropertyServiceTracker(bundleContext, ApplicationPropertyService.class.getName(), null);
 		applicationPropertyServiceTracker.open();
-		applicationPropertyService = applicationPropertyServiceTracker.getService();
-		
-		System.out.println("applicationPropertyService In activator:"+applicationPropertyService);
-		
-		String key = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_APP_KEY);
-		String secret = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_APP_SECRET);
-		
-		RenrenApiConfig.renrenApiKey  = key;
-		RenrenApiConfig.renrenApiSecret = secret;
 	}
 
 	/*
