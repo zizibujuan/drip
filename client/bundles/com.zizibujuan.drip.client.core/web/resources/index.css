@@ -435,17 +435,18 @@ margin-bottom: -268px;
 
 .site_introduces h3 {
 	margin: 0 0 9px;
-	font-size: 24px;
-	font-weight: normal;
+	font-size: 20px;
+	font-weight: bold;
 	line-height: 1.1;
 	color: #2A2A2A;
 }
 
 .site_introduces p {
 	margin: 0 0 10px;
-	font-size: 15px;
+	font-size: 13px;
 	color: #5A5A5A;
 	text-align: left;
+	line-height: 1.5;
 	/*text-indent: 2em;*/
 }
 
