@@ -4,7 +4,7 @@
 <booleanAttribute key="append.args" value="true"/>
 <stringAttribute key="application" value="org.eclipse.pde.junit.runtime.coretestapplication"/>
 <booleanAttribute key="askclear" value="false"/>
-<booleanAttribute key="automaticAdd" value="true"/>
+<booleanAttribute key="automaticAdd" value="false"/>
 <booleanAttribute key="automaticValidate" value="false"/>
 <stringAttribute key="bad_container_name" value="/com.zizibujuan.drip.server.tests/launchConfigurations/"/>
 <stringAttribute key="bootstrap" value=""/>
@@ -33,18 +33,17 @@
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="com.zizibujuan.drip.server.tests"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dorg.osgi.service.http.port=8199"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="com.zizibujuan.drip.product"/>
 <booleanAttribute key="run_in_ui_thread" value="true"/>
-<setAttribute key="selected_features">
-<setEntry value="com.zizibujuan.drip.base.feature:default"/>
-<setEntry value="com.zizibujuan.drip.server.feature:default"/>
-<setEntry value="com.zizibujuan.drip.server.tests.feature:default"/>
-</setAttribute>
+<setAttribute key="selected_features"/>
+<stringAttribute key="selected_target_plugins" value="ch.qos.logback.classic@default:default,ch.qos.logback.core@default:default,ch.qos.logback.slf4j@default:false,com.google.gson@default:default,javax.servlet@default:default,org.eclipse.core.contenttype@default:default,org.eclipse.core.jobs@default:default,org.eclipse.core.runtime@default:true,org.eclipse.equinox.app@default:default,org.eclipse.equinox.common@2:true,org.eclipse.equinox.ds@1:true,org.eclipse.equinox.preferences@default:default,org.eclipse.equinox.registry@default:default,org.eclipse.equinox.util@default:default,org.eclipse.osgi@-1:true,org.hamcrest.core@default:default,org.junit@default:default,org.mozilla.javascript@default:default,org.slf4j.api@default:default,osgi.enterprise@default:default"/>
+<stringAttribute key="selected_workspace_plugins" value="com.zizibujuan.dbaccess.mysql@default:default,com.zizibujuan.drip.server.dao.mysql@default:default,com.zizibujuan.drip.server.dao@default:default,com.zizibujuan.drip.server.exception@default:default,com.zizibujuan.drip.server.logback.config@default:false,com.zizibujuan.drip.server.service.impl@default:default,com.zizibujuan.drip.server.service@default:default,com.zizibujuan.drip.server.servlet@default:default,com.zizibujuan.drip.server.tests@default:default,com.zizibujuan.drip.server.util@default:default,com.zizibujuan.jdbc.mysql@default:default"/>
 <booleanAttribute key="show_selected_only" value="false"/>
 <stringAttribute key="templateConfig" value="${target_home}/configuration/config.ini"/>
 <booleanAttribute key="tracing" value="false"/>
-<booleanAttribute key="useCustomFeatures" value="true"/>
+<booleanAttribute key="useCustomFeatures" value="false"/>
 <booleanAttribute key="useDefaultConfig" value="true"/>
 <booleanAttribute key="useDefaultConfigArea" value="false"/>
 <booleanAttribute key="useProduct" value="false"/>

@@ -79,7 +79,7 @@ public class ActivityServiceImpl implements ActivityService {
 		this.activityDao = activityDao;
 	}
 
-	public void unsetExerciseDao(ActivityDao activityDao) {
+	public void unsetActivityDao(ActivityDao activityDao) {
 		if (this.activityDao == activityDao) {
 			logger.info("注销ActivityDao");
 			this.activityDao = null;

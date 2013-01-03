@@ -4,6 +4,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.zizibujuan.drip.server.tests.servlets.LoginServletTests;
+
 /**
  * Servlet测试套件
  * @author jzw

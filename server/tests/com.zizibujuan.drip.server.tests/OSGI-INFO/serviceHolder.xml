@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" 
+	name="com.zizibujuan.drip.server.tests.serviceHolder"
+	activate="activate"
+	deactivate="deactivate"
+	enabled="true">
+   <implementation class="com.zizibujuan.drip.server.tests.ServiceHolder"/>
+   <!--
+   <reference 
+		bind="setApplicationPropertyService" 
+		unbind="unsetApplicationPropertyService" 
+		cardinality="0..1" 
+		interface="com.zizibujuan.drip.server.service.ApplicationPropertyService" 
+		name="applicationPropertyService" 
+		policy="dynamic" />
+	-->
+</scr:component>

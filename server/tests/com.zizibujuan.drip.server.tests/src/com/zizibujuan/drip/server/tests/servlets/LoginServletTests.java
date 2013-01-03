@@ -1,6 +1,8 @@
-package com.zizibujuan.drip.server.tests;
+package com.zizibujuan.drip.server.tests.servlets;
 
 import junit.framework.Assert;
+
+import org.junit.Test;
 
 /**
  * 测试用户登录方法
@@ -9,6 +11,7 @@ import junit.framework.Assert;
  */
 public class LoginServletTests {
 
+	@Test
 	public void testXXX(){
 		Assert.assertTrue(true);
 	}
