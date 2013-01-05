@@ -1,0 +1,12 @@
+[submodule "client/bundles/com.zizibujuan.drip.client.dojo/static/dojo"]
+	path = client/bundles/com.zizibujuan.drip.client.dojo/static/dojo
+	url = git://github.com/dojo/dojo.git
+[submodule "client/bundles/com.zizibujuan.drip.client.dojo/static/dijit"]
+	path = client/bundles/com.zizibujuan.drip.client.dojo/static/dijit
+	url = git://github.com/dojo/dijit.git
+[submodule "client/bundles/com.zizibujuan.drip.client.dojo/static/dojox"]
+	path = client/bundles/com.zizibujuan.drip.client.dojo/static/dojox
+	url = git://github.com/dojo/dojox.git
+[submodule "client/bundles/com.zizibujuan.drip.client.dojo/static/util"]
+	path = client/bundles/com.zizibujuan.drip.client.dojo/static/util
+	url = git://github.com/dojo/util.git
