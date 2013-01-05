@@ -207,7 +207,8 @@ public class LoginServlet extends DripServlet {
 	}
 
 
-
+	private static final String KEY_LOGIN = "login";
+	private static final String KEY_PASSWORD = "password";
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -228,7 +229,25 @@ public class LoginServlet extends DripServlet {
 		}else{
 			if(pathInfo.equals("/form")){
 				Map<String, Object> userInfo = RequestUtil.fromJsonObject(req);
-				LoginCommand.handleCommand(req, resp, userService, userInfo);
+				String email = userInfo.get(KEY_LOGIN).toString();
+				String password = userInfo.get(KEY_PASSWORD).toString();
+				Map<String,Object> existUserInfo = userService.login(email, password);
+				if(existUserInfo != null){
+					// 如果登录成功，则跳转到用户专有首页
+					String zzbjUserId = existUserInfo.get("id").toString(); 
+					Map<String,Object> userMapperInfo = oAuthUserMapService.getUserMapperInfo(OAuthConstants.ZIZIBUJUAN, zzbjUserId);
+					existUserInfo.put(UserSession.KEY_MAPPED_USER_ID, userMapperInfo.get("MAP_USER_ID"));
+					UserSession.setUser(req, existUserInfo);
+					// 返回到客户端，然后客户端跳转到首页
+					Map<String,Object> result = new HashMap<String, Object>();
+					result.put("status", "1");// 1表示登录成功。
+					ResponseUtil.toJSON(req, resp, result);
+				}else{
+					// 登录失败
+					Map<String,Object> result = new HashMap<String, Object>();
+					result.put("status", "2");// 2表示登录失败。
+					ResponseUtil.toJSON(req, resp, result);
+				}
 				return;
 			}
 		}

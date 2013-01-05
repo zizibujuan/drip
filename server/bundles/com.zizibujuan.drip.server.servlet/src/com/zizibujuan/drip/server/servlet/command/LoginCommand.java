@@ -12,10 +12,11 @@ import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
 import com.zizibujuan.drip.server.util.servlet.UserSession;
 
 /**
- * 用户登录操作
+ * 用户登录操作。因为传递的参数太多，并且只有一处使用，所以不再使用这种方式来重构代码
  * @author jinzw
  * @since 0.0.1
  */
+@Deprecated
 public class LoginCommand{
 	private static final String KEY_LOGIN = "login";
 	private static final String KEY_PASSWORD = "password";
@@ -40,6 +41,7 @@ public class LoginCommand{
 		Map<String,Object> existUserInfo = userService.login(email, password);
 		if(existUserInfo != null){
 			// 如果登录成功，则跳转到用户专有首页
+			existUserInfo.put(UserSession.KEY_MAPPED_USER_ID, existUserInfo.get("id"));
 			UserSession.setUser(req, existUserInfo);
 			// 返回到客户端，然后客户端跳转到首页
 			Map<String,Object> result = new HashMap<String, Object>();

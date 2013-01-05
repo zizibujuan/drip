@@ -66,8 +66,12 @@ public class UserAvatarDaoImpl extends AbstractDao implements UserAvatarDao {
 		Map<String,Object> result = new HashMap<String, Object>();
 		List<Map<String,Object>> list = DatabaseUtil.queryForList(getDataSource(), SQL_GET_USER_AVATAR, mapUserId);
 		int length = KEY_AVATAR.length;
-		if(list.size() > length){
-			logger.error("目前系统只支持最多"+length+"种尺寸的头像，但是出现了"+list.size()+"种比例的情况，更大尺寸的图像被忽略了");
+		int listSize = list.size();
+		if(listSize > length){
+			logger.error("目前系统只支持最多"+length+"种尺寸的头像，但是出现了"+listSize+"种比例的情况，更大尺寸的图像被忽略了");
+		}
+		if(listSize < length){
+			length = listSize;
 		}
 		for(int i = 0; i < length; i++){
 			result.put(KEY_AVATAR[i], list.get(i).get("URL").toString());

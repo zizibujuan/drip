@@ -18,7 +18,10 @@ define(["dojo/_base/declare",
         "prettyDate",
         "drip/Editor",
         "dojo/text!/templates/ActivityNode.html",
-        "dojo/text!/templates/ActivityList.html"], function(
+        "dojo/text!/templates/ActivityList.html",
+        
+        "dijit/TooltipDialog", 
+        "dijit/popup"], function(
         		declare,
         		array,
         		lang,
@@ -38,7 +41,10 @@ define(["dojo/_base/declare",
         		prettyDate,
         		Editor,
         		nodeTemplate,
-        		listTemplate){
+        		listTemplate,
+        		
+        		TooltipDialog,
+        		popup){
 	
 	// TODO：用户答题前，确保没有显示答案
 	// TODO：“不做了”，恢复到答题前的状态
@@ -223,6 +229,26 @@ define(["dojo/_base/declare",
 				// 隐藏解答区域
 				this._showAnswerArea(false);
 			}));
+			
+			// 为头像和用户名绑定mouseover事件
+			on(this.userLinkNode,"mouseover", lang.hitch(this, this._showMiniCard(e)));
+			on(this.userInfo,"mouseover", lang.hitch(this, this._showMiniCard(e)));
+			
+			
+		},
+		
+		_showMiniCard: function(e){
+			// summary:
+			//		显示用户名片
+			
+			var dialog = new TooltipDialog({
+				content:"aa"
+			});
+			
+			popup.open({
+				popup: dialog,
+				around:e.target
+			});
 		},
 		
 		_showAnswerArea: function(show){
