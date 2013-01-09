@@ -224,4 +224,24 @@ public class UserServlet extends DripServlet {
 		}
 		return result;
 	}
+
+	/**
+	 * 获取能公开的用户信息
+	 */
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		traceRequest(req);
+		String pathInfo = req.getPathInfo();
+		if(pathInfo != null && !pathInfo.equals("/")){
+			Long localUserId = Long.valueOf(pathInfo.split("/")[1]);
+			Long mapUserId = Long.valueOf(req.getParameter("mapUserId"));
+			Map<String,Object> userInfo = userService.getPublicInfo(localUserId, mapUserId);
+			ResponseUtil.toJSON(req, resp, userInfo);
+			return;
+		}
+		super.doGet(req, resp);
+	}
+	
+	
 }
