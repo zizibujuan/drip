@@ -39,4 +39,15 @@ public class JsonUtilTests {
 		System.out.println(jsonString);
 		Assert.assertEquals("{\"now\":\"2013-01-01T01:01:01\"}", jsonString);
 	}
+	
+	@Test
+	public void testLongTypeConverter(){
+		String jsonString = "{\"exerId\":25,\"detail\":[{\"optionId\":98}],\"guide\":\"<root><line><text>q</text></line></root>\"}";
+		Map<String,Object> json = JsonUtil.fromJsonObject(jsonString);
+		System.out.println(json);
+		Object o = json.get("exerId");
+		System.out.println(o);
+		// TODO:在网上查找Gson在什么情况下会将数字解析为Long类型
+		// 不要在整数后面加一个 ".0"
+	}
 }

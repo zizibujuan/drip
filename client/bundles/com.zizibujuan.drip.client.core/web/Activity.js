@@ -19,9 +19,7 @@ define(["dojo/_base/declare",
         "drip/Editor",
         "dojo/text!/templates/ActivityNode.html",
         "dojo/text!/templates/ActivityList.html",
-        
-        "dijit/TooltipDialog", 
-        "dijit/popup"], function(
+        "MiniCard"], function(
         		declare,
         		array,
         		lang,
@@ -42,9 +40,7 @@ define(["dojo/_base/declare",
         		Editor,
         		nodeTemplate,
         		listTemplate,
-        		
-        		TooltipDialog,
-        		popup){
+        		MiniCard){
 	
 	// TODO：用户答题前，确保没有显示答案
 	// TODO：“不做了”，恢复到答题前的状态
@@ -58,6 +54,8 @@ define(["dojo/_base/declare",
 		postCreate : function(){
 			this.inherited(arguments);
 			this._showActionLabel();
+			
+			this.miniCard = new MiniCard();
 			
 			// 为模板赋值
 			var exerciseInfo = this.data.exercise;
@@ -230,26 +228,53 @@ define(["dojo/_base/declare",
 				this._showAnswerArea(false);
 			}));
 			
+			console.log("activity node data:",this.data);
+			var localUserId = this.data.localUserId;
+			var mapUserId = this.data.mapUserId;
+			debugger;
 			// 为头像和用户名绑定mouseover事件
-			on(this.userLinkNode,"mouseover", lang.hitch(this, this._showMiniCard(e)));
-			on(this.userInfo,"mouseover", lang.hitch(this, this._showMiniCard(e)));
+			on(this.userLinkNode,"mouseover", lang.hitch(this, function(e){
+				this.miniCard.show(e.target, localUserId, mapUserId);
+			}));
+			on(this.userInfo,"mouseover", lang.hitch(this, function(e){
+				this.miniCard.show(e.target, localUserId, mapUserId);
+			}));
 			
-			
+			// TODO：如果鼠标往弹出面板的方向移动，则不要关闭弹出面板，如何实现呢？
+			// 这里的代码，在离开触发容器之后，立即就关闭了，光标根本无法操作弹出框中的内容
+			on(this.userLinkNode,"mouseout", lang.hitch(this, function(e){
+				this.miniCard.hide();
+			}));
+			on(this.userInfo,"mouseout", lang.hitch(this, function(e){
+				this.miniCard.hide();
+			}));
+
 		},
-		
-		_showMiniCard: function(e){
-			// summary:
-			//		显示用户名片
-			
-			var dialog = new TooltipDialog({
-				content:"aa"
-			});
-			
-			popup.open({
-				popup: dialog,
-				around:e.target
-			});
-		},
+//		
+//		_showMiniCard: function(e){
+//			// summary:
+//			//		显示用户名片
+//			
+//			// TODO:缓存弹出框对象
+//			var self = this;
+//			var dialog = this.miniCardDialog = new TooltipDialog({
+//				style:"margin:0px",
+//				
+//			});
+//			
+//			var innerDiv = domConstruct.create("div",null,dialog.containerNode);
+//			var footerDiv = domConstruct.create("div",{"class":"minicard_footer"},innerDiv);
+//			var actionDiv = domConstruct.create("div",{"class":"actions"},footerDiv);
+//			// 如果已关注，则显示取消关注按钮,如果是自己的，则不显示操作栏目
+//			var inputFollow = domConstruct.create("input",{type:"button",value:"+关注"},actionDiv);
+//			
+//			
+//			// 在底部左边显示来自哪里信息，在底部右边显示关注按钮
+//			
+//			
+//			
+//			
+//		},
 		
 		_showAnswerArea: function(show){
 			var display = "";
