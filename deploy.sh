@@ -35,6 +35,8 @@ pushd $codeDir
 
 echo 更新最新的代码
 git pull
+echo 更新所有的子模块
+git submodule update
 
 echo 执行自动化构建
 #mvn clean install -P aliyun_webserver
