@@ -250,31 +250,6 @@ define(["dojo/_base/declare",
 			}));
 
 		},
-//		
-//		_showMiniCard: function(e){
-//			// summary:
-//			//		显示用户名片
-//			
-//			// TODO:缓存弹出框对象
-//			var self = this;
-//			var dialog = this.miniCardDialog = new TooltipDialog({
-//				style:"margin:0px",
-//				
-//			});
-//			
-//			var innerDiv = domConstruct.create("div",null,dialog.containerNode);
-//			var footerDiv = domConstruct.create("div",{"class":"minicard_footer"},innerDiv);
-//			var actionDiv = domConstruct.create("div",{"class":"actions"},footerDiv);
-//			// 如果已关注，则显示取消关注按钮,如果是自己的，则不显示操作栏目
-//			var inputFollow = domConstruct.create("input",{type:"button",value:"+关注"},actionDiv);
-//			
-//			
-//			// 在底部左边显示来自哪里信息，在底部右边显示关注按钮
-//			
-//			
-//			
-//			
-//		},
 		
 		_showAnswerArea: function(show){
 			var display = "";
