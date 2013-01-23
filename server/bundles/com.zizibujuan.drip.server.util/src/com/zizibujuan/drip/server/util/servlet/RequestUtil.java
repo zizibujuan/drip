@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.IOUtils;
 
-import com.zizibujuan.drip.server.util.JsonUtil;
+import com.zizibujuan.drip.server.util.json.JsonUtil;
 
 /**
  * http请求帮助类

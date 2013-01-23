@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 
 import com.zizibujuan.drip.server.util.HttpConstants;
-import com.zizibujuan.drip.server.util.JsonUtil;
+import com.zizibujuan.drip.server.util.json.JsonUtil;
 
 /**
  * 往response中输出内容的帮助类,支持以html或者json的格式输出到客户端
