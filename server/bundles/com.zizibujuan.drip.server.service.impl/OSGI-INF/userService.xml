@@ -24,7 +24,15 @@
    		cardinality="0..1" 
    		interface="com.zizibujuan.drip.server.dao.UserAvatarDao" 
    		name="userAvatarDao" 
-   		policy="dynamic"/>		
+   		policy="dynamic"/>
+   		
+   <reference 
+   		bind="setConnectUserDao" 
+   		unbind="unsetConnectUserDao" 
+   		cardinality="0..1" 
+   		interface="com.zizibujuan.drip.server.dao.ConnectUserDao" 
+   		name="connectUserDao" 
+   		policy="dynamic"/>	
    		
    <service>
       <provide interface="com.zizibujuan.drip.server.service.UserService"/>

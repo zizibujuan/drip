@@ -153,4 +153,15 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 	
+	public void setConnectUserDao(ConnectUserDao connectUserDao) {
+		logger.info("注入connectUserDao");
+		this.connectUserDao = connectUserDao;
+	}
+
+	public void unsetConnectUserDao(ConnectUserDao connectUserDao) {
+		if (this.connectUserDao == connectUserDao) {
+			logger.info("注销connectUserDao");
+			this.connectUserDao = null;
+		}
+	}
 }
