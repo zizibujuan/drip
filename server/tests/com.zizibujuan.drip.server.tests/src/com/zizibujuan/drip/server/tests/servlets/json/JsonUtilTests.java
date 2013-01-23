@@ -60,11 +60,15 @@ public class JsonUtilTests {
 		// 不要在整数后面加一个 ".0"
 	}
 	
+	@Test
+	public void testCompareMapAndBean(){
+		
+	}
 	
 	@Test
 	public void testSerializationPerformence(){
 		System.out.println(Long.MAX_VALUE);
-		String jsonString = "{\"date\":\"2013-01-01\", \"dateTime\":\"2013-01-01 10:10\", \"string\":\"你好hello\",\"int\":11,\"long\":1234567890123456789,\"double\":10.1,\"boolean\":true,\"null\":null}";
+		String jsonString = "{\"date\":\"2013-01-01\", \"dateTime\":\"2013-01-01 10:10\", \"string\":\"你好hello\",\"int_\":11,\"long_\":1234567890123456789,\"double_\":10.1,\"boolean_\":true,\"null_\":null}";
 		int num = 10000;
 		// gson
 		long begin = System.nanoTime();
