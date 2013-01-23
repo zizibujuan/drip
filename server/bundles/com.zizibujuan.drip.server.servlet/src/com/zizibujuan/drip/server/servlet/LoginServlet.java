@@ -96,6 +96,7 @@ public class LoginServlet extends DripServlet {
 			return;
 		}
 		
+		// TODO:在数据库中存储acess token
 		String accessToken = (String) tokenJson.get("access_token");
 		Long expiresIn = (Long) tokenJson.get("expires_in");//距离过期时的时间段（秒数）
 		long currentTime = System.currentTimeMillis() / 1000;

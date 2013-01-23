@@ -3,39 +3,40 @@
 		<div class="minicard_body clearfix">
 			<dl class="clearfix">
 				<dt class="minicard_name">
-					<a href="#" target="_blank">
-						<img alt="" src="#">
+					<a href="#" target="_blank" data-dojo-attach-point="userImgLinkNode">
+						<img alt="" src="#" data-dojo-attach-point="userImgNode">
 					</a>
 				</dt>
 				<dd>
 					<p>
-						<a href="#" target="_blank">用户名</a>
+						<a href="#" target="_blank" data-dojo-attach-point="userNameLinkNode">用户名</a>
 					</p>
 					<p>
-						性别 地址
+						<span data-dojo-attach-point="userSexNode">性别</span>
+						<span data-dojo-attach-point="userAddrNode">地址</span>
 					</p>
 					
 					<div>
 						<ul class="userData clearfix">
-							<li>关注<a href="#">0</a></li>
+							<li>关注<a href="#" data-dojo-attach-point="followNode">0</a></li>
 							<li>|</li>
-							<li>粉丝<a href="#">0</a></li>
+							<li>粉丝<a href="#" data-dojo-attach-point="fanNode">0</a></li>
 							<li>|</li>
-							<li>答题<a href="#">0</a></li>
+							<li>答题<a href="#" data-dojo-attach-point="answerNode">0</a></li>
 						</ul>
 					</div>
 				</dd>
 			</dl>
 			<dl class="intro">
 				<dt></dt>
-				<dd>自我介绍</dd>
+				<dd data-dojo-attach-point="introNode">自我介绍</dd>
 			</dl>
 		</div>
 		<div class="minicard_footer">
-			<div class="ft_left">
+			<div class="ft_left" data-dojo-attach-point="fromSiteNode">
 				来自人人
 			</div>
-			<div class="ft_right">
+			<div class="ft_right" data-dojo-attach-point="actionsNode">
 				<!-- 关注按钮 -->
 			</div>
 		</div>

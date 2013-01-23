@@ -28,9 +28,61 @@ define(["dojo/_base/declare",
 			//		用户标识
 			
 			// 注意返回deferred对象
-			return xhr("/users/"+localUserId,{handleAs:"json",query:{mapUserId:mapUserId}}).then(function(response){
+			return xhr("/users/"+localUserId,{handleAs:"json",query:{mapUserId:mapUserId}}).then(lang.hitch(this,function(userInfo){
+				// 设置用户名片
 				
-			});
+				console.log("userInfo:", userInfo);
+				var userLinkSubfix = userInfo.id+"?mapUserId="+userInfo.mapUserId;
+				var displayName = userInfo.displayName || "";
+				var userActionLink = "/actions/"+ userLinkSubfix
+				
+				this.userImgLinkNode.href =  userActionLink;
+				this.userImgNode.src = userInfo.largeImageUrl || "";
+				this.userImgNode.alt = displayName;
+				this.userNameLinkNode.innerHTML = displayName;
+				this.userNameLinkNode.href = userActionLink;
+				this.userSexNode.innerHTML = userInfo.sex || "";
+				this.userAddrNode.innerHTML = userInfo.address || "";
+				
+				this.followNode.innerHTML = userInfo.followCount || 0;
+				this.followNode.href = "/follows/"+userLinkSubfix;
+				
+				this.fanNode.innerHTML = userInfo.fanCount || 0;
+				this.fanNode.href = "/fans/"+userLinkSubfix;
+				
+				this.answerNode.innerHTML = userInfo.answerCount || 0;
+				this.answerNode.href = "/answers/"+userLinkSubfix;
+				
+				this.introNode.innerHTML = userInfo.introduce || "";
+				
+				if(userInfo.fromSite == 101){
+					this.fromSiteNode.innerHTML = "来自<strong>人人</strong>网";
+				}
+				
+				// 操作按钮
+				// 如果尚未关注，显示关注按钮
+				// 如果已经关注，显示取消关注按钮
+				// 如果显示的是自己的名片，则不显示操作按钮
+				
+				
+				
+				
+				/*
+				id: 本地用户标识，即localUserId
+		 		mapUserId：用户映射标识
+		 		displayName: 显示名
+		 		fanCount：粉丝数
+		 		followCount: 关注人数
+		 		exerDraftCount： 习题草稿数
+		 		exerPublishCount：发布的习题数
+		 		answerCount： 习题总数 = 习题草稿数+发布的习题数
+		 		smallImageUrl: 小头像
+		 		largeImageUrl: 
+		 		largerImageUrl:
+		 		xLargeImageUrl:
+		 		*/
+		 			
+			}));
 		}
 	})
 	
