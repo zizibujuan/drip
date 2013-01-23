@@ -304,7 +304,7 @@ define(["dojo/_base/declare",
 			var data = this.data;
 			console.log("单条活动记录：",data);
 			
-			var userName = data.displayName;
+			var userName = data.userInfo.displayName;
 			this.userInfo.innerHTML = userName;
 			this.action.innerHTML = classCode.ActionTypeMap[data.actionType];
 			this.time.innerHTML = prettyDate.pretty(data.createTime);
@@ -314,7 +314,7 @@ define(["dojo/_base/declare",
 			// 用户头像
 			// TODO:每天晚上到人人上同步一下用户信息
 			//this.userLinkNode.href = "/users/"+data.userId;
-			this.userImageNode.src = data.smallImageUrl;
+			this.userImageNode.src = data.userInfo.smallImageUrl;
 		},
 		
 		_createExercise: function(exerciseInfo){
