@@ -9,7 +9,7 @@ define([
 	"dojo/_base/array",
 	"dojo/on",
 	"dijit/_base/manager",
-	"dojox/form/uploader/Base"
+	"dojox/form/uploader/_Base"
 ],function(
 		fx, 
 		domStyle, 

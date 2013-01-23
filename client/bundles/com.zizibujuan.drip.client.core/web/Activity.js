@@ -60,7 +60,7 @@ define(["dojo/_base/declare",
 			// 为模板赋值
 			var exerciseInfo = this.data.exercise;
 			var exerciseId = exerciseInfo.id;
-			console.log(exerciseInfo);
+			console.log("exercise info:",exerciseInfo);
 			this._createExercise(exerciseInfo);
 			// 针对不同的题型，有不同的渲染方式
 			
@@ -302,9 +302,9 @@ define(["dojo/_base/declare",
 		
 		_showActionLabel: function(){
 			var data = this.data;
-			console.log(data);
+			console.log("单条活动记录：",data);
 			
-			var userName = data.displayUserName;
+			var userName = data.displayName;
 			this.userInfo.innerHTML = userName;
 			this.action.innerHTML = classCode.ActionTypeMap[data.actionType];
 			this.time.innerHTML = prettyDate.pretty(data.createTime);
@@ -314,7 +314,7 @@ define(["dojo/_base/declare",
 			// 用户头像
 			// TODO:每天晚上到人人上同步一下用户信息
 			//this.userLinkNode.href = "/users/"+data.userId;
-			this.userImageNode.src = data.mainUrl;
+			this.userImageNode.src = data.smallImageUrl;
 		},
 		
 		_createExercise: function(exerciseInfo){
@@ -377,7 +377,7 @@ define(["dojo/_base/declare",
 			 if(items.length == 0){
 				 this.domNode.innerHTML = "没有活动，快去录入新题目，或到题库中解答习题";
 			 }else{
-				 console.log(items);
+				 console.log("个人首页的活动列表：",items);
 				 array.forEach(items, lang.hitch(this,function(item, index){
 					 var node = new ActivityNode({
 						 data : item

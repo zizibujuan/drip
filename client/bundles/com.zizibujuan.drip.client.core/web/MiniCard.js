@@ -5,7 +5,8 @@ define(["dojo/_base/declare",
         "dijit/_TemplatedMixin",
         "dijit/TooltipDialog",
         "dijit/popup",
-        "dojo/text!/templates/MiniCard.html"], function(
+        "dojo/text!/templates/MiniCard.html",
+        "userSession"], function(
         		declare,
         		lang,
         		xhr,
@@ -13,7 +14,8 @@ define(["dojo/_base/declare",
         		_TemplatedMixin,
         		TooltipDialog,
         		popup,
-        		miniCardTemplate){
+        		miniCardTemplate,
+        		userSession){
 	
 	var MiniCardBody = declare("MiniCardBody",[_WidgetBase,_TemplatedMixin],{
 		templateString:miniCardTemplate,

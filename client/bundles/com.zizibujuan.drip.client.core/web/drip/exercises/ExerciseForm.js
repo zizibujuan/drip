@@ -16,8 +16,6 @@ define(["dojo/_base/declare",
         "drip/Editor",
         "classCode",
         "dojox/form/Uploader",
-        "dojox/form/uploader/plugins/Flash",
-        "dojox/form/uploader/plugins/IFrame",
         "widget/form/uploader/FileList"
         ], function(
         		declare,
@@ -38,8 +36,6 @@ define(["dojo/_base/declare",
         		Editor,
         		classCode,
         		Uploader,
-        		uFlash,
-        		uFrame,
         		FileList){
 	
 	var optionLabel = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
