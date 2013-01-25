@@ -97,6 +97,10 @@ public class LoginServlet extends DripServlet {
 		}
 		
 		// TODO:在数据库中存储acess token
+		// TODO:将从人人网查出的所有信息都保存起来
+		// TODO：永远从本地获取人人帐号信息
+		// TODO：在晚上固定时间同步用户信息，可能需要传入access_token
+		// access_token在数据库和session中都保存一份
 		String accessToken = (String) tokenJson.get("access_token");
 		Long expiresIn = (Long) tokenJson.get("expires_in");//距离过期时的时间段（秒数）
 		long currentTime = System.currentTimeMillis() / 1000;
@@ -108,7 +112,6 @@ public class LoginServlet extends DripServlet {
 		String fields = "name,sex,birthday,tinyurl,headurl,mainurl,hometown_location,work_history,university_history";
 		JSONArray userInfoArray = apiClient.getUserService().getInfo(String.valueOf(rrUid), fields);
 		logger.info("fields:"+userInfoArray.toJSONString());
-		
 		
 		if(userInfoArray == null || userInfoArray.size() == 0){
 			// TODO:处理异常
@@ -157,18 +160,30 @@ public class LoginServlet extends DripServlet {
 	 * @return drip用户信息
 	 */
 	private Map<String, Object> renrenUserToDripUser(JSONObject renrenUser) {
+		//name,sex,birthday,tinyurl,headurl,mainurl,hometown_location,work_history,university_history
 		int rrUid = Integer.valueOf(renrenUser.get("uid").toString());
 		String name = (String) renrenUser.get("name");
+		String sex = (String)renrenUser.get("sex");
+		String birthday = (String)renrenUser.get("birthday");
 		String headurl = (String) renrenUser.get("headurl");
+		Object homeTownLocation = renrenUser.get("hometown_location");
+		Object workHistory = renrenUser.get("work_history");
+		Object universityHistory = renrenUser.get("university_history");
 		
-		// name,sex,birthday,tinyurl,headurl,mainurl,hometown_location,work_history,university_history
+		logger.info("homeTownLocation对象的类型为："+homeTownLocation.getClass().getSimpleName());
+		logger.info("workHistory对象的类型为："+workHistory.getClass().getSimpleName());
+		
 		//在帐号关联表里没有记录，用户是第一次来；为这个用户创建一个User对象
 		Map<String,Object> renrenUserInfo = new HashMap<String, Object>();
 		renrenUserInfo.put("nickName", name);
 		renrenUserInfo.put("loginName", name);
+		renrenUserInfo.put("sex", sex);
+		renrenUserInfo.put("birthDay", birthday);
 		renrenUserInfo.put("headUrl", headurl);
 		renrenUserInfo.put("authSiteId", OAuthConstants.RENREN);
 		renrenUserInfo.put("authUserId", rrUid);
+		
+		
 		
 		// 用户头像列表
 		String tinyurl = (String)renrenUser.get("tinyurl");
