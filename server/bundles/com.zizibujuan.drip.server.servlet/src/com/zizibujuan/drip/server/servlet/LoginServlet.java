@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -25,7 +28,6 @@ import com.renren.api.client.utils.HttpURLUtils;
 import com.zizibujuan.drip.server.service.ApplicationPropertyService;
 import com.zizibujuan.drip.server.service.OAuthUserMapService;
 import com.zizibujuan.drip.server.service.UserService;
-import com.zizibujuan.drip.server.servlet.command.LoginCommand;
 import com.zizibujuan.drip.server.util.OAuthConstants;
 import com.zizibujuan.drip.server.util.servlet.DripServlet;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
@@ -123,6 +125,17 @@ public class LoginServlet extends DripServlet {
 			// TODO:处理异常
 			return;
 		}
+		
+		// 下面代码测试完成后删除。
+		JSONObject homeTownLocation = (JSONObject) currentUser.get("hometown_location");
+		JSONArray workHistory = (JSONArray) currentUser.get("work_history");
+		JSONArray universityHistory = (JSONArray) currentUser.get("university_history");
+		
+		logger.info("homeTownLocation中的内容："+homeTownLocation.toJSONString());
+		logger.info("workHistory中的内容："+workHistory.toJSONString());
+		logger.info("universityHistory中的内容："+universityHistory.toJSONString());
+		
+		
 
 		//判断帐号关联表里有没有现成的关联
 		Map<String,Object> userMapperInfo = oAuthUserMapService.getUserMapperInfo(OAuthConstants.RENREN, rrUid);
@@ -166,19 +179,20 @@ public class LoginServlet extends DripServlet {
 		int sex = Integer.valueOf(renrenUser.get("sex").toString());
 		String birthday = (String)renrenUser.get("birthday");
 		String headurl = (String) renrenUser.get("headurl");
-		Object homeTownLocation = renrenUser.get("hometown_location");
-		Object workHistory = renrenUser.get("work_history");
-		Object universityHistory = renrenUser.get("university_history");
+		JSONObject homeTownLocation = (JSONObject) renrenUser.get("hometown_location");
+		JSONArray workHistory = (JSONArray) renrenUser.get("work_history");
+		JSONArray universityHistory = (JSONArray) renrenUser.get("university_history");
 		
-		logger.info("homeTownLocation对象的类型为："+homeTownLocation.getClass().getSimpleName());
-		logger.info("workHistory对象的类型为："+workHistory.getClass().getSimpleName());
+		logger.info("homeTownLocation中的内容："+homeTownLocation.toJSONString());
+		logger.info("workHistory中的内容："+workHistory.toJSONString());
+		logger.info("universityHistory中的内容："+universityHistory.toJSONString());
 		
 		//在帐号关联表里没有记录，用户是第一次来；为这个用户创建一个User对象
 		Map<String,Object> renrenUserInfo = new HashMap<String, Object>();
 		renrenUserInfo.put("nickName", name);
 		renrenUserInfo.put("loginName", name);
-		renrenUserInfo.put("sex", sex);
-		renrenUserInfo.put("birthDay", birthday);
+		renrenUserInfo.put("sex", getLocalSexCodeByRenren(sex)); //表示性别，值1表示男性；值0表示女性
+		renrenUserInfo.put("birthDay", convertBirthdayOfRenren(birthday));
 		renrenUserInfo.put("headUrl", headurl);
 		renrenUserInfo.put("authSiteId", OAuthConstants.RENREN);
 		renrenUserInfo.put("authUserId", rrUid);
@@ -186,7 +200,6 @@ public class LoginServlet extends DripServlet {
 		// 用户头像列表
 		String tinyurl = (String)renrenUser.get("tinyurl");
 		String mainurl = (String)renrenUser.get("mainurl");
-		
 		List<Map<String,Object>> avatarList = new ArrayList<Map<String,Object>>();
 		addUserImage(avatarList,"tinyUrl",tinyurl,50,50);
 		addUserImage(avatarList,"headUrl",headurl,100,100);
@@ -194,6 +207,42 @@ public class LoginServlet extends DripServlet {
 		renrenUserInfo.put("avatar", avatarList);
 		
 		return renrenUserInfo;
+	}
+
+	/**
+	 * 人人的日期使用字符串表示，这里转换为日期类型。
+	 * 对于各种后的这种奇葩表示，一律使用17xx-01-01表示。
+	 * 在注册时，不就应该让用户可以选择60后或70后等，因为这是一个分组，不是一个选项。
+	 * @param birthday 表示出生时间，格式为：yyyy-mm-dd，需要自行格式化日期显示格式。
+	 * 注：年份60后，实际返回1760-mm-dd；70后，返回1770-mm-dd；80后，返回1780-mm-dd；90后，返回1790-mm-dd
+	 * @return 日期类型的生日
+	 */
+	private Date convertBirthdayOfRenren(String birthday) {
+		if(birthday == null || birthday.isEmpty())return null;
+		if(birthday.endsWith("-mm-dd")){
+			birthday = birthday.replace("-mm-dd", "-01-01");
+		}
+		Date date = null;
+		try {
+			date = DateUtils.parseDate(birthday, "yyyy-MM-dd");
+		} catch (ParseException e) {
+			logger.error("无效的日期字符串："+birthday,e);
+		}
+		return date;
+	}
+
+	/**
+	 * 将人人的性别代码映射到本网站的性别代码
+	 * @param sex 表示性别，值1表示男性；值0表示女性
+	 * @return 本网站的性别代码,如果没有找到，则返回null
+	 */
+	private String getLocalSexCodeByRenren(int sex) {
+		if(sex == 1){
+			return "1";
+		}else if(sex == 0){
+			return "0";
+		}
+		return null;
 	}
 
 	private void addUserImage(List<Map<String, Object>> avatarList,
