@@ -162,8 +162,8 @@ public class LoginServlet extends DripServlet {
 	private Map<String, Object> renrenUserToDripUser(JSONObject renrenUser) {
 		//name,sex,birthday,tinyurl,headurl,mainurl,hometown_location,work_history,university_history
 		int rrUid = Integer.valueOf(renrenUser.get("uid").toString());
-		String name = (String) renrenUser.get("name");
-		String sex = (String)renrenUser.get("sex");
+		String name = (String)renrenUser.get("name");
+		int sex = Integer.valueOf(renrenUser.get("sex").toString());
 		String birthday = (String)renrenUser.get("birthday");
 		String headurl = (String) renrenUser.get("headurl");
 		Object homeTownLocation = renrenUser.get("hometown_location");
@@ -182,8 +182,6 @@ public class LoginServlet extends DripServlet {
 		renrenUserInfo.put("headUrl", headurl);
 		renrenUserInfo.put("authSiteId", OAuthConstants.RENREN);
 		renrenUserInfo.put("authUserId", rrUid);
-		
-		
 		
 		// 用户头像列表
 		String tinyurl = (String)renrenUser.get("tinyurl");
