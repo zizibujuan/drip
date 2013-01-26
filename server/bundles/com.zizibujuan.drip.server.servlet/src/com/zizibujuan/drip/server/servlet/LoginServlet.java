@@ -28,6 +28,7 @@ import com.renren.api.client.utils.HttpURLUtils;
 import com.zizibujuan.drip.server.service.ApplicationPropertyService;
 import com.zizibujuan.drip.server.service.OAuthUserMapService;
 import com.zizibujuan.drip.server.service.UserService;
+import com.zizibujuan.drip.server.util.ApplicationPropertyKey;
 import com.zizibujuan.drip.server.util.OAuthConstants;
 import com.zizibujuan.drip.server.util.servlet.DripServlet;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
@@ -125,17 +126,6 @@ public class LoginServlet extends DripServlet {
 			// TODO:处理异常
 			return;
 		}
-		
-		// 下面代码测试完成后删除。
-		JSONObject homeTownLocation = (JSONObject) currentUser.get("hometown_location");
-		JSONArray workHistory = (JSONArray) currentUser.get("work_history");
-		JSONArray universityHistory = (JSONArray) currentUser.get("university_history");
-		
-		logger.info("homeTownLocation中的内容："+homeTownLocation.toJSONString());
-		logger.info("workHistory中的内容："+workHistory.toJSONString());
-		logger.info("universityHistory中的内容："+universityHistory.toJSONString());
-		
-		
 
 		//判断帐号关联表里有没有现成的关联
 		Map<String,Object> userMapperInfo = oAuthUserMapService.getUserMapperInfo(OAuthConstants.RENREN, rrUid);
@@ -183,9 +173,10 @@ public class LoginServlet extends DripServlet {
 		JSONArray workHistory = (JSONArray) renrenUser.get("work_history");
 		JSONArray universityHistory = (JSONArray) renrenUser.get("university_history");
 		
-		logger.info("homeTownLocation中的内容："+homeTownLocation.toJSONString());
-		logger.info("workHistory中的内容："+workHistory.toJSONString());
-		logger.info("universityHistory中的内容："+universityHistory.toJSONString());
+		// 以下城市信息的值都用中文描述，不是编码
+		String country = (String)homeTownLocation.get("country"); //表示所在国家
+		String province = (String)homeTownLocation.get("province"); //表示所在省份
+		String city = (String)homeTownLocation.get("city");//表示所在城市
 		
 		//在帐号关联表里没有记录，用户是第一次来；为这个用户创建一个User对象
 		Map<String,Object> renrenUserInfo = new HashMap<String, Object>();
@@ -194,6 +185,13 @@ public class LoginServlet extends DripServlet {
 		renrenUserInfo.put("sex", getLocalSexCodeByRenren(sex)); //表示性别，值1表示男性；值0表示女性
 		renrenUserInfo.put("birthDay", convertBirthdayOfRenren(birthday));
 		renrenUserInfo.put("headUrl", headurl);
+		renrenUserInfo.put("homeCityCode", getLocalCityCodeByRenren(country, province, city));
+		
+		String homeCity = (country==null?"":country+" ")+province+ " " +city;
+		if(homeCity.trim().isEmpty()){
+			homeCity = null;
+		}
+		renrenUserInfo.put("homeCity", homeCity);
 		renrenUserInfo.put("authSiteId", OAuthConstants.RENREN);
 		renrenUserInfo.put("authUserId", rrUid);
 		
@@ -207,6 +205,35 @@ public class LoginServlet extends DripServlet {
 		renrenUserInfo.put("avatar", avatarList);
 		
 		return renrenUserInfo;
+	}
+
+	/**
+	 * 根据城市名称获取城市代码。如果province和city为null，则获取contry的编码；
+	 * 如果city为null，则获取province的编码；否则获取city的编码。
+	 * 
+	 * 以下实现的一个假设是城市名称没有重名，需要优化，如果contry为null，则默认指中国。
+	 * 
+	 * @param country 国家
+	 * @param province 省份
+	 * @param city 城市
+	 * @return 国家/省份/城市编码，如果找不到则返回null
+	 */
+	private String getLocalCityCodeByRenren(String country, String province,
+			String city) {
+		
+		String value = null; 
+		if(city != null && !city.isEmpty()){
+			// 找到城市对应的编码
+			value = city;
+		}else if(province != null && !province.isEmpty()){
+			value = province;
+		}else if(country != null && !country.isEmpty()){
+			value = country;
+		}else if(country == null){
+			value = "中国";
+		}
+		
+		return applicationPropertyService.getCityCodeByValue(value);
 	}
 
 	/**
@@ -242,6 +269,7 @@ public class LoginServlet extends DripServlet {
 		}else if(sex == 0){
 			return "0";
 		}
+		logger.error("没有为“"+sex+"”找到对应的编码");
 		return null;
 	}
 

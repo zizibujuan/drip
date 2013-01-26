@@ -38,4 +38,10 @@ public interface ApplicationPropertyDao {
 	 */
 	String getForString(String propertyName);
 
+	/**
+	 * 根据城市名称获取城市编码
+	 * @param cityName 城市名称
+	 * @return 城市编码，如果找不到则返回null
+	 */
+	String getCityCodeByValue(String cityName);
 }

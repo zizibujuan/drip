@@ -43,4 +43,10 @@ public class ApplicationPropertyDaoImpl extends AbstractDao implements
 		return DatabaseUtil.queryForString(getDataSource(), SQL_GET_PROPERTY_STRING_VALUE, propertyName);
 	}
 
+	private static final String SQL_GET_CITY_CODE_BY_VALUE = "SELECT CODE FROM DRIP_CODE_CITY WHERE VAL = ?";
+	@Override
+	public String getCityCodeByValue(String cityName) {
+		return DatabaseUtil.queryForString(getDataSource(), SQL_GET_CITY_CODE_BY_VALUE, cityName);
+	}
+
 }

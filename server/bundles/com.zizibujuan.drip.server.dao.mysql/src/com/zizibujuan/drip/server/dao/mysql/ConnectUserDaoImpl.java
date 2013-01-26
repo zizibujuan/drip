@@ -32,6 +32,10 @@ public class ConnectUserDaoImpl extends AbstractDao implements ConnectUserDao {
 			"EMAIL," +
 			"MOBILE," +
 			"REAL_NAME," +
+			"SEX," +
+			"HOME_CITY_CODE," +
+			"HOME_CITY," +
+			"INTRODUCE," +
 			"CREATE_TIME) " +
 			"VALUES " +
 			"(?,?,?,?,?,?,now())";
@@ -46,7 +50,12 @@ public class ConnectUserDaoImpl extends AbstractDao implements ConnectUserDao {
 		Object email  = connectUserInfo.get("email");
 		Object mobile = connectUserInfo.get("mobile");
 		Object realName = connectUserInfo.get("realName");
+		Object sex = connectUserInfo.get("sex");
+		Object homeCityCode = connectUserInfo.get("homeCityCode");
+		Object homeCity = connectUserInfo.get("homeCity");
+		Object introduce = connectUserInfo.get("introduce");
 		
-		return DatabaseUtil.insert(con, SQL_INSERT_CONNECT_USER, mapUserId, loginName,nickName,email,mobile,realName);
+		return DatabaseUtil.insert(con, SQL_INSERT_CONNECT_USER, 
+				mapUserId, loginName,nickName,email,mobile,realName,sex,homeCityCode,homeCity,introduce);
 	}
 }

@@ -32,6 +32,11 @@ public class ApplicationPropertyServiceImpl implements
 		return applicationPropertyDao.getForString(propertyName);
 	}
 	
+	@Override
+	public String getCityCodeByValue(String cityName) {
+		return applicationPropertyDao.getCityCodeByValue(cityName);
+	}
+	
 	public void setApplicationPropertyDao(ApplicationPropertyDao applicationPropertyDao) {
 		logger.info("注入ApplicationPropertyDao");
 		this.applicationPropertyDao = applicationPropertyDao;
