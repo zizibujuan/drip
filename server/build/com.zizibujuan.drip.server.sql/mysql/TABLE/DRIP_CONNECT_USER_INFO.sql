@@ -7,6 +7,7 @@
 -- 中的标识存储在DRIP_OAUTH_USER_MAP。
 -- 将必要的信息存储在DRIP_USER_INFO和DRIP_OAUTH_USER_MAP中
 
+-- HOME_CITY是人人专用的临时字段，等把城市编码整理完后，全部用编码表示。
 -- -----------------------------------------------------
 -- Table `drip`.`DRIP_CONNECT_USER_INFO` 接入第三方网站的用户
 -- -----------------------------------------------------
@@ -28,8 +29,9 @@ CREATE  TABLE IF NOT EXISTS `drip`.`DRIP_CONNECT_USER_INFO` (
   `BIRTHDAY` DATETIME NULL COMMENT '出生日期',
   `INTRODUCE` VARCHAR(512) NULL COMMENT '自我介绍',
   
-  `LIVE_CITY` VARCHAR(9) NULL COMMENT '现居地',
-  `HOME_CITY` VARCHAR(9) NULL COMMENT '家乡',
+  `LIVE_CITY_CODE` CHAR(9) NULL COMMENT '现居城市编码',
+  `HOME_CITY_CODE` CHAR(9) NULL COMMENT '家乡所在城市编码',
+  `HOME_CITY` VARCHAR(56) NULL COMMENT '家乡所在城市名称，为了防止出现程序对应不上的情况，在这里缓存一份，测试用的列',
   
   `CREATE_TIME` DATETIME NULL COMMENT '创建时间',
   `UPDATE_TIME` DATETIME NULL COMMENT '更新时间',
