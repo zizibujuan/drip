@@ -482,7 +482,6 @@ margin-bottom: -268px;
 
 .minicard_footer {
 	overflow: hidden;
-	
 }
 
 .minicard_footer .actions{
@@ -512,6 +511,14 @@ margin-bottom: -268px;
 	border:0px;
 	border-radius: 2px;
 	display: block;
+}
+
+.ft_left{
+	float: left;
+}
+
+.ft_right{
+	flaot:right;
 }
 
 .userData{

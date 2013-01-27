@@ -1,6 +1,8 @@
 define(["dojo/_base/declare",
         "dojo/_base/lang",
+        "dojo/on",
         "dojo/request/xhr",
+        "dojo/dom-construct",
         "dijit/_WidgetBase",
         "dijit/_TemplatedMixin",
         "dijit/TooltipDialog",
@@ -10,7 +12,9 @@ define(["dojo/_base/declare",
         "classCode"], function(
         		declare,
         		lang,
+        		on,
         		xhr,
+        		domConstruct,
         		_WidgetBase,
         		_TemplatedMixin,
         		TooltipDialog,
@@ -69,14 +73,63 @@ define(["dojo/_base/declare",
 					var key = "'"+useInfo.fromSite+"'";
 					this.fromSiteNode.innerHTML = "来自<strong>"+classCode.site[key]+"</strong>";
 				}else{
-					this.fromSiteNode.innerHTML = "";
+					this.fromSiteNode.innerHTML = "来自<strong>孜孜不倦</strong>";
 				}
 				
-				// TODO......
 				// 操作按钮
 				// 如果尚未关注，显示关注按钮
 				// 如果已经关注，显示取消关注按钮
 				// 如果显示的是自己的名片，则不显示操作按钮
+				
+				// 显示功能
+				// 关注和取消关注操作
+				// 先清除actionsNode中的操作按钮
+				domConstruct.empty(this.actionsNode);
+				
+				var localUserId = userInfo.id;
+				var loginMapUserId = userSession.getLoggedUserInfo()["mapped_user_id"];
+				if(loginMapUserId == userInfo.mapUserId){
+					// 如果是显示登录用户的名片，则清除操作按钮
+					domConstruct.empty(this.actionsNode);
+				}else if(userInfo.userRelationId){
+					// 用户已关注，显示关注文本和取消链接
+					this._createWatchButton(this.actionsNode,localUserId);
+				}else{
+					// 用户未关注，显示关注按钮
+					this._createCancelWatchButton(this.actionsNode,localUserId);
+				}
+				
+			}));
+		},
+		
+		_createWatchButton: function(container,localUserId){
+			var label = domConstruct.create("strong",null,container);
+			label.innerHTML = "√ 已关注";
+			
+			var cancelWatch = domConstruct.create("input", {type:"button", value:"取消",style:"margin-left:10px;margin-right:15px"}, container);
+			on(cancelWatch, "click", lang.hitch(this, function(e){
+				on(cancelWatch, "click", lang.hitch(this, function(e){
+					xhr.put("/follow/"+localUserId,{handleAs:"json",query:{"op":"off"}},lang.hitch(this, function(response){
+						domConstruct.empty(this.actionsNode);
+						this._createCancelWatchButton(container,localUserId);
+					}),lang.hitch(this, function(error){
+						
+					}));
+					
+				}));
+				
+			}));
+		},
+		
+		_createCancelWatchButton: function(container,localUserId){
+			var watch = domConstruct.create("input",{type:"button", value:"+ 关注",style:"margin-right:15px"}, container);
+			on(watch, "click", lang.hitch(this, function(e){
+				xhr.put("/follow/"+localUserId,{handleAs:"json",query:{"op":"on"}},lang.hitch(this, function(response){
+					domConstruct.empty(this.actionsNode);
+					this._createWatchButton(container,localUserId);
+				}),lang.hitch(this, function(error){
+					
+				}));
 				
 			}));
 		}

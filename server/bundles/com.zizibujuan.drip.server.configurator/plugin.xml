@@ -43,6 +43,11 @@
             alias="/signup_check"
             class="com.zizibujuan.drip.server.servlet.SignUpCheckServlet">
       </servlet>
+      <!-- 关注好友 -->
+      <servlet
+            alias="/follow"
+            class="com.zizibujuan.drip.server.servlet.FollowServlet">
+      </servlet>
       <!-- 邀请好友 -->
       <servlet
             alias="/invites"

@@ -61,5 +61,14 @@
 		interface="com.zizibujuan.drip.server.service.OAuthUserMapService" 
 		name="oAuthUserMapService" 
 		policy="dynamic" />
+
+	<reference 
+		bind="setUserRelationService" 
+		unbind="unsetUserRelationService" 
+		cardinality="0..1" 
+		interface="com.zizibujuan.drip.server.service.UserRelationService" 
+		name="userRelationService" 
+		policy="dynamic" />		
+		
 		
 </scr:component>

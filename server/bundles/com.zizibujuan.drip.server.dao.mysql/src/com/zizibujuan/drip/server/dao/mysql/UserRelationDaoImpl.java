@@ -41,4 +41,16 @@ public class UserRelationDaoImpl extends AbstractDao implements UserRelationDao 
 		}
 	}
 
+	private static final String SQL_GET_RELATION_ID = "SELECT DBID FROM DRIP_USER_RELATION WHERE USER_ID=? AND WATCH_USER_ID=?";
+	@Override
+	public Long getRelationId(Long userId, Long watchUserId) {
+		return DatabaseUtil.queryForLong(getDataSource(), SQL_GET_RELATION_ID, userId, watchUserId);
+	}
+
+	private static final String SQL_DELETE_RELATION = "DELETE DRIP_USER_RELATION WHERE  USER_ID=? AND WATCH_USER_ID=?";
+	@Override
+	public void delete(Long userId, Long followUserId) {
+		DatabaseUtil.update(getDataSource(), SQL_DELETE_RELATION, userId, followUserId);
+	}
+
 }

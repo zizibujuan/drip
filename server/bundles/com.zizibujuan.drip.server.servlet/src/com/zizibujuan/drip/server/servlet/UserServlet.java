@@ -11,11 +11,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.commons.validator.routines.RegexValidator;
 
+import com.zizibujuan.drip.server.service.UserRelationService;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.servlet.command.LoginCommand;
 import com.zizibujuan.drip.server.util.servlet.DripServlet;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
+import com.zizibujuan.drip.server.util.servlet.UserSession;
 
 /**
  * 用户
@@ -26,9 +28,11 @@ public class UserServlet extends DripServlet {
 
 	private static final long serialVersionUID = 5222934801942017724L;
 	private UserService userService = null;
+	private UserRelationService userRelationService = null;
 	
 	public UserServlet() {
 		this.userService = ServiceHolder.getDefault().getUserService();
+		this.userRelationService = ServiceHolder.getDefault().getUserRelationService();
 	}
 
 	/**
@@ -237,6 +241,10 @@ public class UserServlet extends DripServlet {
 			Long localUserId = Long.valueOf(pathInfo.split("/")[1]);
 			Long mapUserId = Long.valueOf(req.getParameter("mapUserId"));
 			Map<String,Object> userInfo = userService.getPublicInfo(localUserId, mapUserId);
+			Long userRelationId = userRelationService.getRelationId(UserSession.getLocalUserId(req),localUserId);
+			if(userRelationId != null){
+				userInfo.put("userRelationId", userRelationId);
+			}
 			ResponseUtil.toJSON(req, resp, userInfo);
 			return;
 		}
