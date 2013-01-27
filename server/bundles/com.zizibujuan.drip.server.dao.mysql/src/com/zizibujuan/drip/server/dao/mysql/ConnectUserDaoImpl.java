@@ -20,8 +20,8 @@ public class ConnectUserDaoImpl extends AbstractDao implements ConnectUserDao {
 			"a.NICK_NAME \"displayName\"," +
 			"a.HOME_CITY_CODE \"homeCityCode\"," +
 			"a.SEX \"sex\"," +
-			"b.OAUTH_SITE_ID \"fromSite\"" +
-			"FROM DRIP_CONNECT_USER_INFO a, DRIP_OAUTH_USER_MAP b" +
+			"b.OAUTH_SITE_ID \"fromSite\" " +
+			"FROM DRIP_CONNECT_USER_INFO a, DRIP_OAUTH_USER_MAP b " +
 			"WHERE a.MAP_USER_ID=? AND a.MAP_USER_ID=b.DBID";
 	@Override
 	public Map<String, Object> getPublicInfo(Long mapUserId) {
