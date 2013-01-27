@@ -137,6 +137,15 @@ public interface UserService {
 	 * 		largeImageUrl: 
 	 * 		largerImageUrl:
 	 * 		xLargeImageUrl:
+	 * 
+	 * 		sex: 性别代码
+	 * 		homeCityCode:家乡所在地代码
+	 * 		homeCity：家乡所在地
+	 * 			country：国家
+	 * 			province：省
+	 * 			city：市
+	 * 			county：县
+	 * 		fromSite:网站标识
 	 * </pre>
 	 */
 	Map<String, Object> getPublicInfo(Long localUserId, Long mapUserId);

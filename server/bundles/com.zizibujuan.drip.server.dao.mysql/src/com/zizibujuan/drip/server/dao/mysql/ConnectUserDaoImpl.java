@@ -16,10 +16,13 @@ import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 public class ConnectUserDaoImpl extends AbstractDao implements ConnectUserDao {
 
 	private static final String SQL_GET_CONNECT_USER_PUBLIC = "SELECT " +
-			"MAP_USER_ID \"mapUserId\"," +
-			"NICK_NAME \"displayName\" " +
-			"FROM DRIP_CONNECT_USER_INFO " +
-			"WHERE MAP_USER_ID=?";
+			"a.MAP_USER_ID \"mapUserId\"," +
+			"a.NICK_NAME \"displayName\"," +
+			"a.HOME_CITY_CODE \"homeCityCode\"," +
+			"a.SEX \"sex\"," +
+			"b.OAUTH_SITE_ID \"fromSite\"" +
+			"FROM DRIP_CONNECT_USER_INFO a, DRIP_OAUTH_USER_MAP b" +
+			"WHERE a.MAP_USER_ID=? AND a.MAP_USER_ID=b.DBID";
 	@Override
 	public Map<String, Object> getPublicInfo(Long mapUserId) {
 		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_CONNECT_USER_PUBLIC, mapUserId);

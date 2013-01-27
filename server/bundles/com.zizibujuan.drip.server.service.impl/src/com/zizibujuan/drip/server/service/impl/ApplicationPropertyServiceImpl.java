@@ -1,5 +1,7 @@
 package com.zizibujuan.drip.server.service.impl;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +37,11 @@ public class ApplicationPropertyServiceImpl implements
 	@Override
 	public String getCityCodeByValue(String cityName) {
 		return applicationPropertyDao.getCityCodeByValue(cityName);
+	}
+	
+	@Override
+	public Map<String, Object> getCity(String cityCode) {
+		return applicationPropertyDao.getCity(cityCode);
 	}
 	
 	public void setApplicationPropertyDao(ApplicationPropertyDao applicationPropertyDao) {

@@ -1,8 +1,12 @@
 package com.zizibujuan.drip.server.dao.mysql;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import com.zizibujuan.drip.server.dao.ApplicationPropertyDao;
+import com.zizibujuan.drip.server.util.CodeRule;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 
 /**
@@ -47,6 +51,23 @@ public class ApplicationPropertyDaoImpl extends AbstractDao implements
 	@Override
 	public String getCityCodeByValue(String cityName) {
 		return DatabaseUtil.queryForString(getDataSource(), SQL_GET_CITY_CODE_BY_VALUE, cityName);
+	}
+
+	private static final String SQL_GET_CITY_VAL_BY_CODE = "SELECT VAL FROM DRIP_CODE_CITY WHERE CODE = ?";
+	@Override
+	public Map<String, Object> getCity(String cityCode) {
+		String rule = "000,00,00,00";
+		String[] key = {"country","province","city","county"};
+		
+		Map<String,Object> result = new HashMap<String, Object>();
+		CodeRule cr = new CodeRule(rule);
+		List<String> levels = cr.parse(cityCode);
+		int size = levels.size();
+		for(int i = 0; i < size; i++){
+			String value = DatabaseUtil.queryForString(getDataSource(), SQL_GET_CITY_VAL_BY_CODE, levels.get(0));
+			result.put(key[i], value);
+		}
+		return result;
 	}
 
 }

@@ -6,7 +6,8 @@ define(["dojo/_base/declare",
         "dijit/TooltipDialog",
         "dijit/popup",
         "dojo/text!/templates/MiniCard.html",
-        "userSession"], function(
+        "userSession",
+        "classCode"], function(
         		declare,
         		lang,
         		xhr,
@@ -15,7 +16,8 @@ define(["dojo/_base/declare",
         		TooltipDialog,
         		popup,
         		miniCardTemplate,
-        		userSession){
+        		userSession,
+        		classCode){
 	
 	var MiniCardBody = declare("MiniCardBody",[_WidgetBase,_TemplatedMixin],{
 		templateString:miniCardTemplate,
@@ -43,8 +45,14 @@ define(["dojo/_base/declare",
 				this.userImgNode.alt = displayName;
 				this.userNameLinkNode.innerHTML = displayName;
 				this.userNameLinkNode.href = userActionLink;
-				this.userSexNode.innerHTML = userInfo.sex || "";
-				this.userAddrNode.innerHTML = userInfo.address || "";
+				this.userSexNode.innerHTML = classCode.sex[userInfo.sex || ""];
+				
+				if(userInfo.homeCity){
+					this.userAddrNode.innerHTML = userInfo.homeCity.province + " " + userInfo.homeCity.city;
+				}else{
+					this.userAddrNode.innerHTML =  "";
+				}
+				
 				
 				this.followNode.innerHTML = userInfo.followCount || 0;
 				this.followNode.href = "/follows/"+userLinkSubfix;
@@ -58,32 +66,18 @@ define(["dojo/_base/declare",
 				this.introNode.innerHTML = userInfo.introduce || "";
 				
 				if(userInfo.fromSite == 101){
-					this.fromSiteNode.innerHTML = "来自<strong>人人</strong>网";
+					var key = "'"+useInfo.fromSite+"'";
+					this.fromSiteNode.innerHTML = "来自<strong>"+classCode.site[key]+"</strong>";
+				}else{
+					this.fromSiteNode.innerHTML = "";
 				}
 				
+				// TODO......
 				// 操作按钮
 				// 如果尚未关注，显示关注按钮
 				// 如果已经关注，显示取消关注按钮
 				// 如果显示的是自己的名片，则不显示操作按钮
 				
-				
-				
-				
-				/*
-				id: 本地用户标识，即localUserId
-		 		mapUserId：用户映射标识
-		 		displayName: 显示名
-		 		fanCount：粉丝数
-		 		followCount: 关注人数
-		 		exerDraftCount： 习题草稿数
-		 		exerPublishCount：发布的习题数
-		 		answerCount： 习题总数 = 习题草稿数+发布的习题数
-		 		smallImageUrl: 小头像
-		 		largeImageUrl: 
-		 		largerImageUrl:
-		 		xLargeImageUrl:
-		 		*/
-		 			
 			}));
 		}
 	})

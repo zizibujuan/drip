@@ -1,6 +1,7 @@
 package com.zizibujuan.drip.server.dao;
 
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * 系统属性 数据访问接口
@@ -44,4 +45,19 @@ public interface ApplicationPropertyDao {
 	 * @return 城市编码，如果找不到则返回null
 	 */
 	String getCityCodeByValue(String cityName);
+
+	/**
+	 * 获取城市名称
+	 * @param cityCode 城市代码
+	 * @return 城市名称，如果没有找到，则返回空的map对象
+	 * <pre>
+	 * 完整的map结构:
+	 * 		country: 国家名称
+	 * 		province：省份名称
+	 * 		city：城市名称
+	 * 		county:县名称
+	 * </pre>
+	 * 如果只查到n级，则n+1级的信息不加载
+	 */
+	Map<String, Object> getCity(String cityCode);
 }

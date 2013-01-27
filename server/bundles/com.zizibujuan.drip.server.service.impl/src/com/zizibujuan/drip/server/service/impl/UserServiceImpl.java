@@ -10,6 +10,7 @@ import com.zizibujuan.drip.server.dao.ConnectUserDao;
 import com.zizibujuan.drip.server.dao.UserAttributesDao;
 import com.zizibujuan.drip.server.dao.UserAvatarDao;
 import com.zizibujuan.drip.server.dao.UserDao;
+import com.zizibujuan.drip.server.service.ApplicationPropertyService;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.util.OAuthConstants;
 
@@ -25,6 +26,7 @@ public class UserServiceImpl implements UserService {
 	private UserAttributesDao userAttributesDao;
 	private UserAvatarDao userAvatarDao;
 	private ConnectUserDao connectUserDao;
+	private ApplicationPropertyService applicationPropertyService;
 	
 	// FIXME:学习如何加入salt，明白加入salt有哪些具体好处
 	@Override
@@ -65,7 +67,14 @@ public class UserServiceImpl implements UserService {
 			userInfo = userDao.getPublicInfo(mapUserId);
 			userInfo.put("mapUserId", mapUserId);
 		}else{
+			// TODO:获取用户家乡所在地和用户性别代码。将用户家乡所在地缓存
+			// 从propertyService中获取城市名称，该方法要支持缓存。
 			userInfo = connectUserDao.getPublicInfo(mapUserId);
+			String cityCode = (String) userInfo.get("homeCityCode");
+			if(cityCode != null && !cityCode.isEmpty()){
+				userInfo.put("homeCity", applicationPropertyService.getCity(cityCode));
+			}
+			
 			userInfo.put("id", localUserId);
 			Map<String,Object> statistics = userDao.getUserStatistics(localUserId);
 			userInfo.putAll(statistics);
@@ -162,6 +171,18 @@ public class UserServiceImpl implements UserService {
 		if (this.connectUserDao == connectUserDao) {
 			logger.info("注销connectUserDao");
 			this.connectUserDao = null;
+		}
+	}
+	
+	public void setApplicationPropertyService(ApplicationPropertyService applicationPropertyService) {
+		logger.info("注入applicationPropertyService");
+		this.applicationPropertyService = applicationPropertyService;
+	}
+
+	public void unsetApplicationPropertyService(ApplicationPropertyService applicationPropertyService) {
+		if (this.applicationPropertyService == applicationPropertyService) {
+			logger.info("注销applicationPropertyService");
+			this.applicationPropertyService = null;
 		}
 	}
 }

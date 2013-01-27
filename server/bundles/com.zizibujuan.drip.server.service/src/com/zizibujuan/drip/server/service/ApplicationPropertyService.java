@@ -1,5 +1,7 @@
 package com.zizibujuan.drip.server.service;
 
+import java.util.Map;
+
 /**
  * 系统属性 服务接口
  * @author jinzw
@@ -28,5 +30,18 @@ public interface ApplicationPropertyService {
 	 * @return 城市编码，如果找不到则返回null
 	 */
 	String getCityCodeByValue(String cityName);
+
+	/**
+	 * 获取城市名称
+	 * @param cityCode 城市代码
+	 * @return 城市名称，如果没有找到，则返回空的map对象
+	 * <pre>
+	 * map结构:
+	 * 		country: 国家名称
+	 * 		province：省份名称
+	 * 		city：城市名称
+	 * </pre>
+	 */
+	Map<String,Object> getCity(String cityCode);
 
 }
