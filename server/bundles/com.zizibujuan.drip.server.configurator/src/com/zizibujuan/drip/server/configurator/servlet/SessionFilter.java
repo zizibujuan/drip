@@ -34,6 +34,8 @@ public class SessionFilter implements Filter {
 	private final List<String> excludes = new ArrayList<String>();
 	private final List<String> excludeRestUrls = new ArrayList<String>();
 
+	//TODO:如果session已经过期，但是access_token还有效，则自动登录
+	// 或者为了防止session过期，过10分钟就刷一次
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
 			FilterChain filterChain) throws IOException, ServletException {

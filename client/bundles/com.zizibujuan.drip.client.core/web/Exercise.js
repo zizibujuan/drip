@@ -1,6 +1,7 @@
 define(["dojo/_base/declare", 
         "dojo/_base/array",
         "dojo/_base/lang",
+        "dojo/on",
         "dijit/_WidgetBase",
         "dijit/_TemplatedMixin",
         "dijit/_WidgetsInTemplateMixin",
@@ -8,11 +9,11 @@ define(["dojo/_base/declare",
         "drip/dataUtil",
         "dojo/text!/templates/ExerciseNode.html",
         "dojo/text!/templates/ExerciseList.html",
-        "dojo/i18n!nls/common",
-        "dijit/form/Button"],function(
+        "dojo/i18n!nls/common"],function(
         		declare,
         		array,
         		lang,
+        		on,
         		_WidgetBase,
         		_TemplatedMixin,
         		_WidgetsInTemplateMixin,
@@ -32,9 +33,11 @@ define(["dojo/_base/declare",
 		 postCreate : function(){
 			 // 将自定义的xml字符串转换为html格式的字符串。
 			 this.divContent.innerHTML = dataUtil.xmlStringToHtml(this.content);
-			 this.buttonAnswer.set("label",common.buttonAnswer);
-			 
-			 this.buttonAnswer.on("click",lang.hitch(this, this._btnAnswerHandler));
+			 // TODO:取消注释
+			 /*
+			 this.buttonAnswer.value = common.buttonAnswer;
+			 on(this.buttonAnswer,"click",lang.hitch(this, this._btnAnswerHandler));
+			 */
 		 },
 		 
 		 _btnAnswerHandler : function(e){

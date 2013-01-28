@@ -5,7 +5,9 @@
 <link type="text/css" rel="stylesheet" href="/dijit/themes/claro/claro.css" />
 <link type="text/css" rel="stylesheet" href="/dojo/resources/dojo.css" />
 <link type="text/css" rel="stylesheet" href="/resources/main.css" />
-<title>首页 · 孜孜不倦(高等数学篇)</title>
+<link rel="stylesheet" type="text/css" href="resources/index.css" />
+
+<title>高数题库 · 孜孜不倦</title>
 <script type="text/javascript" 
 	data-dojo-config="
 		async:true,
@@ -40,27 +42,24 @@ require(["dojo/ready",
 </script>
 </head>
 <body class="claro">
-	<div id="header">
-		<div class="wrapper" style="display: block;">
-			<div class="top-logo">
-				<a href="/">孜孜不倦</a>
-			</div>
-
-			<div class="top-nav">
-				<!-- 重构用户信息组件 -->
-			</div>
-			
-			<div class="top-toolbar">
-				<!-- 这个区域的操作随着页面和用户权限的不同，动态改变 -->
-				<!-- FIXME:如何解决不同页面，这个区域中的内容不同的情况呢？ -->
-				<!-- FIXME:容器标签？ -->
-				<div data-dojo-type="dijit/form/Button" style="margin: 0px;" id="btnNewExercise">新建习题</div>
-			</div>
+<div id="wrapper">
+	<div class="drip_header drip_header_logged_out">
+		<div class="container clearfix">
+			<a href="/" class="drip_header_logo">
+				<img alt="孜孜不倦" width="140px" height="40px" src="resources/images/home_logo.png">
+			</a>
+			<span class="drip_version">测试版</span>
+			<ul class="drip_top_nav">
+				<li><a href="/exercises">题库</a></li>
+				<!-- <li><a href="#">开发博客</a></li>  -->
+				<!-- 提供新建习题操作，如果没有登录时，点击后跳到登录页面 -->
+			</ul>
 		</div>
 	</div>
 	<!-- 容器 -->
-	<div style="margin-top: 60px">
+	<div style="margin-top: 20px" class="container">
 		<div data-dojo-type="Exercise" id="exercises"></div>
 	</div>
+</div>
 </body>
 </html>
