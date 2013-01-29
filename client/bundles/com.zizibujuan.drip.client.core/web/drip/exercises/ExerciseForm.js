@@ -13,7 +13,7 @@ define(["dojo/_base/declare",
         "dojo/on",
         "dojo/query",
         "dojo/json",
-        "drip/Editor",
+        "mathEditor/Editor",
         "classCode",
         "dojox/form/Uploader",
         "widget/form/uploader/FileList"
