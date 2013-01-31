@@ -1,0 +1,3 @@
+//>>built
+define("dojo/ready",["./_base/kernel","./has","require","./domReady","./_base/lang"],function(b,c,k,a,h){var l=0,e=[],i=0,c=function(){l=1;b._postLoad=b.config.afterOnLoad=!0;f()},f=function(){if(!i){for(i=1;l&&(!a||0==a._Q.length)&&k.idle()&&e.length;){var b=e.shift();try{b()}catch(f){}}i=0}};k.on("idle",f);if(a)a._onQEmpty=f;var m=b.ready=b.addOnLoad=function(a,c,g){var d=h._toArray(arguments);"number"!=typeof a?(g=c,c=a,a=1E3):d.shift();g=g?h.hitch.apply(b,d):function(){c()};g.priority=a;for(d=
+0;d<e.length&&a>=e[d].priority;d++);e.splice(d,0,g);f()},j=b.config.addOnLoad;if(j)m[h.isArray(j)?"apply":"call"](b,j);a?a(c):c();return m});
