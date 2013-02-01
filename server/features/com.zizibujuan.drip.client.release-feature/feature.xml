@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="com.zizibujuan.drip"
-      label="drip"
+      id="com.zizibujuan.drip.client.release.feature"
+      label="client.release.feature"
       version="0.0.1.qualifier"
       provider-name="zizibujuan.com">
 
@@ -17,16 +17,10 @@
       [Enter License Description here.]
    </license>
 
-   <includes
-         id="com.zizibujuan.drip.server.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="com.zizibujuan.drip.base.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="com.zizibujuan.drip.client.release.feature"
+   <plugin
+         id="com.zizibujuan.drip.client.release"
+         download-size="0"
+         install-size="0"
          version="0.0.0"/>
 
 </feature>

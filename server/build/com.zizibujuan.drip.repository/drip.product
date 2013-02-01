@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="drip.product" uid="com.zizibujuan.drip.product" id="com.zizibujuan.drip.product" application="com.zizibujuan.drip.application" version="0.0.1.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="drip.product" uid="com.zizibujuan.drip.product" id="com.zizibujuan.drip.product" version="0.0.1.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -31,10 +31,7 @@
       <plugin id="ch.qos.logback.slf4j" fragment="true"/>
       <plugin id="com.google.gson"/>
       <plugin id="com.zizibujuan.dbaccess.mysql"/>
-      <plugin id="com.zizibujuan.drip.client.core"/>
-      <plugin id="com.zizibujuan.drip.client.dojo"/>
-      <plugin id="com.zizibujuan.drip.client.editor"/>
-      <plugin id="com.zizibujuan.drip.client.mathjax"/>
+      <plugin id="com.zizibujuan.drip.client.release"/>
       <plugin id="com.zizibujuan.drip.server.configurator"/>
       <plugin id="com.zizibujuan.drip.server.dao"/>
       <plugin id="com.zizibujuan.drip.server.dao.mysql"/>
@@ -82,10 +79,7 @@
       <plugin id="ch.qos.logback.core" autoStart="true" startLevel="0" />
       <plugin id="com.google.gson" autoStart="true" startLevel="0" />
       <plugin id="com.zizibujuan.dbaccess.mysql" autoStart="true" startLevel="0" />
-      <plugin id="com.zizibujuan.drip.client.core" autoStart="true" startLevel="0" />
-      <plugin id="com.zizibujuan.drip.client.dojo" autoStart="true" startLevel="0" />
-      <plugin id="com.zizibujuan.drip.client.editor" autoStart="true" startLevel="0" />
-      <plugin id="com.zizibujuan.drip.client.mathjax" autoStart="true" startLevel="0" />
+      <plugin id="com.zizibujuan.drip.client.release" autoStart="true" startLevel="0" />
       <plugin id="com.zizibujuan.drip.server.configurator" autoStart="true" startLevel="0" />
       <plugin id="com.zizibujuan.drip.server.dao" autoStart="true" startLevel="0" />
       <plugin id="com.zizibujuan.drip.server.dao.mysql" autoStart="true" startLevel="0" />

@@ -15,14 +15,17 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		<!-- features -->
 		<module>server/features/com.zizibujuan.drip-feature</module>
 		<module>server/features/com.zizibujuan.drip.base-feature</module>
-		<module>server/features/com.zizibujuan.drip.client-feature</module>
+		<!--<module>server/features/com.zizibujuan.drip.client-feature</module>-->
+		<module>server/features/com.zizibujuan.drip.client.release-feature</module>
 		<module>server/features/com.zizibujuan.drip.server-feature</module>
 		<!-- plugins -->
-		<!-- client -->
+		<!-- client 
 		<module>client/bundles/com.zizibujuan.drip.client.core</module>
 		<module>client/bundles/com.zizibujuan.drip.client.editor</module>
 		<module>client/bundles/com.zizibujuan.drip.client.dojo</module>
 		<module>client/bundles/com.zizibujuan.drip.client.mathjax</module>
+		-->
+		<module>client/bundles/com.zizibujuan.drip.client.release</module>
 		<!-- server -->
 		<module>server/bundles/com.zizibujuan.drip.server.configurator</module>
 		<module>server/bundles/com.zizibujuan.dbaccess.mysql</module>
