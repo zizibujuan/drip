@@ -41,7 +41,7 @@ public class ConnectUserDaoImpl extends AbstractDao implements ConnectUserDao {
 			"INTRODUCE," +
 			"CREATE_TIME) " +
 			"VALUES " +
-			"(?,?,?,?,?,?,now())";
+			"(?,?,?,?,?,?,?,?,?,?,now())";
 
 	@Override
 	public Long add(Connection con, Map<String, Object> connectUserInfo) throws SQLException {
