@@ -14,9 +14,9 @@ define(["dojo/_base/declare",
         "dojo/query",
         "dojo/json",
         "mathEditor/Editor",
-        "classCode",
+        "drip/classCode",
         "dojox/form/Uploader",
-        "widget/form/uploader/FileList"
+        "drip/widget/form/uploader/FileList"
         ], function(
         		declare,
         		lang,

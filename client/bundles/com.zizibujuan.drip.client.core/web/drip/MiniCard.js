@@ -7,9 +7,9 @@ define(["dojo/_base/declare",
         "dijit/_TemplatedMixin",
         "dijit/TooltipDialog",
         "dijit/popup",
-        "dojo/text!/templates/MiniCard.html",
-        "userSession",
-        "classCode"], function(
+        "dojo/text!./templates/MiniCard.html",
+        "drip/userSession",
+        "drip/classCode"], function(
         		declare,
         		lang,
         		on,
@@ -23,7 +23,7 @@ define(["dojo/_base/declare",
         		userSession,
         		classCode){
 	
-	var MiniCardBody = declare("MiniCardBody",[_WidgetBase,_TemplatedMixin],{
+	var MiniCardBody = declare("drip.MiniCardBody",[_WidgetBase,_TemplatedMixin],{
 		templateString:miniCardTemplate,
 		postCreate: function(){
 			this.inherited(arguments);
@@ -135,7 +135,7 @@ define(["dojo/_base/declare",
 		}
 	})
 	
-	return declare("MiniCard", null, {
+	return declare("drip.MiniCard", null, {
 		
 		constructor: function(args){
 			lang.mixin(this, args);

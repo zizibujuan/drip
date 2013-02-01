@@ -7,8 +7,8 @@ define(["dojo/_base/declare",
         "dijit/DropDownMenu", 
         "dijit/MenuItem",
         "dijit/_TemplatedMixin",
-        "dojo/text!/templates/Header.html",
-        "userSession"
+        "dojo/text!./templates/Header.html",
+        "drip/userSession"
         ], function(
         		declare,
         		lang,
@@ -24,7 +24,7 @@ define(["dojo/_base/declare",
 	
 	// TODO：需要一个通用的页面对象，存储页面级别的通用数据。
 
-	return declare("Header", [_WidgetBase,_TemplatedMixin], {
+	return declare("drip.Header", [_WidgetBase,_TemplatedMixin], {
 		templateString: headerTemplate,
 		
 		postCreate : function(){

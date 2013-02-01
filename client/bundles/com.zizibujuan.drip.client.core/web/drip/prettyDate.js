@@ -4,7 +4,7 @@ define(["dojo/_base/lang",
         "dojo/dom-prop",
         "dojo/date",
         "dojo/date/stamp",
-        "dojo/i18n!nls/prettyDate"], function(
+        "dojo/i18n!./nls/prettyDate"], function(
         		lang,
         		query,
         		string,

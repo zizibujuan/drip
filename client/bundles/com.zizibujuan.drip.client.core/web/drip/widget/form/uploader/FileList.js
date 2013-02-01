@@ -25,7 +25,7 @@ define([
 
 	// TODO：如果需要支持上传多个，则需要定义两个类，一个保存单条记录的信息，一个保存集合信息
 	
-return declare("widget.form.uploader.FileList", [formUploaderBase], {
+return declare("drip.widget.form.uploader.FileList", [formUploaderBase], {
 	// summary:
 	//		A simple widget that provides a list of the files currently selected by
 	//		dojox.form.Uploader

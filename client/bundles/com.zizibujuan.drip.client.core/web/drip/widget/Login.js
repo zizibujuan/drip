@@ -7,7 +7,7 @@ define(["dojo/_base/declare",
         "dijit/_WidgetBase",
         "dijit/_TemplatedMixin",
         "dijit/_WidgetsInTemplateMixin",
-        "dojo/text!/templates/Login.html",
+        "dojo/text!./templates/Login.html",
         "dijit/form/Form",
         "dijit/form/ValidationTextBox",
         "dijit/form/CheckBox",
@@ -26,7 +26,7 @@ define(["dojo/_base/declare",
 	//		登录部件，提供登录到一个网站需要的界面元素和事件。
 	//		使用form登录
 	
-	return declare("widget.Login",[_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin],{
+	return declare("drip.widget.Login",[_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin],{
 		
 		templateString: loginTemplate,
 		

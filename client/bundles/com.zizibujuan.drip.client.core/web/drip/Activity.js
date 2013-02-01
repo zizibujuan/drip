@@ -14,12 +14,12 @@ define(["dojo/_base/declare",
         "dijit/_TemplatedMixin",
         "dijit/form/Button",
         "dojo/store/JsonRest",
-        "classCode",
-        "prettyDate",
-        "drip/Editor",
-        "dojo/text!/templates/ActivityNode.html",
-        "dojo/text!/templates/ActivityList.html",
-        "MiniCard"], function(
+        "drip/classCode",
+        "drip/prettyDate",
+        "mathEditor/Editor",
+        "dojo/text!./templates/ActivityNode.html",
+        "dojo/text!./templates/ActivityList.html",
+        "drip/MiniCard"], function(
         		declare,
         		array,
         		lang,
@@ -48,7 +48,7 @@ define(["dojo/_base/declare",
 	// TODO:重复存在，重构
 	var optionLabel = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	
-	var ActivityNode = declare("ActivityNode",[_WidgetBase, _TemplatedMixin],{
+	var ActivityNode = declare("drip.ActivityNode",[_WidgetBase, _TemplatedMixin],{
 		templateString: nodeTemplate,
 		data:{},
 		postCreate : function(){

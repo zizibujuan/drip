@@ -6,10 +6,10 @@ define(["dojo/_base/declare",
         "dijit/_TemplatedMixin",
         "dijit/_WidgetsInTemplateMixin",
         "dojo/store/JsonRest",
-        "drip/dataUtil",
-        "dojo/text!/templates/ExerciseNode.html",
-        "dojo/text!/templates/ExerciseList.html",
-        "dojo/i18n!nls/common"],function(
+        "mathEditor/dataUtil",
+        "dojo/text!./templates/ExerciseNode.html",
+        "dojo/text!./templates/ExerciseList.html",
+        "dojo/i18n!./nls/common"],function(
         		declare,
         		array,
         		lang,
@@ -23,7 +23,7 @@ define(["dojo/_base/declare",
         		listTemplate,
         		common){
 	
-	var ExerciseNode = declare("ExerciseNode",[_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin],{
+	var ExerciseNode = declare("drip.ExerciseNode",[_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin],{
 		 templateString: nodeTemplate,
 		 
 		 // content: String
@@ -45,7 +45,7 @@ define(["dojo/_base/declare",
 		 }
 	});
 	
-	var Exercise = declare("Exercise",[_WidgetBase, _TemplatedMixin],{
+	var Exercise = declare("drip.Exercise",[_WidgetBase, _TemplatedMixin],{
 		 templateString: listTemplate,
 		 
 		 // 因为该部件是习题专用的，所以将store硬编码在部件里
