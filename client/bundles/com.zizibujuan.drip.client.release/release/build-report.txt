@@ -1,4 +1,4 @@
-Build started: Thu Jan 31 2013 23:51:40 GMT+0800 (CST)
+Build started: Fri Feb 01 2013 10:53:50 GMT+0800 (CST)
 Build application version: 1.7.0dev (23930)
 Messages:
 info(100) Assumed module uses legacy loader API.
@@ -3024,6 +3024,20 @@ info(102) Optimizing module
 	module: mathEditor/View
 	module: mathEditor/dataUtil
 	module: mathEditor/mathContentAssist
+	module: drip/prettyDate
+	module: drip/Header
+	module: drip/Activity
+	module: drip/userSession
+	module: drip/nls/common
+	module: drip/exercises/ExerciseForm
+	module: drip/classCode
+	module: drip/Exercise
+	module: drip/nls/zh/common
+	module: drip/MiniCard
+	module: drip/widget/form/uploader/FileList
+	module: drip/nls/prettyDate
+	module: drip/nls/zh/prettyDate
+	module: drip/widget/Login
 info(106) Optimizing CSS.
 	file: /home/jzw/git/private/aliyun/com.zizibujuan.drip/client/bundles/com.zizibujuan.drip.client.dojo/static/dojox/mobile/themes/common/domButtons/DomButtonCheckboxOn.css
 	file: /home/jzw/git/private/aliyun/com.zizibujuan.drip/client/bundles/com.zizibujuan.drip.client.dojo/static/dojox/mobile/themes/custom/ValuePicker.css
@@ -3819,11 +3833,15 @@ info(106) Optimizing CSS.
 	file: /home/jzw/git/private/aliyun/com.zizibujuan.drip/client/bundles/com.zizibujuan.drip.client.dojo/static/dojo/resources/dojo.css
 	file: /home/jzw/git/private/aliyun/com.zizibujuan.drip/client/bundles/com.zizibujuan.drip.client.dojo/static/dojo/resources/dnd.css
 	file: /home/jzw/git/private/aliyun/com.zizibujuan.drip/client/bundles/com.zizibujuan.drip.client.editor/static/mathEditor/Editor.css
+	file: /home/jzw/git/private/aliyun/com.zizibujuan.drip/client/bundles/com.zizibujuan.drip.client.core/web/drip/resources/main.css
+	file: /home/jzw/git/private/aliyun/com.zizibujuan.drip/client/bundles/com.zizibujuan.drip.client.core/web/drip/resources/index.css
+	file: /home/jzw/git/private/aliyun/com.zizibujuan.drip/client/bundles/com.zizibujuan.drip.client.core/web/drip/resources/UploaderFileList.css
 info(107) Package Version:
 	package: dojox; version: 1.9.0dev
 	package: dijit; version: 1.9.0dev
 	package: dojo; version: 1.9.0dev
 	package: mathEditor; version: 0.0.1
+	package: drip; version: 0.0.1
 warn(216) dojo/has plugin resource could not be resolved during build-time.
 	plugin resource id: dojo-bidi?dojox/mobile/bidi/TabBarButton; reference module id: dojox/mobile/TabBarButton
 	plugin resource id: dojo-bidi?dojox/mobile/bidi/CarouselItem; reference module id: dojox/mobile/CarouselItem
@@ -3944,4 +3962,4 @@ dojo/dojo:
 Process finished normally
 	errors: 0
 	warnings: 36
-	build time: 109.703 seconds
+	build time: 161.067 seconds

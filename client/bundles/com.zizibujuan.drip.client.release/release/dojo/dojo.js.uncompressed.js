@@ -1928,6 +1928,10 @@
 				{
 					 location:"../mathEditor",
 					 name:"mathEditor"
+				},
+				{
+					 location:"../drip",
+					 name:"drip"
 				}
 		]
 });require({cache:{

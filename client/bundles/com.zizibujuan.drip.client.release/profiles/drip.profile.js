@@ -74,6 +74,9 @@ var profile = {
 	},{
 		name:"mathEditor",
 		location:"./com.zizibujuan.drip.client.editor/static/mathEditor"
+	},{
+		name:"drip",
+		location:"./com.zizibujuan.drip.client.core/web/drip"
 	}/*,{
 		name:"mathjax",
 		location:"./com.zizibujuan.drip.client.mathjax/static/"

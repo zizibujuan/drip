@@ -18,8 +18,14 @@ fi
 echo "Building application with $PROFILE to $DISTDIR."
 
 echo -n "Cleaning old files..."
-rm -rf "$DISTDIR"
+rm -rf "$DISTDIR/dijit"
+rm -rf "$DISTDIR/dojo"
+rm -rf "$DISTDIR/dojox"
+rm -rf "$DISTDIR/drip"
+rm -rf "$DISTDIR/mathEditor"
 echo " Done"
+
+cp $BASEDIR/com.zizibujuan.drip.client.core/web/index.html $DISTDIR/index.html
 
 cd "$TOOLSDIR"
 
@@ -32,6 +38,15 @@ cd "$TOOLSDIR"
 #	echo "Need node.js or Java to build!"
 #	exit 1
 #fi
+
+# Copy & minify index.html to dist
+#cat "$BASEDIR/com.zizibujuan.drip.client.core/web/index.html" | tr '\n' ' ' | \
+#perl -pe "
+#  s/<\!--.*?-->//g;                          # Strip comments
+#  s/isDebug: *1/deps:['$LOADERMID']/;        # Remove isDebug, add deps
+#  s/<script src=\"$LOADERMID.*?\/script>//;  # Remove script app/run
+#  s/\s+/ /g; 
+
 
 
 echo "Build complete"
