@@ -61,7 +61,7 @@
             httpcontextId="com.zizibujuan.drip.client.httpcontext.dojox">
       </resource>
       <resource
-            alias="/drip"
+            alias="/"
             httpcontextId="com.zizibujuan.drip.client.httpcontext.drip">
       </resource>
       <resource
