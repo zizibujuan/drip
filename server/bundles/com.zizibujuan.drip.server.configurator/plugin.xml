@@ -75,11 +75,11 @@
          point="org.eclipse.equinox.http.registry.httpcontexts">
          <httpcontext
             id="com.zizibujuan.drip.server.configurator.httpcontext.drip">
+            <!--
 	         <resource-mapping
 	               bundle="com.zizibujuan.drip.client.core"
 	               path="/web">
 	         </resource-mapping>
-	         <!--
 	         <resource-mapping
 	               bundle="com.zizibujuan.drip.client.editor"
 	               path="/static">
@@ -89,11 +89,12 @@
 	               bundle="com.zizibujuan.drip.client.dojo"
 	               path="/static">
 	         </resource-mapping>
-	         -->
+	         
 	         <resource-mapping
 	               bundle="com.zizibujuan.drip.client.mathjax"
 	               path="/static">
 	         </resource-mapping>
+	         -->
          </httpcontext>
     </extension>
 	<extension

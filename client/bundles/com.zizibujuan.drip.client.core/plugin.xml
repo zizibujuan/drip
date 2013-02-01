@@ -4,19 +4,18 @@
 <extension
          point="org.eclipse.equinox.http.registry.httpcontexts">
          <httpcontext
-            id="com.zizibujuan.drip.client.httpcontext.mathjax">
+            id="com.zizibujuan.drip.client.httpcontext.core">
 	         <resource-mapping
-	               bundle="com.zizibujuan.drip.client.mathjax"
-	               path="/static/mathjax">
+	               bundle="com.zizibujuan.drip.client.core"
+	               path="/web/drip">
 	         </resource-mapping>
          </httpcontext>
     </extension>
 	<extension
          point="org.eclipse.equinox.http.registry.resources">
       <resource
-            alias="/mathjax"
-            httpcontextId="com.zizibujuan.drip.client.httpcontext.mathjax">
+            alias="/drip"
+            httpcontextId="com.zizibujuan.drip.client.httpcontext.core">
       </resource>
      </extension>
 </plugin>
-
