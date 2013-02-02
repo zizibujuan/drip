@@ -1,4 +1,4 @@
-Build started: Sat Feb 02 2013 13:35:24 GMT+0800 (CST)
+Build started: Sat Feb 02 2013 16:14:52 GMT+0800 (CST)
 Build application version: 1.7.0dev (23930)
 Messages:
 info(100) Assumed module uses legacy loader API.
@@ -3880,86 +3880,68 @@ warn(224) A plugin dependency was encountered but there was no build-time plugin
 	module: dojo/request/node; plugin: dojo/node
 	module: dojo/request; plugin: dojo/request/default
 	module: dojo/request/registry; plugin: dojo/request/default
+error(303) Missing include module for layer.
+	missing: dojo/acme; layer: dojo/dojo
 Layer Contents:
 dojo/dojo:
-	dojo/dom-geometry
-	dojo/_base/array
-	dojo/_base/Deferred
-	dojo/request/watch
-	dojo/uacss
-	dojo/dom
-	dojo/text
-	dojo/dom-style
-	dijit/hccss
 	dojo/dom-form
+	dojo/i18n
+	dojo/errors/RequestError
+	dojo/_base/kernel
+	dojo/io-query
+	dojo/_base/Deferred
+	dojo/date
+	dojo/query
+	dojo/has
+	dojo/json
+	dojo/_base/declare
+	dojo/dom
+	dojo/errors/RequestTimeoutError
+	dojo/dom-style
+	dojo/dom-geometry
+	dojo/dom-prop
+	dojo/when
+	dojo/dom-attr
+	dojo/dom-construct
+	dojo/request/xhr
+	dojo/date/stamp
+	dojo/_base/url
+	dojo/store/JsonRest
+	dojo/html
+	dojo/keys
+	dojo/domReady
+	dojo/_base/lang
+	dojo/promise/all
+	dojo/request/util
+	dojo/Evented
+	dojo/mouse
+	dojo/_base/xhr
+	dojo/topic
+	dojo/dojo
+	dojo/Deferred
+	dojo/selector/_loader
 	dojo/promise/Promise
+	dojo/request/watch
+	dojo/on
+	dojo/_base/sniff
+	dojo/errors/create
+	dojo/parser
+	dojo/_base/array
+	dojo/_base/json
+	dojo/store/util/QueryResults
+	dojo/_base/window
+	dojo/_base/config
+	dojo/_base/event
+	dojo/sniff
 	dojo/request/handlers
 	dojo/aspect
-	dojo/errors/CancelError
-	dijit/a11yclick
-	dojo/topic
-	dojo/_base/connect
-	dojo/_base/config
-	dojo/_base/unload
-	dojo/selector/_loader
-	dojo/_base/declare
-	dojo/errors/RequestTimeoutError
-	dojo/json
-	dojo/_base/json
-	dojo/i18n
-	dijit/form/_FormWidgetMixin
-	dojo/dom-construct
-	dojo/sniff
-	dojo/_base/event
-	dojo/Stateful
-	dojo/touch
-	dojo/Deferred
-	dijit/_CssStateMixin
-	dojo/hccss
-	dojo/string
-	dojo/domReady
-	dojo/dom-prop
-	dijit/form/Button
-	dojo/keys
-	dojo/_base/lang
-	dijit/registry
-	dijit/Destroyable
-	dojo/dojo
-	dojo/mouse
-	dijit/a11y
-	dijit/form/templates/Button.html
-	dojo/request/xhr
-	dojo/_base/kernel
-	dojo/errors/create
-	dojo/on
-	dijit/_Widget
-	dojo/cache
-	dijit/_FocusMixin
-	dijit/_OnDijitClickMixin
-	dojo/query
-	dojo/dom-class
-	dijit/focus
-	dojo/dom-attr
-	dijit/main
-	dijit/form/_ButtonMixin
-	dijit/form/_FormWidget
-	dojo/request/util
-	dojo/io-query
 	dojo/ready
-	dijit/_TemplatedMixin
-	dojo/Evented
-	dojo/window
-	dojo/_base/xhr
-	dojo/has
-	dojo/_base/sniff
-	dojo/_base/window
-	dojo/when
-	dojo/errors/RequestError
-	dijit/_WidgetBase
+	dojo/_base/connect
+	dojo/errors/CancelError
 
 
 
 Process finished normally
-	errors: 0
+	errors: 1
 	warnings: 36
-	build time: 167.853 seconds
+	build time: 155.38 seconds

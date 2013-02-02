@@ -84,7 +84,14 @@ var profile = {
 	
 	layers:{
 		'dojo/dojo':{
-			include:['dojo/i18n', 'dojo/domReady', 'dijit/form/Button'], //, 'app/main', 'app/run'
+			include:['dojo/i18n', 
+			         'dojo/domReady', 
+			         "dojo/parser",
+			         "dojo/store/JsonRest",
+			         "dojo/acme",
+			         "dojo/html",
+			         "dojo/date"
+			         ], //, 'app/main', 'app/run'
 			boot: true,
 			customBase: true
 		}//,
