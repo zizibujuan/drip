@@ -18,11 +18,12 @@
 <script type="text/javascript"
    src="/mathjax/MathJax.js?config=MML_HTMLorMML">
 </script>
-<script type="text/javascript" src="renren.js"></script>
+<script type="text/javascript" src="drip/renren.js"></script>
 <script type="text/javascript">
 require(["dojo/ready",
 		 "dojo/on",
          "dojo/dom",
+         "dojo/parser",
          "dojo/request/xhr",
          "dijit/registry",
          "drip/userSession",
@@ -33,6 +34,7 @@ require(["dojo/ready",
         		 ready,
         		 on,
         		 dom,
+        		 parser,
         		 xhr,
         		 registry,
         		 userSession){
@@ -56,6 +58,8 @@ require(["dojo/ready",
 	});
 	
 	on(dom.byId("logout"),"click",userSession.logout);
+	
+	parser.parse();
 	
 	ready(function(){
 		/*
@@ -206,7 +210,7 @@ color:#69768C;
 		<div class="container clearfix">
 			<a href="/" class="drip_header_logo" style="height:25px;">
 			 	<!-- 设置文本的高度 -->
-				<img alt="孜孜不倦" style="height:25px;" src="resources/images/home_logo.png">
+				<img alt="孜孜不倦" style="height:25px;" src="drip/resources/images/home_logo.png">
 			</a>
 			<span class="drip_version">测试版</span>
 			
