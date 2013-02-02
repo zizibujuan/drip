@@ -8,8 +8,8 @@ package com.zizibujuan.drip.server.util;
 public abstract class WebConstants {
 
 	// 公共首页
-	public static final String PUBLIC_WELCOME_FILE_NAME = "index.html";//$NON-NLS-1$
+	public static final String PUBLIC_WELCOME_FILE_NAME = "drip/index.html";//$NON-NLS-1$
 	// 个人首页
-	public static final String PRIVATE_WELCOME_FILE_NAME = "dashboard.html";//$NON-NLS-1$
+	public static final String PRIVATE_WELCOME_FILE_NAME = "drip/dashboard.html";//$NON-NLS-1$
 		
 }

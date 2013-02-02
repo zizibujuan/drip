@@ -110,7 +110,7 @@
    <extension
          point="org.eclipse.equinox.http.registry.filters">
          
-         <!--
+         
       <filter
             alias="/"
             class="com.zizibujuan.drip.server.configurator.servlet.RestHtmlFilter">
@@ -120,7 +120,7 @@
             alias="/"
             class="com.zizibujuan.drip.server.configurator.servlet.WelcomeFileFilter">
       </filter>
-      -->
+      
       
       <!-- 在进行rest转换后触发-->
       <!-- TODO：判断哪些资源可以看作有效的资源 -->

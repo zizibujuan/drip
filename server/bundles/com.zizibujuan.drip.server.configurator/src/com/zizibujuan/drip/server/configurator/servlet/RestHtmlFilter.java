@@ -1,6 +1,8 @@
 package com.zizibujuan.drip.server.configurator.servlet;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -27,10 +29,13 @@ public class RestHtmlFilter implements Filter {
 	private static final String LIST_HTML = "/list.html";
 	private static final String NEW_PATHINFO = "/new";
 	private static final String HTML = ".html";
+	
+	private Map<String,Object> actions;
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		// nothing to do
+		 actions = new HashMap<String, Object>();
+		 
 	}
 
 	/**
@@ -84,7 +89,10 @@ public class RestHtmlFilter implements Filter {
 
 	@Override
 	public void destroy() {
-		// nothing to do
+		if(actions!=null){
+			actions.clear();
+			actions = null;
+		}
 	}
 
 }

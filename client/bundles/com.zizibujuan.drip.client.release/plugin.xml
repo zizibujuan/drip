@@ -3,6 +3,7 @@
 <plugin>
 <extension
          point="org.eclipse.equinox.http.registry.httpcontexts">
+         <!--
          <httpcontext
             id="com.zizibujuan.drip.client.httpcontext.dojo">
 	         <resource-mapping
@@ -45,9 +46,19 @@
 	               path="/release/mathJax">
 	         </resource-mapping>
          </httpcontext>
+         -->
+         <httpcontext
+            id="com.zizibujuan.drip.client.httpcontext.release">
+	         <resource-mapping
+	               bundle="com.zizibujuan.drip.client.release"
+	               path="/release">
+	         </resource-mapping>
+         </httpcontext>
+         
     </extension>
 	<extension
          point="org.eclipse.equinox.http.registry.resources">
+         <!--
       <resource
             alias="/dojo"
             httpcontextId="com.zizibujuan.drip.client.httpcontext.dojo">
@@ -61,7 +72,7 @@
             httpcontextId="com.zizibujuan.drip.client.httpcontext.dojox">
       </resource>
       <resource
-            alias="/"
+            alias="/drip"
             httpcontextId="com.zizibujuan.drip.client.httpcontext.drip">
       </resource>
       <resource
@@ -71,6 +82,11 @@
       <resource
             alias="/mathJax"
             httpcontextId="com.zizibujuan.drip.client.httpcontext.mathJax">
+      </resource>
+      -->
+      <resource
+            alias="/"
+            httpcontextId="com.zizibujuan.drip.client.httpcontext.release">
       </resource>
      </extension>
 </plugin>

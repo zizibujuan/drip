@@ -26,6 +26,7 @@ rm -rf "$DISTDIR/mathEditor"
 echo " Done"
 
 #cp $BASEDIR/com.zizibujuan.drip.client.core/web/index.html $DISTDIR/index.html
+cp $BASEDIR/com.zizibujuan.drip.client.core/web/favicon.ico $DISTDIR/favicon.ico
 
 cd "$TOOLSDIR"
 
