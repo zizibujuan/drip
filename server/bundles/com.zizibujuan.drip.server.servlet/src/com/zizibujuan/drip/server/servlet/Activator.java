@@ -40,7 +40,7 @@ public class Activator implements BundleActivator {
 				ServiceReference<ApplicationPropertyService> reference) {
 			ApplicationPropertyService applicationPropertyService = this.context.getService(reference);
 			logger.info("applicationPropertyService In activator:"+applicationPropertyService);
-			
+			// TODO:确保依赖的bundle被执行
 			String key = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_APP_KEY);
 			String secret = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_APP_SECRET);
 			

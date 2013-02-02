@@ -18,13 +18,6 @@
    </license>
 
    <plugin
-         id="com.zizibujuan.drip.server.configurator"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="com.zizibujuan.dbaccess.mysql"
          download-size="0"
          install-size="0"
@@ -54,13 +47,6 @@
 
    <plugin
          id="com.zizibujuan.drip.server.service.impl"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.zizibujuan.drip.server.servlet"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -117,6 +103,20 @@
 
    <plugin
          id="org.slf4j.api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.zizibujuan.drip.server.servlet"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.zizibujuan.drip.server.configurator"
          download-size="0"
          install-size="0"
          version="0.0.0"
