@@ -12,6 +12,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.zizibujuan.drip.server.service.AccessLogService;
 import com.zizibujuan.drip.server.service.ApplicationPropertyService;
 import com.zizibujuan.drip.server.util.WebConstants;
@@ -25,6 +28,8 @@ import com.zizibujuan.drip.server.util.servlet.UserSession;
  */
 public class AccessLogFilter implements Filter {
 
+	private static Logger logger = LoggerFactory.getLogger(AccessLogFilter.class);
+	
 	private AccessLogService accessLogService;
 	private ApplicationPropertyService applicationPropertyService;
 	
@@ -80,7 +85,7 @@ public class AccessLogFilter implements Filter {
 			
 			// 获取用户访问的上一个页面
 			String urlFrom = httpServletRequest.getHeader("Referer");
-			System.out.println(urlFrom);
+			logger.info("上一个访问的页面是：" + urlFrom);
 			
 			// 获取用户当前访问的一个页面
 			String urlAccess = httpServletRequest.getRequestURI();

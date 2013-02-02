@@ -1,4 +1,4 @@
-Build started: Sat Feb 02 2013 13:25:32 GMT+0800 (CST)
+Build started: Sat Feb 02 2013 13:35:24 GMT+0800 (CST)
 Build application version: 1.7.0dev (23930)
 Messages:
 info(100) Assumed module uses legacy loader API.
@@ -3962,4 +3962,4 @@ dojo/dojo:
 Process finished normally
 	errors: 0
 	warnings: 36
-	build time: 199.195 seconds
+	build time: 167.853 seconds
