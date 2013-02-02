@@ -7,42 +7,42 @@
             id="com.zizibujuan.drip.client.httpcontext.dojo">
 	         <resource-mapping
 	               bundle="com.zizibujuan.drip.client.release"
-	               path="/static/release/dojo">
+	               path="/release/dojo">
 	         </resource-mapping>
          </httpcontext>
           <httpcontext
             id="com.zizibujuan.drip.client.httpcontext.dijit">
 	         <resource-mapping
 	               bundle="com.zizibujuan.drip.client.release"
-	               path="/static/release/dijit">
+	               path="/release/dijit">
 	         </resource-mapping>
          </httpcontext>
           <httpcontext
             id="com.zizibujuan.drip.client.httpcontext.dojox">
 	         <resource-mapping
 	               bundle="com.zizibujuan.drip.client.release"
-	               path="/static/release/dojox">
+	               path="/release/dojox">
 	         </resource-mapping>
          </httpcontext>
          <httpcontext
             id="com.zizibujuan.drip.client.httpcontext.drip">
 	         <resource-mapping
 	               bundle="com.zizibujuan.drip.client.release"
-	               path="/static/release/drip">
+	               path="/release/drip">
 	         </resource-mapping>
          </httpcontext>
          <httpcontext
             id="com.zizibujuan.drip.client.httpcontext.mathEditor">
 	         <resource-mapping
 	               bundle="com.zizibujuan.drip.client.release"
-	               path="/static/release/mathEditor">
+	               path="/release/mathEditor">
 	         </resource-mapping>
          </httpcontext>
          <httpcontext
             id="com.zizibujuan.drip.client.httpcontext.mathJax">
 	         <resource-mapping
 	               bundle="com.zizibujuan.drip.client.release"
-	               path="/static/release/mathJax">
+	               path="/release/mathJax">
 	         </resource-mapping>
          </httpcontext>
     </extension>
