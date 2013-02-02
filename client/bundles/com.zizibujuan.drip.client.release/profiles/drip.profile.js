@@ -88,7 +88,7 @@ var profile = {
 			         'dojo/domReady', 
 			         "dojo/parser",
 			         "dojo/store/JsonRest",
-			         "dojo/acme",
+			         "dojo/selector/acme",
 			         "dojo/html",
 			         "dojo/date"
 			         ], //, 'app/main', 'app/run'

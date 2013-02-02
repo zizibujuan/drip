@@ -1,4 +1,4 @@
-Build started: Sat Feb 02 2013 16:14:52 GMT+0800 (CST)
+Build started: Sat Feb 02 2013 18:29:43 GMT+0800 (CST)
 Build application version: 1.7.0dev (23930)
 Messages:
 info(100) Assumed module uses legacy loader API.
@@ -3880,8 +3880,6 @@ warn(224) A plugin dependency was encountered but there was no build-time plugin
 	module: dojo/request/node; plugin: dojo/node
 	module: dojo/request; plugin: dojo/request/default
 	module: dojo/request/registry; plugin: dojo/request/default
-error(303) Missing include module for layer.
-	missing: dojo/acme; layer: dojo/dojo
 Layer Contents:
 dojo/dojo:
 	dojo/dom-form
@@ -3896,6 +3894,7 @@ dojo/dojo:
 	dojo/json
 	dojo/_base/declare
 	dojo/dom
+	dojo/selector/acme
 	dojo/errors/RequestTimeoutError
 	dojo/dom-style
 	dojo/dom-geometry
@@ -3942,6 +3941,6 @@ dojo/dojo:
 
 
 Process finished normally
-	errors: 1
+	errors: 0
 	warnings: 36
-	build time: 155.38 seconds
+	build time: 184.964 seconds
