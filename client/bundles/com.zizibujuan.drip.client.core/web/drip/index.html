@@ -18,6 +18,8 @@ data-redirecturi="http://zizibujuan.com" charset="utf-8"></script>
 </head>
 <body style="padding: 0px;margin: 0px">
 <div id="wrapper">
+<!-- 因为这里永远是用户没有登录时访问，所以就简单处理，不为了统一组件调用引入一堆dojo代码 -->
+<!-- 等需要的时候再引入 -->
 <div class="drip_header drip_header_logged_out">
 	<div class="container clearfix">
 		<a href="/" class="drip_header_logo">
@@ -26,6 +28,7 @@ data-redirecturi="http://zizibujuan.com" charset="utf-8"></script>
 		<span class="drip_version">测试版</span>
 		<ul class="drip_top_nav">
 			<li><a href="/exercises">题库</a></li>
+			<li><a href="/docs">文档</a></li>
 			<!-- <li><a href="#">开发博客</a></li>  -->
 		</ul>
 	</div>
@@ -83,6 +86,10 @@ data-redirecturi="http://zizibujuan.com" charset="utf-8"></script>
 	</div>
 	-->
 </div>
+</div>
+
+<div style="font-size:20px;text-align: center;background-color: #f5f5f5;padding:20px;color:red">
+火热开发中，敬请耐心等待!
 </div>
 </body>
 </html>
