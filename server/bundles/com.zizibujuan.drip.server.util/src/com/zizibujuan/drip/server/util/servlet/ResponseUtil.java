@@ -2,6 +2,8 @@ package com.zizibujuan.drip.server.util.servlet;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 
 import com.zizibujuan.drip.server.util.HttpConstants;
+import com.zizibujuan.drip.server.util.PageInfo;
 import com.zizibujuan.drip.server.util.json.JsonUtil;
 
 /**
@@ -43,6 +46,21 @@ public abstract class ResponseUtil {
 	 */
 	public static void toJSON(HttpServletRequest req, HttpServletResponse resp, Object result) throws IOException{
 		toJSON(req, resp, result,HttpServletResponse.SC_OK);
+	}
+	
+	/**
+	 * 往response中输出JSON格式内容
+	 * @param req HttpServletRequest
+	 * @param resp  HttpServletResponse
+	 * @param pageInfo 分页信息
+	 * @param list 转换的列表
+	 * @throws IOException
+	 */
+	public static void toJSON(HttpServletRequest req, HttpServletResponse resp, PageInfo pageInfo, List<Map<String,Object>> list) throws IOException{
+		if(pageInfo != null){
+			resp.setHeader("Content-Range", pageInfo.toString());
+		}
+		toJSON(req, resp, list,HttpServletResponse.SC_OK);
 	}
 	
 	/**
