@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.zizibujuan.drip.server.service.UserRelationService;
-import com.zizibujuan.drip.server.util.servlet.DripServlet;
+import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.UserSession;
 
 /**
@@ -15,7 +15,7 @@ import com.zizibujuan.drip.server.util.servlet.UserSession;
  * @author jzw
  * @since 0.0.1
  */
-public class FollowServlet extends DripServlet {
+public class FollowServlet extends BaseServlet {
 	private static final long serialVersionUID = 8554979680061295443L;
 	private UserRelationService userRelationService;
 	

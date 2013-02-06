@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.zizibujuan.drip.server.service.AnswerService;
-import com.zizibujuan.drip.server.util.servlet.DripServlet;
+import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
 import com.zizibujuan.drip.server.util.servlet.UserSession;
@@ -18,7 +18,7 @@ import com.zizibujuan.drip.server.util.servlet.UserSession;
  * @author jinzw
  * @since 0.0.1
  */
-public class AnswerServlet extends DripServlet {
+public class AnswerServlet extends BaseServlet {
 
 	private static final long serialVersionUID = -1785829869948967937L;
 	private AnswerService answerService = null;

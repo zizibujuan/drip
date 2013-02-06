@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.zizibujuan.drip.server.service.ActivityService;
 import com.zizibujuan.drip.server.util.PageInfo;
-import com.zizibujuan.drip.server.util.servlet.DripServlet;
+import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
 import com.zizibujuan.drip.server.util.servlet.UserSession;
 
@@ -19,7 +19,7 @@ import com.zizibujuan.drip.server.util.servlet.UserSession;
  * @author jinzw
  * @since 0.0.1
  */
-public class DashboardServlet extends DripServlet {
+public class DashboardServlet extends BaseServlet {
 
 	private static final long serialVersionUID = -6808419824643346046L;
 

@@ -7,14 +7,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.zizibujuan.drip.server.util.servlet.DripServlet;
+import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 
 /**
  * 邀请好友,暂时没有用到该类。
  * @author jzw
  * @since 0.0.1
  */
-public class InviteServlet extends DripServlet {
+public class InviteServlet extends BaseServlet {
 
 	private static final long serialVersionUID = 4161652961146512580L;
 

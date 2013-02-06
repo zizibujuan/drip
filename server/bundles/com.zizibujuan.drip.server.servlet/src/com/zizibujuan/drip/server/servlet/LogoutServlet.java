@@ -6,14 +6,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.zizibujuan.drip.server.util.servlet.DripServlet;
+import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 
 /**
  * 用户注销，删除会话
  * @author jinzw
  * @since 0.0.1
  */
-public class LogoutServlet extends DripServlet {
+public class LogoutServlet extends BaseServlet {
 
 	private static final long serialVersionUID = -4415570541175504883L;
 

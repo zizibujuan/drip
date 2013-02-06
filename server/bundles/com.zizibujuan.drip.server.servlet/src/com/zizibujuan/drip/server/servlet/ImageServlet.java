@@ -10,14 +10,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 
-import com.zizibujuan.drip.server.util.servlet.DripServlet;
+import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 
 /**
  * 获取图片
  * @author jzw
  * @since 0.0.1
  */
-public class ImageServlet extends DripServlet {
+public class ImageServlet extends BaseServlet {
 
 	private static final long serialVersionUID = 8065790517880160407L;
 

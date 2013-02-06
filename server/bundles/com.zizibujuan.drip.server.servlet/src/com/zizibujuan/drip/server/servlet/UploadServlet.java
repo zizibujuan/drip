@@ -18,7 +18,7 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
-import com.zizibujuan.drip.server.util.servlet.DripServlet;
+import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
 import com.zizibujuan.drip.server.util.servlet.UserSession;
 
@@ -29,7 +29,7 @@ import com.zizibujuan.drip.server.util.servlet.UserSession;
  * @author jzw
  * @since 0.0.1
  */
-public class UploadServlet extends DripServlet {
+public class UploadServlet extends BaseServlet {
 
 	private static final long serialVersionUID = 8688828330683061302L;
 

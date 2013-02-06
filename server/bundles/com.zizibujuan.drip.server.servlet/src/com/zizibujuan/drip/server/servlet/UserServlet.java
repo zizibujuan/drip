@@ -14,7 +14,7 @@ import org.apache.commons.validator.routines.RegexValidator;
 import com.zizibujuan.drip.server.service.UserRelationService;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.servlet.command.LoginCommand;
-import com.zizibujuan.drip.server.util.servlet.DripServlet;
+import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
 import com.zizibujuan.drip.server.util.servlet.UserSession;
@@ -24,7 +24,7 @@ import com.zizibujuan.drip.server.util.servlet.UserSession;
  * @author jinzw
  * @since 0.0.1
  */
-public class UserServlet extends DripServlet {
+public class UserServlet extends BaseServlet {
 
 	private static final long serialVersionUID = 5222934801942017724L;
 	private UserService userService = null;

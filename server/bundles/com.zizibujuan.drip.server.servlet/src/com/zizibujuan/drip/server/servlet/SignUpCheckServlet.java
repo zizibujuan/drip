@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import com.zizibujuan.drip.server.service.UserService;
-import com.zizibujuan.drip.server.util.servlet.DripServlet;
+import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
 
@@ -20,7 +20,7 @@ import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
  * @author jinzw
  * @since 0.0.1
  */
-public class SignUpCheckServlet extends DripServlet {
+public class SignUpCheckServlet extends BaseServlet {
 
 	private static final long serialVersionUID = 3796956621336183000L;
 	private UserService userService;

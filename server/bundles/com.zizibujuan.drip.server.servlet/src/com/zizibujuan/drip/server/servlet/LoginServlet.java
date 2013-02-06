@@ -30,7 +30,7 @@ import com.zizibujuan.drip.server.service.OAuthUserMapService;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.util.ApplicationPropertyKey;
 import com.zizibujuan.drip.server.util.OAuthConstants;
-import com.zizibujuan.drip.server.util.servlet.DripServlet;
+import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
 import com.zizibujuan.drip.server.util.servlet.UserSession;
@@ -41,7 +41,7 @@ import com.zizibujuan.drip.server.util.servlet.UserSession;
  * @author jinzw
  * @since 0.0.1
  */
-public class LoginServlet extends DripServlet {
+public class LoginServlet extends BaseServlet {
 	private static final Logger logger = LoggerFactory.getLogger(LoginServlet.class);
 
 	private static final long serialVersionUID = 3186980773671995338L;
