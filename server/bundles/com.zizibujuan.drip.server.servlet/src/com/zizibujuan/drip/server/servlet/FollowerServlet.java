@@ -39,16 +39,16 @@ public class FollowerServlet extends BaseServlet {
 		String pathInfo = req.getPathInfo();
 		if(pathInfo != null && !pathInfo.equals("/")){
 			
-			Long mapUserId = null;
+			Long localUserId = null;
 			String[] infos = pathInfo.split("/");
 			if(infos.length == 3){
-				mapUserId = Long.valueOf(infos[2]);
+				localUserId = Long.valueOf(infos[2]);
 			}else{
-				mapUserId = UserSession.getMappedUserId(req);
+				localUserId = UserSession.getLocalUserId(req);
 			}
 			
 			PageInfo pageInfo = getPageInfo(req);
-			List<Map<String, Object>> result = userRelationService.getFollowers(pageInfo, mapUserId);
+			List<Map<String, Object>> result = userRelationService.getFollowers(pageInfo, localUserId);
 			ResponseUtil.toJSON(req, resp, pageInfo, result);
 			return;
 		}
