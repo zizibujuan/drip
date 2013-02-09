@@ -1,4 +1,4 @@
-Build started: Sat Feb 09 2013 01:59:34 GMT+0800 (CST)
+Build started: Sat Feb 09 2013 09:29:41 GMT+0800 (CST)
 Build application version: 1.7.0dev (23930)
 Messages:
 info(100) Assumed module uses legacy loader API.
@@ -1037,36 +1037,43 @@ dojo/dojo:
 	dojo/mouse
 	dojo/keys
 	dojo/date
-	dijit/form/Button
-	dojo/dom-class
-	dijit/form/_FormWidget
-	dijit/_Widget
-	dijit/registry
 	dojo/_base/unload
-	dijit/main
-	dijit/_WidgetBase
+	dojo/text
+	dojo/request
+	dojo/request/default
+	dojo/dom-class
 	dojo/Stateful
+	dojo/cache
+	dojo/string
+	dojo/touch
+	dojo/window
+	dojo/uacss
+	dojo/hccss
+	dijit/TooltipDialog
+	dijit/focus
+	dijit/a11y
+	dijit/main
+	dijit/registry
+	dijit/layout/ContentPane
+	dijit/_Widget
+	dijit/_WidgetBase
 	dijit/Destroyable
 	dijit/_OnDijitClickMixin
 	dijit/a11yclick
 	dijit/_FocusMixin
-	dijit/focus
-	dojo/window
-	dijit/a11y
-	dojo/uacss
 	dijit/hccss
-	dojo/hccss
-	dijit/_CssStateMixin
+	dijit/_Container
+	dijit/layout/_ContentPaneResizeMixin
+	dijit/Viewport
+	dijit/layout/utils
+	dijit/nls/loading
+	dijit/_DialogMixin
+	dijit/form/_FormMixin
 	dijit/_TemplatedMixin
-	dojo/cache
-	dojo/text
-	dojo/request
-	dojo/request/default
-	dojo/string
-	dojo/touch
-	dijit/form/_FormWidgetMixin
-	dijit/form/_ButtonMixin
-	dijit/form/templates/Button.html
+	dijit/templates/TooltipDialog.html
+	dijit/popup
+	dijit/place
+	dijit/BackgroundIframe
 
 mathEditor/Editor:
 	mathEditor/Editor
@@ -1079,14 +1086,11 @@ mathEditor/Editor:
 	mathEditor/View
 	mathEditor/layer/Cursor
 	mathEditor/ContentAssist
-	dijit/popup
-	dijit/place
-	dijit/BackgroundIframe
 	dijit/DropDownMenu
 	dijit/templates/Menu.html
 	dijit/_MenuBase
+	dijit/_CssStateMixin
 	dijit/_KeyNavContainer
-	dijit/_Container
 	dijit/_KeyNavMixin
 	dijit/MenuItem
 	dijit/_Contained
@@ -1098,4 +1102,4 @@ mathEditor/Editor:
 Process finished normally
 	errors: 0
 	warnings: 37
-	build time: 532.455 seconds
+	build time: 1554.961 seconds

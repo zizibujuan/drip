@@ -1824,850 +1824,6 @@ define(["dojo/_base/declare",
 	
 });
 },
-'dijit/popup':function(){
-define("dijit/popup", [
-	"dojo/_base/array", // array.forEach array.some
-	"dojo/aspect",
-	"dojo/_base/declare", // declare
-	"dojo/dom", // dom.isDescendant
-	"dojo/dom-attr", // domAttr.set
-	"dojo/dom-construct", // domConstruct.create domConstruct.destroy
-	"dojo/dom-geometry", // domGeometry.isBodyLtr
-	"dojo/dom-style", // domStyle.set
-	"dojo/has", // has("config-bgIframe")
-	"dojo/keys",
-	"dojo/_base/lang", // lang.hitch
-	"dojo/on",
-	"./place",
-	"./BackgroundIframe",
-	"./main"    // dijit (defining dijit.popup to match API doc)
-], function(array, aspect, declare, dom, domAttr, domConstruct, domGeometry, domStyle, has, keys, lang, on, place, BackgroundIframe, dijit){
-
-	// module:
-	//		dijit/popup
-
-	/*=====
-	 var __OpenArgs = {
-	 // popup: Widget
-	 //		widget to display
-	 // parent: Widget
-	 //		the button etc. that is displaying this popup
-	 // around: DomNode
-	 //		DOM node (typically a button); place popup relative to this node.  (Specify this *or* "x" and "y" parameters.)
-	 // x: Integer
-	 //		Absolute horizontal position (in pixels) to place node at.  (Specify this *or* "around" parameter.)
-	 // y: Integer
-	 //		Absolute vertical position (in pixels) to place node at.  (Specify this *or* "around" parameter.)
-	 // orient: Object|String
-	 //		When the around parameter is specified, orient should be a list of positions to try, ex:
-	 //	|	[ "below", "above" ]
-	 //		For backwards compatibility it can also be an (ordered) hash of tuples of the form
-	 //		(around-node-corner, popup-node-corner), ex:
-	 //	|	{ "BL": "TL", "TL": "BL" }
-	 //		where BL means "bottom left" and "TL" means "top left", etc.
-	 //
-	 //		dijit/popup.open() tries to position the popup according to each specified position, in order,
-	 //		until the popup appears fully within the viewport.
-	 //
-	 //		The default value is ["below", "above"]
-	 //
-	 //		When an (x,y) position is specified rather than an around node, orient is either
-	 //		"R" or "L".  R (for right) means that it tries to put the popup to the right of the mouse,
-	 //		specifically positioning the popup's top-right corner at the mouse position, and if that doesn't
-	 //		fit in the viewport, then it tries, in order, the bottom-right corner, the top left corner,
-	 //		and the top-right corner.
-	 // onCancel: Function
-	 //		callback when user has canceled the popup by:
-	 //
-	 //		1. hitting ESC or
-	 //		2. by using the popup widget's proprietary cancel mechanism (like a cancel button in a dialog);
-	 //		   i.e. whenever popupWidget.onCancel() is called, args.onCancel is called
-	 // onClose: Function
-	 //		callback whenever this popup is closed
-	 // onExecute: Function
-	 //		callback when user "executed" on the popup/sub-popup by selecting a menu choice, etc. (top menu only)
-	 // padding: place.__Position
-	 //		adding a buffer around the opening position. This is only useful when around is not set.
-	 };
-	 =====*/
-
-	function destroyWrapper(){
-		// summary:
-		//		Function to destroy wrapper when popup widget is destroyed.
-		//		Left in this scope to avoid memory leak on IE8 on refresh page, see #15206.
-		if(this._popupWrapper){
-			domConstruct.destroy(this._popupWrapper);
-			delete this._popupWrapper;
-		}
-	}
-
-	var PopupManager = declare(null, {
-		// summary:
-		//		Used to show drop downs (ex: the select list of a ComboBox)
-		//		or popups (ex: right-click context menus).
-
-		// _stack: dijit/_WidgetBase[]
-		//		Stack of currently popped up widgets.
-		//		(someone opened _stack[0], and then it opened _stack[1], etc.)
-		_stack: [],
-
-		// _beginZIndex: Number
-		//		Z-index of the first popup.   (If first popup opens other
-		//		popups they get a higher z-index.)
-		_beginZIndex: 1000,
-
-		_idGen: 1,
-
-		_createWrapper: function(/*Widget*/ widget){
-			// summary:
-			//		Initialization for widgets that will be used as popups.
-			//		Puts widget inside a wrapper DIV (if not already in one),
-			//		and returns pointer to that wrapper DIV.
-
-			var wrapper = widget._popupWrapper,
-				node = widget.domNode;
-
-			if(!wrapper){
-				// Create wrapper <div> for when this widget [in the future] will be used as a popup.
-				// This is done early because of IE bugs where creating/moving DOM nodes causes focus
-				// to go wonky, see tests/robot/Toolbar.html to reproduce
-				wrapper = domConstruct.create("div", {
-					"class": "dijitPopup",
-					style: { display: "none"},
-					role: "region",
-					"aria-label": widget["aria-label"] || widget.label || widget.name || widget.id
-				}, widget.ownerDocumentBody);
-				wrapper.appendChild(node);
-
-				var s = node.style;
-				s.display = "";
-				s.visibility = "";
-				s.position = "";
-				s.top = "0px";
-
-				widget._popupWrapper = wrapper;
-				aspect.after(widget, "destroy", destroyWrapper, true);
-			}
-
-			return wrapper;
-		},
-
-		moveOffScreen: function(/*Widget*/ widget){
-			// summary:
-			//		Moves the popup widget off-screen.
-			//		Do not use this method to hide popups when not in use, because
-			//		that will create an accessibility issue: the offscreen popup is
-			//		still in the tabbing order.
-
-			// Create wrapper if not already there
-			var wrapper = this._createWrapper(widget);
-
-			domStyle.set(wrapper, {
-				visibility: "hidden",
-				top: "-9999px", // prevent transient scrollbar causing misalign (#5776), and initial flash in upper left (#10111)
-				display: ""
-			});
-		},
-
-		hide: function(/*Widget*/ widget){
-			// summary:
-			//		Hide this popup widget (until it is ready to be shown).
-			//		Initialization for widgets that will be used as popups
-			//
-			//		Also puts widget inside a wrapper DIV (if not already in one)
-			//
-			//		If popup widget needs to layout it should
-			//		do so when it is made visible, and popup._onShow() is called.
-
-			// Create wrapper if not already there
-			var wrapper = this._createWrapper(widget);
-
-			domStyle.set(wrapper, "display", "none");
-		},
-
-		getTopPopup: function(){
-			// summary:
-			//		Compute the closest ancestor popup that's *not* a child of another popup.
-			//		Ex: For a TooltipDialog with a button that spawns a tree of menus, find the popup of the button.
-			var stack = this._stack;
-			for(var pi = stack.length - 1; pi > 0 && stack[pi].parent === stack[pi - 1].widget; pi--){
-				/* do nothing, just trying to get right value for pi */
-			}
-			return stack[pi];
-		},
-
-		open: function(/*__OpenArgs*/ args){
-			// summary:
-			//		Popup the widget at the specified position
-			//
-			// example:
-			//		opening at the mouse position
-			//		|		popup.open({popup: menuWidget, x: evt.pageX, y: evt.pageY});
-			//
-			// example:
-			//		opening the widget as a dropdown
-			//		|		popup.open({parent: this, popup: menuWidget, around: this.domNode, onClose: function(){...}});
-			//
-			//		Note that whatever widget called dijit/popup.open() should also listen to its own _onBlur callback
-			//		(fired from _base/focus.js) to know that focus has moved somewhere else and thus the popup should be closed.
-
-			var stack = this._stack,
-				widget = args.popup,
-				orient = args.orient || ["below", "below-alt", "above", "above-alt"],
-				ltr = args.parent ? args.parent.isLeftToRight() : domGeometry.isBodyLtr(widget.ownerDocument),
-				around = args.around,
-				id = (args.around && args.around.id) ? (args.around.id + "_dropdown") : ("popup_" + this._idGen++);
-
-			// If we are opening a new popup that isn't a child of a currently opened popup, then
-			// close currently opened popup(s).   This should happen automatically when the old popups
-			// gets the _onBlur() event, except that the _onBlur() event isn't reliable on IE, see [22198].
-			while(stack.length && (!args.parent || !dom.isDescendant(args.parent.domNode, stack[stack.length - 1].widget.domNode))){
-				this.close(stack[stack.length - 1].widget);
-			}
-
-			// Get pointer to popup wrapper, and create wrapper if it doesn't exist
-			var wrapper = this._createWrapper(widget);
-
-
-			domAttr.set(wrapper, {
-				id: id,
-				style: {
-					zIndex: this._beginZIndex + stack.length
-				},
-				"class": "dijitPopup " + (widget.baseClass || widget["class"] || "").split(" ")[0] + "Popup",
-				dijitPopupParent: args.parent ? args.parent.id : ""
-			});
-
-			if(has("config-bgIframe") && !widget.bgIframe){
-				// setting widget.bgIframe triggers cleanup in _Widget.destroy()
-				widget.bgIframe = new BackgroundIframe(wrapper);
-			}
-
-			// position the wrapper node and make it visible
-			var layoutFunc = widget.orient ? lang.hitch(widget, "orient") : null,
-				best = around ?
-					place.around(wrapper, around, orient, ltr, layoutFunc) :
-					place.at(wrapper, args, orient == 'R' ? ['TR', 'BR', 'TL', 'BL'] : ['TL', 'BL', 'TR', 'BR'], args.padding,
-						layoutFunc);
-
-			wrapper.style.display = "";
-			wrapper.style.visibility = "visible";
-			widget.domNode.style.visibility = "visible";	// counteract effects from _HasDropDown
-
-			var handlers = [];
-
-			// provide default escape and tab key handling
-			// (this will work for any widget, not just menu)
-			handlers.push(on(wrapper, "keydown", lang.hitch(this, function(evt){
-				if(evt.keyCode == keys.ESCAPE && args.onCancel){
-					evt.stopPropagation();
-					evt.preventDefault();
-					args.onCancel();
-				}else if(evt.keyCode == keys.TAB){
-					evt.stopPropagation();
-					evt.preventDefault();
-					var topPopup = this.getTopPopup();
-					if(topPopup && topPopup.onCancel){
-						topPopup.onCancel();
-					}
-				}
-			})));
-
-			// watch for cancel/execute events on the popup and notify the caller
-			// (for a menu, "execute" means clicking an item)
-			if(widget.onCancel && args.onCancel){
-				handlers.push(widget.on("cancel", args.onCancel));
-			}
-
-			handlers.push(widget.on(widget.onExecute ? "execute" : "change", lang.hitch(this, function(){
-				var topPopup = this.getTopPopup();
-				if(topPopup && topPopup.onExecute){
-					topPopup.onExecute();
-				}
-			})));
-
-			stack.push({
-				widget: widget,
-				parent: args.parent,
-				onExecute: args.onExecute,
-				onCancel: args.onCancel,
-				onClose: args.onClose,
-				handlers: handlers
-			});
-
-			if(widget.onOpen){
-				// TODO: in 2.0 standardize onShow() (used by StackContainer) and onOpen() (used here)
-				widget.onOpen(best);
-			}
-
-			return best;
-		},
-
-		close: function(/*Widget?*/ popup){
-			// summary:
-			//		Close specified popup and any popups that it parented.
-			//		If no popup is specified, closes all popups.
-
-			var stack = this._stack;
-
-			// Basically work backwards from the top of the stack closing popups
-			// until we hit the specified popup, but IIRC there was some issue where closing
-			// a popup would cause others to close too.  Thus if we are trying to close B in [A,B,C]
-			// closing C might close B indirectly and then the while() condition will run where stack==[A]...
-			// so the while condition is constructed defensively.
-			while((popup && array.some(stack, function(elem){
-				return elem.widget == popup;
-			})) ||
-				(!popup && stack.length)){
-				var top = stack.pop(),
-					widget = top.widget,
-					onClose = top.onClose;
-
-				if(widget.onClose){
-					// TODO: in 2.0 standardize onHide() (used by StackContainer) and onClose() (used here).
-					// Actually, StackContainer also calls onClose(), but to mean that the pane is being deleted
-					// (i.e. that the TabContainer's tab's [x] icon was clicked)
-					widget.onClose();
-				}
-
-				var h;
-				while(h = top.handlers.pop()){
-					h.remove();
-				}
-
-				// Hide the widget and it's wrapper unless it has already been destroyed in above onClose() etc.
-				if(widget && widget.domNode){
-					this.hide(widget);
-				}
-
-				if(onClose){
-					onClose();
-				}
-			}
-		}
-	});
-
-	return (dijit.popup = new PopupManager());
-});
-
-},
-'dijit/place':function(){
-define("dijit/place", [
-	"dojo/_base/array", // array.forEach array.map array.some
-	"dojo/dom-geometry", // domGeometry.position
-	"dojo/dom-style", // domStyle.getComputedStyle
-	"dojo/_base/kernel", // kernel.deprecated
-	"dojo/_base/window", // win.body
-	"dojo/window", // winUtils.getBox
-	"./main"	// dijit (defining dijit.place to match API doc)
-], function(array, domGeometry, domStyle, kernel, win, winUtils, dijit){
-
-	// module:
-	//		dijit/place
-
-
-	function _place(/*DomNode*/ node, choices, layoutNode, aroundNodeCoords){
-		// summary:
-		//		Given a list of spots to put node, put it at the first spot where it fits,
-		//		of if it doesn't fit anywhere then the place with the least overflow
-		// choices: Array
-		//		Array of elements like: {corner: 'TL', pos: {x: 10, y: 20} }
-		//		Above example says to put the top-left corner of the node at (10,20)
-		// layoutNode: Function(node, aroundNodeCorner, nodeCorner, size)
-		//		for things like tooltip, they are displayed differently (and have different dimensions)
-		//		based on their orientation relative to the parent.	 This adjusts the popup based on orientation.
-		//		It also passes in the available size for the popup, which is useful for tooltips to
-		//		tell them that their width is limited to a certain amount.	 layoutNode() may return a value expressing
-		//		how much the popup had to be modified to fit into the available space.	 This is used to determine
-		//		what the best placement is.
-		// aroundNodeCoords: Object
-		//		Size of aroundNode, ex: {w: 200, h: 50}
-
-		// get {x: 10, y: 10, w: 100, h:100} type obj representing position of
-		// viewport over document
-		var view = winUtils.getBox(node.ownerDocument);
-
-		// This won't work if the node is inside a <div style="position: relative">,
-		// so reattach it to win.doc.body.	 (Otherwise, the positioning will be wrong
-		// and also it might get cutoff)
-		if(!node.parentNode || String(node.parentNode.tagName).toLowerCase() != "body"){
-			win.body(node.ownerDocument).appendChild(node);
-		}
-
-		var best = null;
-		array.some(choices, function(choice){
-			var corner = choice.corner;
-			var pos = choice.pos;
-			var overflow = 0;
-
-			// calculate amount of space available given specified position of node
-			var spaceAvailable = {
-				w: {
-					'L': view.l + view.w - pos.x,
-					'R': pos.x - view.l,
-					'M': view.w
-				}[corner.charAt(1)],
-				h: {
-					'T': view.t + view.h - pos.y,
-					'B': pos.y - view.t,
-					'M': view.h
-				}[corner.charAt(0)]
-			};
-
-			// Clear left/right position settings set earlier so they don't interfere with calculations,
-			// specifically when layoutNode() (a.k.a. Tooltip.orient()) measures natural width of Tooltip
-			var s = node.style;
-			s.left = s.right = "auto";
-
-			// configure node to be displayed in given position relative to button
-			// (need to do this in order to get an accurate size for the node, because
-			// a tooltip's size changes based on position, due to triangle)
-			if(layoutNode){
-				var res = layoutNode(node, choice.aroundCorner, corner, spaceAvailable, aroundNodeCoords);
-				overflow = typeof res == "undefined" ? 0 : res;
-			}
-
-			// get node's size
-			var style = node.style;
-			var oldDisplay = style.display;
-			var oldVis = style.visibility;
-			if(style.display == "none"){
-				style.visibility = "hidden";
-				style.display = "";
-			}
-			var bb = domGeometry.position(node);
-			style.display = oldDisplay;
-			style.visibility = oldVis;
-
-			// coordinates and size of node with specified corner placed at pos,
-			// and clipped by viewport
-			var
-				startXpos = {
-					'L': pos.x,
-					'R': pos.x - bb.w,
-					'M': Math.max(view.l, Math.min(view.l + view.w, pos.x + (bb.w >> 1)) - bb.w) // M orientation is more flexible
-				}[corner.charAt(1)],
-				startYpos = {
-					'T': pos.y,
-					'B': pos.y - bb.h,
-					'M': Math.max(view.t, Math.min(view.t + view.h, pos.y + (bb.h >> 1)) - bb.h)
-				}[corner.charAt(0)],
-				startX = Math.max(view.l, startXpos),
-				startY = Math.max(view.t, startYpos),
-				endX = Math.min(view.l + view.w, startXpos + bb.w),
-				endY = Math.min(view.t + view.h, startYpos + bb.h),
-				width = endX - startX,
-				height = endY - startY;
-
-			overflow += (bb.w - width) + (bb.h - height);
-
-			if(best == null || overflow < best.overflow){
-				best = {
-					corner: corner,
-					aroundCorner: choice.aroundCorner,
-					x: startX,
-					y: startY,
-					w: width,
-					h: height,
-					overflow: overflow,
-					spaceAvailable: spaceAvailable
-				};
-			}
-
-			return !overflow;
-		});
-
-		// In case the best position is not the last one we checked, need to call
-		// layoutNode() again.
-		if(best.overflow && layoutNode){
-			layoutNode(node, best.aroundCorner, best.corner, best.spaceAvailable, aroundNodeCoords);
-		}
-
-		// And then position the node.  Do this last, after the layoutNode() above
-		// has sized the node, due to browser quirks when the viewport is scrolled
-		// (specifically that a Tooltip will shrink to fit as though the window was
-		// scrolled to the left).
-		//
-		// In RTL mode, set style.right rather than style.left so in the common case,
-		// window resizes move the popup along with the aroundNode.
-
-		var l = domGeometry.isBodyLtr(node.ownerDocument),
-			top = best.y,
-			side = l ? best.x : view.w - best.x - best.w;
-
-		if(/relative|absolute/.test(domStyle.get(win.body(node.ownerDocument), "position"))){
-			// compensate for margin on <body>, see #16148
-			top -= domStyle.get(win.body(node.ownerDocument), "marginTop");
-			side -= (l ? 1 : -1) * domStyle.get(win.body(node.ownerDocument), l ? "marginLeft" : "marginRight");
-		}
-
-		var s = node.style;
-		s.top = top + "px";
-		s[l ? "left" : "right"] = side + "px";
-		s[l ? "right" : "left"] = "auto";	// needed for FF or else tooltip goes to far left
-
-		return best;
-	}
-
-	var reverse = {
-		// Map from corner to kitty-corner
-		"TL": "BR",
-		"TR": "BL",
-		"BL": "TR",
-		"BR": "TL"
-	};
-
-	var place = {
-		// summary:
-		//		Code to place a DOMNode relative to another DOMNode.
-		//		Load using require(["dijit/place"], function(place){ ... }).
-
-		at: function(node, pos, corners, padding, layoutNode){
-			// summary:
-			//		Positions node kitty-corner to the rectangle centered at (pos.x, pos.y) with width and height of
-			//		padding.x * 2 and padding.y * 2, or zero if padding not specified.  Picks first corner in corners[]
-			//		where node is fully visible, or the corner where it's most visible.
-			//
-			//		Node is assumed to be absolutely or relatively positioned.
-			// node: DOMNode
-			//		The node to position
-			// pos: dijit/place.__Position
-			//		Object like {x: 10, y: 20}
-			// corners: String[]
-			//		Array of Strings representing order to try corners of the node in, like ["TR", "BL"].
-			//		Possible values are:
-			//
-			//		- "BL" - bottom left
-			//		- "BR" - bottom right
-			//		- "TL" - top left
-			//		- "TR" - top right
-			// padding: dijit/place.__Position?
-			//		Optional param to set padding, to put some buffer around the element you want to position.
-			//		Defaults to zero.
-			// layoutNode: Function(node, aroundNodeCorner, nodeCorner)
-			//		For things like tooltip, they are displayed differently (and have different dimensions)
-			//		based on their orientation relative to the parent.  This adjusts the popup based on orientation.
-			// example:
-			//		Try to place node's top right corner at (10,20).
-			//		If that makes node go (partially) off screen, then try placing
-			//		bottom left corner at (10,20).
-			//	|	place(node, {x: 10, y: 20}, ["TR", "BL"])
-			var choices = array.map(corners, function(corner){
-				var c = {
-					corner: corner,
-					aroundCorner: reverse[corner],	// so TooltipDialog.orient() gets aroundCorner argument set
-					pos: {x: pos.x,y: pos.y}
-				};
-				if(padding){
-					c.pos.x += corner.charAt(1) == 'L' ? padding.x : -padding.x;
-					c.pos.y += corner.charAt(0) == 'T' ? padding.y : -padding.y;
-				}
-				return c;
-			});
-
-			return _place(node, choices, layoutNode);
-		},
-
-		around: function(
-			/*DomNode*/		node,
-			/*DomNode|dijit/place.__Rectangle*/ anchor,
-			/*String[]*/	positions,
-			/*Boolean*/		leftToRight,
-			/*Function?*/	layoutNode){
-
-			// summary:
-			//		Position node adjacent or kitty-corner to anchor
-			//		such that it's fully visible in viewport.
-			// description:
-			//		Place node such that corner of node touches a corner of
-			//		aroundNode, and that node is fully visible.
-			// anchor:
-			//		Either a DOMNode or a rectangle (object with x, y, width, height).
-			// positions:
-			//		Ordered list of positions to try matching up.
-			//
-			//		- before: places drop down to the left of the anchor node/widget, or to the right in the case
-			//			of RTL scripts like Hebrew and Arabic; aligns either the top of the drop down
-			//			with the top of the anchor, or the bottom of the drop down with bottom of the anchor.
-			//		- after: places drop down to the right of the anchor node/widget, or to the left in the case
-			//			of RTL scripts like Hebrew and Arabic; aligns either the top of the drop down
-			//			with the top of the anchor, or the bottom of the drop down with bottom of the anchor.
-			//		- before-centered: centers drop down to the left of the anchor node/widget, or to the right
-			//			in the case of RTL scripts like Hebrew and Arabic
-			//		- after-centered: centers drop down to the right of the anchor node/widget, or to the left
-			//			in the case of RTL scripts like Hebrew and Arabic
-			//		- above-centered: drop down is centered above anchor node
-			//		- above: drop down goes above anchor node, left sides aligned
-			//		- above-alt: drop down goes above anchor node, right sides aligned
-			//		- below-centered: drop down is centered above anchor node
-			//		- below: drop down goes below anchor node
-			//		- below-alt: drop down goes below anchor node, right sides aligned
-			// layoutNode: Function(node, aroundNodeCorner, nodeCorner)
-			//		For things like tooltip, they are displayed differently (and have different dimensions)
-			//		based on their orientation relative to the parent.	 This adjusts the popup based on orientation.
-			// leftToRight:
-			//		True if widget is LTR, false if widget is RTL.   Affects the behavior of "above" and "below"
-			//		positions slightly.
-			// example:
-			//	|	placeAroundNode(node, aroundNode, {'BL':'TL', 'TR':'BR'});
-			//		This will try to position node such that node's top-left corner is at the same position
-			//		as the bottom left corner of the aroundNode (ie, put node below
-			//		aroundNode, with left edges aligned).	If that fails it will try to put
-			//		the bottom-right corner of node where the top right corner of aroundNode is
-			//		(ie, put node above aroundNode, with right edges aligned)
-			//
-
-			// if around is a DOMNode (or DOMNode id), convert to coordinates
-			var aroundNodePos = (typeof anchor == "string" || "offsetWidth" in anchor)
-				? domGeometry.position(anchor, true)
-				: anchor;
-
-			// Compute position and size of visible part of anchor (it may be partially hidden by ancestor nodes w/scrollbars)
-			if(anchor.parentNode){
-				// ignore nodes between position:relative and position:absolute
-				var sawPosAbsolute = domStyle.getComputedStyle(anchor).position == "absolute";
-				var parent = anchor.parentNode;
-				while(parent && parent.nodeType == 1 && parent.nodeName != "BODY"){  //ignoring the body will help performance
-					var parentPos = domGeometry.position(parent, true),
-						pcs = domStyle.getComputedStyle(parent);
-					if(/relative|absolute/.test(pcs.position)){
-						sawPosAbsolute = false;
-					}
-					if(!sawPosAbsolute && /hidden|auto|scroll/.test(pcs.overflow)){
-						var bottomYCoord = Math.min(aroundNodePos.y + aroundNodePos.h, parentPos.y + parentPos.h);
-						var rightXCoord = Math.min(aroundNodePos.x + aroundNodePos.w, parentPos.x + parentPos.w);
-						aroundNodePos.x = Math.max(aroundNodePos.x, parentPos.x);
-						aroundNodePos.y = Math.max(aroundNodePos.y, parentPos.y);
-						aroundNodePos.h = bottomYCoord - aroundNodePos.y;
-						aroundNodePos.w = rightXCoord - aroundNodePos.x;
-					}
-					if(pcs.position == "absolute"){
-						sawPosAbsolute = true;
-					}
-					parent = parent.parentNode;
-				}
-			}			
-
-			var x = aroundNodePos.x,
-				y = aroundNodePos.y,
-				width = "w" in aroundNodePos ? aroundNodePos.w : (aroundNodePos.w = aroundNodePos.width),
-				height = "h" in aroundNodePos ? aroundNodePos.h : (kernel.deprecated("place.around: dijit/place.__Rectangle: { x:"+x+", y:"+y+", height:"+aroundNodePos.height+", width:"+width+" } has been deprecated.  Please use { x:"+x+", y:"+y+", h:"+aroundNodePos.height+", w:"+width+" }", "", "2.0"), aroundNodePos.h = aroundNodePos.height);
-
-			// Convert positions arguments into choices argument for _place()
-			var choices = [];
-			function push(aroundCorner, corner){
-				choices.push({
-					aroundCorner: aroundCorner,
-					corner: corner,
-					pos: {
-						x: {
-							'L': x,
-							'R': x + width,
-							'M': x + (width >> 1)
-						}[aroundCorner.charAt(1)],
-						y: {
-							'T': y,
-							'B': y + height,
-							'M': y + (height >> 1)
-						}[aroundCorner.charAt(0)]
-					}
-				})
-			}
-			array.forEach(positions, function(pos){
-				var ltr =  leftToRight;
-				switch(pos){
-					case "above-centered":
-						push("TM", "BM");
-						break;
-					case "below-centered":
-						push("BM", "TM");
-						break;
-					case "after-centered":
-						ltr = !ltr;
-						// fall through
-					case "before-centered":
-						push(ltr ? "ML" : "MR", ltr ? "MR" : "ML");
-						break;
-					case "after":
-						ltr = !ltr;
-						// fall through
-					case "before":
-						push(ltr ? "TL" : "TR", ltr ? "TR" : "TL");
-						push(ltr ? "BL" : "BR", ltr ? "BR" : "BL");
-						break;
-					case "below-alt":
-						ltr = !ltr;
-						// fall through
-					case "below":
-						// first try to align left borders, next try to align right borders (or reverse for RTL mode)
-						push(ltr ? "BL" : "BR", ltr ? "TL" : "TR");
-						push(ltr ? "BR" : "BL", ltr ? "TR" : "TL");
-						break;
-					case "above-alt":
-						ltr = !ltr;
-						// fall through
-					case "above":
-						// first try to align left borders, next try to align right borders (or reverse for RTL mode)
-						push(ltr ? "TL" : "TR", ltr ? "BL" : "BR");
-						push(ltr ? "TR" : "TL", ltr ? "BR" : "BL");
-						break;
-					default:
-						// To assist dijit/_base/place, accept arguments of type {aroundCorner: "BL", corner: "TL"}.
-						// Not meant to be used directly.  Remove for 2.0.
-						push(pos.aroundCorner, pos.corner);
-				}
-			});
-
-			var position = _place(node, choices, layoutNode, {w: width, h: height});
-			position.aroundNodePos = aroundNodePos;
-
-			return position;
-		}
-	};
-
-	/*=====
-	place.__Position = {
-		// x: Integer
-		//		horizontal coordinate in pixels, relative to document body
-		// y: Integer
-		//		vertical coordinate in pixels, relative to document body
-	};
-	place.__Rectangle = {
-		// x: Integer
-		//		horizontal offset in pixels, relative to document body
-		// y: Integer
-		//		vertical offset in pixels, relative to document body
-		// w: Integer
-		//		width in pixels.   Can also be specified as "width" for backwards-compatibility.
-		// h: Integer
-		//		height in pixels.   Can also be specified as "height" for backwards-compatibility.
-	};
-	=====*/
-
-	return dijit.place = place;	// setting dijit.place for back-compat, remove for 2.0
-});
-
-},
-'dijit/BackgroundIframe':function(){
-define("dijit/BackgroundIframe", [
-	"require",			// require.toUrl
-	"./main",	// to export dijit.BackgroundIframe
-	"dojo/_base/config",
-	"dojo/dom-construct", // domConstruct.create
-	"dojo/dom-style", // domStyle.set
-	"dojo/_base/lang", // lang.extend lang.hitch
-	"dojo/on",
-	"dojo/sniff", // has("ie"), has("mozilla"), has("quirks")
-	"dojo/_base/window" // win.doc.createElement
-], function(require, dijit, config, domConstruct, domStyle, lang, on, has, win){
-
-	// module:
-	//		dijit/BackgroundIFrame
-
-	// Flag for whether to create background iframe behind popups like Menus and Dialog.
-	// A background iframe is useful to prevent problems with popups appearing behind applets/pdf files,
-	// and is also useful on older versions of IE (IE6 and IE7) to prevent the "bleed through select" problem.
-	// TODO: For 2.0, make this false by default.  Also, possibly move definition to has.js so that this module can be
-	// conditionally required via  dojo/has!bgIfame?dijit/BackgroundIframe
-	has.add("config-bgIframe", !has("touch"));
-
-	// TODO: remove _frames, it isn't being used much, since popups never release their
-	// iframes (see [22236])
-	var _frames = new function(){
-		// summary:
-		//		cache of iframes
-
-		var queue = [];
-
-		this.pop = function(){
-			var iframe;
-			if(queue.length){
-				iframe = queue.pop();
-				iframe.style.display="";
-			}else{
-				if(has("ie") < 9){
-					var burl = config["dojoBlankHtmlUrl"] || require.toUrl("dojo/resources/blank.html") || "javascript:\"\"";
-					var html="<iframe src='" + burl + "' role='presentation'"
-						+ " style='position: absolute; left: 0px; top: 0px;"
-						+ "z-index: -1; filter:Alpha(Opacity=\"0\");'>";
-					iframe = win.doc.createElement(html);
-				}else{
-					iframe = domConstruct.create("iframe");
-					iframe.src = 'javascript:""';
-					iframe.className = "dijitBackgroundIframe";
-					iframe.setAttribute("role", "presentation");
-					domStyle.set(iframe, "opacity", 0.1);
-				}
-				iframe.tabIndex = -1; // Magic to prevent iframe from getting focus on tab keypress - as style didn't work.
-			}
-			return iframe;
-		};
-
-		this.push = function(iframe){
-			iframe.style.display="none";
-			queue.push(iframe);
-		}
-	}();
-
-
-	dijit.BackgroundIframe = function(/*DomNode*/ node){
-		// summary:
-		//		For IE/FF z-index schenanigans. id attribute is required.
-		//
-		// description:
-		//		new dijit.BackgroundIframe(node).
-		//
-		//		Makes a background iframe as a child of node, that fills
-		//		area (and position) of node
-
-		if(!node.id){ throw new Error("no id"); }
-		if(has("config-bgIframe")){
-			var iframe = (this.iframe = _frames.pop());
-			node.appendChild(iframe);
-			if(has("ie")<7 || has("quirks")){
-				this.resize(node);
-				this._conn = on(node, 'resize', lang.hitch(this, function(){
-					this.resize(node);
-				}));
-			}else{
-				domStyle.set(iframe, {
-					width: '100%',
-					height: '100%'
-				});
-			}
-		}
-	};
-
-	lang.extend(dijit.BackgroundIframe, {
-		resize: function(node){
-			// summary:
-			//		Resize the iframe so it's the same size as node.
-			//		Needed on IE6 and IE/quirks because height:100% doesn't work right.
-			if(this.iframe){
-				domStyle.set(this.iframe, {
-					width: node.offsetWidth + 'px',
-					height: node.offsetHeight + 'px'
-				});
-			}
-		},
-		destroy: function(){
-			// summary:
-			//		destroy the iframe
-			if(this._conn){
-				this._conn.remove();
-				this._conn = null;
-			}
-			if(this.iframe){
-				_frames.push(this.iframe);
-				delete this.iframe;
-			}
-		}
-	});
-
-	return dijit.BackgroundIframe;
-});
-
-},
 'dijit/DropDownMenu':function(){
 require({cache:{
 'url:dijit/templates/Menu.html':"<table class=\"dijit dijitMenu dijitMenuPassive dijitReset dijitMenuTable\" role=\"menu\" tabIndex=\"${tabIndex}\"\n\t   data-dojo-attach-event=\"onkeydown:_onKeyDown\" cellspacing=\"0\">\n\t<tbody class=\"dijitReset\" data-dojo-attach-point=\"containerNode\"></tbody>\n</table>\n"}});
@@ -3202,6 +2358,349 @@ define("dijit/_MenuBase", [
 });
 
 },
+'dijit/_CssStateMixin':function(){
+define("dijit/_CssStateMixin", [
+	"dojo/_base/array", // array.forEach array.map
+	"dojo/_base/declare", // declare
+	"dojo/dom", // dom.isDescendant()
+	"dojo/dom-class", // domClass.toggle
+	"dojo/has",
+	"dojo/_base/lang", // lang.hitch
+	"dojo/on",
+	"dojo/domReady",
+	"dojo/_base/window", // win.body
+	"./registry"
+], function(array, declare, dom, domClass, has, lang, on, domReady, win, registry){
+
+// module:
+//		dijit/_CssStateMixin
+
+	var CssStateMixin = declare("dijit._CssStateMixin", [], {
+		// summary:
+		//		Mixin for widgets to set CSS classes on the widget DOM nodes depending on hover/mouse press/focus
+		//		state changes, and also higher-level state changes such becoming disabled or selected.
+		//
+		// description:
+		//		By mixing this class into your widget, and setting the this.baseClass attribute, it will automatically
+		//		maintain CSS classes on the widget root node (this.domNode) depending on hover,
+		//		active, focus, etc. state.   Ex: with a baseClass of dijitButton, it will apply the classes
+		//		dijitButtonHovered and dijitButtonActive, as the user moves the mouse over the widget and clicks it.
+		//
+		//		It also sets CSS like dijitButtonDisabled based on widget semantic state.
+		//
+		//		By setting the cssStateNodes attribute, a widget can also track events on subnodes (like buttons
+		//		within the widget).
+
+		/*=====
+		 // cssStateNodes: [protected] Object
+		 //		Subclasses may define a cssStateNodes property that lists sub-nodes within the widget that
+		 //		need CSS classes applied on mouse hover/press and focus.
+		 //
+		 //		Each entry in this optional hash is a an attach-point name (like "upArrowButton") mapped to a CSS class name
+		 //		(like "dijitUpArrowButton"). Example:
+		 //	|		{
+		 //	|			"upArrowButton": "dijitUpArrowButton",
+		 //	|			"downArrowButton": "dijitDownArrowButton"
+		 //	|		}
+		 //		The above will set the CSS class dijitUpArrowButton to the this.upArrowButton DOMNode when it
+		 //		is hovered, etc.
+		 cssStateNodes: {},
+		 =====*/
+
+		// hovering: [readonly] Boolean
+		//		True if cursor is over this widget
+		hovering: false,
+
+		// active: [readonly] Boolean
+		//		True if mouse was pressed while over this widget, and hasn't been released yet
+		active: false,
+
+		_applyAttributes: function(){
+			// This code would typically be in postCreate(), but putting in _applyAttributes() for
+			// performance: so the class changes happen before DOM is inserted into the document.
+			// Change back to postCreate() in 2.0.  See #11635.
+
+			this.inherited(arguments);
+
+			// Monitoring changes to disabled, readonly, etc. state, and update CSS class of root node
+			array.forEach(["disabled", "readOnly", "checked", "selected", "focused", "state", "hovering", "active", "_opened"], function(attr){
+				this.watch(attr, lang.hitch(this, "_setStateClass"));
+			}, this);
+
+			// Track hover and active mouse events on widget root node, plus possibly on subnodes
+			for(var ap in this.cssStateNodes || {}){
+				this._trackMouseState(this[ap], this.cssStateNodes[ap]);
+			}
+			this._trackMouseState(this.domNode, this.baseClass);
+
+			// Set state initially; there's probably no hover/active/focus state but widget might be
+			// disabled/readonly/checked/selected so we want to set CSS classes for those conditions.
+			this._setStateClass();
+		},
+
+		_cssMouseEvent: function(/*Event*/ event){
+			// summary:
+			//		Handler for CSS event on this.domNode. Sets hovering and active properties depending on mouse state,
+			//		which triggers _setStateClass() to set appropriate CSS classes for this.domNode.
+
+			if(!this.disabled){
+				switch(event.type){
+					case "mouseover":
+						this._set("hovering", true);
+						this._set("active", this._mouseDown);
+						break;
+					case "mouseout":
+						this._set("hovering", false);
+						this._set("active", false);
+						break;
+					case "mousedown":
+					case "touchstart":
+						this._set("active", true);
+						break;
+					case "mouseup":
+					case "touchend":
+						this._set("active", false);
+						break;
+				}
+			}
+		},
+
+		_setStateClass: function(){
+			// summary:
+			//		Update the visual state of the widget by setting the css classes on this.domNode
+			//		(or this.stateNode if defined) by combining this.baseClass with
+			//		various suffixes that represent the current widget state(s).
+			//
+			// description:
+			//		In the case where a widget has multiple
+			//		states, it sets the class based on all possible
+			//		combinations.  For example, an invalid form widget that is being hovered
+			//		will be "dijitInput dijitInputInvalid dijitInputHover dijitInputInvalidHover".
+			//
+			//		The widget may have one or more of the following states, determined
+			//		by this.state, this.checked, this.valid, and this.selected:
+			//
+			//		- Error - ValidationTextBox sets this.state to "Error" if the current input value is invalid
+			//		- Incomplete - ValidationTextBox sets this.state to "Incomplete" if the current input value is not finished yet
+			//		- Checked - ex: a checkmark or a ToggleButton in a checked state, will have this.checked==true
+			//		- Selected - ex: currently selected tab will have this.selected==true
+			//
+			//		In addition, it may have one or more of the following states,
+			//		based on this.disabled and flags set in _onMouse (this.active, this.hovering) and from focus manager (this.focused):
+			//
+			//		- Disabled	- if the widget is disabled
+			//		- Active		- if the mouse (or space/enter key?) is being pressed down
+			//		- Focused		- if the widget has focus
+			//		- Hover		- if the mouse is over the widget
+
+			// Compute new set of classes
+			var newStateClasses = this.baseClass.split(" ");
+
+			function multiply(modifier){
+				newStateClasses = newStateClasses.concat(array.map(newStateClasses, function(c){
+					return c + modifier;
+				}), "dijit" + modifier);
+			}
+
+			if(!this.isLeftToRight()){
+				// For RTL mode we need to set an addition class like dijitTextBoxRtl.
+				multiply("Rtl");
+			}
+
+			var checkedState = this.checked == "mixed" ? "Mixed" : (this.checked ? "Checked" : "");
+			if(this.checked){
+				multiply(checkedState);
+			}
+			if(this.state){
+				multiply(this.state);
+			}
+			if(this.selected){
+				multiply("Selected");
+			}
+			if(this._opened){
+				multiply("Opened");
+			}
+
+			if(this.disabled){
+				multiply("Disabled");
+			}else if(this.readOnly){
+				multiply("ReadOnly");
+			}else{
+				if(this.active){
+					multiply("Active");
+				}else if(this.hovering){
+					multiply("Hover");
+				}
+			}
+
+			if(this.focused){
+				multiply("Focused");
+			}
+
+			// Remove old state classes and add new ones.
+			// For performance concerns we only write into domNode.className once.
+			var tn = this.stateNode || this.domNode,
+				classHash = {};	// set of all classes (state and otherwise) for node
+
+			array.forEach(tn.className.split(" "), function(c){
+				classHash[c] = true;
+			});
+
+			if("_stateClasses" in this){
+				array.forEach(this._stateClasses, function(c){
+					delete classHash[c];
+				});
+			}
+
+			array.forEach(newStateClasses, function(c){
+				classHash[c] = true;
+			});
+
+			var newClasses = [];
+			for(var c in classHash){
+				newClasses.push(c);
+			}
+			tn.className = newClasses.join(" ");
+
+			this._stateClasses = newStateClasses;
+		},
+
+		_subnodeCssMouseEvent: function(node, clazz, evt){
+			// summary:
+			//		Handler for hover/active mouse event on widget's subnode
+			if(this.disabled || this.readOnly){
+				return;
+			}
+
+			function hover(isHovering){
+				domClass.toggle(node, clazz + "Hover", isHovering);
+			}
+
+			function active(isActive){
+				domClass.toggle(node, clazz + "Active", isActive);
+			}
+
+			function focused(isFocused){
+				domClass.toggle(node, clazz + "Focused", isFocused);
+			}
+
+			switch(evt.type){
+				case "mouseover":
+					hover(true);
+					break;
+				case "mouseout":
+					hover(false);
+					active(false);
+					break;
+				case "mousedown":
+				case "touchstart":
+					active(true);
+					break;
+				case "mouseup":
+				case "touchend":
+					active(false);
+					break;
+				case "focus":
+				case "focusin":
+					focused(true);
+					break;
+				case "blur":
+				case "focusout":
+					focused(false);
+					break;
+			}
+		},
+
+		_trackMouseState: function(/*DomNode*/ node, /*String*/ clazz){
+			// summary:
+			//		Track mouse/focus events on specified node and set CSS class on that node to indicate
+			//		current state.   Usually not called directly, but via cssStateNodes attribute.
+			// description:
+			//		Given class=foo, will set the following CSS class on the node
+			//
+			//		- fooActive: if the user is currently pressing down the mouse button while over the node
+			//		- fooHover: if the user is hovering the mouse over the node, but not pressing down a button
+			//		- fooFocus: if the node is focused
+			//
+			//		Note that it won't set any classes if the widget is disabled.
+			// node: DomNode
+			//		Should be a sub-node of the widget, not the top node (this.domNode), since the top node
+			//		is handled specially and automatically just by mixing in this class.
+			// clazz: String
+			//		CSS class name (ex: dijitSliderUpArrow)
+
+			// Flag for listener code below to call this._cssMouseEvent() or this._subnodeCssMouseEvent()
+			// when node is hovered/active
+			node._cssState = clazz;
+		}
+	});
+
+	domReady(function(){
+		// Document level listener to catch hover etc. events on widget root nodes and subnodes.
+		// Note that when the mouse is moved quickly, a single onmouseenter event could signal that multiple widgets
+		// have been hovered or unhovered (try test_Accordion.html)
+		function handler(evt){
+			// Poor man's event propagation.  Don't propagate event to ancestors of evt.relatedTarget,
+			// to avoid processing mouseout events moving from a widget's domNode to a descendant node;
+			// such events shouldn't be interpreted as a mouseleave on the widget.
+			if(!dom.isDescendant(evt.relatedTarget, evt.target)){
+				for(var node = evt.target; node && node != evt.relatedTarget; node = node.parentNode){
+					// Process any nodes with _cssState property.   They are generally widget root nodes,
+					// but could also be sub-nodes within a widget
+					if(node._cssState){
+						var widget = registry.getEnclosingWidget(node);
+						if(widget){
+							if(node == widget.domNode){
+								// event on the widget's root node
+								widget._cssMouseEvent(evt);
+							}else{
+								// event on widget's sub-node
+								widget._subnodeCssMouseEvent(node, node._cssState, evt);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		function ieHandler(evt){
+			evt.target = evt.srcElement;
+			handler(evt);
+		}
+
+		// Use addEventListener() (and attachEvent() on IE) to catch the relevant events even if other handlers
+		// (on individual nodes) call evt.stopPropagation().
+		// Currently typematic.js is doing that, not sure why.
+		// Don't monitor mouseover/mouseout on mobile because iOS generates "phantom" mouseover/mouseout events when
+		// drag-scrolling, at the point in the viewport where the drag originated.   Test the Tree in api viewer.
+		var body = win.body(),
+			types = (has("touch") ? [] : ["mouseover", "mouseout"]).concat(["mousedown", "touchstart", "mouseup", "touchend"]);
+		array.forEach(types, function(type){
+			if(body.addEventListener){
+				body.addEventListener(type, handler, true);	// W3C
+			}else{
+				body.attachEvent("on" + type, ieHandler);	// IE
+			}
+		});
+
+		// Track focus events on widget sub-nodes that have been registered via _trackMouseState().
+		// However, don't track focus events on the widget root nodes, because focus is tracked via the
+		// focus manager (and it's not really tracking focus, but rather tracking that focus is on one of the widget's
+		// nodes or a subwidget's node or a popup node, etc.)
+		// Remove for 2.0 (if focus CSS needed, just use :focus pseudo-selector).
+		on(body, "focusin, focusout", function(evt){
+			var node = evt.target;
+			if(node._cssState && !node.getAttribute("widgetId")){
+				var widget = registry.getEnclosingWidget(node);
+				widget._subnodeCssMouseEvent(node, node._cssState, evt);
+			}
+		});
+	});
+
+	return CssStateMixin;
+});
+
+},
 'dijit/_KeyNavContainer':function(){
 define("dijit/_KeyNavContainer", [
 	"dojo/_base/array", // array.forEach
@@ -3371,113 +2870,6 @@ define("dijit/_KeyNavContainer", [
 
 			var node = registry.byNode(node);
 			return node && node.getParent() == this;
-		}
-	});
-});
-
-},
-'dijit/_Container':function(){
-define("dijit/_Container", [
-	"dojo/_base/array", // array.forEach array.indexOf
-	"dojo/_base/declare", // declare
-	"dojo/dom-construct" // domConstruct.place
-], function(array, declare, domConstruct){
-
-	// module:
-	//		dijit/_Container
-
-	return declare("dijit._Container", null, {
-		// summary:
-		//		Mixin for widgets that contain HTML and/or a set of widget children.
-
-		buildRendering: function(){
-			this.inherited(arguments);
-			if(!this.containerNode){
-				// all widgets with descendants must set containerNode
-				this.containerNode = this.domNode;
-			}
-		},
-
-		addChild: function(/*dijit/_WidgetBase*/ widget, /*int?*/ insertIndex){
-			// summary:
-			//		Makes the given widget a child of this widget.
-			// description:
-			//		Inserts specified child widget's dom node as a child of this widget's
-			//		container node, and possibly does other processing (such as layout).
-
-			// I want to just call domConstruct.place(widget.domNode, this.containerNode, insertIndex), but the counting
-			// is thrown off by text nodes and comment nodes that show up when constructed by markup.
-			// In the future consider stripping those nodes on construction, either in the parser or this widget code.
-			var refNode = this.containerNode;
-			if(insertIndex > 0){
-				// Old-school way to get nth child; dojo.query would be easier but _Container was weened from dojo.query
-				// in #10087 to minimize download size.   Not sure if that's still and issue with new smaller dojo/query.
-				refNode = refNode.firstChild;
-				while(insertIndex > 0){
-					if(refNode.nodeType == 1){ insertIndex--; }
-					refNode = refNode.nextSibling;
-				}
-				if(refNode){
-					insertIndex = "before";
-				}else{
-					// to support addChild(child, n-1) where there are n children (should add child at end)
-					refNode = this.containerNode;
-					insertIndex = "last";
-				}
-			}
-
-			domConstruct.place(widget.domNode, refNode, insertIndex);
-
-			// If I've been started but the child widget hasn't been started,
-			// start it now.  Make sure to do this after widget has been
-			// inserted into the DOM tree, so it can see that it's being controlled by me,
-			// so it doesn't try to size itself.
-			if(this._started && !widget._started){
-				widget.startup();
-			}
-		},
-
-		removeChild: function(/*Widget|int*/ widget){
-			// summary:
-			//		Removes the passed widget instance from this widget but does
-			//		not destroy it.  You can also pass in an integer indicating
-			//		the index within the container to remove (ie, removeChild(5) removes the sixth widget).
-
-			if(typeof widget == "number"){
-				widget = this.getChildren()[widget];
-			}
-
-			if(widget){
-				var node = widget.domNode;
-				if(node && node.parentNode){
-					node.parentNode.removeChild(node); // detach but don't destroy
-				}
-			}
-		},
-
-		hasChildren: function(){
-			// summary:
-			//		Returns true if widget has child widgets, i.e. if this.containerNode contains widgets.
-			return this.getChildren().length > 0;	// Boolean
-		},
-
-		_getSiblingOfChild: function(/*dijit/_WidgetBase*/ child, /*int*/ dir){
-			// summary:
-			//		Get the next or previous widget sibling of child
-			// dir:
-			//		if 1, get the next sibling
-			//		if -1, get the previous sibling
-			// tags:
-			//		private
-			var children = this.getChildren(),
-				idx = array.indexOf(this.getChildren(), child);	// int
-			return children[idx + dir];
-		},
-
-		getIndexOfChild: function(/*dijit/_WidgetBase*/ child){
-			// summary:
-			//		Gets the index of the child in this container or -1 if not found
-			return array.indexOf(this.getChildren(), child);	// int
 		}
 	});
 });

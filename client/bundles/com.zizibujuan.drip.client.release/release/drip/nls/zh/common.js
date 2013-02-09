@@ -1,3 +1,2 @@
-define("drip/nls/zh/common", ({
-	buttonAnswer : "解答"
-}));
+//>>built
+define("drip/nls/zh/common",{buttonAnswer:"解答"})

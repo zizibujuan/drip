@@ -1,11 +1,2 @@
-define("dojox/dtl/render/html", [
-	"dojo/_base/lang",
-	"../render/dom",
-	"../_base"
-], function(lang,ddrd,dd){
-
-	lang.getObject("dojox.dtl.render.html", true);
-
-	dd.render.html.Render = ddrd.Render;
-	return dojox.dtl.render.html;
-});
+//>>built
+define("dojox/dtl/render/html",["dojo/_base/lang","../render/dom","../_base"],function(lang,ddrd,dd){return lang.getObject("dojox.dtl.render.html",!0),dd.render.html.Render=ddrd.Render,dojox.dtl.render.html})

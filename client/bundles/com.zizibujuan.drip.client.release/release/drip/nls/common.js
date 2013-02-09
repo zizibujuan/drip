@@ -1,7 +1,2 @@
-define("drip/nls/common", {
-	root:({
-		buttonAnswer: "answer"
-	}),
-
-	zh : true
-});
+//>>built
+define("drip/nls/common",{root:{buttonAnswer:"answer"},zh:!0})
