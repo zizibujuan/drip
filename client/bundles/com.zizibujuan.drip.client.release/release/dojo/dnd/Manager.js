@@ -1,7 +1,232 @@
-//>>built
-define("dojo/dnd/Manager","../_base/array,../_base/declare,../_base/lang,../_base/window,../dom-class,../Evented,../has,../keys,../on,../topic,../touch,./common,./autoscroll,./Avatar".split(","),function(n,o,h,c,i,p,f,j,g,e,l,d,m,q){var k=o("dojo.dnd.Manager",[p],{constructor:function(){this.source=this.avatar=null;this.nodes=[];this.copy=!0;this.target=null;this.canDropFlag=!1;this.events=[]},OFFSET_X:f("touch")?0:16,OFFSET_Y:f("touch")?-64:16,overSource:function(a){if(this.avatar)this.target=a&&
-"Disabled"!=a.targetState?a:null,this.canDropFlag=Boolean(this.target),this.avatar.update();e.publish("/dnd/source/over",a)},outSource:function(a){if(this.avatar){if(this.target==a)this.target=null,this.canDropFlag=!1,this.avatar.update(),e.publish("/dnd/source/over",null)}else e.publish("/dnd/source/over",null)},startDrag:function(a,b,d){function f(a){a.preventDefault();a.stopPropagation()}m.autoScrollStart(c.doc);this.source=a;this.nodes=b;this.copy=Boolean(d);this.avatar=this.makeAvatar();c.body().appendChild(this.avatar.node);
-e.publish("/dnd/start",a,b,this.copy);this.events=[g(c.doc,l.move,h.hitch(this,"onMouseMove")),g(c.doc,l.release,h.hitch(this,"onMouseUp")),g(c.doc,"keydown",h.hitch(this,"onKeyDown")),g(c.doc,"keyup",h.hitch(this,"onKeyUp")),g(c.doc,"dragstart",f),g(c.body(),"selectstart",f)];i.add(c.body(),"dojoDnd"+(d?"Copy":"Move"))},canDrop:function(a){a=Boolean(this.target&&a);if(this.canDropFlag!=a)this.canDropFlag=a,this.avatar.update()},stopDrag:function(){i.remove(c.body(),["dojoDndCopy","dojoDndMove"]);
-n.forEach(this.events,function(a){a.remove()});this.events=[];this.avatar.destroy();this.source=this.target=this.avatar=null;this.nodes=[]},makeAvatar:function(){return new q(this)},updateAvatar:function(){this.avatar.update()},onMouseMove:function(a){var b=this.avatar;if(b)m.autoScrollNodes(a),b=b.node.style,b.left=a.pageX+this.OFFSET_X+"px",b.top=a.pageY+this.OFFSET_Y+"px",b=Boolean(this.source.copyState(d.getCopyKeyState(a))),this.copy!=b&&this._setCopyStatus(b);f("touch")&&a.preventDefault()},
-onMouseUp:function(a){if(this.avatar){if(this.target&&this.canDropFlag){var b=Boolean(this.source.copyState(d.getCopyKeyState(a)));e.publish("/dnd/drop/before",this.source,this.nodes,b,this.target,a);e.publish("/dnd/drop",this.source,this.nodes,b,this.target,a)}else e.publish("/dnd/cancel");this.stopDrag()}},onKeyDown:function(a){if(this.avatar)switch(a.keyCode){case j.CTRL:a=Boolean(this.source.copyState(!0));this.copy!=a&&this._setCopyStatus(a);break;case j.ESCAPE:e.publish("/dnd/cancel"),this.stopDrag()}},
-onKeyUp:function(a){this.avatar&&a.keyCode==j.CTRL&&(a=Boolean(this.source.copyState(!1)),this.copy!=a&&this._setCopyStatus(a))},_setCopyStatus:function(a){this.copy=a;this.source._markDndStatus(this.copy);this.updateAvatar();i.replace(c.body(),"dojoDnd"+(this.copy?"Copy":"Move"),"dojoDnd"+(this.copy?"Move":"Copy"))}});d._manager=null;k.manager=d.manager=function(){if(!d._manager)d._manager=new k;return d._manager};return k});
+define("dojo/dnd/Manager", [
+	"../_base/array",  "../_base/declare", "../_base/lang", "../_base/window",
+	"../dom-class", "../Evented", "../has", "../keys", "../on", "../topic", "../touch",
+	"./common", "./autoscroll", "./Avatar"
+], function(array, declare, lang, win, domClass, Evented, has, keys, on, topic, touch,
+	dnd, autoscroll, Avatar){
+
+// module:
+//		dojo/dnd/Manager
+
+var Manager = declare("dojo.dnd.Manager", [Evented], {
+	// summary:
+	//		the manager of DnD operations (usually a singleton)
+	constructor: function(){
+		this.avatar  = null;
+		this.source = null;
+		this.nodes = [];
+		this.copy  = true;
+		this.target = null;
+		this.canDropFlag = false;
+		this.events = [];
+	},
+
+	// avatar's offset from the mouse
+	OFFSET_X: has("touch") ? 0 : 16,
+	OFFSET_Y: has("touch") ? -64 : 16,
+
+	// methods
+	overSource: function(source){
+		// summary:
+		//		called when a source detected a mouse-over condition
+		// source: Object
+		//		the reporter
+		if(this.avatar){
+			this.target = (source && source.targetState != "Disabled") ? source : null;
+			this.canDropFlag = Boolean(this.target);
+			this.avatar.update();
+		}
+		topic.publish("/dnd/source/over", source);
+	},
+	outSource: function(source){
+		// summary:
+		//		called when a source detected a mouse-out condition
+		// source: Object
+		//		the reporter
+		if(this.avatar){
+			if(this.target == source){
+				this.target = null;
+				this.canDropFlag = false;
+				this.avatar.update();
+				topic.publish("/dnd/source/over", null);
+			}
+		}else{
+			topic.publish("/dnd/source/over", null);
+		}
+	},
+	startDrag: function(source, nodes, copy){
+		// summary:
+		//		called to initiate the DnD operation
+		// source: Object
+		//		the source which provides items
+		// nodes: Array
+		//		the list of transferred items
+		// copy: Boolean
+		//		copy items, if true, move items otherwise
+
+		// Tell autoscroll that a drag is starting
+		autoscroll.autoScrollStart(win.doc);
+
+		this.source = source;
+		this.nodes  = nodes;
+		this.copy   = Boolean(copy); // normalizing to true boolean
+		this.avatar = this.makeAvatar();
+		win.body().appendChild(this.avatar.node);
+		topic.publish("/dnd/start", source, nodes, this.copy);
+
+		function stopEvent(e){
+			e.preventDefault();
+			e.stopPropagation();
+		}
+
+		this.events = [
+			on(win.doc, touch.move, lang.hitch(this, "onMouseMove")),
+			on(win.doc, touch.release,   lang.hitch(this, "onMouseUp")),
+			on(win.doc, "keydown",   lang.hitch(this, "onKeyDown")),
+			on(win.doc, "keyup",     lang.hitch(this, "onKeyUp")),
+
+			// cancel text selection and text dragging
+			on(win.doc, "dragstart",   stopEvent),
+			on(win.body(), "selectstart", stopEvent)
+		];
+		var c = "dojoDnd" + (copy ? "Copy" : "Move");
+		domClass.add(win.body(), c);
+	},
+	canDrop: function(flag){
+		// summary:
+		//		called to notify if the current target can accept items
+		var canDropFlag = Boolean(this.target && flag);
+		if(this.canDropFlag != canDropFlag){
+			this.canDropFlag = canDropFlag;
+			this.avatar.update();
+		}
+	},
+	stopDrag: function(){
+		// summary:
+		//		stop the DnD in progress
+		domClass.remove(win.body(), ["dojoDndCopy", "dojoDndMove"]);
+		array.forEach(this.events, function(handle){ handle.remove(); });
+		this.events = [];
+		this.avatar.destroy();
+		this.avatar = null;
+		this.source = this.target = null;
+		this.nodes = [];
+	},
+	makeAvatar: function(){
+		// summary:
+		//		makes the avatar; it is separate to be overwritten dynamically, if needed
+		return new Avatar(this);
+	},
+	updateAvatar: function(){
+		// summary:
+		//		updates the avatar; it is separate to be overwritten dynamically, if needed
+		this.avatar.update();
+	},
+
+	// mouse event processors
+	onMouseMove: function(e){
+		// summary:
+		//		event processor for onmousemove
+		// e: Event
+		//		mouse event
+		var a = this.avatar;
+		if(a){
+			autoscroll.autoScrollNodes(e);
+			//autoscroll.autoScroll(e);
+			var s = a.node.style;
+			s.left = (e.pageX + this.OFFSET_X) + "px";
+			s.top  = (e.pageY + this.OFFSET_Y) + "px";
+			var copy = Boolean(this.source.copyState(dnd.getCopyKeyState(e)));
+			if(this.copy != copy){
+				this._setCopyStatus(copy);
+			}
+		}
+		if(has("touch")){
+			// Prevent page from scrolling so that user can drag instead.
+			e.preventDefault();
+		}
+	},
+	onMouseUp: function(e){
+		// summary:
+		//		event processor for onmouseup
+		// e: Event
+		//		mouse event
+		if(this.avatar){
+			if(this.target && this.canDropFlag){
+				var copy = Boolean(this.source.copyState(dnd.getCopyKeyState(e)));
+				topic.publish("/dnd/drop/before", this.source, this.nodes, copy, this.target, e);
+				topic.publish("/dnd/drop", this.source, this.nodes, copy, this.target, e);
+			}else{
+				topic.publish("/dnd/cancel");
+			}
+			this.stopDrag();
+		}
+	},
+
+	// keyboard event processors
+	onKeyDown: function(e){
+		// summary:
+		//		event processor for onkeydown:
+		//		watching for CTRL for copy/move status, watching for ESCAPE to cancel the drag
+		// e: Event
+		//		keyboard event
+		if(this.avatar){
+			switch(e.keyCode){
+				case keys.CTRL:
+					var copy = Boolean(this.source.copyState(true));
+					if(this.copy != copy){
+						this._setCopyStatus(copy);
+					}
+					break;
+				case keys.ESCAPE:
+					topic.publish("/dnd/cancel");
+					this.stopDrag();
+					break;
+			}
+		}
+	},
+	onKeyUp: function(e){
+		// summary:
+		//		event processor for onkeyup, watching for CTRL for copy/move status
+		// e: Event
+		//		keyboard event
+		if(this.avatar && e.keyCode == keys.CTRL){
+			var copy = Boolean(this.source.copyState(false));
+			if(this.copy != copy){
+				this._setCopyStatus(copy);
+			}
+		}
+	},
+
+	// utilities
+	_setCopyStatus: function(copy){
+		// summary:
+		//		changes the copy status
+		// copy: Boolean
+		//		the copy status
+		this.copy = copy;
+		this.source._markDndStatus(this.copy);
+		this.updateAvatar();
+		domClass.replace(win.body(),
+			"dojoDnd" + (this.copy ? "Copy" : "Move"),
+			"dojoDnd" + (this.copy ? "Move" : "Copy"));
+	}
+});
+
+// dnd._manager:
+//		The manager singleton variable. Can be overwritten if needed.
+dnd._manager = null;
+
+Manager.manager = dnd.manager = function(){
+	// summary:
+	//		Returns the current DnD manager.  Creates one if it is not created yet.
+	if(!dnd._manager){
+		dnd._manager = new Manager();
+	}
+	return dnd._manager;	// Object
+};
+
+// TODO: for 2.0, store _manager and manager in Manager only.   Don't access dnd or dojo.dnd.
+
+return Manager;
+});

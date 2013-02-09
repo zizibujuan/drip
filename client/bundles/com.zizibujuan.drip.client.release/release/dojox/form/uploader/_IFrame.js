@@ -1,3 +1,66 @@
-//>>built
-define("dojox/form/uploader/_IFrame",["dojo/dom-construct","dojo/_base/declare","dojo/_base/lang","dojo/_base/array","dojo/request/iframe"],function(d,e,j,h,i){return e("dojox.form.uploader._IFrame",[],{postMixInProperties:function(){this.inherited(arguments);if("iframe"===this.uploadType)this.uploadType="iframe",this.upload=this.uploadIFrame},uploadIFrame:function(c){var b,f=!1;c.uploadType=this.uploadType;this.getForm()?b=this.form:(b=d.place('<form enctype="multipart/form-data" method="post"></form>',
-this.domNode),h.forEach(this._inputs,function(a){a.value&&b.appendChild(a)},this),f=!0);var e=this.getUrl(),g=this;i.post(e,{form:b,handleAs:"json",content:c}).then(function(a){f&&d.destroy(b);if(c.ERROR||c.error)g.onError(a);else g.onComplete(a)},function(a){f&&d.destroy(b);g.onError(a)})}})});
+define("dojox/form/uploader/_IFrame", [
+	"dojo/dom-construct",
+	"dojo/_base/declare",
+	"dojo/_base/lang",
+	"dojo/_base/array",
+	"dojo/request/iframe"
+],function(domConstruct, declare, lang, arrayUtil, request){
+	
+
+	return declare("dojox.form.uploader._IFrame", [], {
+		// summary:
+		//		A mixin for dojox/form/Uploader that adds Ajax upload capabilities via an iframe.
+		//
+		// description:
+		//		Only supported by IE, due to the specific iFrame hack used.  Progress events are not
+		//		supported.
+		//		
+		//
+	
+		postMixInProperties: function(){
+			this.inherited(arguments);
+			if(this.uploadType === "iframe"){
+				this.uploadType = "iframe";
+				this.upload = this.uploadIFrame;
+			}
+		},
+	
+		uploadIFrame: function(data){
+			// summary:
+			//		Internal. You could use this, but you should use upload() or submit();
+			//		which can also handle the post data.
+	
+			var form, destroyAfter = false;
+			data.uploadType = this.uploadType;
+			if(!this.getForm()){
+				//enctype can't be changed once a form element is created
+				form = domConstruct.place('<form enctype="multipart/form-data" method="post"></form>', this.domNode);
+				arrayUtil.forEach(this._inputs, function(n, i){
+					if(n.value) form.appendChild(n);
+				}, this);
+				destroyAfter = true;
+			}else{
+				form = this.form;
+			}
+	
+			var url = this.getUrl();
+			var self = this;
+			request.post(url, {
+				form: form,
+				handleAs: "json",
+				content: data
+			}).then(function(result){
+				if(destroyAfter){ domConstruct.destroy(form); }
+				if(data["ERROR"] || data["error"]){
+					self.onError(result);
+				}else{
+					self.onComplete(result);
+				}
+			}, function(err){
+				console.error('error parsing server result', err);
+				if(destroyAfter){ domConstruct.destroy(form); }
+				self.onError(err);
+			});
+		}
+	});
+});

@@ -1,8 +1,199 @@
-//>>built
-define("dojox/mobile/_EditableListMixin","dojo/_base/array,dojo/_base/connect,dojo/_base/declare,dojo/_base/event,dojo/dom-class,dojo/dom-geometry,dojo/dom-style,dojo/touch,dijit/registry,./ListItem".split(","),function(e,i,l,m,f,g,j,h,k,n){return l("dojox.mobile._EditableListMixin",null,{rightIconForEdit:"mblDomButtonGrayKnob",deleteIconForEdit:"mblDomButtonRedCircleMinus",isEditing:!1,destroy:function(){this._blankItem&&this._blankItem.destroy();this.inherited(arguments)},_setupMoveItem:function(a){j.set(a,
-{width:g.getContentBox(a).w+"px",top:a.offsetTop+"px"});f.add(a,"mblListItemFloat")},_resetMoveItem:function(a){setTimeout(function(){f.remove(a,"mblListItemFloat");j.set(a,{width:"",top:""})},0)},_onClick:function(a){if(!(a&&"keydown"===a.type&&13!==a.keyCode||!1===this.onClick(a)))for(var b=k.getEnclosingWidget(a.target),a=a.target;a!==b.domNode;a=a.parentNode)if(a===b.deleteIconNode){i.publish("/dojox/mobile/deleteListItem",[b]);break}},onClick:function(){},_onTouchStart:function(a){if(!(1>=this.getChildren().length)){if(!this._blankItem)this._blankItem=
-new n;for(var b=this._movingItem=k.getEnclosingWidget(a.target),c=!1,d=a.target;d!==b.domNode;d=d.parentNode)if(d===b.rightIconNode){c=!0;break}if(c){c=(c=b.getNextSibling())?c.domNode:null;this.containerNode.insertBefore(this._blankItem.domNode,c);this._setupMoveItem(b.domNode);this.containerNode.appendChild(b.domNode);if(!this._conn)this._conn=[this.connect(this.domNode,h.move,"_onTouchMove"),this.connect(this.domNode,h.release,"_onTouchEnd")];this._pos=[];e.forEach(this.getChildren(),function(a){this._pos.push(g.position(a.domNode,
-!0).y)},this);this.touchStartY=a.touches?a.touches[0].pageY:a.pageY;this._startTop=g.getMarginBox(b.domNode).t;m.stop(a)}}},_onTouchMove:function(a){for(var a=a.touches?a.touches[0].pageY:a.pageY,b=this._pos.length-1,c=1;c<this._pos.length;c++)if(a<this._pos[c]){b=c-1;break}b=this.getChildren()[b];c=this._blankItem;if(b!==c){var d=b.domNode.parentNode;b.getIndexInParent()<c.getIndexInParent()?d.insertBefore(c.domNode,b.domNode):d.insertBefore(b.domNode,c.domNode)}this._movingItem.domNode.style.top=
-this._startTop+(a-this.touchStartY)+"px"},_onTouchEnd:function(){var a=this._blankItem.getNextSibling(),a=a?a.domNode:null;this.containerNode.insertBefore(this._movingItem.domNode,a);this.containerNode.removeChild(this._blankItem.domNode);this._resetMoveItem(this._movingItem.domNode);e.forEach(this._conn,i.disconnect);this._conn=null},startEdit:function(){this.isEditing=!0;f.add(this.domNode,"mblEditableRoundRectList");e.forEach(this.getChildren(),function(a){if(!a.deleteIconNode)a.set("rightIcon",
-this.rightIconForEdit),a.set("deleteIcon",this.deleteIconForEdit),a.deleteIconNode.tabIndex=a.tabIndex;a.rightIconNode.style.display="";a.deleteIconNode.style.display=""},this);if(!this._handles)this._handles=[this.connect(this.domNode,h.press,"_onTouchStart"),this.connect(this.domNode,"onclick","_onClick"),this.connect(this.domNode,"onkeydown","_onClick")]},endEdit:function(){f.remove(this.domNode,"mblEditableRoundRectList");e.forEach(this.getChildren(),function(a){a.rightIconNode.style.display=
-"none";a.deleteIconNode.style.display="none"});if(this._handles)e.forEach(this._handles,this.disconnect,this),this._handles=null;this.isEditing=!1}})});
+// TODO: auto scroll?
+
+define("dojox/mobile/_EditableListMixin", [
+	"dojo/_base/array",
+	"dojo/_base/connect",
+	"dojo/_base/declare",
+	"dojo/_base/event",
+	"dojo/dom-class",
+	"dojo/dom-geometry",
+	"dojo/dom-style",
+	"dojo/touch",
+	"dijit/registry",
+	"./ListItem"
+], function(array, connect, declare, event, domClass, domGeometry, domStyle, touch, registry, ListItem){
+
+	// module:
+	//		dojox/mobile/EditableRoundRectList
+
+	return declare("dojox.mobile._EditableListMixin", null, {
+		// summary:
+		//		A rounded rectangle list.
+		// description:
+		//		EditableRoundRectList is a rounded rectangle list, which can be used to
+		//		display a group of items. Each item must be	a dojox/mobile/ListItem.
+
+		rightIconForEdit: "mblDomButtonGrayKnob",
+		deleteIconForEdit: "mblDomButtonRedCircleMinus",
+
+		// isEditing: Boolean
+		//		A read-only flag that indicates whether the widget is in the editing mode.
+		isEditing: false,
+
+		destroy: function(){
+			// summary:
+			//		Destroys the widget.
+			if(this._blankItem){
+				this._blankItem.destroy();
+			}
+			this.inherited(arguments);
+		},
+
+		_setupMoveItem: function(/*DomNode*/node){
+			// tags:
+			//		private
+			domStyle.set(node, {
+				width: domGeometry.getContentBox(node).w + "px",
+				top: node.offsetTop + "px"
+			});
+			domClass.add(node, "mblListItemFloat");
+		},
+
+		_resetMoveItem: function(/*DomNode*/node){
+			// tags:
+			//		private
+			setTimeout(function(){ // iPhone needs setTimeout
+				domClass.remove(node, "mblListItemFloat");
+				domStyle.set(node, {
+					width: "",
+					top: ""
+				});
+			}, 0);
+		},
+
+		_onClick: function(e){
+			// summary:
+			//		Internal handler for click events.
+			// tags:
+			//		private
+			if(e && e.type === "keydown" && e.keyCode !== 13){ return; }
+			if(this.onClick(e) === false){ return; } // user's click action
+			var item = registry.getEnclosingWidget(e.target);
+			for(var n = e.target; n !== item.domNode; n = n.parentNode){
+				if(n === item.deleteIconNode){
+					connect.publish("/dojox/mobile/deleteListItem", [item]);
+					break;
+				}
+			}
+		},
+
+		onClick: function(/*Event*/ /*===== e =====*/){
+			// summary:
+			//		User-defined function to handle clicks.
+			// tags:
+			//		callback
+		},
+
+		_onTouchStart: function(e){
+			// tags:
+			//		private
+			if(this.getChildren().length <= 1){ return; }
+			if(!this._blankItem){
+				this._blankItem = new ListItem();
+			}
+			var item = this._movingItem = registry.getEnclosingWidget(e.target);
+			var rightIconPressed = false;
+			for(var n = e.target; n !== item.domNode; n = n.parentNode){
+				if(n === item.rightIconNode){
+					rightIconPressed = true;
+					break;
+				}
+			}
+			if(!rightIconPressed){ return; }
+			var ref = item.getNextSibling();
+			ref = ref ? ref.domNode : null;
+			this.containerNode.insertBefore(this._blankItem.domNode, ref);
+			this._setupMoveItem(item.domNode);
+			this.containerNode.appendChild(item.domNode);
+
+			if(!this._conn){
+				this._conn = [
+					this.connect(this.domNode, touch.move, "_onTouchMove"),
+					this.connect(this.domNode, touch.release, "_onTouchEnd")
+				];
+			}
+			this._pos = [];
+			array.forEach(this.getChildren(), function(c, index){
+				this._pos.push(domGeometry.position(c.domNode, true).y);
+			}, this);
+			this.touchStartY = e.touches ? e.touches[0].pageY : e.pageY;
+			this._startTop = domGeometry.getMarginBox(item.domNode).t;
+			event.stop(e);
+		},
+
+		_onTouchMove: function(e){
+			// tags:
+			//		private
+			var y = e.touches ? e.touches[0].pageY : e.pageY;
+			var index = this._pos.length - 1;
+			for(var i = 1; i < this._pos.length; i++){
+				if(y < this._pos[i]){
+					index = i - 1;
+					break;
+				}
+			}
+			var item = this.getChildren()[index];
+			var blank = this._blankItem;
+			if(item !== blank){
+				var p = item.domNode.parentNode;
+				if(item.getIndexInParent() < blank.getIndexInParent()){
+					p.insertBefore(blank.domNode, item.domNode);
+				}else{
+					p.insertBefore(item.domNode, blank.domNode);
+				}
+			}
+			this._movingItem.domNode.style.top = this._startTop + (y - this.touchStartY) + "px";
+		},
+
+		_onTouchEnd: function(e){
+			// tags:
+			//		private
+			var ref = this._blankItem.getNextSibling();
+			ref = ref ? ref.domNode : null;
+			this.containerNode.insertBefore(this._movingItem.domNode, ref);
+			this.containerNode.removeChild(this._blankItem.domNode);
+			this._resetMoveItem(this._movingItem.domNode);
+
+			array.forEach(this._conn, connect.disconnect);
+			this._conn = null;
+		},
+
+		startEdit: function(){
+			// summary:
+			//		Starts the editing.
+			this.isEditing = true;
+			domClass.add(this.domNode, "mblEditableRoundRectList");
+			array.forEach(this.getChildren(), function(child){
+				if(!child.deleteIconNode){
+					child.set("rightIcon", this.rightIconForEdit);
+					child.set("deleteIcon", this.deleteIconForEdit);
+					child.deleteIconNode.tabIndex = child.tabIndex;
+				}
+				child.rightIconNode.style.display = "";
+				child.deleteIconNode.style.display = "";
+			}, this);
+			if(!this._handles){
+				this._handles = [
+					this.connect(this.domNode, touch.press, "_onTouchStart"),
+					this.connect(this.domNode, "onclick", "_onClick"),
+					this.connect(this.domNode, "onkeydown", "_onClick") // for desktop browsers
+				];
+			}
+		},
+
+		endEdit: function(){
+			// summary:
+			//		Ends the editing.
+			domClass.remove(this.domNode, "mblEditableRoundRectList");
+			array.forEach(this.getChildren(), function(child){
+				child.rightIconNode.style.display = "none";
+				child.deleteIconNode.style.display = "none";
+			});
+			if(this._handles){
+				array.forEach(this._handles, this.disconnect, this);
+				this._handles = null;
+			}
+			this.isEditing = false;
+		}
+	});
+});

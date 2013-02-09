@@ -1,4 +1,67 @@
-//>>built
-define("dojox/gfx/Mover","dojo/_base/lang,dojo/_base/array,dojo/_base/declare,dojo/on,dojo/has,dojo/_base/event".split(","),function(e,h,i,f,c,g){return i("dojox.gfx.Mover",null,{constructor:function(a,b,d){this.shape=a;this.lastX=c("touch")?(b.changedTouches?b.changedTouches[0]:b).clientX:b.clientX;this.lastY=c("touch")?(b.changedTouches?b.changedTouches[0]:b).clientY:b.clientY;a=this.host=d;b=document;d=f(b,c("touch")?"touchmove":"mousemove",e.hitch(this,"onFirstMove"));this.events=[f(b,c("touch")?
-"touchmove":"mousemove",e.hitch(this,"onMouseMove")),f(b,c("touch")?"touchend":"mouseup",e.hitch(this,"destroy")),f(b,"dragstart",e.hitch(g,"stop")),f(b,"selectstart",e.hitch(g,"stop")),d];if(a&&a.onMoveStart)a.onMoveStart(this)},onMouseMove:function(a){var b=c("touch")?(a.changedTouches?a.changedTouches[0]:a).clientX:a.clientX,d=c("touch")?(a.changedTouches?a.changedTouches[0]:a).clientY:a.clientY;this.host.onMove(this,{dx:b-this.lastX,dy:d-this.lastY});this.lastX=b;this.lastY=d;g.stop(a)},onFirstMove:function(){this.host.onFirstMove(this);
-this.events.pop().remove()},destroy:function(){h.forEach(this.events,function(a){a.remove()});var a=this.host;if(a&&a.onMoveStop)a.onMoveStop(this);this.events=this.shape=null}})});
+define("dojox/gfx/Mover", ["dojo/_base/lang","dojo/_base/array", "dojo/_base/declare", "dojo/on", "dojo/has", "dojo/_base/event"],
+  function(lang, arr, declare, on, has, event){
+	return declare("dojox.gfx.Mover", null, {
+		constructor: function(shape, e, host){
+			// summary:
+			//		an object, which makes a shape follow the mouse,
+			//		used as a default mover, and as a base class for custom movers
+			// shape: dojox/gfx.Shape
+			//		a shape object to be moved
+			// e: Event
+			//		a mouse event, which started the move;
+			//		only clientX and clientY properties are used
+			// host: Object?
+			//		object which implements the functionality of the move,
+			//		 and defines proper events (onMoveStart and onMoveStop)
+			this.shape = shape;
+			this.lastX = has("touch") ? (e.changedTouches ? e.changedTouches[0] : e).clientX : e.clientX;
+			this.lastY = has("touch") ? (e.changedTouches ? e.changedTouches[0] : e).clientY : e.clientY;
+			var h = this.host = host, d = document,
+				firstEvent = on(d, has("touch") ? "touchmove" : "mousemove", lang.hitch(this, "onFirstMove"));
+			this.events = [
+				on(d, has("touch") ? "touchmove" : "mousemove",    lang.hitch(this, "onMouseMove")),
+				on(d, has("touch") ? "touchend" : "mouseup", lang.hitch(this, "destroy")),
+				// cancel text selection and text dragging
+				on(d, "dragstart",   lang.hitch(event, "stop")),
+				on(d, "selectstart", lang.hitch(event, "stop")),
+				firstEvent
+			];
+			// notify that the move has started
+			if(h && h.onMoveStart){
+				h.onMoveStart(this);
+			}
+		},
+		// mouse event processors
+		onMouseMove: function(e){
+			// summary:
+			//		event processor for onmousemove
+			// e: Event
+			//		mouse event
+			var x = has("touch") ? (e.changedTouches ? e.changedTouches[0] : e).clientX : e.clientX;
+			var y = has("touch") ? (e.changedTouches ? e.changedTouches[0] : e).clientY : e.clientY;
+			this.host.onMove(this, {dx: x - this.lastX, dy: y - this.lastY});
+			this.lastX = x;
+			this.lastY = y;
+			event.stop(e);
+		},
+		// utilities
+		onFirstMove: function(){
+			// summary:
+			//		it is meant to be called only once
+			this.host.onFirstMove(this);
+			this.events.pop().remove();
+		},
+		destroy: function(){
+			// summary:
+			//		stops the move, deletes all references, so the object can be garbage-collected
+			arr.forEach(this.events, function(h){h.remove();});
+			// undo global settings
+			var h = this.host;
+			if(h && h.onMoveStop){
+				h.onMoveStop(this);
+			}
+			// destroy objects
+			this.events = this.shape = null;
+		}
+	});
+});

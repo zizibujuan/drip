@@ -362,6 +362,7 @@ define(["dojo/_base/declare",
 	var Activity = declare("Activity",[_WidgetBase, _TemplatedMixin],{
 		templateString: listTemplate,
 		 
+		// FIXME:对于只有查询功能的代码，是不是直接使用xhr更好呢.
 		 store:new JsonRest({
 			 target:"/activities/"
 		 }),

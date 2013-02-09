@@ -107,14 +107,11 @@ define(["dojo/_base/declare",
 			label.innerHTML = "√ 已关注";
 			
 			var cancelWatch = domConstruct.create("input", {type:"button", value:"取消",style:"margin-left:10px;margin-right:15px"}, container);
-			on(cancelWatch, "click", lang.hitch(this, function(e){
-				on(cancelWatch, "click", lang.hitch(this, function(e){
-					xhr.put("/follow/"+localUserId,{handleAs:"json",query:{"op":"off"}},lang.hitch(this, function(response){
-						domConstruct.empty(this.actionsNode);
-						this._createCancelWatchButton(container,localUserId);
-					}),lang.hitch(this, function(error){
-						
-					}));
+			on.once(cancelWatch, "click", lang.hitch(this, function(e){
+				xhr.put("/follow/"+localUserId,{handleAs:"json",query:{"op":"off"}},lang.hitch(this, function(response){
+					domConstruct.empty(this.actionsNode);
+					this._createCancelWatchButton(container,localUserId);
+				}),lang.hitch(this, function(error){
 					
 				}));
 				
@@ -123,7 +120,7 @@ define(["dojo/_base/declare",
 		
 		_createCancelWatchButton: function(container,localUserId){
 			var watch = domConstruct.create("input",{type:"button", value:"+ 关注",style:"margin-right:15px"}, container);
-			on(watch, "click", lang.hitch(this, function(e){
+			on.once(watch, "click", lang.hitch(this, function(e){
 				xhr.put("/follow/"+localUserId,{handleAs:"json",query:{"op":"on"}},lang.hitch(this, function(response){
 					domConstruct.empty(this.actionsNode);
 					this._createWatchButton(container,localUserId);

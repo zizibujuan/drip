@@ -3,11 +3,12 @@ define(["dojo/_base/declare",
         "dojo/request/xhr",
         "dojo/on",
         "dijit/_WidgetBase",
-        "dijit/form/DropDownButton", 
-        "dijit/DropDownMenu", 
+        "dijit/form/DropDownButton",
+        "dijit/DropDownMenu",
         "dijit/MenuItem",
         "dijit/_TemplatedMixin",
-        "dojo/text!./templates/Header.html",
+        "dojo/text!./templates/LoggedInHeader.html",
+        "dojo/text!./templates/LoggedOutHeader.html",
         "drip/userSession"
         ], function(
         		declare,
@@ -19,10 +20,35 @@ define(["dojo/_base/declare",
 	       		DropDownMenu,
 	       		MenuItem,
         		_TemplatedMixin,
-        		headerTemplate,
+        		loggedInHeaderTemplate,
+        		loggedOutHeaderTemplate,
         		userSession) {
 	
-	// TODO：需要一个通用的页面对象，存储页面级别的通用数据。
+	// TODO：需要一个通用的页面对象，存储页面级别的通用数据。 FIXME NOW!!!
+	
+	// 添加两个头部模块，一个是登录的，一个是未登录的。
+	
+	var LoggedInHeader = declare("drip.LoggedInHeader",[_WidgetBase,_TemplatedMixin],{
+		
+		templateString: loggedInHeaderTemplate,
+		
+		postCreate: function(){
+			this.inherited(arguments);
+			
+			
+		}
+	});
+	
+	var LoggedOutHeader = declare("drip.LoggedOutHeader",[_WidgetBase,_TemplatedMixin],{
+		
+		templateString: loggedOutHeaderTemplate,
+		
+		postCreate: function(){
+			this.inherited(arguments);
+			
+		}
+	});
+	
 
 	return declare("drip.Header", [_WidgetBase,_TemplatedMixin], {
 		templateString: headerTemplate,

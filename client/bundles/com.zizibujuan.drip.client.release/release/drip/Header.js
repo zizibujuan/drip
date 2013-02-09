@@ -1,4 +1,78 @@
-//>>built
-require({cache:{"url:drip/templates/Header.html":'<div id="header">\n\t<div class="wrapper" style="display: block;">\n\t\t<div class="top-logo">\n\t\t\t<a href="/" title="\u53bb\u9996\u9875">\u5b5c\u5b5c\u4e0d\u5026</a>\n\t\t</div>\n\n\t\t<div class="top-nav">\n\t\t\t<\!-- \u8fdb\u5165\u6b64\u9875\uff0c\u7528\u6237\u5fc5\u987b\u5df2\u767b\u5f55 --\>\n\t\t\t<div>\n\t\t\t\t<a data-dojo-attach-point="userNode" href="#">\n\t\t\t\t\t<img data-dojo-attach-point="userImageNode" width="20px" height="20px">\n\t\t\t\t\t<span data-dojo-attach-point="userNameNode" style="">\u7528\u6237\u540d</span>\n\t\t\t\t</a>\n\t\t\t\t<a style="margin-left:30px;" data-dojo-attach-point="logoutNode" href="#">\u9000\u51fa</a>\n\t\t\t</div>\n\t\t</div>\n\t\t\n\t\t<div class="top-toolbar" data-dojo-attach-point="containerNode">\n\t\t\t<\!-- \u8fd9\u4e2a\u533a\u57df\u7684\u64cd\u4f5c\u968f\u7740\u9875\u9762\u548c\u7528\u6237\u6743\u9650\u7684\u4e0d\u540c\uff0c\u52a8\u6001\u6539\u53d8 --\>\n\t\t\t<\!-- \u53ea\u6709\u767b\u5f55\u7528\u6237\u624d\u53ef\u4ee5\u8fdb\u5165\u8be5\u9875\u9762 \n\t\t\t\n\t\t\t--\>\n\t\t</div>\n\t</div>\n</div>'}});
-define("drip/Header","dojo/_base/declare,dojo/_base/lang,dojo/request/xhr,dojo/on,dijit/_WidgetBase,dijit/form/DropDownButton,dijit/DropDownMenu,dijit/MenuItem,dijit/_TemplatedMixin,dojo/text!./templates/Header.html,drip/userSession".split(","),function(c,d,i,e,f,j,k,l,g,h,b){return c("drip.Header",[f,g],{templateString:h,postCreate:function(){b.getLoggedUserInfo().then(d.hitch(this,function(a){this.userNode.href="#";this.userImageNode.alt=a.displayName;if(a.tinyUrl)this.userImageNode.src=a.tinyUrl;
-this.userNameNode.innerHTML=a.displayName;e(this.logoutNode,"click",function(){b.logout()})}))}})});
+require({cache:{
+'url:drip/templates/LoggedInHeader.html':"<div class=\"drip_header drip_header_logged_out\">\n\t<div class=\"container clearfix\">\n\t\t<a href=\"/\" class=\"drip_header_logo\">\n\t\t\t<img alt=\"孜孜不倦\" width=\"140px\" height=\"40px\" src=\"drip/resources/images/home_logo.png\">\n\t\t</a>\n\t\t<span class=\"drip_version\">测试版</span>\n\t\t<ul class=\"drip_top_nav\">\n\t\t\t<li><a href=\"/exercises\">题库</a></li>\n\t\t\t<!-- <li><a href=\"#\">开发博客</a></li>  -->\n\t\t</ul>\n\t</div>\n</div>",
+'url:drip/templates/LoggedOutHeader.html':"<div>\n\n</div>"}});
+define("drip/Header", ["dojo/_base/declare",
+        "dojo/_base/lang",
+        "dojo/request/xhr",
+        "dojo/on",
+        "dijit/_WidgetBase",
+        "dijit/form/DropDownButton",
+        "dijit/DropDownMenu",
+        "dijit/MenuItem",
+        "dijit/_TemplatedMixin",
+        "dojo/text!./templates/LoggedInHeader.html",
+        "dojo/text!./templates/LoggedOutHeader.html",
+        "drip/userSession"
+        ], function(
+        		declare,
+        		lang,
+        		xhr,
+        		on,
+        		_WidgetBase,
+	       		DropDownButton,
+	       		DropDownMenu,
+	       		MenuItem,
+        		_TemplatedMixin,
+        		loggedInHeaderTemplate,
+        		loggedOutHeaderTemplate,
+        		userSession) {
+	
+	// TODO：需要一个通用的页面对象，存储页面级别的通用数据。 FIXME NOW!!!
+	
+	// 添加两个头部模块，一个是登录的，一个是未登录的。
+	
+	var LoggedInHeader = declare("drip.LoggedInHeader",[_WidgetBase,_TemplatedMixin],{
+		
+		templateString: loggedInHeaderTemplate,
+		
+		postCreate: function(){
+			this.inherited(arguments);
+			
+			
+		}
+	});
+	
+	var LoggedOutHeader = declare("drip.LoggedOutHeader",[_WidgetBase,_TemplatedMixin],{
+		
+		templateString: loggedOutHeaderTemplate,
+		
+		postCreate: function(){
+			this.inherited(arguments);
+			
+		}
+	});
+	
+
+	return declare("drip.Header", [_WidgetBase,_TemplatedMixin], {
+		templateString: headerTemplate,
+		
+		postCreate : function(){
+			// 在服务器端的filter中判断用户是否登录，只有登录的用户才会进入该页面。
+			// 这里的功能只是从session中获取用户的登录信息。
+			
+			// 显示用户头像，用户名和退出链接
+			userSession.getLoggedUserInfo().then(lang.hitch(this,function(userInfo){
+				this.userNode.href="#"; //TODO：进入用户自己的活动列表
+				this.userImageNode.alt = userInfo.displayName;
+				if(userInfo.tinyUrl){
+					this.userImageNode.src = userInfo.tinyUrl;
+				}
+				this.userNameNode.innerHTML = userInfo.displayName;
+				
+		        on(this.logoutNode, "click", function(e){
+		        	userSession.logout();
+		        });
+			}));
+		}
+	});
+});

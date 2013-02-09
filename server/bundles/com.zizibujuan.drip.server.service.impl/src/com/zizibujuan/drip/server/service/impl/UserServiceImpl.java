@@ -59,6 +59,9 @@ public class UserServiceImpl implements UserService {
 	// 获取基本信息
 	// 获取统计信息
 	// 获取头像信息
+	// 重新审视localUserId和mapUserId，这里的设计约定，一个localUserId对应多个mapUserId
+	// mapUserId是全局唯一的标识
+	// FIXME：也许应该使用mapUserId唯一定位和存储，而不是部分地方存储localUserid
 	@Override
 	public Map<String, Object> getPublicInfo(Long localUserId, Long mapUserId) {
 		// TODO：需要缓存

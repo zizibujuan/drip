@@ -30,15 +30,15 @@ cp $BASEDIR/com.zizibujuan.drip.client.core/web/favicon.ico $DISTDIR/favicon.ico
 
 cd "$TOOLSDIR"
 
-#--require "$LOADERCONF"  --releaseDir "$DISTDIR" --check-args
-#if which node >/dev/null; then
-#	node ../../dojo/dojo.js load=build  --profile "$PROFILE"  $@
-#elif which java >/dev/null; then
+#--require "$LOADERCONF"  --releaseDir "$DISTDIR" --check-args --check-discovery
+if which node >/dev/null; then
+	node ../../dojo/dojo.js load=build  --profile "$PROFILE"  $@
+elif which java >/dev/null; then
 	java -Xms512m -Xmx512m  -cp ../shrinksafe/js.jar:../closureCompiler/compiler.jar:../shrinksafe/shrinksafe.jar org.mozilla.javascript.tools.shell.Main  ../../dojo/dojo.js baseUrl=../../dojo load=build  --profile "$PROFILE" $@
-#else
-#	echo "Need node.js or Java to build!"
-#	exit 1
-#fi
+else
+	echo "Need node.js or Java to build!"
+	exit 1
+fi
 
 # Copy & minify index.html to dist
 #cat "$BASEDIR/com.zizibujuan.drip.client.core/web/index.html" | tr '\n' ' ' | \

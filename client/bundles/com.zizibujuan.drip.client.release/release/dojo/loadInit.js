@@ -1,2 +1,7 @@
-//>>built
-define("dojo/loadInit",["./_base/loader"],function(a){return{dynamic:0,normalize:function(a){return a},load:a.loadInit}});
+define("dojo/loadInit", ["./_base/loader"], function(loader){
+	return {
+		dynamic:0,
+		normalize:function(id){return id;},
+		load:loader.loadInit
+	};
+});

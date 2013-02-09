@@ -1,5 +1,117 @@
-//>>built
-define("dojox/mobile/IconMenuItem","dojo/_base/declare,dojo/_base/lang,dojo/dom-class,dojo/dom-construct,./iconUtils,./_ItemBase".split(","),function(e,f,d,c,h,g){return e("dojox.mobile.IconMenuItem",g,{closeOnAction:!1,tag:"li",baseClass:"mblIconMenuItem",selColor:"mblIconMenuItemSel",_selStartMethod:"touch",_selEndMethod:"touch",buildRendering:function(){this.domNode=this.srcNodeRef||c.create(this.tag);this.inherited(arguments);this.selected&&d.add(this.domNode,this.selColor);if(this.srcNodeRef){if(!this.label)this.label=
-f.trim(this.srcNodeRef.innerHTML);this.srcNodeRef.innerHTML=""}var a=this.anchorNode=this.containerNode=c.create("a",{className:"mblIconMenuItemAnchor",href:"javascript:void(0)"}),b=this.iconParentNode=c.create("table",{className:"mblIconMenuItemTable"},a).insertRow(-1).insertCell(-1);this.iconNode=c.create("div",{className:"mblIconMenuItemIcon"},b);this.labelNode=this.refNode=c.create("div",{className:"mblIconMenuItemLabel"},b);this.position="before";this.domNode.appendChild(a)},startup:function(){if(!this._started&&
-(this._keydownHandle=this.connect(this.domNode,"onkeydown","_onClick"),this.inherited(arguments),!this._isOnLine))this._isOnLine=!0,this.set("icon",void 0!==this._pendingIcon?this._pendingIcon:this.icon),delete this._pendingIcon},_onClick:function(a){if(!(a&&"keydown"===a.type&&13!==a.keyCode||!1===this.onClick(a))){if(this.closeOnAction){var b=this.getParent();b&&b.hide&&b.hide()}this.defaultClickAction(a)}},onClick:function(){},_setSelectedAttr:function(a){this.inherited(arguments);d.toggle(this.domNode,
-this.selColor,a)}})});
+define("dojox/mobile/IconMenuItem", [
+	"dojo/_base/declare",
+	"dojo/_base/lang",
+	"dojo/dom-class",
+	"dojo/dom-construct",
+	"./iconUtils",
+	"./_ItemBase"
+], function(declare, lang, domClass, domConstruct, iconUtils, ItemBase){
+	// module:
+	//		dojox/mobile/IconMenuItem
+
+	return declare("dojox.mobile.IconMenuItem", ItemBase, { 
+		// summary:
+		//		An item of IconMenu.
+		// description:
+		//		IconMenuItem represents a menu item of
+		//		dojox/mobile/MenuItem. This widget inherits from
+		//		dojox/mobile/_ItemBase. Basic usage is same as the other
+		//		subclasses such as dojox/mobile/ListItem.
+
+		// closeOnAction: Boolean
+		//		Calls the hide() method of the parent widget, which is typically
+		//		a SimpleDialog.
+		closeOnAction: false,
+
+		// tag: String
+		//		A name of html tag to create as domNode.
+		tag: "li",
+
+		/* internal properties */
+		// Note these are overrides for similar properties defined in _ItemBase.
+		baseClass: "mblIconMenuItem",
+		selColor: "mblIconMenuItemSel",
+		_selStartMethod: "touch",
+		_selEndMethod: "touch",
+
+		buildRendering: function(){
+			this.domNode = this.srcNodeRef || domConstruct.create(this.tag);
+			this.inherited(arguments);
+			if(this.selected){
+				domClass.add(this.domNode, this.selColor);
+			}
+
+			if(this.srcNodeRef){
+				if(!this.label){
+					this.label = lang.trim(this.srcNodeRef.innerHTML);
+				}
+				this.srcNodeRef.innerHTML = "";
+			}
+
+			var a = this.anchorNode = this.containerNode = domConstruct.create("a", {
+				className: "mblIconMenuItemAnchor",
+				href: "javascript:void(0)"
+			});
+			var tbl = domConstruct.create("table", {
+				className: "mblIconMenuItemTable"
+			}, a);
+			var cell = this.iconParentNode = tbl.insertRow(-1).insertCell(-1);
+			this.iconNode = domConstruct.create("div", {
+				className: "mblIconMenuItemIcon"
+			}, cell);
+			this.labelNode = this.refNode = domConstruct.create("div", {
+				className: "mblIconMenuItemLabel"
+			}, cell);
+			this.position = "before";
+			this.domNode.appendChild(a);
+		},
+
+		startup: function(){
+			if(this._started){ return; }
+
+			this._keydownHandle = this.connect(this.domNode, "onkeydown", "_onClick"); // for desktop browsers
+
+			this.inherited(arguments);
+			if(!this._isOnLine){
+				this._isOnLine = true;
+				// retry applying the attribute for which the custom setter delays the actual 
+				// work until _isOnLine is true. 
+				this.set("icon", this._pendingIcon !== undefined ? this._pendingIcon : this.icon);
+				// Not needed anymore (this code executes only once per life cycle):
+				delete this._pendingIcon; 
+			}
+		},
+
+		_onClick: function(e){
+			// summary:
+			//		Internal handler for click events.
+			// tags:
+			//		private
+			if(e && e.type === "keydown" && e.keyCode !== 13){ return; }
+			if(this.onClick(e) === false){ return; } // user's click action
+			if(this.closeOnAction){
+				var p = this.getParent(); // maybe SimpleDialog
+				if(p && p.hide){
+					p.hide();
+				}
+			}
+			this.defaultClickAction(e);
+		},
+
+		onClick: function(/*Event*/ /*===== e =====*/){
+			// summary:
+			//		User-defined function to handle clicks.
+			// tags:
+			//		callback
+		},
+
+		_setSelectedAttr: function(/*Boolean*/selected){
+			// summary:
+			//		Makes this widget in the selected or unselected state.
+			// tags:
+			//		private
+			this.inherited(arguments);
+			domClass.toggle(this.domNode, this.selColor, selected);
+		}
+	});
+});

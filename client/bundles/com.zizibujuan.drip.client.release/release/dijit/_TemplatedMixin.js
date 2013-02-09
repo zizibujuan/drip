@@ -1,7 +1,325 @@
-//>>built
-define("dijit/_TemplatedMixin","require,dojo/_base/array,dojo/cache,dojo/_base/connect,dojo/_base/declare,dojo/dom-construct,dojo/_base/lang,dojo/mouse,dojo/on,dojo/sniff,dojo/string,dojo/touch,dojo/_base/unload,./_WidgetBase".split(","),function(o,k,p,q,r,g,e,l,s,t,m,u,v,w){var x=e.delegate(u,{mouseenter:l.enter,mouseleave:l.leave,keypress:q._keypress}),n,f=r("dijit._TemplatedMixin",null,{templateString:null,templatePath:null,_skipNodeCache:!1,constructor:function(){this._attachPoints=[];this._attachEvents=
-[]},_stringRepl:function(a){var c=this.declaredClass,h=this;return m.substitute(a,this,function(a,d){"!"==d.charAt(0)&&(a=e.getObject(d.substr(1),!1,h));if("undefined"==typeof a)throw Error(c+" template:"+d);return null==a?"":"!"==d.charAt(0)?a:a.toString().replace(/"/g,"&quot;")},this)},buildRendering:function(){if(!this.templateString)this.templateString=p(this.templatePath,{sanitize:!0});var a=f.getCachedTemplate(this.templateString,this._skipNodeCache,this.ownerDocument),c;if(e.isString(a)){if(c=
-g.toDom(this._stringRepl(a),this.ownerDocument),1!=c.nodeType)throw Error("Invalid template: "+a);}else c=a.cloneNode(!0);this.domNode=c;this.inherited(arguments);this._attachTemplateNodes(c,function(a,c){return a.getAttribute(c)});this._beforeFillContent();this._fillContent(this.srcNodeRef)},_beforeFillContent:function(){},_fillContent:function(a){var c=this.containerNode;if(a&&c)for(;a.hasChildNodes();)c.appendChild(a.firstChild)},_attachTemplateNodes:function(a,c){for(var h=e.isArray(a)?a:a.all||
-a.getElementsByTagName("*"),j=e.isArray(a)?0:-1;0>j||h[j];j++){var d=-1==j?a:h[j];if(!this.widgetsInTemplate||!c(d,"dojoType")&&!c(d,"data-dojo-type")){var b=c(d,"dojoAttachPoint")||c(d,"data-dojo-attach-point");if(b)for(var f=b.split(/\s*,\s*/);b=f.shift();)e.isArray(this[b])?this[b].push(d):this[b]=d,this._attachPoints.push(b);if(b=c(d,"dojoAttachEvent")||c(d,"data-dojo-attach-event"))for(var f=b.split(/\s*,\s*/),g=e.trim;b=f.shift();)if(b){var i=null;-1!=b.indexOf(":")?(i=b.split(":"),b=g(i[0]),
-i=g(i[1])):b=g(b);i||(i=b);b=b.replace(/^on/,"").toLowerCase();b="dijitclick"==b?n||(n=o("./a11yclick")):x[b]||b;this._attachEvents.push(this.own(s(d,b,e.hitch(this,i)))[0])}}}},destroyRendering:function(){k.forEach(this._attachPoints,function(a){delete this[a]},this);this._attachPoints=[];k.forEach(this._attachEvents,this.disconnect,this);this._attachEvents=[];this.inherited(arguments)}});f._templateCache={};f.getCachedTemplate=function(a,c,h){var e=f._templateCache,d=a,b=e[d];if(b){try{if(!b.ownerDocument||
-b.ownerDocument==(h||document))return b}catch(k){}g.destroy(b)}a=m.trim(a);if(c||a.match(/\$\{([^\}]+)\}/g))return e[d]=a;c=g.toDom(a,h);if(1!=c.nodeType)throw Error("Invalid template: "+a);return e[d]=c};t("ie")&&v.addOnWindowUnload(function(){var a=f._templateCache,c;for(c in a){var e=a[c];"object"==typeof e&&g.destroy(e);delete a[c]}});e.extend(w,{dojoAttachEvent:"",dojoAttachPoint:""});return f});
+define("dijit/_TemplatedMixin", [
+	"require",
+	"dojo/_base/array", // array.forEach
+	"dojo/cache",	// dojo.cache
+	"dojo/_base/connect",	// remove for 2.0
+	"dojo/_base/declare", // declare
+	"dojo/dom-construct", // domConstruct.destroy, domConstruct.toDom
+	"dojo/_base/lang", // lang.getObject
+	"dojo/mouse",
+	"dojo/on",
+	"dojo/sniff", // has("ie")
+	"dojo/string", // string.substitute string.trim
+	"dojo/touch",
+	"dojo/_base/unload", // unload.addOnWindowUnload
+	"./_WidgetBase"
+], function(require, array, cache, connect, declare, domConstruct, lang, mouse, on, has, string, touch, unload, _WidgetBase){
+
+	// module:
+	//		dijit/_TemplatedMixin
+
+	// Map from string name like "mouseenter" to synthetic event like mouse.enter
+	var synthEvents = lang.delegate(touch, {
+		"mouseenter": mouse.enter,
+		"mouseleave": mouse.leave,
+		"keypress": connect._keypress	// remove for 2.0
+	});
+
+	// To be lightweight, _TemplatedMixin doesn't require() dijit/a11yclick.
+	// If the subclass has a template using "ondijitclick", it must load dijit/a11yclick itself.
+	// In that case, the a11yclick variable below will get set to point to that synthetic event.
+	var a11yclick;
+
+	var _TemplatedMixin = declare("dijit._TemplatedMixin", null, {
+		// summary:
+		//		Mixin for widgets that are instantiated from a template
+
+		// templateString: [protected] String
+		//		A string that represents the widget template.
+		//		Use in conjunction with dojo.cache() to load from a file.
+		templateString: null,
+
+		// templatePath: [protected deprecated] String
+		//		Path to template (HTML file) for this widget relative to dojo.baseUrl.
+		//		Deprecated: use templateString with require([... "dojo/text!..."], ...) instead
+		templatePath: null,
+
+		// skipNodeCache: [protected] Boolean
+		//		If using a cached widget template nodes poses issues for a
+		//		particular widget class, it can set this property to ensure
+		//		that its template is always re-built from a string
+		_skipNodeCache: false,
+
+/*=====
+		// _attachPoints: [private] String[]
+		//		List of widget attribute names associated with data-dojo-attach-point=... in the
+		//		template, ex: ["containerNode", "labelNode"]
+		_attachPoints: [],
+
+		// _attachEvents: [private] Handle[]
+		//		List of connections associated with data-dojo-attach-event=... in the
+		//		template
+		_attachEvents: [],
+ =====*/
+
+		constructor: function(/*===== params, srcNodeRef =====*/){
+			// summary:
+			//		Create the widget.
+			// params: Object|null
+			//		Hash of initialization parameters for widget, including scalar values (like title, duration etc.)
+			//		and functions, typically callbacks like onClick.
+			//		The hash can contain any of the widget's properties, excluding read-only properties.
+			// srcNodeRef: DOMNode|String?
+			//		If a srcNodeRef (DOM node) is specified, replace srcNodeRef with my generated DOM tree.
+
+			this._attachPoints = [];
+			this._attachEvents = [];
+		},
+
+		_stringRepl: function(tmpl){
+			// summary:
+			//		Does substitution of ${foo} type properties in template string
+			// tags:
+			//		private
+			var className = this.declaredClass, _this = this;
+			// Cache contains a string because we need to do property replacement
+			// do the property replacement
+			return string.substitute(tmpl, this, function(value, key){
+				if(key.charAt(0) == '!'){ value = lang.getObject(key.substr(1), false, _this); }
+				if(typeof value == "undefined"){ throw new Error(className+" template:"+key); } // a debugging aide
+				if(value == null){ return ""; }
+
+				// Substitution keys beginning with ! will skip the transform step,
+				// in case a user wishes to insert unescaped markup, e.g. ${!foo}
+				return key.charAt(0) == "!" ? value :
+					// Safer substitution, see heading "Attribute values" in
+					// http://www.w3.org/TR/REC-html40/appendix/notes.html#h-B.3.2
+					value.toString().replace(/"/g,"&quot;"); //TODO: add &amp? use encodeXML method?
+			}, this);
+		},
+
+		buildRendering: function(){
+			// summary:
+			//		Construct the UI for this widget from a template, setting this.domNode.
+			// tags:
+			//		protected
+
+			if(!this.templateString){
+				this.templateString = cache(this.templatePath, {sanitize: true});
+			}
+
+			// Lookup cached version of template, and download to cache if it
+			// isn't there already.  Returns either a DomNode or a string, depending on
+			// whether or not the template contains ${foo} replacement parameters.
+			var cached = _TemplatedMixin.getCachedTemplate(this.templateString, this._skipNodeCache, this.ownerDocument);
+
+			var node;
+			if(lang.isString(cached)){
+				node = domConstruct.toDom(this._stringRepl(cached), this.ownerDocument);
+				if(node.nodeType != 1){
+					// Flag common problems such as templates with multiple top level nodes (nodeType == 11)
+					throw new Error("Invalid template: " + cached);
+				}
+			}else{
+				// if it's a node, all we have to do is clone it
+				node = cached.cloneNode(true);
+			}
+
+			this.domNode = node;
+
+			// Call down to _Widget.buildRendering() to get base classes assigned
+			// TODO: change the baseClass assignment to _setBaseClassAttr
+			this.inherited(arguments);
+
+			// recurse through the node, looking for, and attaching to, our
+			// attachment points and events, which should be defined on the template node.
+			this._attachTemplateNodes(node, function(n,p){ return n.getAttribute(p); });
+
+			this._beforeFillContent();		// hook for _WidgetsInTemplateMixin
+
+			this._fillContent(this.srcNodeRef);
+		},
+
+		_beforeFillContent: function(){
+		},
+
+		_fillContent: function(/*DomNode*/ source){
+			// summary:
+			//		Relocate source contents to templated container node.
+			//		this.containerNode must be able to receive children, or exceptions will be thrown.
+			// tags:
+			//		protected
+			var dest = this.containerNode;
+			if(source && dest){
+				while(source.hasChildNodes()){
+					dest.appendChild(source.firstChild);
+				}
+			}
+		},
+
+		_attachTemplateNodes: function(rootNode, getAttrFunc){
+			// summary:
+			//		Iterate through the template and attach functions and nodes accordingly.
+			//		Alternately, if rootNode is an array of widgets, then will process data-dojo-attach-point
+			//		etc. for those widgets.
+			// description:
+			//		Map widget properties and functions to the handlers specified in
+			//		the dom node and it's descendants. This function iterates over all
+			//		nodes and looks for these properties:
+			//
+			//		- dojoAttachPoint/data-dojo-attach-point
+			//		- dojoAttachEvent/data-dojo-attach-event
+			// rootNode: DomNode|Widget[]
+			//		the node to search for properties. All children will be searched.
+			// getAttrFunc: Function
+			//		a function which will be used to obtain property for a given
+			//		DomNode/Widget
+			// tags:
+			//		private
+
+			var nodes = lang.isArray(rootNode) ? rootNode : (rootNode.all || rootNode.getElementsByTagName("*"));
+			var x = lang.isArray(rootNode) ? 0 : -1;
+			for(; x < 0 || nodes[x]; x++){	// don't access nodes.length on IE, see #14346
+				var baseNode = (x == -1) ? rootNode : nodes[x];
+				if(this.widgetsInTemplate && (getAttrFunc(baseNode, "dojoType") || getAttrFunc(baseNode, "data-dojo-type"))){
+					continue;
+				}
+				// Process data-dojo-attach-point
+				var attachPoint = getAttrFunc(baseNode, "dojoAttachPoint") || getAttrFunc(baseNode, "data-dojo-attach-point");
+				if(attachPoint){
+					var point, points = attachPoint.split(/\s*,\s*/);
+					while((point = points.shift())){
+						if(lang.isArray(this[point])){
+							this[point].push(baseNode);
+						}else{
+							this[point]=baseNode;
+						}
+						this._attachPoints.push(point);
+					}
+				}
+
+				// Process data-dojo-attach-event
+				var attachEvent = getAttrFunc(baseNode, "dojoAttachEvent") || getAttrFunc(baseNode, "data-dojo-attach-event");
+				if(attachEvent){
+					// NOTE: we want to support attributes that have the form
+					// "domEvent: nativeEvent; ..."
+					var event, events = attachEvent.split(/\s*,\s*/);
+					var trim = lang.trim;
+					while((event = events.shift())){
+						if(event){
+							var thisFunc = null;
+							if(event.indexOf(":") != -1){
+								// oh, if only JS had tuple assignment
+								var funcNameArr = event.split(":");
+								event = trim(funcNameArr[0]);
+								thisFunc = trim(funcNameArr[1]);
+							}else{
+								event = trim(event);
+							}
+							if(!thisFunc){
+								thisFunc = event;
+							}
+
+							// Map special type names like "mouseenter" to synthetic events.
+							// Subclasses are responsible to require() dijit/a11yclick if they want to use it.
+							event = event.replace(/^on/, "").toLowerCase();
+							if(event == "dijitclick"){
+								event = a11yclick || (a11yclick = require("./a11yclick"));
+							}else{
+								event = synthEvents[event] || event;
+							}
+
+							this._attachEvents.push(this.own(on(baseNode, event, lang.hitch(this, thisFunc)))[0]);
+						}
+					}
+				}
+			}
+		},
+
+		destroyRendering: function(){
+			// Delete all attach points to prevent IE6 memory leaks.
+			array.forEach(this._attachPoints, function(point){
+				delete this[point];
+			}, this);
+			this._attachPoints = [];
+
+			// And same for event handlers
+			array.forEach(this._attachEvents, this.disconnect, this);
+			this._attachEvents = [];
+
+			this.inherited(arguments);
+		}
+	});
+
+	// key is templateString; object is either string or DOM tree
+	_TemplatedMixin._templateCache = {};
+
+	_TemplatedMixin.getCachedTemplate = function(templateString, alwaysUseString, doc){
+		// summary:
+		//		Static method to get a template based on the templatePath or
+		//		templateString key
+		// templateString: String
+		//		The template
+		// alwaysUseString: Boolean
+		//		Don't cache the DOM tree for this template, even if it doesn't have any variables
+		// doc: Document?
+		//		The target document.   Defaults to document global if unspecified.
+		// returns: Mixed
+		//		Either string (if there are ${} variables that need to be replaced) or just
+		//		a DOM tree (if the node can be cloned directly)
+
+		// is it already cached?
+		var tmplts = _TemplatedMixin._templateCache;
+		var key = templateString;
+		var cached = tmplts[key];
+		if(cached){
+			try{
+				// if the cached value is an innerHTML string (no ownerDocument) or a DOM tree created within the
+				// current document, then use the current cached value
+				if(!cached.ownerDocument || cached.ownerDocument == (doc || document)){
+					// string or node of the same document
+					return cached;
+				}
+			}catch(e){ /* squelch */ } // IE can throw an exception if cached.ownerDocument was reloaded
+			domConstruct.destroy(cached);
+		}
+
+		templateString = string.trim(templateString);
+
+		if(alwaysUseString || templateString.match(/\$\{([^\}]+)\}/g)){
+			// there are variables in the template so all we can do is cache the string
+			return (tmplts[key] = templateString); //String
+		}else{
+			// there are no variables in the template so we can cache the DOM tree
+			var node = domConstruct.toDom(templateString, doc);
+			if(node.nodeType != 1){
+				throw new Error("Invalid template: " + templateString);
+			}
+			return (tmplts[key] = node); //Node
+		}
+	};
+
+	if(has("ie")){
+		unload.addOnWindowUnload(function(){
+			var cache = _TemplatedMixin._templateCache;
+			for(var key in cache){
+				var value = cache[key];
+				if(typeof value == "object"){ // value is either a string or a DOM node template
+					domConstruct.destroy(value);
+				}
+				delete cache[key];
+			}
+		});
+	}
+
+	// These arguments can be specified for widgets which are used in templates.
+	// Since any widget can be specified as sub widgets in template, mix it
+	// into the base widget class.  (This is a hack, but it's effective.).
+	// Remove for 2.0.   Also, hide from API doc parser.
+	lang.extend(_WidgetBase, /*===== {} || =====*/ {
+		dojoAttachEvent: "",
+		dojoAttachPoint: ""
+	});
+
+	return _TemplatedMixin;
+});

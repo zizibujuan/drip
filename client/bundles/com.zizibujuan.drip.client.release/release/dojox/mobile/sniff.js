@@ -1,3 +1,56 @@
-//>>built
-define("dojox/mobile/sniff",["dojo/_base/window","dojo/_base/sniff","dojo/_base/array"],function(c,b,e){var a=navigator.userAgent;b.add("bb",(0<=a.indexOf("BlackBerry")||a.indexOf("BB10"))&&parseFloat(a.split("Version/")[1])||void 0,void 0,!0);b.add("android",parseFloat(a.split("Android ")[1])||void 0,void 0,!0);if(a.match(/(iPhone|iPod|iPad)/)){var f=RegExp.$1.replace(/P/,"p"),a=a.match(/OS ([\d_]+)/)?RegExp.$1:"1",a=parseFloat(a.replace(/_/,".").replace(/_/g,""));b.add(f,a,void 0,!0);b.add("iphone",
-a,void 0,!0)}b("webkit")&&b.add("touch","undefined"!=typeof c.doc.documentElement.ontouchstart&&-1!=navigator.appVersion.indexOf("Mobile")||!!b("android"),void 0,!0);var g=["webkit"];b.add("css3-animations",function(a,b,c){var d=c.style;return void 0!==d.animation&&void 0!==d.transition||e.some(g,function(a){return void 0!==d[a+"Animation"]&&void 0!==d[a+"Transition"]})});b.add("svg","SVGAngle"in c.global);return b});
+define("dojox/mobile/sniff", [
+	"dojo/_base/window",
+	"dojo/_base/sniff",
+	"dojo/_base/array"
+], function(win, has, arr){
+
+	var ua = navigator.userAgent;
+
+	// BlackBerry (OS 6 or later only)
+	has.add('bb', (ua.indexOf("BlackBerry") >= 0 || ua.indexOf("BB10")) && parseFloat(ua.split("Version/")[1]) || undefined, undefined, true);
+
+	// Android
+	has.add('android', parseFloat(ua.split("Android ")[1]) || undefined, undefined, true);
+
+	// iPhone, iPod, or iPad
+	// If iPod or iPad is detected, in addition to has('ipod') or has('ipad'),
+	// has('iphone') will also have iOS version number.
+	if(ua.match(/(iPhone|iPod|iPad)/)){
+		var p = RegExp.$1.replace(/P/, 'p');
+		var v = ua.match(/OS ([\d_]+)/) ? RegExp.$1 : "1";
+		var os = parseFloat(v.replace(/_/, '.').replace(/_/g, ''));
+		has.add(p, os, undefined, true);
+		has.add('iphone', os, undefined, true);
+	}
+
+	if(has("webkit")){
+		has.add('touch', (typeof win.doc.documentElement.ontouchstart != "undefined" &&
+			navigator.appVersion.indexOf("Mobile") != -1) || !!has('android'), undefined, true);
+	}
+
+	// Does the browser support CSS3 animations?
+		
+	// We just test webkit prefix for now since our themes only have standard and webkit
+	// (see dojox/mobile/themes/common/css3.less)
+	// More prefixes can be added if/when we add them to css3.less.
+	var prefixes = ["webkit"];
+		
+	has.add("css3-animations", function(global, document, element){
+		var style = element.style;
+		return (style["animation"] !== undefined && style["transition"] !== undefined) ||
+			arr.some(prefixes, function(p){
+				return style[p+"Animation"] !== undefined && style[p+"Transition"] !== undefined;
+			});
+	});
+	
+	// Does the browser support SVG?
+	has.add("svg", "SVGAngle" in win.global);
+	
+	/*=====
+	return {
+		// summary:
+		//		This module sets has() flags based on the userAgent of the current browser.
+	};
+	=====*/
+	return has;
+});

@@ -1,2 +1,68 @@
-//>>built
-define("dojox/lang/oo/rearrange",["dijit","dojo","dojox"],function(m,h,l){h.provide("dojox.lang.oo.rearrange");(function(){var i=h._extraNames,j=i.length,k=Object.prototype.toString,e={};l.lang.oo.rearrange=function(c,g){var a,b,d,f;for(a in g)if(b=g[a],!b||"[object String]"==k.call(b))if(d=c[a],!(a in e)||e[a]!==d)delete c[a]||(c[a]=void 0),b&&(c[b]=d);if(j)for(f=0;f<j;++f)if(a=i[f],b=g[a],!b||"[object String]"==k.call(b))if(d=c[a],!(a in e)||e[a]!==d)delete c[a]||(c[a]=void 0),b&&(c[b]=d);return c}})()});
+// wrapped by build app
+define("dojox/lang/oo/rearrange", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+dojo.provide("dojox.lang.oo.rearrange");
+
+(function(){
+	var extraNames = dojo._extraNames, extraLen = extraNames.length,
+		opts = Object.prototype.toString, empty = {};
+
+	dojox.lang.oo.rearrange = function(bag, map){
+		// summary:
+		//		Process properties in place by removing and renaming them.
+		// description:
+		//		Properties of an object are to be renamed or removed specified
+		//		by "map" argument. Only own properties of "map" are processed.
+		// example:
+		//	|	oo.rearrange(bag, {
+		//	|		abc: "def",	// rename "abc" attribute to "def"
+		//	|		ghi: null	// remove/hide "ghi" attribute
+		//	|	});
+		// bag: Object
+		//		the object to be processed
+		// map: Object
+		//		the dictionary for renaming (false value indicates removal of the named property)
+		// returns: Object
+		//		the original object
+
+	var name, newName, prop, i, t;
+
+		for(name in map){
+			newName = map[name];
+			if(!newName || opts.call(newName) == "[object String]"){
+				prop = bag[name];
+				if(!(name in empty) || empty[name] !== prop){
+					if(!(delete bag[name])){
+						// can't delete => hide it
+						bag[name] = undefined;
+					}
+					if(newName){
+						bag[newName] = prop;
+					}
+				}
+			}
+		}
+		if(extraLen){
+			for(i = 0; i < extraLen; ++i){
+				name = extraNames[i];
+				// repeating the body above
+				newName = map[name];
+				if(!newName || opts.call(newName) == "[object String]"){
+					prop = bag[name];
+					if(!(name in empty) || empty[name] !== prop){
+						if(!(delete bag[name])){
+							// can't delete => hide it
+							bag[name] = undefined;
+						}
+						if(newName){
+							bag[newName] = prop;
+						}
+					}
+				}
+			}
+		}
+
+		return bag;	// Object
+	};
+})();
+
+});

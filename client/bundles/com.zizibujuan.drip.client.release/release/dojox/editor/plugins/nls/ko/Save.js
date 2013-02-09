@@ -1,2 +1,5 @@
-//>>built
-define("dojox/editor/plugins/nls/ko/Save",{save:"\uc800\uc7a5"});
+define(
+"dojox/editor/plugins/nls/ko/Save", ({
+	"save": "저장"
+})
+);

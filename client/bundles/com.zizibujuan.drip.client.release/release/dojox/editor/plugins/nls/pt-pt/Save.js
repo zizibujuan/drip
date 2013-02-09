@@ -1,2 +1,5 @@
-//>>built
-define("dojox/editor/plugins/nls/pt-pt/Save",{save:"Guardar"});
+define(
+"dojox/editor/plugins/nls/pt-pt/Save", ({
+	"save": "Guardar"
+})
+);

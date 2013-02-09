@@ -1,2 +1,5 @@
-//>>built
-define("dojox/form/nls/cs/Uploader",{label:"Vybrat soubory..."});
+define(
+"dojox/form/nls/cs/Uploader", ({
+	label: "Vybrat soubory..."
+})
+);

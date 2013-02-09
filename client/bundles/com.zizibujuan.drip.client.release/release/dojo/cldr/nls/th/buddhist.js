@@ -1,12 +1,236 @@
-//>>built
-define("dojo/cldr/nls/th/buddhist",{"dateFormatItem-yM":"M/yyyy","dateFormatItem-yQ":"Q yyyy","dayPeriods-format-wide-pm":"\u0e2b\u0e25\u0e31\u0e07\u0e40\u0e17\u0e35\u0e48\u0e22\u0e07",eraNames:["\u0e1e\u0e38\u0e17\u0e18\u0e28\u0e31\u0e01\u0e23\u0e32\u0e0a"],"dateFormatItem-MMMEd":"E d MMM","dateFormatItem-hms":"h:mm:ss a","dateFormatItem-yQQQ":"QQQ y","days-standAlone-wide":"\u0e27\u0e31\u0e19\u0e2d\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c,\u0e27\u0e31\u0e19\u0e08\u0e31\u0e19\u0e17\u0e23\u0e4c,\u0e27\u0e31\u0e19\u0e2d\u0e31\u0e07\u0e04\u0e32\u0e23,\u0e27\u0e31\u0e19\u0e1e\u0e38\u0e18,\u0e27\u0e31\u0e19\u0e1e\u0e24\u0e2b\u0e31\u0e2a\u0e1a\u0e14\u0e35,\u0e27\u0e31\u0e19\u0e28\u0e38\u0e01\u0e23\u0e4c,\u0e27\u0e31\u0e19\u0e40\u0e2a\u0e32\u0e23\u0e4c".split(","),
-"dateFormatItem-MMM":"LLL","months-standAlone-narrow":"\u0e21.\u0e04.,\u0e01.\u0e1e.,\u0e21\u0e35.\u0e04.,\u0e40\u0e21.\u0e22.,\u0e1e.\u0e04.,\u0e21\u0e34.\u0e22.,\u0e01.\u0e04.,\u0e2a.\u0e04.,\u0e01.\u0e22.,\u0e15.\u0e04.,\u0e1e.\u0e22.,\u0e18.\u0e04.".split(","),"dayPeriods-format-wide-am":"\u0e01\u0e48\u0e2d\u0e19\u0e40\u0e17\u0e35\u0e48\u0e22\u0e07","quarters-standAlone-abbr":["\u0e44\u0e15\u0e23\u0e21\u0e32\u0e2a 1","\u0e44\u0e15\u0e23\u0e21\u0e32\u0e2a 2","\u0e44\u0e15\u0e23\u0e21\u0e32\u0e2a 3",
-"\u0e44\u0e15\u0e23\u0e21\u0e32\u0e2a 4"],"dateFormatItem-y":"G y","timeFormat-full":"H \u0e19\u0e32\u0e2c\u0e34\u0e01\u0e32 mm \u0e19\u0e32\u0e17\u0e35 ss \u0e27\u0e34\u0e19\u0e32\u0e17\u0e35 zzzz","months-standAlone-abbr":"\u0e21.\u0e04.,\u0e01.\u0e1e.,\u0e21\u0e35.\u0e04.,\u0e40\u0e21.\u0e22.,\u0e1e.\u0e04.,\u0e21\u0e34.\u0e22.,\u0e01.\u0e04.,\u0e2a.\u0e04.,\u0e01.\u0e22.,\u0e15.\u0e04.,\u0e1e.\u0e22.,\u0e18.\u0e04.".split(","),"dateFormatItem-Ed":"E d","dateFormatItem-yMMM":"MMM y","days-standAlone-narrow":"\u0e2d\u0e32.,\u0e08.,\u0e2d.,\u0e1e.,\u0e1e\u0e24.,\u0e28.,\u0e2a.".split(","),
-eraAbbr:["\u0e1e.\u0e28."],"dateFormatItem-yyyyMMMM":"MMMM y","dateFormat-long":"d MMMM y","dateFormatItem-Hm":"HH:mm","dateFormat-medium":"d MMM y","dateFormatItem-Hms":"HH:mm:ss","dayPeriods-format-narrow-pm":"\u0e2b\u0e25\u0e31\u0e07\u0e40\u0e17\u0e35\u0e48\u0e22\u0e07","dateFormatItem-yMd":"d/M/yyyy","quarters-standAlone-wide":["\u0e44\u0e15\u0e23\u0e21\u0e32\u0e2a 1","\u0e44\u0e15\u0e23\u0e21\u0e32\u0e2a 2","\u0e44\u0e15\u0e23\u0e21\u0e32\u0e2a 3","\u0e44\u0e15\u0e23\u0e21\u0e32\u0e2a 4"],"dateFormatItem-yMMMM":"MMMM y",
-"dateFormatItem-ms":"mm:ss","dayPeriods-format-narrow-am":"\u0e01\u0e48\u0e2d\u0e19\u0e40\u0e17\u0e35\u0e48\u0e22\u0e07","months-standAlone-wide":"\u0e21\u0e01\u0e23\u0e32\u0e04\u0e21,\u0e01\u0e38\u0e21\u0e20\u0e32\u0e1e\u0e31\u0e19\u0e18\u0e4c,\u0e21\u0e35\u0e19\u0e32\u0e04\u0e21,\u0e40\u0e21\u0e29\u0e32\u0e22\u0e19,\u0e1e\u0e24\u0e29\u0e20\u0e32\u0e04\u0e21,\u0e21\u0e34\u0e16\u0e38\u0e19\u0e32\u0e22\u0e19,\u0e01\u0e23\u0e01\u0e0e\u0e32\u0e04\u0e21,\u0e2a\u0e34\u0e07\u0e2b\u0e32\u0e04\u0e21,\u0e01\u0e31\u0e19\u0e22\u0e32\u0e22\u0e19,\u0e15\u0e38\u0e25\u0e32\u0e04\u0e21,\u0e1e\u0e24\u0e28\u0e08\u0e34\u0e01\u0e32\u0e22\u0e19,\u0e18\u0e31\u0e19\u0e27\u0e32\u0e04\u0e21".split(","),
-"dateFormatItem-MMMMEd":"E d MMMM","dateFormatItem-MMMd":"d MMM","dateFormatItem-yyQ":"Q yy","timeFormat-long":"H \u0e19\u0e32\u0e2c\u0e34\u0e01\u0e32 mm \u0e19\u0e32\u0e17\u0e35 ss \u0e27\u0e34\u0e19\u0e32\u0e17\u0e35 z","months-format-abbr":"\u0e21.\u0e04.,\u0e01.\u0e1e.,\u0e21\u0e35.\u0e04.,\u0e40\u0e21.\u0e22.,\u0e1e.\u0e04.,\u0e21\u0e34.\u0e22.,\u0e01.\u0e04.,\u0e2a.\u0e04.,\u0e01.\u0e22.,\u0e15.\u0e04.,\u0e1e.\u0e22.,\u0e18.\u0e04.".split(","),"dateFormatItem-H":"HH","dateFormatItem-MMMMd":"d MMMM",
-"quarters-format-abbr":["\u0e44\u0e15\u0e23\u0e21\u0e32\u0e2a 1","\u0e44\u0e15\u0e23\u0e21\u0e32\u0e2a 2","\u0e44\u0e15\u0e23\u0e21\u0e32\u0e2a 3","\u0e44\u0e15\u0e23\u0e21\u0e32\u0e2a 4"],"days-format-abbr":"\u0e2d\u0e32.,\u0e08.,\u0e2d.,\u0e1e.,\u0e1e\u0e24.,\u0e28.,\u0e2a.".split(","),"dateFormatItem-mmss":"mm:ss","dateFormatItem-M":"L","days-format-narrow":"\u0e2d\u0e32.,\u0e08.,\u0e2d.,\u0e1e.,\u0e1e\u0e24.,\u0e28.,\u0e2a.".split(","),"dateFormatItem-yMMMd":"d MMM y","dateFormatItem-MEd":"E, d/M",
-"months-format-narrow":"\u0e21.\u0e04.,\u0e01.\u0e1e.,\u0e21\u0e35.\u0e04.,\u0e40\u0e21.\u0e22.,\u0e1e.\u0e04.,\u0e21\u0e34.\u0e22,\u0e01.\u0e04.,\u0e2a.\u0e04.,\u0e01.\u0e22.,\u0e15.\u0e04.,\u0e1e.\u0e22.,\u0e18.\u0e04.".split(","),"days-standAlone-short":"\u0e2d\u0e32.,\u0e08.,\u0e2d.,\u0e1e.,\u0e1e\u0e24.,\u0e28.,\u0e2a.".split(","),"dateFormatItem-hm":"h:mm a","days-standAlone-abbr":"\u0e2d\u0e32.,\u0e08.,\u0e2d.,\u0e1e.,\u0e1e\u0e24.,\u0e28.,\u0e2a.".split(","),"dateFormat-short":"d/M/yy","dateFormatItem-yyyyM":"M/yyyy",
-"dateFormatItem-yMMMEd":"E d MMM y","dateFormat-full":"EEEE\u0e17\u0e35\u0e48 d MMMM G y","dateFormatItem-Md":"d/M","dateFormatItem-yMEd":"E d/M/yyyy","months-format-wide":"\u0e21\u0e01\u0e23\u0e32\u0e04\u0e21,\u0e01\u0e38\u0e21\u0e20\u0e32\u0e1e\u0e31\u0e19\u0e18\u0e4c,\u0e21\u0e35\u0e19\u0e32\u0e04\u0e21,\u0e40\u0e21\u0e29\u0e32\u0e22\u0e19,\u0e1e\u0e24\u0e29\u0e20\u0e32\u0e04\u0e21,\u0e21\u0e34\u0e16\u0e38\u0e19\u0e32\u0e22\u0e19,\u0e01\u0e23\u0e01\u0e0e\u0e32\u0e04\u0e21,\u0e2a\u0e34\u0e07\u0e2b\u0e32\u0e04\u0e21,\u0e01\u0e31\u0e19\u0e22\u0e32\u0e22\u0e19,\u0e15\u0e38\u0e25\u0e32\u0e04\u0e21,\u0e1e\u0e24\u0e28\u0e08\u0e34\u0e01\u0e32\u0e22\u0e19,\u0e18\u0e31\u0e19\u0e27\u0e32\u0e04\u0e21".split(","),
-"days-format-short":"\u0e2d\u0e32.,\u0e08.,\u0e2d.,\u0e1e.,\u0e1e\u0e24.,\u0e28.,\u0e2a.".split(","),"dateFormatItem-d":"d","quarters-format-wide":["\u0e44\u0e15\u0e23\u0e21\u0e32\u0e2a 1","\u0e44\u0e15\u0e23\u0e21\u0e32\u0e2a 2","\u0e44\u0e15\u0e23\u0e21\u0e32\u0e2a 3","\u0e44\u0e15\u0e23\u0e21\u0e32\u0e2a 4"],eraNarrow:["\u0e1e.\u0e28."],"days-format-wide":"\u0e27\u0e31\u0e19\u0e2d\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c,\u0e27\u0e31\u0e19\u0e08\u0e31\u0e19\u0e17\u0e23\u0e4c,\u0e27\u0e31\u0e19\u0e2d\u0e31\u0e07\u0e04\u0e32\u0e23,\u0e27\u0e31\u0e19\u0e1e\u0e38\u0e18,\u0e27\u0e31\u0e19\u0e1e\u0e24\u0e2b\u0e31\u0e2a\u0e1a\u0e14\u0e35,\u0e27\u0e31\u0e19\u0e28\u0e38\u0e01\u0e23\u0e4c,\u0e27\u0e31\u0e19\u0e40\u0e2a\u0e32\u0e23\u0e4c".split(","),
-"dateFormatItem-h":"h a"});
+define(
+"dojo/cldr/nls/th/buddhist", //begin v1.x content
+{
+	"dateFormatItem-yM": "M/yyyy",
+	"dateFormatItem-yQ": "Q yyyy",
+	"dayPeriods-format-wide-pm": "หลังเที่ยง",
+	"eraNames": [
+		"พุทธศักราช"
+	],
+	"dateFormatItem-MMMEd": "E d MMM",
+	"dateFormatItem-hms": "h:mm:ss a",
+	"dateFormatItem-yQQQ": "QQQ y",
+	"days-standAlone-wide": [
+		"วันอาทิตย์",
+		"วันจันทร์",
+		"วันอังคาร",
+		"วันพุธ",
+		"วันพฤหัสบดี",
+		"วันศุกร์",
+		"วันเสาร์"
+	],
+	"dateFormatItem-MMM": "LLL",
+	"months-standAlone-narrow": [
+		"ม.ค.",
+		"ก.พ.",
+		"มี.ค.",
+		"เม.ย.",
+		"พ.ค.",
+		"มิ.ย.",
+		"ก.ค.",
+		"ส.ค.",
+		"ก.ย.",
+		"ต.ค.",
+		"พ.ย.",
+		"ธ.ค."
+	],
+	"dayPeriods-format-wide-am": "ก่อนเที่ยง",
+	"quarters-standAlone-abbr": [
+		"ไตรมาส 1",
+		"ไตรมาส 2",
+		"ไตรมาส 3",
+		"ไตรมาส 4"
+	],
+	"dateFormatItem-y": "G y",
+	"timeFormat-full": "H นาฬิกา mm นาที ss วินาที zzzz",
+	"months-standAlone-abbr": [
+		"ม.ค.",
+		"ก.พ.",
+		"มี.ค.",
+		"เม.ย.",
+		"พ.ค.",
+		"มิ.ย.",
+		"ก.ค.",
+		"ส.ค.",
+		"ก.ย.",
+		"ต.ค.",
+		"พ.ย.",
+		"ธ.ค."
+	],
+	"dateFormatItem-Ed": "E d",
+	"dateFormatItem-yMMM": "MMM y",
+	"days-standAlone-narrow": [
+		"อา.",
+		"จ.",
+		"อ.",
+		"พ.",
+		"พฤ.",
+		"ศ.",
+		"ส."
+	],
+	"eraAbbr": [
+		"พ.ศ."
+	],
+	"dateFormatItem-yyyyMMMM": "MMMM y",
+	"dateFormat-long": "d MMMM y",
+	"dateFormatItem-Hm": "HH:mm",
+	"dateFormat-medium": "d MMM y",
+	"dateFormatItem-Hms": "HH:mm:ss",
+	"dayPeriods-format-narrow-pm": "หลังเที่ยง",
+	"dateFormatItem-yMd": "d/M/yyyy",
+	"quarters-standAlone-wide": [
+		"ไตรมาส 1",
+		"ไตรมาส 2",
+		"ไตรมาส 3",
+		"ไตรมาส 4"
+	],
+	"dateFormatItem-yMMMM": "MMMM y",
+	"dateFormatItem-ms": "mm:ss",
+	"dayPeriods-format-narrow-am": "ก่อนเที่ยง",
+	"months-standAlone-wide": [
+		"มกราคม",
+		"กุมภาพันธ์",
+		"มีนาคม",
+		"เมษายน",
+		"พฤษภาคม",
+		"มิถุนายน",
+		"กรกฎาคม",
+		"สิงหาคม",
+		"กันยายน",
+		"ตุลาคม",
+		"พฤศจิกายน",
+		"ธันวาคม"
+	],
+	"dateFormatItem-MMMMEd": "E d MMMM",
+	"dateFormatItem-MMMd": "d MMM",
+	"dateFormatItem-yyQ": "Q yy",
+	"timeFormat-long": "H นาฬิกา mm นาที ss วินาที z",
+	"months-format-abbr": [
+		"ม.ค.",
+		"ก.พ.",
+		"มี.ค.",
+		"เม.ย.",
+		"พ.ค.",
+		"มิ.ย.",
+		"ก.ค.",
+		"ส.ค.",
+		"ก.ย.",
+		"ต.ค.",
+		"พ.ย.",
+		"ธ.ค."
+	],
+	"dateFormatItem-H": "HH",
+	"dateFormatItem-MMMMd": "d MMMM",
+	"quarters-format-abbr": [
+		"ไตรมาส 1",
+		"ไตรมาส 2",
+		"ไตรมาส 3",
+		"ไตรมาส 4"
+	],
+	"days-format-abbr": [
+		"อา.",
+		"จ.",
+		"อ.",
+		"พ.",
+		"พฤ.",
+		"ศ.",
+		"ส."
+	],
+	"dateFormatItem-mmss": "mm:ss",
+	"dateFormatItem-M": "L",
+	"days-format-narrow": [
+		"อา.",
+		"จ.",
+		"อ.",
+		"พ.",
+		"พฤ.",
+		"ศ.",
+		"ส."
+	],
+	"dateFormatItem-yMMMd": "d MMM y",
+	"dateFormatItem-MEd": "E, d/M",
+	"months-format-narrow": [
+		"ม.ค.",
+		"ก.พ.",
+		"มี.ค.",
+		"เม.ย.",
+		"พ.ค.",
+		"มิ.ย",
+		"ก.ค.",
+		"ส.ค.",
+		"ก.ย.",
+		"ต.ค.",
+		"พ.ย.",
+		"ธ.ค."
+	],
+	"days-standAlone-short": [
+		"อา.",
+		"จ.",
+		"อ.",
+		"พ.",
+		"พฤ.",
+		"ศ.",
+		"ส."
+	],
+	"dateFormatItem-hm": "h:mm a",
+	"days-standAlone-abbr": [
+		"อา.",
+		"จ.",
+		"อ.",
+		"พ.",
+		"พฤ.",
+		"ศ.",
+		"ส."
+	],
+	"dateFormat-short": "d/M/yy",
+	"dateFormatItem-yyyyM": "M/yyyy",
+	"dateFormatItem-yMMMEd": "E d MMM y",
+	"dateFormat-full": "EEEEที่ d MMMM G y",
+	"dateFormatItem-Md": "d/M",
+	"dateFormatItem-yMEd": "E d/M/yyyy",
+	"months-format-wide": [
+		"มกราคม",
+		"กุมภาพันธ์",
+		"มีนาคม",
+		"เมษายน",
+		"พฤษภาคม",
+		"มิถุนายน",
+		"กรกฎาคม",
+		"สิงหาคม",
+		"กันยายน",
+		"ตุลาคม",
+		"พฤศจิกายน",
+		"ธันวาคม"
+	],
+	"days-format-short": [
+		"อา.",
+		"จ.",
+		"อ.",
+		"พ.",
+		"พฤ.",
+		"ศ.",
+		"ส."
+	],
+	"dateFormatItem-d": "d",
+	"quarters-format-wide": [
+		"ไตรมาส 1",
+		"ไตรมาส 2",
+		"ไตรมาส 3",
+		"ไตรมาส 4"
+	],
+	"eraNarrow": [
+		"พ.ศ."
+	],
+	"days-format-wide": [
+		"วันอาทิตย์",
+		"วันจันทร์",
+		"วันอังคาร",
+		"วันพุธ",
+		"วันพฤหัสบดี",
+		"วันศุกร์",
+		"วันเสาร์"
+	],
+	"dateFormatItem-h": "h a"
+}
+//end v1.x content
+);

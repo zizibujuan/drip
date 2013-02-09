@@ -1,2 +1,6 @@
-//>>built
-define("dijit/form/nls/az/ComboBox",{previousMessage:"\u018fvv\u0259lki variantlar",nextMessage:"Ba\u015fqa variantlar"});
+define(
+"dijit/form/nls/az/ComboBox", ({
+	"previousMessage" : "Əvvəlki variantlar",
+	"nextMessage" : "Başqa variantlar"
+})
+);

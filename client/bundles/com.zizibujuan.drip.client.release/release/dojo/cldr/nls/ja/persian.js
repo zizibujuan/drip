@@ -1,7 +1,183 @@
-//>>built
-define("dojo/cldr/nls/ja/persian",{"dateFormatItem-yM":"y/M","dateFormatItem-yQ":"y/Q","dayPeriods-format-wide-pm":"\u5348\u5f8c","dateFormatItem-MMMEd":"M\u6708d\u65e5(E)","dateFormatItem-hms":"aK:mm:ss","dateFormatItem-yQQQ":"yQQQ","dateFormatItem-MMM":"M\u6708","months-standAlone-narrow":"1,2,3,4,5,6,7,8,9,10,11,12".split(","),"dayPeriods-format-wide-am":"\u5348\u524d","dateFormatItem-y":"y\u5e74","timeFormat-full":"H\u6642mm\u5206ss\u79d2 zzzz","months-standAlone-abbr":"\u30d5\u30a1\u30eb\u30f4\u30a1\u30eb\u30c7\u30a3\u30fc\u30f3,\u30aa\u30eb\u30c7\u30a3\u30fc\u30d9\u30d8\u30b7\u30e5\u30c8,\u30db\u30eb\u30c0\u30fc\u30c9,\u30c6\u30a3\u30fc\u30eb,\u30e2\u30eb\u30c0\u30fc\u30c9,\u30b7\u30e3\u30cf\u30ea\u30fc\u30f4\u30a1\u30eb,\u30e1\u30d5\u30eb,\u30a2\u30fc\u30d0\u30fc\u30f3,\u30a2\u30fc\u30b6\u30eb,\u30c7\u30a4,\u30d0\u30d5\u30de\u30f3,\u30a8\u30b9\u30d5\u30a1\u30f3\u30c9".split(","),
-"dateFormatItem-Ed":"d\u65e5(E)","dateFormatItem-yMMM":"y\u5e74M\u6708","days-standAlone-narrow":"\u65e5,\u6708,\u706b,\u6c34,\u6728,\u91d1,\u571f".split(","),eraAbbr:["AP"],"dateFormat-long":"y\u5e74M\u6708d\u65e5","timeFormat-medium":"H:mm:ss","dateFormatItem-Hm":"H:mm","dateFormat-medium":"yyyy/MM/dd","dateFormatItem-Hms":"H:mm:ss","dateFormatItem-yMd":"y/M/d","months-standAlone-wide":"\u30d5\u30a1\u30eb\u30f4\u30a1\u30eb\u30c7\u30a3\u30fc\u30f3,\u30aa\u30eb\u30c7\u30a3\u30fc\u30d9\u30d8\u30b7\u30e5\u30c8,\u30db\u30eb\u30c0\u30fc\u30c9,\u30c6\u30a3\u30fc\u30eb,\u30e2\u30eb\u30c0\u30fc\u30c9,\u30b7\u30e3\u30cf\u30ea\u30fc\u30f4\u30a1\u30eb,\u30e1\u30d5\u30eb,\u30a2\u30fc\u30d0\u30fc\u30f3,\u30a2\u30fc\u30b6\u30eb,\u30c7\u30a4,\u30d0\u30d5\u30de\u30f3,\u30a8\u30b9\u30d5\u30a1\u30f3\u30c9".split(","),
-"dateFormatItem-MMMd":"M\u6708d\u65e5","timeFormat-long":"H:mm:ss z","months-format-abbr":"\u30d5\u30a1\u30eb\u30f4\u30a1\u30eb\u30c7\u30a3\u30fc\u30f3,\u30aa\u30eb\u30c7\u30a3\u30fc\u30d9\u30d8\u30b7\u30e5\u30c8,\u30db\u30eb\u30c0\u30fc\u30c9,\u30c6\u30a3\u30fc\u30eb,\u30e2\u30eb\u30c0\u30fc\u30c9,\u30b7\u30e3\u30cf\u30ea\u30fc\u30f4\u30a1\u30eb,\u30e1\u30d5\u30eb,\u30a2\u30fc\u30d0\u30fc\u30f3,\u30a2\u30fc\u30b6\u30eb,\u30c7\u30a4,\u30d0\u30d5\u30de\u30f3,\u30a8\u30b9\u30d5\u30a1\u30f3\u30c9".split(","),
-"timeFormat-short":"H:mm","dateFormatItem-H":"H\u6642","quarters-format-abbr":["1Q","2Q","3Q","4Q"],"days-format-abbr":"\u65e5,\u6708,\u706b,\u6c34,\u6728,\u91d1,\u571f".split(","),"dateFormatItem-M":"M\u6708","dateFormatItem-yMMMd":"y\u5e74M\u6708d\u65e5","dateFormatItem-MEd":"M/d(E)","months-format-narrow":"1,2,3,4,5,6,7,8,9,10,11,12".split(","),"days-standAlone-short":"\u65e5,\u6708,\u706b,\u6c34,\u6728,\u91d1,\u571f".split(","),"dateFormatItem-hm":"aK:mm","dateFormat-short":"yyyy/MM/dd","dateFormatItem-yMMMEd":"y\u5e74M\u6708d\u65e5(E)",
-"dateFormat-full":"y\u5e74M\u6708d\u65e5EEEE","dateFormatItem-Md":"M/d","dateFormatItem-yMEd":"y/M/d(E)","months-format-wide":"\u30d5\u30a1\u30eb\u30f4\u30a1\u30eb\u30c7\u30a3\u30fc\u30f3,\u30aa\u30eb\u30c7\u30a3\u30fc\u30d9\u30d8\u30b7\u30e5\u30c8,\u30db\u30eb\u30c0\u30fc\u30c9,\u30c6\u30a3\u30fc\u30eb,\u30e2\u30eb\u30c0\u30fc\u30c9,\u30b7\u30e3\u30cf\u30ea\u30fc\u30f4\u30a1\u30eb,\u30e1\u30d5\u30eb,\u30a2\u30fc\u30d0\u30fc\u30f3,\u30a2\u30fc\u30b6\u30eb,\u30c7\u30a4,\u30d0\u30d5\u30de\u30f3,\u30a8\u30b9\u30d5\u30a1\u30f3\u30c9".split(","),
-"days-format-short":"\u65e5,\u6708,\u706b,\u6c34,\u6728,\u91d1,\u571f".split(","),"dateFormatItem-d":"d\u65e5","quarters-format-wide":["\u7b2c1\u56db\u534a\u671f","\u7b2c2\u56db\u534a\u671f","\u7b2c3\u56db\u534a\u671f","\u7b2c4\u56db\u534a\u671f"],"days-format-wide":"\u65e5\u66dc\u65e5,\u6708\u66dc\u65e5,\u706b\u66dc\u65e5,\u6c34\u66dc\u65e5,\u6728\u66dc\u65e5,\u91d1\u66dc\u65e5,\u571f\u66dc\u65e5".split(","),"dateFormatItem-h":"aK\u6642"});
+define(
+"dojo/cldr/nls/ja/persian", //begin v1.x content
+{
+	"dateFormatItem-yM": "y/M",
+	"dateFormatItem-yQ": "y/Q",
+	"dayPeriods-format-wide-pm": "午後",
+	"dateFormatItem-MMMEd": "M月d日(E)",
+	"dateFormatItem-hms": "aK:mm:ss",
+	"dateFormatItem-yQQQ": "yQQQ",
+	"dateFormatItem-MMM": "M月",
+	"months-standAlone-narrow": [
+		"1",
+		"2",
+		"3",
+		"4",
+		"5",
+		"6",
+		"7",
+		"8",
+		"9",
+		"10",
+		"11",
+		"12"
+	],
+	"dayPeriods-format-wide-am": "午前",
+	"dateFormatItem-y": "y年",
+	"timeFormat-full": "H時mm分ss秒 zzzz",
+	"months-standAlone-abbr": [
+		"ファルヴァルディーン",
+		"オルディーベヘシュト",
+		"ホルダード",
+		"ティール",
+		"モルダード",
+		"シャハリーヴァル",
+		"メフル",
+		"アーバーン",
+		"アーザル",
+		"デイ",
+		"バフマン",
+		"エスファンド"
+	],
+	"dateFormatItem-Ed": "d日(E)",
+	"dateFormatItem-yMMM": "y年M月",
+	"days-standAlone-narrow": [
+		"日",
+		"月",
+		"火",
+		"水",
+		"木",
+		"金",
+		"土"
+	],
+	"eraAbbr": [
+		"AP"
+	],
+	"dateFormat-long": "y年M月d日",
+	"timeFormat-medium": "H:mm:ss",
+	"dateFormatItem-Hm": "H:mm",
+	"dateFormat-medium": "yyyy/MM/dd",
+	"dateFormatItem-Hms": "H:mm:ss",
+	"dateFormatItem-yMd": "y/M/d",
+	"months-standAlone-wide": [
+		"ファルヴァルディーン",
+		"オルディーベヘシュト",
+		"ホルダード",
+		"ティール",
+		"モルダード",
+		"シャハリーヴァル",
+		"メフル",
+		"アーバーン",
+		"アーザル",
+		"デイ",
+		"バフマン",
+		"エスファンド"
+	],
+	"dateFormatItem-MMMd": "M月d日",
+	"timeFormat-long": "H:mm:ss z",
+	"months-format-abbr": [
+		"ファルヴァルディーン",
+		"オルディーベヘシュト",
+		"ホルダード",
+		"ティール",
+		"モルダード",
+		"シャハリーヴァル",
+		"メフル",
+		"アーバーン",
+		"アーザル",
+		"デイ",
+		"バフマン",
+		"エスファンド"
+	],
+	"timeFormat-short": "H:mm",
+	"dateFormatItem-H": "H時",
+	"quarters-format-abbr": [
+		"1Q",
+		"2Q",
+		"3Q",
+		"4Q"
+	],
+	"days-format-abbr": [
+		"日",
+		"月",
+		"火",
+		"水",
+		"木",
+		"金",
+		"土"
+	],
+	"dateFormatItem-M": "M月",
+	"dateFormatItem-yMMMd": "y年M月d日",
+	"dateFormatItem-MEd": "M/d(E)",
+	"months-format-narrow": [
+		"1",
+		"2",
+		"3",
+		"4",
+		"5",
+		"6",
+		"7",
+		"8",
+		"9",
+		"10",
+		"11",
+		"12"
+	],
+	"days-standAlone-short": [
+		"日",
+		"月",
+		"火",
+		"水",
+		"木",
+		"金",
+		"土"
+	],
+	"dateFormatItem-hm": "aK:mm",
+	"dateFormat-short": "yyyy/MM/dd",
+	"dateFormatItem-yMMMEd": "y年M月d日(E)",
+	"dateFormat-full": "y年M月d日EEEE",
+	"dateFormatItem-Md": "M/d",
+	"dateFormatItem-yMEd": "y/M/d(E)",
+	"months-format-wide": [
+		"ファルヴァルディーン",
+		"オルディーベヘシュト",
+		"ホルダード",
+		"ティール",
+		"モルダード",
+		"シャハリーヴァル",
+		"メフル",
+		"アーバーン",
+		"アーザル",
+		"デイ",
+		"バフマン",
+		"エスファンド"
+	],
+	"days-format-short": [
+		"日",
+		"月",
+		"火",
+		"水",
+		"木",
+		"金",
+		"土"
+	],
+	"dateFormatItem-d": "d日",
+	"quarters-format-wide": [
+		"第1四半期",
+		"第2四半期",
+		"第3四半期",
+		"第4四半期"
+	],
+	"days-format-wide": [
+		"日曜日",
+		"月曜日",
+		"火曜日",
+		"水曜日",
+		"木曜日",
+		"金曜日",
+		"土曜日"
+	],
+	"dateFormatItem-h": "aK時"
+}
+//end v1.x content
+);

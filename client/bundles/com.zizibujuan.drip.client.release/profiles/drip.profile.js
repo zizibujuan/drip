@@ -19,16 +19,27 @@ var profile = {
 	// 排除tests, demos和template文件
 	mini: true,
 	
-	// 使用Closure Compiler作为javascript的压缩器，最新版本也支持uglify压缩
-	optimize: 'closure',
+	// 使用Closure Compiler作为javascript的压缩器，最新版本也支持uglify,closure压缩
+	//optimize: 'uglify',
 	
-	// 设置压缩layers的工具，如果没有设置，默认为"shrinksafe"。最新版本也支持uglify
-	layerOptimize: 'closure',
+	// 设置压缩layers的工具，如果没有设置，默认为"shrinksafe"。最新版本也支持uglify,closure
+	layerOptimize: 'uglify',
 	
 	// 将代码中的所有console语句删掉。也可以设置为“warn”，删除除了console.error之外的所有console语句
 	stripConsole: 'all',
 	
-	// selectorEngine: 'acme'
+	selectorEngine: "lite",
+	/* 
+    defaultConfig: {
+        hasCache:{
+            "dojo-built": 1,
+            "dojo-loader": 1,
+            "dom": 1,
+            "host-browser": 1,
+            "config-selectorEngine": "lite"
+        },
+        async: 1
+    },*/
 	
 	staticHasFeatures: {
 		"config-deferredInstrumentation": 0,
@@ -59,7 +70,12 @@ var profile = {
 		"dojo-v1x-i18n-Api": 1,
 		"dom": 1,
 		"host-browser": 1,
-		"extend-dojo": 1
+		"extend-dojo": 1,
+		
+	
+
+		// `dojo-xhr-factory` relies on `dojo-sync-loader`, which we have removed.
+		'dojo-xhr-factory': 0
 	},
 	
 	packages:[{
@@ -84,18 +100,39 @@ var profile = {
 	
 	layers:{
 		'dojo/dojo':{
-			include:['dojo/i18n', 
-			         'dojo/domReady', 
+			include:['dojo/i18n',
+			         'dojo/domReady',
 			         "dojo/parser",
 			         "dojo/store/JsonRest",
 			         "dojo/selector/acme",
 			         "dojo/html",
-			         "dojo/date"
-			         ], //, 'app/main', 'app/run'
+			         "dojo/date",
+			         "dojo/_base/unload",
+			         "dojo/text",
+			         "dojo/dom-class",
+			         "dojo/Stateful",
+			         "dojo/cache",
+			         "dojo/string",
+			         "dojo/touch",
+			         "dojo/window",
+			         "dojo/uacss",
+			         "dojo/hccss"
+			         ],
 			boot: true,
 			customBase: true
-		}//,
+		},
 		
-		//'app/Dialog': {}
+		'mathEditor/Editor': {
+			include:['mathEditor/Editor',
+			         'mathEditor/ContentAssist',
+			         'mathEditor/dataUtil',
+			         'mathEditor/lang',
+			         'mathEditor/mathContentAssist',
+			         'mathEditor/Model',
+			         'mathEditor/string',
+			         'mathEditor/View',
+			         'mathEditor/xmlUtil',
+			         'mathEditor/layer/Cursor']
+		}
 	}
 };

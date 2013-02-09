@@ -1,8 +1,302 @@
-//>>built
-define("dojox/mobile/ComboBox","dojo/_base/kernel,dojo/_base/declare,dojo/_base/lang,dojo/_base/window,dojo/dom-geometry,dojo/dom-style,dojo/window,dojo/touch,dijit/form/_AutoCompleterMixin,dijit/popup,./_ComboBoxMenu,./TextBox,./sniff".split(","),function(u,v,w,k,b,l,x,p,y,n,B,z,A){u.experimental("dojox.mobile.ComboBox");return v("dojox.mobile.ComboBox",[z,y],{dropDownClass:"dojox.mobile._ComboBoxMenu",selectOnClick:!1,autoComplete:!1,dropDown:null,maxHeight:-1,dropDownPosition:["below","above"],
-_throttleOpenClose:function(){this._throttleHandler&&this._throttleHandler.remove();this._throttleHandler=this.defer(function(){this._throttleHandler=null},500)},_onFocus:function(){this.inherited(arguments);!this._opened&&!this._throttleHandler&&this._startSearchAll()},onInput:function(b){this._onKey(b);this.inherited(arguments)},_setListAttr:function(b){this._set("list",b)},closeDropDown:function(){this._throttleOpenClose();if(this.endHandler)this.disconnect(this.startHandler),this.disconnect(this.endHandler),
-this.disconnect(this.moveHandler),clearInterval(this.repositionTimer),this.repositionTimer=this.endHandler=null;this.inherited(arguments);n.close(this.dropDown);this._opened=!1},openDropDown:function(){var m=!this._opened,d=this.dropDown,e=d.domNode,f=this.domNode,o=this;A("touch")&&k.global.scrollBy(0,b.position(f,!1).y);if(!this._preparedNode){this._preparedNode=!0;if(e.style.width)this._explicitDDWidth=!0;if(e.style.height)this._explicitDDHeight=!0}var a={display:"",overflow:"hidden",visibility:"hidden"};
-if(!this._explicitDDWidth)a.width="";if(!this._explicitDDHeight)a.height="";l.set(e,a);a=this.maxHeight;if(-1==a)var a=x.getBox(),c=b.position(f,!1),a=Math.floor(Math.max(c.y,a.h-(c.y+c.h)));n.moveOffScreen(d);d.startup&&!d._started&&d.startup();c=b.position(this.dropDown.containerNode,!1);if(a&&c.h>a)c.h=a;c.w=Math.max(c.w,f.offsetWidth);b.setMarginBox(e,c);e=n.open({parent:this,popup:d,around:f,orient:this.dropDownPosition,onExecute:function(){o.closeDropDown()},onCancel:function(){o.closeDropDown()},
-onClose:function(){o._opened=!1}});this._opened=!0;if(m){var i=!1,g=!1,h=!1,j=d.domNode.parentNode,m=b.position(f,!1),a=b.position(j,!1),q=a.x-m.x,r=a.y-m.y,s=-1,t=-1;this.startHandler=this.connect(k.doc.documentElement,p.press,function(a){h=g=!0;i=!1;s=a.clientX;t=a.clientY});this.moveHandler=this.connect(k.doc.documentElement,p.move,function(a){g=!0;if(a.touches)h=i=!0;else if(h&&(a.clientX!=s||a.clientY!=t))i=!0});this.clickHandler=this.connect(d.domNode,"onclick",function(){g=!0;h=i=!1});this.endHandler=
-this.connect(k.doc.documentElement,"onmouseup",function(){this.defer(function(){g=!0;!i&&h&&this.closeDropDown();h=!1})});this.repositionTimer=setInterval(w.hitch(this,function(){if(g)g=!1;else{var a=b.position(f,!1),c=b.position(j,!1),d=c.x-a.x,a=c.y-a.y;(1<=Math.abs(d-q)||1<=Math.abs(a-r))&&l.set(j,{left:parseInt(l.get(j,"left"))+q-d+"px",top:parseInt(l.get(j,"top"))+r-a+"px"})}}),50)}return e},postCreate:function(){this.inherited(arguments);this.connect(this.domNode,"onclick","_onClick")},destroy:function(){this.repositionTimer&&
-clearInterval(this.repositionTimer);this.inherited(arguments)},_onClick:function(){this._throttleHandler||(this.opened?this.closeDropDown():this._startSearchAll())}})});
+define("dojox/mobile/ComboBox", [
+	"dojo/_base/kernel",
+	"dojo/_base/declare",
+	"dojo/_base/lang",
+	"dojo/_base/window",
+	"dojo/dom-geometry",
+	"dojo/dom-style",
+	"dojo/window",
+	"dojo/touch",
+	"dijit/form/_AutoCompleterMixin",
+	"dijit/popup",
+	"./_ComboBoxMenu",
+	"./TextBox",
+	"./sniff"
+], function(kernel, declare, lang, win, domGeometry, domStyle, windowUtils, touch, AutoCompleterMixin, popup, ComboBoxMenu, TextBox, has){
+	kernel.experimental("dojox.mobile.ComboBox"); // should be using a more native search-type UI
+
+	return declare("dojox.mobile.ComboBox", [TextBox, AutoCompleterMixin], {
+		// summary:
+		//		A non-templated auto-completing text box widget.
+
+		// dropDownClass: [protected extension] String
+		//		Name of the drop-down widget class used to select a date/time.
+		//		Should be specified by subclasses.
+		dropDownClass: "dojox.mobile._ComboBoxMenu",
+
+		// initially disable selection since iphone displays selection handles
+		// that makes it hard to pick from the list
+		
+		// selectOnClick: Boolean
+		//		Flag which enables the selection on click.
+		selectOnClick: false,
+		
+		// autoComplete: Boolean
+		//		Flag which enables the auto-completion.
+		autoComplete: false,
+
+		// dropDown: [protected] Widget
+		//		The widget to display as a popup. This widget *must* be
+		//		defined before the startup function is called.
+		dropDown: null,
+
+		// maxHeight: [protected] int
+		//		The maximum height for the drop-down.
+		//		Any drop-down taller than this value will have scrollbars.
+		//		Set to -1 to limit the height to the available space in the viewport.
+		maxHeight: -1,
+
+		// dropDownPosition: [const] String[]
+		//		This variable controls the position of the drop-down.
+		//		It is an array of strings with the following values:
+		//
+		//		- before: places drop down to the left of the target node/widget, or to the right in
+		//		  the case of RTL scripts like Hebrew and Arabic
+		//		- after: places drop down to the right of the target node/widget, or to the left in
+		//		  the case of RTL scripts like Hebrew and Arabic
+		//		- above: drop down goes above target node
+		//		- below: drop down goes below target node
+		//
+		//		The list is positions is tried, in order, until a position is found where the drop down fits
+		//		within the viewport.
+		dropDownPosition: ["below","above"],
+
+		_throttleOpenClose: function(){
+			// summary:
+			//		Prevents the open/close in rapid succession.
+			// tags:
+			//		private
+			if(this._throttleHandler){
+				this._throttleHandler.remove();
+			}
+			this._throttleHandler = this.defer(function(){ this._throttleHandler = null; }, 500);
+		},
+
+		_onFocus: function(){
+			// summary:
+			//		Shows drop-down if the user is selecting Next/Previous from the virtual keyboard.
+			// tags:
+			//		private
+			this.inherited(arguments);
+			if(!this._opened && !this._throttleHandler){
+				this._startSearchAll(); 
+			}
+		},
+
+		onInput: function(e){
+			this._onKey(e);
+			this.inherited(arguments);
+		},
+
+		_setListAttr: function(v){
+			// tags:
+			//		private
+			this._set('list', v); // needed for Firefox 4+ to prevent HTML5 mode
+		},
+
+		closeDropDown: function(){
+			// summary:
+			//		Closes the drop down on this widget
+			// tags:
+			//		protected
+
+			this._throttleOpenClose();
+			if(this.endHandler){
+				this.disconnect(this.startHandler);
+				this.disconnect(this.endHandler);
+				this.disconnect(this.moveHandler);
+				clearInterval(this.repositionTimer);
+				this.repositionTimer = this.endHandler = null;
+			}
+			this.inherited(arguments);
+			popup.close(this.dropDown);
+			this._opened = false;
+		},
+
+		openDropDown: function(){
+			// summary:
+			//		Opens the dropdown for this widget. To be called only when this.dropDown
+			//		has been created and is ready to display (that is, its data is loaded).
+			// returns:
+			//		Returns the value of popup.open().
+			// tags:
+			//		protected
+
+			var wasClosed = !this._opened;
+			var dropDown = this.dropDown,
+				ddNode = dropDown.domNode,
+				aroundNode = this.domNode,
+				self = this;
+
+			if(has('touch')){
+				win.global.scrollBy(0, domGeometry.position(aroundNode, false).y); // don't call scrollIntoView since it messes up ScrollableView
+			}
+
+			// TODO: isn't maxHeight dependent on the return value from popup.open(),
+			// i.e., dependent on how much space is available (BK)
+
+			if(!this._preparedNode){
+				this._preparedNode = true;
+				// Check if we have explicitly set width and height on the dropdown widget dom node
+				if(ddNode.style.width){
+					this._explicitDDWidth = true;
+				}
+				if(ddNode.style.height){
+					this._explicitDDHeight = true;
+				}
+			}
+
+			// Code for resizing dropdown (height limitation, or increasing width to match my width)
+			var myStyle = {
+				display: "",
+				overflow: "hidden",
+				visibility: "hidden"
+			};
+			if(!this._explicitDDWidth){
+				myStyle.width = "";
+			}
+			if(!this._explicitDDHeight){
+				myStyle.height = "";
+			}
+			domStyle.set(ddNode, myStyle);
+
+			// Figure out maximum height allowed (if there is a height restriction)
+			var maxHeight = this.maxHeight;
+			if(maxHeight == -1){
+				// limit height to space available in viewport either above or below my domNode
+				// (whichever side has more room)
+				var viewport = windowUtils.getBox(),
+					position = domGeometry.position(aroundNode, false);
+				maxHeight = Math.floor(Math.max(position.y, viewport.h - (position.y + position.h)));
+			}
+
+			// Attach dropDown to DOM and make make visibility:hidden rather than display:none
+			// so we call startup() and also get the size
+			popup.moveOffScreen(dropDown);
+
+			if(dropDown.startup && !dropDown._started){
+				dropDown.startup(); // this has to be done after being added to the DOM
+			}
+			// Get size of drop down, and determine if vertical scroll bar needed
+			var mb = domGeometry.position(this.dropDown.containerNode, false);
+			var overHeight = (maxHeight && mb.h > maxHeight);
+			if(overHeight){
+				mb.h = maxHeight;
+			}
+
+			// Adjust dropdown width to match or be larger than my width
+			mb.w = Math.max(mb.w, aroundNode.offsetWidth);
+			domGeometry.setMarginBox(ddNode, mb);
+
+			var retVal = popup.open({
+				parent: this,
+				popup: dropDown,
+				around: aroundNode,
+				orient: this.dropDownPosition,
+				onExecute: function(){
+					self.closeDropDown();
+				},
+				onCancel: function(){
+					self.closeDropDown();
+				},
+				onClose: function(){
+					self._opened = false;
+				}
+			});
+			this._opened=true;
+
+			if(wasClosed){
+				var	isGesture = false,
+					skipReposition = false,
+					active = false,
+					wrapper = dropDown.domNode.parentNode,
+					aroundNodePos = domGeometry.position(aroundNode, false),
+					popupPos = domGeometry.position(wrapper, false),
+					deltaX = popupPos.x - aroundNodePos.x,
+					deltaY = popupPos.y - aroundNodePos.y,
+					startX = -1, startY = -1;
+
+				// touchstart isn't really needed since touchmove implies touchstart, but
+				// mousedown is needed since mousemove doesn't know if the left button is down or not
+				this.startHandler = this.connect(win.doc.documentElement, touch.press,
+					function(e){
+						skipReposition = true;
+						active = true;
+						isGesture = false;
+						startX = e.clientX;
+						startY = e.clientY;
+					}
+				);
+				this.moveHandler = this.connect(win.doc.documentElement, touch.move,
+					function(e){
+						skipReposition = true;
+						if(e.touches){
+							active = isGesture = true; // touchmove implies touchstart
+						}else if(active && (e.clientX != startX || e.clientY != startY)){
+							isGesture = true;
+						}
+					}
+				);
+				this.clickHandler = this.connect(dropDown.domNode, "onclick",
+					function(){
+						skipReposition = true;
+						active = isGesture = false; // click implies no gesture movement
+					}
+				);
+				this.endHandler = this.connect(win.doc.documentElement, "onmouseup",//touch.release,
+					function(){
+						this.defer(function(){ // allow onclick to go first
+							skipReposition = true;
+							if(!isGesture && active){ // if click without move, then close dropdown
+								this.closeDropDown();
+							}
+							active = false;
+						});
+					}
+				);
+				this.repositionTimer = setInterval(lang.hitch(this, function(){
+					if(skipReposition){ // don't reposition if busy
+						skipReposition = false;
+						return;
+					}
+					var	currentAroundNodePos = domGeometry.position(aroundNode, false),
+						currentPopupPos = domGeometry.position(wrapper, false),
+						currentDeltaX = currentPopupPos.x - currentAroundNodePos.x,
+						currentDeltaY = currentPopupPos.y - currentAroundNodePos.y;
+					// if the popup is no longer placed correctly, relocate it
+					if(Math.abs(currentDeltaX - deltaX) >= 1 || Math.abs(currentDeltaY - deltaY) >= 1){ // Firefox plays with partial pixels
+						domStyle.set(wrapper, { left: parseInt(domStyle.get(wrapper, "left")) + deltaX - currentDeltaX + 'px', top: parseInt(domStyle.get(wrapper, "top")) + deltaY - currentDeltaY + 'px' });
+					}
+				}), 50); // yield a short time to allow for consolidation for better CPU throughput
+			}
+
+			return retVal;
+		},
+
+		postCreate: function(){
+			this.inherited(arguments);
+			this.connect(this.domNode, "onclick", "_onClick");
+		},
+
+		destroy: function(){
+			if(this.repositionTimer){
+				clearInterval(this.repositionTimer);
+			}
+			this.inherited(arguments);
+		},
+
+		_onClick: function(/*Event*/ e){
+			// tags:
+			//		private
+			
+			// throttle clicks to prevent double click from doing double actions
+			if(!this._throttleHandler){
+				if(this.opened){
+					this.closeDropDown();
+				}else{
+					this._startSearchAll();
+				}
+			}
+		}
+	});
+});

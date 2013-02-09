@@ -27,7 +27,6 @@ require(["dojo/ready",
          "dojo/request/xhr",
          "dijit/registry",
          "drip/userSession",
-         "drip/Header",
          "drip/Activity",
          "dojo/domReady!"],function(
         		 ready,
@@ -39,6 +38,7 @@ require(["dojo/ready",
         		 userSession){
 	// 加载左侧栏目中的数据，因为左侧没有用dijit部件，所无需放在ready方法中
 	userSession.getLoggedUserInfo().then(function(userInfo){
+		console.log("登录用户信息:", userInfo);
 		// 在右侧用户信息区域显示
 		var profileImg = dom.byId("profileImage");
 		profileImg.alt = userInfo.displayName;
@@ -54,6 +54,11 @@ require(["dojo/ready",
 		topProfileImage.src = userInfo.smallImageUrl;
 		topProfileImage.alt = userInfo.displayName;
 		dom.byId("topUserName").innerHTML = userInfo.displayName;
+		
+		
+		// 在关注和粉丝的链接上加上登录者的用户标识
+		dom.byId("following_link").href = "/following/" + userInfo.id;//切记：出现在rest链接中的，只能是本地用户标识，而不是第三方网站或映射用户标识
+		dom.byId("follower_link").href = "/follower/" + userInfo.id;
 	});
 	
 	on(dom.byId("logout"),"click",userSession.logout);
@@ -274,13 +279,13 @@ color:#69768C;
 							 		<div class="clearfix">
 							 			<ul style="list-style: none;padding-left: 0px; margin-top: 20px">
 											<li style="float:left">
-												<a href="#" style="text-decoration: none;color:#333">
+												<a href="#" id="following_link" style="text-decoration: none;color:#333">
 												<strong id="follow_count" style="display:block;font-size: 20px"></strong>
 												<span style="display: block;text-align: center;">关注</span>
 												</a>
 											</li>
 											<li style="float:left; margin-left: 10px;">
-												<a href="#" style="text-decoration: none;color:#333">
+												<a href="#" id="follower_link" style="text-decoration: none;color:#333">
 													<strong id="fan_count" style="display:block;font-size: 20px"></strong>
 													<span style="display: block;text-align: center;">粉丝</span>
 												</a>

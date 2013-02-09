@@ -1,9 +1,189 @@
-//>>built
-define("dojo/cldr/nls/ar/persian",{"dateFormatItem-yM":"M/yyyy","dateFormatItem-yQ":"Q yyyy","dayPeriods-format-wide-pm":"\u0645",eraNames:["\u0647.\u0634"],"dateFormatItem-MMMEd":"E\u060c d MMM","dateFormatItem-yQQQ":"QQQ y","days-standAlone-wide":"\u0627\u0644\u0623\u062d\u062f,\u0627\u0644\u0627\u062b\u0646\u064a\u0646,\u0627\u0644\u062b\u0644\u0627\u062b\u0627\u0621,\u0627\u0644\u0623\u0631\u0628\u0639\u0627\u0621,\u0627\u0644\u062e\u0645\u064a\u0633,\u0627\u0644\u062c\u0645\u0639\u0629,\u0627\u0644\u0633\u0628\u062a".split(","),
-"months-standAlone-narrow":"\u064a,\u0641,\u0645,\u0623,\u0648,\u0646,\u0644,\u063a,\u0633,\u0643,\u0628,\u062f".split(","),"dayPeriods-format-wide-am":"\u0635","timeFormat-full":"h:mm:ss a zzzz","months-standAlone-abbr":"\u0641\u0631\u0641\u0631\u062f\u0646,\u0623\u0630\u0631\u0628\u064a\u0647\u0634\u062a,\u062e\u0631\u062f\u0627\u062f,\u062a\u0627\u0631,\u0645\u0631\u062f\u0627\u062f,\u0634\u0647\u0631\u0641\u0627\u0631,\u0645\u0647\u0631,\u0622\u064a\u0627\u0646,\u0622\u0630\u0631,\u062f\u064a,\u0628\u0647\u0645\u0646,\u0627\u0633\u0641\u0646\u062f\u0627\u0631".split(","),
-"dateFormatItem-Ed":"E\u060c d","dateFormatItem-yMMM":"MMM y","days-standAlone-narrow":"\u062d,\u0646,\u062b,\u0631,\u062e,\u062c,\u0633".split(","),eraAbbr:["\u0647.\u0634"],"dateFormat-long":"d MMMM\u060c y","timeFormat-medium":"h:mm:ss a","dateFormat-medium":"dd/MM/yyyy","dateFormatItem-yMd":"d/M/yyyy","quarters-standAlone-narrow":["\u0661","\u0662","\u0663","\u0664"],"months-standAlone-wide":"\u0641\u0631\u0641\u0631\u062f\u0646,\u0623\u0630\u0631\u0628\u064a\u0647\u0634\u062a,\u062e\u0631\u062f\u0627\u062f,\u062a\u0627\u0631,\u0645\u0631\u062f\u0627\u062f,\u0634\u0647\u0631\u0641\u0627\u0631,\u0645\u0647\u0631,\u0622\u064a\u0627\u0646,\u0622\u0630\u0631,\u062f\u064a,\u0628\u0647\u0645\u0646,\u0627\u0633\u0641\u0646\u062f\u0627\u0631".split(","),
-"dateFormatItem-MMMd":"d MMM","quarters-format-narrow":["\u0661","\u0662","\u0663","\u0664"],"timeFormat-long":"h:mm:ss a z","months-format-abbr":"\u0641\u0631\u0641\u0631\u062f\u0646,\u0623\u0630\u0631\u0628\u064a\u0647\u0634\u062a,\u062e\u0631\u062f\u0627\u062f,\u062a\u0627\u0631,\u0645\u0631\u062f\u0627\u062f,\u0634\u0647\u0631\u0641\u0627\u0631,\u0645\u0647\u0631,\u0622\u064a\u0627\u0646,\u0622\u0630\u0631,\u062f\u064a,\u0628\u0647\u0645\u0646,\u0627\u0633\u0641\u0646\u062f\u0627\u0631".split(","),
-"timeFormat-short":"h:mm a","days-format-abbr":"\u0627\u0644\u0623\u062d\u062f,\u0627\u0644\u0627\u062b\u0646\u064a\u0646,\u0627\u0644\u062b\u0644\u0627\u062b\u0627\u0621,\u0627\u0644\u0623\u0631\u0628\u0639\u0627\u0621,\u0627\u0644\u062e\u0645\u064a\u0633,\u0627\u0644\u062c\u0645\u0639\u0629,\u0627\u0644\u0633\u0628\u062a".split(","),"dateFormatItem-yMMMd":"d MMM\u060c y","dateFormatItem-MEd":"E\u060c d/M","days-standAlone-short":"\u0627\u0644\u0623\u062d\u062f,\u0627\u0644\u0627\u062b\u0646\u064a\u0646,\u0627\u0644\u062b\u0644\u0627\u062b\u0627\u0621,\u0627\u0644\u0623\u0631\u0628\u0639\u0627\u0621,\u0627\u0644\u062e\u0645\u064a\u0633,\u0627\u0644\u062c\u0645\u0639\u0629,\u0627\u0644\u0633\u0628\u062a".split(","),
-"days-standAlone-abbr":"\u0627\u0644\u0623\u062d\u062f,\u0627\u0644\u0627\u062b\u0646\u064a\u0646,\u0627\u0644\u062b\u0644\u0627\u062b\u0627\u0621,\u0627\u0644\u0623\u0631\u0628\u0639\u0627\u0621,\u0627\u0644\u062e\u0645\u064a\u0633,\u0627\u0644\u062c\u0645\u0639\u0629,\u0627\u0644\u0633\u0628\u062a".split(","),"dateFormat-short":"d/M/yyyy","dateFormatItem-yMMMEd":"E\u060c d MMM\u060c y","dateFormat-full":"EEEE\u060c d MMMM\u060c y","dateFormatItem-Md":"d/M","dateFormatItem-yMEd":"E\u060c d/M/yyyy",
-"months-format-wide":"\u0641\u0631\u0641\u0631\u062f\u0646,\u0623\u0630\u0631\u0628\u064a\u0647\u0634\u062a,\u062e\u0631\u062f\u0627\u062f,\u062a\u0627\u0631,\u0645\u0631\u062f\u0627\u062f,\u0634\u0647\u0631\u0641\u0627\u0631,\u0645\u0647\u0631,\u0622\u064a\u0627\u0646,\u0622\u0630\u0631,\u062f\u064a,\u0628\u0647\u0645\u0646,\u0627\u0633\u0641\u0646\u062f\u0627\u0631".split(","),"days-format-short":"\u0627\u0644\u0623\u062d\u062f,\u0627\u0644\u0627\u062b\u0646\u064a\u0646,\u0627\u0644\u062b\u0644\u0627\u062b\u0627\u0621,\u0627\u0644\u0623\u0631\u0628\u0639\u0627\u0621,\u0627\u0644\u062e\u0645\u064a\u0633,\u0627\u0644\u062c\u0645\u0639\u0629,\u0627\u0644\u0633\u0628\u062a".split(","),
-"quarters-format-wide":["\u0627\u0644\u0631\u0628\u0639 \u0627\u0644\u0623\u0648\u0644","\u0627\u0644\u0631\u0628\u0639 \u0627\u0644\u062b\u0627\u0646\u064a","\u0627\u0644\u0631\u0628\u0639 \u0627\u0644\u062b\u0627\u0644\u062b","\u0627\u0644\u0631\u0628\u0639 \u0627\u0644\u0631\u0627\u0628\u0639"],eraNarrow:["\u0647.\u0634"],"days-format-wide":"\u0627\u0644\u0623\u062d\u062f,\u0627\u0644\u0627\u062b\u0646\u064a\u0646,\u0627\u0644\u062b\u0644\u0627\u062b\u0627\u0621,\u0627\u0644\u0623\u0631\u0628\u0639\u0627\u0621,\u0627\u0644\u062e\u0645\u064a\u0633,\u0627\u0644\u062c\u0645\u0639\u0629,\u0627\u0644\u0633\u0628\u062a".split(",")});
+define(
+"dojo/cldr/nls/ar/persian", //begin v1.x content
+{
+	"dateFormatItem-yM": "M/yyyy",
+	"dateFormatItem-yQ": "Q yyyy",
+	"dayPeriods-format-wide-pm": "م",
+	"eraNames": [
+		"ه.ش"
+	],
+	"dateFormatItem-MMMEd": "E، d MMM",
+	"dateFormatItem-yQQQ": "QQQ y",
+	"days-standAlone-wide": [
+		"الأحد",
+		"الاثنين",
+		"الثلاثاء",
+		"الأربعاء",
+		"الخميس",
+		"الجمعة",
+		"السبت"
+	],
+	"months-standAlone-narrow": [
+		"ي",
+		"ف",
+		"م",
+		"أ",
+		"و",
+		"ن",
+		"ل",
+		"غ",
+		"س",
+		"ك",
+		"ب",
+		"د"
+	],
+	"dayPeriods-format-wide-am": "ص",
+	"timeFormat-full": "h:mm:ss a zzzz",
+	"months-standAlone-abbr": [
+		"فرفردن",
+		"أذربيهشت",
+		"خرداد",
+		"تار",
+		"مرداد",
+		"شهرفار",
+		"مهر",
+		"آيان",
+		"آذر",
+		"دي",
+		"بهمن",
+		"اسفندار"
+	],
+	"dateFormatItem-Ed": "E، d",
+	"dateFormatItem-yMMM": "MMM y",
+	"days-standAlone-narrow": [
+		"ح",
+		"ن",
+		"ث",
+		"ر",
+		"خ",
+		"ج",
+		"س"
+	],
+	"eraAbbr": [
+		"ه.ش"
+	],
+	"dateFormat-long": "d MMMM، y",
+	"timeFormat-medium": "h:mm:ss a",
+	"dateFormat-medium": "dd/MM/yyyy",
+	"dateFormatItem-yMd": "d/M/yyyy",
+	"quarters-standAlone-narrow": [
+		"١",
+		"٢",
+		"٣",
+		"٤"
+	],
+	"months-standAlone-wide": [
+		"فرفردن",
+		"أذربيهشت",
+		"خرداد",
+		"تار",
+		"مرداد",
+		"شهرفار",
+		"مهر",
+		"آيان",
+		"آذر",
+		"دي",
+		"بهمن",
+		"اسفندار"
+	],
+	"dateFormatItem-MMMd": "d MMM",
+	"quarters-format-narrow": [
+		"١",
+		"٢",
+		"٣",
+		"٤"
+	],
+	"timeFormat-long": "h:mm:ss a z",
+	"months-format-abbr": [
+		"فرفردن",
+		"أذربيهشت",
+		"خرداد",
+		"تار",
+		"مرداد",
+		"شهرفار",
+		"مهر",
+		"آيان",
+		"آذر",
+		"دي",
+		"بهمن",
+		"اسفندار"
+	],
+	"timeFormat-short": "h:mm a",
+	"days-format-abbr": [
+		"الأحد",
+		"الاثنين",
+		"الثلاثاء",
+		"الأربعاء",
+		"الخميس",
+		"الجمعة",
+		"السبت"
+	],
+	"dateFormatItem-yMMMd": "d MMM، y",
+	"dateFormatItem-MEd": "E، d/M",
+	"days-standAlone-short": [
+		"الأحد",
+		"الاثنين",
+		"الثلاثاء",
+		"الأربعاء",
+		"الخميس",
+		"الجمعة",
+		"السبت"
+	],
+	"days-standAlone-abbr": [
+		"الأحد",
+		"الاثنين",
+		"الثلاثاء",
+		"الأربعاء",
+		"الخميس",
+		"الجمعة",
+		"السبت"
+	],
+	"dateFormat-short": "d/M/yyyy",
+	"dateFormatItem-yMMMEd": "E، d MMM، y",
+	"dateFormat-full": "EEEE، d MMMM، y",
+	"dateFormatItem-Md": "d/M",
+	"dateFormatItem-yMEd": "E، d/M/yyyy",
+	"months-format-wide": [
+		"فرفردن",
+		"أذربيهشت",
+		"خرداد",
+		"تار",
+		"مرداد",
+		"شهرفار",
+		"مهر",
+		"آيان",
+		"آذر",
+		"دي",
+		"بهمن",
+		"اسفندار"
+	],
+	"days-format-short": [
+		"الأحد",
+		"الاثنين",
+		"الثلاثاء",
+		"الأربعاء",
+		"الخميس",
+		"الجمعة",
+		"السبت"
+	],
+	"quarters-format-wide": [
+		"الربع الأول",
+		"الربع الثاني",
+		"الربع الثالث",
+		"الربع الرابع"
+	],
+	"eraNarrow": [
+		"ه.ش"
+	],
+	"days-format-wide": [
+		"الأحد",
+		"الاثنين",
+		"الثلاثاء",
+		"الأربعاء",
+		"الخميس",
+		"الجمعة",
+		"السبت"
+	]
+}
+//end v1.x content
+);

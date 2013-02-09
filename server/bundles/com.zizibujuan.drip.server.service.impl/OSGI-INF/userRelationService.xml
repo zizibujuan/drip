@@ -9,6 +9,22 @@
    		interface="com.zizibujuan.drip.server.dao.UserRelationDao" 
    		name="userRelationDao" 
    		policy="dynamic"/>
+   
+   <reference 
+   		bind="setOAuthUserMapDao" 
+   		unbind="unsetOAuthUserMapDao" 
+   		cardinality="0..1" 
+   		interface="com.zizibujuan.drip.server.dao.OAuthUserMapDao" 
+   		name="oAuthUserMapDao" 
+   		policy="dynamic"/>
+   		
+   <reference 
+   		bind="setUserService" 
+   		unbind="unsetUserService" 
+   		cardinality="0..1" 
+   		interface="com.zizibujuan.drip.server.service.UserService" 
+   		name="userService" 
+   		policy="dynamic"/>
    		
    <service>
       <provide interface="com.zizibujuan.drip.server.service.UserRelationService"/>

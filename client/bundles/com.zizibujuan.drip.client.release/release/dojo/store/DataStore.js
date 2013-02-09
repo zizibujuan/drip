@@ -1,5 +1,202 @@
-//>>built
-define("dojo/store/DataStore","../_base/lang,../_base/declare,../_base/Deferred,../_base/array,./util/QueryResults,./util/SimpleQueryEngine".split(","),function(m,k,g,n,o,p){return k("dojo.store.DataStore",null,{target:"",constructor:function(a){m.mixin(this,a);if(!1 in a){var c;try{c=this.store.getIdentityAttributes()}catch(b){}this.idProperty=!c||!idAttributes[0]||this.idProperty}a=this.store.getFeatures();if(!a["dojo.data.api.Read"])this.get=null;if(!a["dojo.data.api.Identity"])this.getIdentity=
-null;if(!a["dojo.data.api.Write"])this.put=this.add=null},idProperty:"id",store:null,queryEngine:p,_objectConverter:function(a){function c(a){for(var i={},l=b.getAttributes(a),j=0;j<l.length;j++){var f=l[j],h=b.getValues(a,f);if(1<h.length){for(f=0;f<h.length;f++){var e=h[f];"object"==typeof e&&b.isItem(e)&&(h[f]=c(e))}e=h}else e=b.getValue(a,f),"object"==typeof e&&b.isItem(e)&&(e=c(e));i[l[j]]=e}!(d in i)&&b.getIdentity&&(i[d]=b.getIdentity(a));return i}var b=this.store,d=this.idProperty;return function(b){return a(c(b))}},
-get:function(a){var c,b,d=new g;this.store.fetchItemByIdentity({identity:a,onItem:this._objectConverter(function(a){d.resolve(c=a)}),onError:function(a){d.reject(b=a)}});if(c)return c;if(b)throw b;return d.promise},put:function(a,c){var b=c&&"undefined"!=typeof c.id||this.getIdentity(a),d=this.store,g=this.idProperty;"undefined"==typeof b?(d.newItem(a),d.save()):d.fetchItemByIdentity({identity:b,onItem:function(b){if(b)for(var c in a)c!=g&&d.getValue(b,c)!=a[c]&&d.setValue(b,c,a[c]);else d.newItem(a);
-d.save()}})},remove:function(a){var c=this.store;this.store.fetchItemByIdentity({identity:a,onItem:function(a){c.deleteItem(a);c.save()}})},query:function(a,c){var b,d=new g(function(){b.abort&&b.abort()});d.total=new g;var k=this._objectConverter(function(a){return a});b=this.store.fetch(m.mixin({query:a,onBegin:function(a){d.total.resolve(a)},onComplete:function(a){d.resolve(n.map(a,k))},onError:function(a){d.reject(a)}},c));return o(d)},getIdentity:function(a){return a[this.idProperty]}})});
+define("dojo/store/DataStore", [
+	"../_base/lang", "../_base/declare", "../Deferred", "../_base/array",
+	"./util/QueryResults", "./util/SimpleQueryEngine" /*=====, "./api/Store" =====*/
+], function(lang, declare, Deferred, array, QueryResults, SimpleQueryEngine /*=====, Store =====*/){
+
+// module:
+//		dojo/store/DataStore
+
+
+// No base class, but for purposes of documentation, the base class is dojo/store/api/Store
+var base = null;
+/*===== base = Store; =====*/
+
+return declare("dojo.store.DataStore", base, {
+	// summary:
+	//		This is an adapter for using Dojo Data stores with an object store consumer.
+	//		You can provide a Dojo data store and use this adapter to interact with it through
+	//		the Dojo object store API
+
+	target: "",
+	constructor: function(options){
+		// options: Object?
+		//		This provides any configuration information that will be mixed into the store,
+		//		including a reference to the Dojo data store under the property "store".
+		lang.mixin(this, options);
+ 		if(!"idProperty" in options){
+			var idAttribute; 
+			try{
+				idAttribute = this.store.getIdentityAttributes(); 
+			}catch(e){ 
+	 		// some store are not requiring an item instance to give us the ID attributes 
+	 		// but some other do and throw errors in that case. 
+			} 
+			// if no idAttribute we have implicit id 
+			this.idProperty = (!idAttribute || !idAttributes[0]) || this.idProperty; 
+		}
+		var features = this.store.getFeatures();
+		// check the feature set and null out any methods that shouldn't be available
+		if(!features["dojo.data.api.Read"]){
+			this.get = null;
+		}
+		if(!features["dojo.data.api.Identity"]){
+			this.getIdentity = null;
+		}
+		if(!features["dojo.data.api.Write"]){
+			this.put = this.add = null;
+		}
+	},
+	// idProperty: String
+	//		The object property to use to store the identity of the store items.
+	idProperty: "id",
+	// store:
+	//		The object store to convert to a data store
+	store: null,
+	// queryEngine: Function
+	//		Defines the query engine to use for querying the data store
+	queryEngine: SimpleQueryEngine,
+	
+	_objectConverter: function(callback){
+		var store = this.store;
+		var idProperty = this.idProperty;
+		function convert(item){
+			var object = {};
+			var attributes = store.getAttributes(item);
+			for(var i = 0; i < attributes.length; i++){
+				var attribute = attributes[i];
+				var values = store.getValues(item, attribute);
+				if(values.length > 1){
+					for(var j = 0; j < values.length; j++){
+						var value = values[j];
+						if(typeof value == 'object' && store.isItem(value)){
+							values[j] = convert(value);
+						}
+					}
+					value = values;
+				}else{
+					var value = store.getValue(item, attribute);
+					if(typeof value == 'object' && store.isItem(value)){
+						value = convert(value);
+					}
+				}
+				object[attributes[i]] = value;
+			}
+			if(!(idProperty in object) && store.getIdentity){
+				object[idProperty] = store.getIdentity(item);
+			}
+			return object;
+		}
+		return function(item){
+			return callback(convert(item));
+		};
+	},
+	get: function(id, options){
+		// summary:
+		//		Retrieves an object by it's identity. This will trigger a fetchItemByIdentity
+		// id: Object?
+		//		The identity to use to lookup the object
+		var returnedObject, returnedError;
+		var deferred = new Deferred();
+		this.store.fetchItemByIdentity({
+			identity: id,
+			onItem: this._objectConverter(function(object){
+				deferred.resolve(returnedObject = object);
+			}),
+			onError: function(error){
+				deferred.reject(returnedError = error);
+			}
+		});
+		if(returnedObject){
+			// if it was returned synchronously
+			return returnedObject;
+		}
+		if(returnedError){
+			throw returnedError;
+		}
+		return deferred.promise;
+	},
+	put: function(object, options){
+		// summary:
+		//		Stores an object by its identity.
+		// object: Object
+		//		The object to store.
+		// options: Object?
+		//		Additional metadata for storing the data.  Includes a reference to an id
+		//		that the object may be stored with (i.e. { id: "foo" }).
+		var id = options && typeof options.id != "undefined" || this.getIdentity(object);
+		var store = this.store;
+		var idProperty = this.idProperty;
+		if(typeof id == "undefined"){
+			store.newItem(object);
+			store.save();
+		}else{
+			store.fetchItemByIdentity({
+				identity: id,
+				onItem: function(item){
+					if(item){
+						for(var i in object){
+							if(i != idProperty && // don't copy id properties since they are immutable and should be omitted for implicit ids 
+									store.getValue(item, i) != object[i]){
+								store.setValue(item, i, object[i]);
+							}
+						}
+					}else{
+						store.newItem(object);
+					}
+					store.save();
+				}
+			});
+		}
+	},
+	remove: function(id){
+		// summary:
+		//		Deletes an object by its identity.
+		// id: Object
+		//		The identity to use to delete the object
+		var store = this.store;
+		this.store.fetchItemByIdentity({
+			identity: id,
+			onItem: function(item){
+				store.deleteItem(item);
+				store.save();
+			}
+		});
+	},
+	query: function(query, options){
+		// summary:
+		//		Queries the store for objects.
+		// query: Object
+		//		The query to use for retrieving objects from the store
+		// options: Object?
+		//		Optional options object as used by the underlying dojo.data Store.
+		// returns: dojo/store/api/Store.QueryResults
+		//		A query results object that can be used to iterate over results.
+		var fetchHandle;
+		var deferred = new Deferred(function(){ fetchHandle.abort && fetchHandle.abort(); });
+		deferred.total = new Deferred();
+		var converter = this._objectConverter(function(object){return object;});
+		fetchHandle = this.store.fetch(lang.mixin({
+			query: query,
+			onBegin: function(count){
+				deferred.total.resolve(count);
+			},
+			onComplete: function(results){
+				deferred.resolve(array.map(results, converter));
+			},
+			onError: function(error){
+				deferred.reject(error);
+			}
+		}, options));
+		return QueryResults(deferred);
+	},
+	getIdentity: function(object){
+		// summary:
+		//		Fetch the identity for the given object.
+		// object: Object
+		//		The data object to get the identity from.
+		// returns: Number
+		//		The id of the given object.
+		return object[this.idProperty];
+	}
+});
+});

@@ -1,5 +1,10 @@
 package com.zizibujuan.drip.server.service;
 
+import java.util.List;
+import java.util.Map;
+
+import com.zizibujuan.drip.server.util.PageInfo;
+
 /**
  * 用户关系服务接口
  * @author jzw
@@ -28,5 +33,21 @@ public interface UserRelationService {
 	 * @param followUserId 被关注的用户标识
 	 */
 	void unFollow(Long userId, Long followUserId);
+
+	/**
+	 * 获取我关注的用户列表
+	 * @param pageInfo 分页信息
+	 * @param localUserId 本地用户标识，注意不能使用映射的用户标识，这个标识是全网站唯一的，而localUserId会对应多个第三方用户标识
+	 * @return 关注的用户列表，如果没有则返回空的列表。
+	 */
+	List<Map<String, Object>> getFollowing(PageInfo pageInfo, Long localUserId);
+
+	/**
+	 * 获取关注我的用户列表
+	 * @param pageInfo 分页信息
+	 * @param localUserId 本地用户标识，注意不能使用映射的用户标识，这个标识是全网站唯一的，而localUserId会对应多个第三方用户标识
+	 * @return 关注我的用户列表，如果没有则返回空的列表。
+	 */
+	List<Map<String, Object>> getFollowers(PageInfo pageInfo, Long localUserId);
 
 }

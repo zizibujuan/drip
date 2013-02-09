@@ -1,3 +1,74 @@
-//>>built
-define("dojox/gauges/TextIndicator",["dojo/_base/declare","./_Indicator"],function(c,f){return c("dojox.gauges.TextIndicator",[f],{x:0,y:0,align:"middle",fixedPrecision:!0,precision:0,draw:function(c){var a=this.value;if(a<this._gauge.min)a=this._gauge.min;if(a>this._gauge.max)a=this._gauge.max;var b=this._gauge?this._gauge._getNumberModule():null,a=b?this.fixedPrecision?b.format(a,{places:this.precision}):b.format(a):this.fixedPrecision?a.toFixed(this.precision):a.toString(),b=this.x?this.x:0,d=
-this.y?this.y:0,e=this.align?this.align:"middle";this.shape?this.shape.setShape({x:b,y:d,text:a,align:e}):this.shape=c.createText({x:b,y:d,text:a,align:e});this.shape.setFill(this.color);this.font&&this.shape.setFont(this.font)}})});
+define("dojox/gauges/TextIndicator", ["dojo/_base/declare","./_Indicator"],
+  function(declare, Indicator) {
+
+return declare("dojox.gauges.TextIndicator", [Indicator], {
+	// summary:
+	//		A gauge indicator the simply draws its value as text.
+	
+	
+	// x: Number
+	//		The x coordinate of the indicator
+	x: 0,
+	
+	// y: Number
+	//		The y coordinate of the indicator
+	y: 0,
+	
+	// align: String
+	//		The horizontal alignment of the text, the value can be 'middle' (the default), 'left' or 'right'
+	align: 'middle',
+	
+	// fixedPrecision: Boolean
+	//		Indicates that the number is displayed in fixed precision or not (precision is defined by the 'precision' property (default is true).
+	fixedPrecision: true,
+	
+	// precision: Number
+	//		The number of tailing digits to display the value of the indicator when the 'fixedPrecision' property is set to true (default is 0).
+	precision: 0,
+	
+	draw: function(group, /*Boolean?*/ dontAnimate){
+		// summary:
+		//		Override of dojox.gauges._Indicator.draw
+		var v = this.value;
+		
+		if (v < this._gauge.min) {
+			v = this._gauge.min;
+		}
+		if (v > this._gauge.max) {
+			v = this._gauge.max;
+		}
+		var txt;
+		var NumberUtils = this._gauge ? this._gauge._getNumberModule() : null;
+		if (NumberUtils) {
+			txt = this.fixedPrecision ? NumberUtils.format(v, {
+				places: this.precision
+			}) : NumberUtils.format(v);
+		} else {
+			txt = this.fixedPrecision ? v.toFixed(this.precision) : v.toString();
+		}
+		
+		var x = this.x ? this.x : 0;
+		var y = this.y ? this.y : 0;
+		var align = this.align ? this.align : "middle";
+		if(!this.shape){
+			this.shape = group.createText({
+				x: x,
+				y: y,
+				text: txt,
+				align: align
+			});
+		}else{
+			this.shape.setShape({
+				x: x,
+				y: y,
+				text: txt,
+				align: align
+			});
+		}
+		this.shape.setFill(this.color);
+		if (this.font) this.shape.setFont(this.font);
+		
+	}
+	
+});
+});

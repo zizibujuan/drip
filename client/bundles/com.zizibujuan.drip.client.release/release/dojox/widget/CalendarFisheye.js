@@ -1,2 +1,11 @@
-//>>built
-define("dojox/widget/CalendarFisheye",["dojo/_base/declare","./Calendar","./_FisheyeFX"],function(a,b,c){return a("dojox.widget.CalendarFisheye",[b,c],{})});
+define("dojox/widget/CalendarFisheye", [
+	"dojo/_base/declare",
+	"./Calendar",
+	"./_FisheyeFX"
+], function(declare, Calendar, _FisheyeFX) {
+	return declare("dojox.widget.CalendarFisheye", [ Calendar, _FisheyeFX ], {
+		// summary:
+		//		The standard Calendar. It includes day, month and year views.
+		//		FisheyeLite effects are included.
+	});
+});

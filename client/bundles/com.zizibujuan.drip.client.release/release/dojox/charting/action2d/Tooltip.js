@@ -1,7 +1,197 @@
-//>>built
-define("dojox/charting/action2d/Tooltip","dijit/Tooltip,dojo/_base/lang,dojo/_base/declare,dojo/_base/window,dojo/_base/connect,dojo/dom-style,./PlotAction,dojox/gfx/matrix,dojox/lang/functional,dojox/lang/functional/scan,dojox/lang/functional/fold".split(","),function(h,l,m,n,o,p,q,r,f){var g=function(a,b){var c=a.run&&a.run.data&&a.run.data[a.index];return c&&"number"!=typeof c&&(c.tooltip||c.text)?c.tooltip||c.text:b.tooltipFunc?b.tooltipFunc(a):a.y},i=Math.PI/4,s=Math.PI/2;return m("dojox.charting.action2d.Tooltip",
-q,{defaultParams:{text:g,mouseOver:!0},optionalParams:{},constructor:function(a,b,c){this.text=c&&c.text?c.text:g;this.mouseOver=c&&void 0!=c.mouseOver?c.mouseOver:!0;this.connect()},process:function(a){if("onplotreset"===a.type||"onmouseout"===a.type)h.hide(this.aroundRect),this.aroundRect=null,"onplotreset"===a.type&&delete this.angles;else if(a.shape&&!(this.mouseOver&&"onmouseover"!==a.type||!this.mouseOver&&"onclick"!==a.type)){var b={type:"rect"},c=["after-centered","before-centered"],e=this.chart.offsets.l-
-this.chart.offsets.r,d=this.chart.isRightToLeft?this.chart.isRightToLeft():!1,g=!1;switch(a.element){case "marker":b.x=d?this.chart.dim.width-a.cx+e:a.cx;b.y=a.cy;b.w=b.h=1;break;case "circle":b.x=d?this.chart.dim.width-a.cx-a.cr+e:a.cx-a.cr;b.y=a.cy-a.cr;b.w=b.h=2*a.cr;break;case "spider_circle":b.x=a.cx;b.y=a.cy;b.w=b.h=1;break;case "spider_plot":return;case "column":c=["above-centered","below-centered"],g=!0;case "bar":b=l.clone(a.shape.getShape());b.w=b.width;b.h=b.height;if(d)b.x=this.chart.dim.width-
-b.width-b.x+e,g||(c=["before-centered","after-centered"]);break;case "candlestick":b.x=d?this.chart.dim.width+e-a.x:a.x;b.y=a.y;b.w=a.width;b.h=a.height;break;default:if(!this.angles)this.angles="number"==typeof a.run.data[0]?f.map(f.scanl(a.run.data,"+",0),"* 2 * Math.PI / this",f.foldl(a.run.data,"+",0)):f.map(f.scanl(a.run.data,"a + b.y",0),"* 2 * Math.PI / this",f.foldl(a.run.data,"a + b.y",0));e=r._degToRad(a.plot.opt.startAngle);d=(this.angles[a.index]+this.angles[a.index+1])/2+e;b.x=a.cx+a.cr*
-Math.cos(d);b.y=a.cy+a.cr*Math.sin(d);b.w=b.h=1;if(e&&(0>d||d>2*Math.PI))d=Math.abs(2*Math.PI-Math.abs(d));d<i||(d<s+i?c=["below-centered","above-centered"]:d<Math.PI+i?c=["before-centered","after-centered"]:d<2*Math.PI-i&&(c=["above-centered","below-centered"]))}e=this.chart.getCoords();b.x+=e.x;b.y+=e.y;b.x=Math.round(b.x);b.y=Math.round(b.y);b.w=Math.ceil(b.w);b.h=Math.ceil(b.h);this.aroundRect=b;a=this.text(a,this.plot);if(this.chart.getTextDir)var j="rtl"==p.get(this.chart.node,"direction"),
-k="rtl"==this.chart.getTextDir(a);a&&(k&&!j?h.show("<span dir = 'rtl'>"+a+"</span>",this.aroundRect,c):!k&&j?h.show("<span dir = 'ltr'>"+a+"</span>",this.aroundRect,c):h.show(a,this.aroundRect,c));if(!this.mouseOver)this._handle=o.connect(n.doc,"onclick",this,"onClick")}},onClick:function(){this.process({type:"onmouseout"})}})});
+define("dojox/charting/action2d/Tooltip", ["dijit/Tooltip", "dojo/_base/lang", "dojo/_base/declare", "dojo/_base/window", "dojo/_base/connect", "dojo/dom-style",
+	"./PlotAction", "dojox/gfx/matrix", "dojox/lang/functional", "dojox/lang/functional/scan", "dojox/lang/functional/fold"],
+	function(Tooltip, lang, declare, win, hub, domStyle, PlotAction, m, df){
+	
+	/*=====
+	var __TooltipCtorArgs = {
+			// summary:
+			//		Additional arguments for tooltip actions.
+			// duration: Number?
+			//		The amount of time in milliseconds for an animation to last.  Default is 400.
+			// easing: dojo/fx/easing/*?
+			//		An easing object (see dojo.fx.easing) for use in an animation.  The
+			//		default is dojo.fx.easing.backOut.
+			// text: Function?
+			//		The function that produces the text to be shown within a tooltip.  By default this will be
+			//		set by the plot in question, by returning the value of the element.
+			// mouseOver: Boolean?
+            //		Whether the tooltip is enabled on mouse over or on mouse click / touch down. Default is true.
+	};
+	=====*/
+
+	var DEFAULT_TEXT = function(o, plot){
+		var t = o.run && o.run.data && o.run.data[o.index];
+		if(t && typeof t != "number" && (t.tooltip || t.text)){
+			return t.tooltip || t.text;
+		}
+		if(plot.tooltipFunc){
+			return plot.tooltipFunc(o);
+		}else{
+			return o.y;
+		}
+	};
+
+	var pi4 = Math.PI / 4, pi2 = Math.PI / 2;
+	
+	return declare("dojox.charting.action2d.Tooltip", PlotAction, {
+		// summary:
+		//		Create an action on a plot where a tooltip is shown when hovering over an element.
+
+		// the data description block for the widget parser
+		defaultParams: {
+			text: DEFAULT_TEXT,	// the function to produce a tooltip from the object
+            mouseOver: true
+		},
+		optionalParams: {},	// no optional parameters
+
+		constructor: function(chart, plot, kwArgs){
+			// summary:
+			//		Create the tooltip action and connect it to the plot.
+			// chart: dojox/charting/Chart
+			//		The chart this action belongs to.
+			// plot: String?
+			//		The plot this action is attached to.  If not passed, "default" is assumed.
+			// kwArgs: __TooltipCtorArgs?
+			//		Optional keyword arguments object for setting parameters.
+			this.text = kwArgs && kwArgs.text ? kwArgs.text : DEFAULT_TEXT;
+			this.mouseOver = kwArgs && kwArgs.mouseOver != undefined ? kwArgs.mouseOver : true;
+			this.connect();
+		},
+		
+		process: function(o){
+			// summary:
+			//		Process the action on the given object.
+			// o: dojox/gfx/shape.Shape
+			//		The object on which to process the highlighting action.
+			if(o.type === "onplotreset" || o.type === "onmouseout"){
+                Tooltip.hide(this.aroundRect);
+				this.aroundRect = null;
+				if(o.type === "onplotreset"){
+					delete this.angles;
+				}
+				return;
+			}
+			
+			if(!o.shape || (this.mouseOver && o.type !== "onmouseover") || (!this.mouseOver && o.type !== "onclick")){ return; }
+			
+			// calculate relative coordinates and the position
+			var aroundRect = {type: "rect"}, position = ["after-centered", "before-centered"];
+			// chart mirroring starts
+			var shift = this.chart.offsets.l - this.chart.offsets.r;
+			var isRTL = this.chart.isRightToLeft ? this.chart.isRightToLeft() : false;
+			var isColumn = false;   //check chart type (column/bars)
+			// chart mirroring ends
+			switch(o.element){
+				case "marker":
+					aroundRect.x = isRTL ? this.chart.dim.width - o.cx+shift : o.cx; // chart mirroring
+					aroundRect.y = o.cy;
+					aroundRect.w = aroundRect.h = 1;
+					break;
+				case "circle":
+					aroundRect.x = isRTL ? this.chart.dim.width-o.cx - o.cr+shift : o.cx - o.cr; // chart mirroring
+					aroundRect.y = o.cy - o.cr;
+					aroundRect.w = aroundRect.h = 2 * o.cr;
+					break;
+				case "spider_circle":
+					aroundRect.x = o.cx;
+					aroundRect.y = o.cy ;
+					aroundRect.w = aroundRect.h = 1;
+					break;
+				case "spider_plot":
+					return;
+				case "column":
+					position = ["above-centered", "below-centered"];
+					isColumn = true;  // chart mirroring
+					// intentional fall down
+				case "bar":
+					aroundRect = lang.clone(o.shape.getShape());
+					aroundRect.w = aroundRect.width;
+					aroundRect.h = aroundRect.height;
+					// chart mirroring starts
+					 if(isRTL){
+						aroundRect.x = this.chart.dim.width - aroundRect.width - aroundRect.x + shift;
+						if(!isColumn){
+							position = ["before-centered", "after-centered"];
+						}
+					}
+					// chart mirroring ends
+					break;
+				case "candlestick":
+					aroundRect.x = isRTL ? this.chart.dim.width + shift - o.x : o.x; // chart Mirroring
+					aroundRect.y = o.y;
+					aroundRect.w = o.width;
+					aroundRect.h = o.height;
+					break;
+				default:
+				//case "slice":
+					if(!this.angles){
+						// calculate the running total of slice angles
+						if(typeof o.run.data[0] == "number"){
+							this.angles = df.map(df.scanl(o.run.data, "+", 0),
+								"* 2 * Math.PI / this", df.foldl(o.run.data, "+", 0));
+						}else{
+							this.angles = df.map(df.scanl(o.run.data, "a + b.y", 0),
+								"* 2 * Math.PI / this", df.foldl(o.run.data, "a + b.y", 0));
+						}
+					}
+					var startAngle = m._degToRad(o.plot.opt.startAngle),
+						angle = (this.angles[o.index] + this.angles[o.index + 1]) / 2 + startAngle;
+					aroundRect.x = o.cx + o.cr * Math.cos(angle);
+					aroundRect.y = o.cy + o.cr * Math.sin(angle);
+					aroundRect.w = aroundRect.h = 1;
+                    // depending on startAngle we might go out of the 0-2*PI range, normalize that
+                    if(startAngle && (angle < 0 || angle > 2 * Math.PI)){
+						angle = Math.abs(2 * Math.PI  - Math.abs(angle));
+					}
+					// calculate the position
+					if(angle < pi4){
+						// do nothing: the position is right
+					}else if(angle < pi2 + pi4){
+						position = ["below-centered", "above-centered"];
+					}else if(angle < Math.PI + pi4){
+						position = ["before-centered", "after-centered"];
+					}else if(angle < 2 * Math.PI - pi4){
+						position = ["above-centered", "below-centered"];
+					}
+					/*
+					else{
+						// do nothing: the position is right
+					}
+					*/
+					break;
+			}
+			
+			// adjust relative coordinates to absolute, and remove fractions
+			var lt = this.chart.getCoords();
+			aroundRect.x += lt.x;
+			aroundRect.y += lt.y;
+			aroundRect.x = Math.round(aroundRect.x);
+			aroundRect.y = Math.round(aroundRect.y);
+			aroundRect.w = Math.ceil(aroundRect.w);
+			aroundRect.h = Math.ceil(aroundRect.h);
+			this.aroundRect = aroundRect;
+
+			var tooltip = this.text(o, this.plot);
+			if(this.chart.getTextDir){
+				var isChartDirectionRtl = (domStyle.get(this.chart.node, "direction") == "rtl");
+				var isBaseTextDirRtl = (this.chart.getTextDir(tooltip) == "rtl");
+			}
+			if(tooltip){
+				if(isBaseTextDirRtl && !isChartDirectionRtl){
+					Tooltip.show("<span dir = 'rtl'>" + tooltip +"</span>", this.aroundRect, position);
+				}
+				else if(!isBaseTextDirRtl && isChartDirectionRtl){
+					Tooltip.show("<span dir = 'ltr'>" + tooltip +"</span>", this.aroundRect, position);
+				}else{
+					Tooltip.show(tooltip, this.aroundRect, position);
+				}
+			}
+			if(!this.mouseOver){
+				this._handle = hub.connect(win.doc, "onclick", this, "onClick");
+			}
+		},
+		onClick: function(){
+			this.process({ type: "onmouseout"});
+		}
+	});
+});

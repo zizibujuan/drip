@@ -1,3 +1,62 @@
-//>>built
-define("dojo/request/handlers",["../json","../_base/kernel","../_base/array","../has"],function(h,i,j,c){function d(a){var b=f[a.options.handleAs];a.data=b?b(a):a.data||a.text;return a}c.add("activex","undefined"!==typeof ActiveXObject);var g;if(c("activex")){var k=["Msxml2.DOMDocument.6.0","Msxml2.DOMDocument.4.0","MSXML2.DOMDocument.3.0","MSXML.DOMDocument"];g=function(a){var b=a.data;if(!b||!b.documentElement){var c=a.text;j.some(k,function(a){try{var e=new ActiveXObject(a);e.async=!1;e.loadXML(c);
-b=e}catch(d){return!1}return!0})}return b}}var f={javascript:function(a){return i.eval(a.text||"")},json:function(a){return h.parse(a.text||null)},xml:g};d.register=function(a,b){f[a]=b};return d});
+define("dojo/request/handlers", [
+	'../json',
+	'../_base/kernel',
+	'../_base/array',
+	'../has'
+], function(JSON, kernel, array, has){
+	has.add('activex', typeof ActiveXObject !== 'undefined');
+
+	var handleXML;
+	if(has('activex')){
+		// GUIDs obtained from http://msdn.microsoft.com/en-us/library/ms757837(VS.85).aspx
+		var dp = [
+			'Msxml2.DOMDocument.6.0',
+			'Msxml2.DOMDocument.4.0',
+			'MSXML2.DOMDocument.3.0',
+			'MSXML.DOMDocument' // 2.0
+		];
+
+		handleXML = function(response){
+			var result = response.data;
+
+			if(!result || !result.documentElement){
+				var text = response.text;
+				array.some(dp, function(p){
+					try{
+						var dom = new ActiveXObject(p);
+						dom.async = false;
+						dom.loadXML(text);
+						result = dom;
+					}catch(e){ return false; }
+					return true;
+				});
+			}
+
+			return result;
+		};
+	}
+
+	var handlers = {
+		'javascript': function(response){
+			return kernel.eval(response.text || '');
+		},
+		'json': function(response){
+			return JSON.parse(response.text || null);
+		},
+		'xml': handleXML
+	};
+
+	function handle(response){
+		var handler = handlers[response.options.handleAs];
+
+		response.data = handler ? handler(response) : (response.data || response.text);
+
+		return response;
+	}
+
+	handle.register = function(name, handler){
+		handlers[name] = handler;
+	};
+
+	return handle;
+});

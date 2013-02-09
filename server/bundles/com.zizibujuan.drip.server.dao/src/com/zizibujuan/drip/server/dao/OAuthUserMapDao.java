@@ -38,5 +38,12 @@ public interface OAuthUserMapDao {
 	 * @throws SQLException 
 	 */
 	Long mapUserId(Connection conn, int authSiteId, String authUserId, Long userId) throws SQLException;
+	
+	/**
+	 * 获取映射用户标识对应的本地用户标识
+	 * @param mapUserId 映射用户标识
+	 * @return 本地用户标识
+	 */
+	Long getLocalUserId(Long mapUserId);
 
 }

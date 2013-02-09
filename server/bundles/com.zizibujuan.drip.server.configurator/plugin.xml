@@ -48,6 +48,16 @@
             alias="/follow"
             class="com.zizibujuan.drip.server.servlet.FollowServlet">
       </servlet>
+      <!-- 获取我关注的人 -->
+      <servlet
+            alias="/following"
+            class="com.zizibujuan.drip.server.servlet.FollowingServlet">
+      </servlet>
+      <!-- 获取关注我的人 -->
+      <servlet
+            alias="/followers"
+            class="com.zizibujuan.drip.server.servlet.FollowerServlet">
+      </servlet>
       <!-- 邀请好友 -->
       <servlet
             alias="/invites"

@@ -1,6 +1,188 @@
-//>>built
-define("dojo/cldr/nls/sv/hebrew",{"dateFormatItem-yM":"yyyy-MM","dateFormatItem-yQ":"yyyy Q","dayPeriods-format-wide-pm":"em","dateFormatItem-MMMEd":"E d MMM","days-standAlone-wide":"s\u00f6ndag,m\u00e5ndag,tisdag,onsdag,torsdag,fredag,l\u00f6rdag".split(","),"dayPeriods-format-wide-am":"fm","quarters-standAlone-abbr":["K1","K2","K3","K4"],"timeFormat-full":"'kl'. HH:mm:ss zzzz","months-standAlone-abbr":"tishr\u00ed,heshv\u00e1n,kisl\u00e9v,tev\u00e9t,shev\u00e1t,ad\u00e1r I,ad\u00e1r,nis\u00e1n,ijj\u00e1r,siv\u00e1n,tamm\u00faz,ab,el\u00fal".split(","),
-"dateFormatItem-Ed":"E d","dateFormatItem-yMMM":"MMM y","days-standAlone-narrow":"S,M,T,O,T,F,L".split(","),eraAbbr:["AM"],"dateFormat-long":"d MMMM y","dateFormat-medium":"d MMM y","dayPeriods-format-narrow-pm":"e","dateFormatItem-yMd":"yyyy-MM-dd","quarters-standAlone-wide":["1:a kvartalet","2:a kvartalet","3:e kvartalet","4:e kvartalet"],"dayPeriods-format-narrow-am":"f","months-standAlone-wide":"tishr\u00ed,heshv\u00e1n,kisl\u00e9v,tev\u00e9t,shev\u00e1t,ad\u00e1r I,ad\u00e1r,nis\u00e1n,ijj\u00e1r,siv\u00e1n,tamm\u00faz,ab,el\u00fal".split(","),
-"dateFormatItem-MMMd":"d MMM","months-format-abbr":"tishr\u00ed,heshv\u00e1n,kisl\u00e9v,tev\u00e9t,shev\u00e1t,ad\u00e1r I,ad\u00e1r,nis\u00e1n,ijj\u00e1r,siv\u00e1n,tamm\u00faz,ab,el\u00fal".split(","),"quarters-format-abbr":["K1","K2","K3","K4"],"days-format-abbr":"s\u00f6n,m\u00e5n,tis,ons,tors,fre,l\u00f6r".split(","),"days-format-narrow":"S,M,T,O,T,F,L".split(","),"dateFormatItem-yMMMd":"d MMM y","dateFormatItem-MEd":"E d/M","days-standAlone-short":"s\u00f6,m\u00e5,ti,on,to,fr,l\u00f6".split(","),
-"days-standAlone-abbr":"s\u00f6n,m\u00e5n,tis,ons,tor,fre,l\u00f6r".split(","),"dayPeriods-format-abbr-pm":"EM","dateFormatItem-yMMMEd":"E d MMM y","dateFormat-full":"EEEE'en' 'den' d:'e' MMMM y","dateFormatItem-Md":"d/M","dateFormatItem-yMEd":"E, yyyy-MM-dd","months-format-wide":"tishr\u00ed,heshv\u00e1n,kisl\u00e9v,tev\u00e9t,shev\u00e1t,ad\u00e1r I,ad\u00e1r,nis\u00e1n,ijj\u00e1r,siv\u00e1n,tamm\u00faz,ab,el\u00fal".split(","),"dayPeriods-format-abbr-am":"FM","days-format-short":"s\u00f6,m\u00e5,ti,on,to,fr,l\u00f6".split(","),
-"quarters-format-wide":["1:a kvartalet","2:a kvartalet","3:e kvartalet","4:e kvartalet"],"months-format-wide-leap":"ad\u00e1r II","days-format-wide":"s\u00f6ndag,m\u00e5ndag,tisdag,onsdag,torsdag,fredag,l\u00f6rdag".split(",")});
+define(
+"dojo/cldr/nls/sv/hebrew", //begin v1.x content
+{
+	"dateFormatItem-yM": "yyyy-MM",
+	"dateFormatItem-yQ": "yyyy Q",
+	"dayPeriods-format-wide-pm": "em",
+	"dateFormatItem-MMMEd": "E d MMM",
+	"days-standAlone-wide": [
+		"söndag",
+		"måndag",
+		"tisdag",
+		"onsdag",
+		"torsdag",
+		"fredag",
+		"lördag"
+	],
+	"dayPeriods-format-wide-am": "fm",
+	"quarters-standAlone-abbr": [
+		"K1",
+		"K2",
+		"K3",
+		"K4"
+	],
+	"timeFormat-full": "'kl'. HH:mm:ss zzzz",
+	"months-standAlone-abbr": [
+		"tishrí",
+		"heshván",
+		"kislév",
+		"tevét",
+		"shevát",
+		"adár I",
+		"adár",
+		"nisán",
+		"ijjár",
+		"siván",
+		"tammúz",
+		"ab",
+		"elúl"
+	],
+	"dateFormatItem-Ed": "E d",
+	"dateFormatItem-yMMM": "MMM y",
+	"days-standAlone-narrow": [
+		"S",
+		"M",
+		"T",
+		"O",
+		"T",
+		"F",
+		"L"
+	],
+	"eraAbbr": [
+		"AM"
+	],
+	"dateFormat-long": "d MMMM y",
+	"dateFormat-medium": "d MMM y",
+	"dayPeriods-format-narrow-pm": "e",
+	"dateFormatItem-yMd": "yyyy-MM-dd",
+	"quarters-standAlone-wide": [
+		"1:a kvartalet",
+		"2:a kvartalet",
+		"3:e kvartalet",
+		"4:e kvartalet"
+	],
+	"dayPeriods-format-narrow-am": "f",
+	"months-standAlone-wide": [
+		"tishrí",
+		"heshván",
+		"kislév",
+		"tevét",
+		"shevát",
+		"adár I",
+		"adár",
+		"nisán",
+		"ijjár",
+		"siván",
+		"tammúz",
+		"ab",
+		"elúl"
+	],
+	"dateFormatItem-MMMd": "d MMM",
+	"months-format-abbr": [
+		"tishrí",
+		"heshván",
+		"kislév",
+		"tevét",
+		"shevát",
+		"adár I",
+		"adár",
+		"nisán",
+		"ijjár",
+		"siván",
+		"tammúz",
+		"ab",
+		"elúl"
+	],
+	"quarters-format-abbr": [
+		"K1",
+		"K2",
+		"K3",
+		"K4"
+	],
+	"days-format-abbr": [
+		"sön",
+		"mån",
+		"tis",
+		"ons",
+		"tors",
+		"fre",
+		"lör"
+	],
+	"days-format-narrow": [
+		"S",
+		"M",
+		"T",
+		"O",
+		"T",
+		"F",
+		"L"
+	],
+	"dateFormatItem-yMMMd": "d MMM y",
+	"dateFormatItem-MEd": "E d/M",
+	"days-standAlone-short": [
+		"sö",
+		"må",
+		"ti",
+		"on",
+		"to",
+		"fr",
+		"lö"
+	],
+	"days-standAlone-abbr": [
+		"sön",
+		"mån",
+		"tis",
+		"ons",
+		"tor",
+		"fre",
+		"lör"
+	],
+	"dayPeriods-format-abbr-pm": "EM",
+	"dateFormatItem-yMMMEd": "E d MMM y",
+	"dateFormat-full": "EEEE'en' 'den' d:'e' MMMM y",
+	"dateFormatItem-Md": "d/M",
+	"dateFormatItem-yMEd": "E, yyyy-MM-dd",
+	"months-format-wide": [
+		"tishrí",
+		"heshván",
+		"kislév",
+		"tevét",
+		"shevát",
+		"adár I",
+		"adár",
+		"nisán",
+		"ijjár",
+		"siván",
+		"tammúz",
+		"ab",
+		"elúl"
+	],
+	"dayPeriods-format-abbr-am": "FM",
+	"days-format-short": [
+		"sö",
+		"må",
+		"ti",
+		"on",
+		"to",
+		"fr",
+		"lö"
+	],
+	"quarters-format-wide": [
+		"1:a kvartalet",
+		"2:a kvartalet",
+		"3:e kvartalet",
+		"4:e kvartalet"
+	],
+	"months-format-wide-leap": "adár II",
+	"days-format-wide": [
+		"söndag",
+		"måndag",
+		"tisdag",
+		"onsdag",
+		"torsdag",
+		"fredag",
+		"lördag"
+	]
+}
+//end v1.x content
+);

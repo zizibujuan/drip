@@ -1,4 +1,31 @@
-//>>built
-define("dojox/editor/plugins/nls/zh/TableDialog",{insertTableTitle:"\u63d2\u5165\u8868",modifyTableTitle:"\u4fee\u6539\u8868",rows:"\u884c\uff1a",columns:"\u5217\uff1a",align:"\u5bf9\u9f50\uff1a",cellPadding:"\u5355\u5143\u683c\u8fb9\u8ddd\uff1a",cellSpacing:"\u5355\u5143\u683c\u95f4\u9694\uff1a",tableWidth:"\u8868\u683c\u5bbd\u5ea6\uff1a",backgroundColor:"\u80cc\u666f\u989c\u8272\uff1a",borderColor:"\u8fb9\u6846\u989c\u8272\uff1a",borderThickness:"\u8fb9\u6846\u539a\u5ea6\uff1a",percent:"\u767e\u5206\u53f7",
-pixels:"\u50cf\u7d20","default":"\u7f3a\u7701",left:"\u5de6\u4fa7",center:"\u4e2d\u95f4",right:"\u53f3\u4fa7",buttonSet:"\u96c6",buttonInsert:"\u63d2\u5165",buttonCancel:"\u53d6\u6d88",selectTableLabel:"\u9009\u62e9\u8868\u683c",insertTableRowBeforeLabel:"\u5728\u4e4b\u524d\u6dfb\u52a0\u884c",insertTableRowAfterLabel:"\u5728\u4e4b\u540e\u6dfb\u52a0\u884c",insertTableColumnBeforeLabel:"\u5728\u4e4b\u524d\u6dfb\u52a0\u5217",insertTableColumnAfterLabel:"\u5728\u4e4b\u540e\u6dfb\u52a0\u5217",deleteTableRowLabel:"\u5220\u9664\u884c",
-deleteTableColumnLabel:"\u5220\u9664\u5217"});
+define(
+"dojox/editor/plugins/nls/zh/TableDialog", ({
+	insertTableTitle: "插入表",
+	modifyTableTitle: "修改表",
+	rows: "行：",
+	columns: "列：",
+	align: "对齐：",
+	cellPadding: "单元格边距：",
+	cellSpacing: "单元格间隔：",
+	tableWidth: "表格宽度：",
+	backgroundColor: "背景颜色：",
+	borderColor: "边框颜色：",
+	borderThickness: "边框厚度：",
+	percent: "百分号",
+	pixels: "像素",
+	"default": "缺省",
+	left: "左侧",
+	center: "中间",
+	right: "右侧",
+	buttonSet: "集", // translated elsewhere?
+	buttonInsert: "插入",
+	buttonCancel: "取消",
+	selectTableLabel: "选择表格",
+	insertTableRowBeforeLabel: "在之前添加行",
+	insertTableRowAfterLabel: "在之后添加行",
+	insertTableColumnBeforeLabel: "在之前添加列",
+	insertTableColumnAfterLabel: "在之后添加列",
+	deleteTableRowLabel: "删除行",
+	deleteTableColumnLabel: "删除列"
+})
+);

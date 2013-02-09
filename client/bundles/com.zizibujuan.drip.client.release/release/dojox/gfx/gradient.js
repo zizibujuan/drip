@@ -1,5 +1,159 @@
-//>>built
-define("dojox/gfx/gradient",["dojo/_base/lang","./matrix","dojo/_base/Color"],function(n,h,j){function l(a,c,i,e,f,b){a=h.multiplyPoint(i,a,c);e=h.multiplyPoint(e,a);return{r:a,p:e,o:h.multiplyPoint(f,e).x/b}}function o(a,c){return a.o-c.o}var m=n.getObject("dojox.gfx.gradient",!0);m.rescale=function(a,c,i){var e=a.length,f=i<c,b;f&&(b=c,c=i,i=b);if(!e)return[];if(i<=a[0].offset)b=[{offset:0,color:a[0].color},{offset:1,color:a[0].color}];else if(c>=a[e-1].offset)b=[{offset:0,color:a[e-1].color},{offset:1,
-color:a[e-1].color}];else{var h=i-c,d,k,g;b=[];0>c&&b.push({offset:0,color:new j(a[0].color)});for(g=0;g<e&&!(d=a[g],d.offset>=c);++g);g?(k=a[g-1],b.push({offset:0,color:j.blendColors(new j(k.color),new j(d.color),(c-k.offset)/(d.offset-k.offset))})):b.push({offset:0,color:new j(d.color)});for(;g<e;++g){d=a[g];if(d.offset>=i)break;b.push({offset:(d.offset-c)/h,color:new j(d.color)})}g<e?(k=a[g-1],b.push({offset:1,color:j.blendColors(new j(k.color),new j(d.color),(i-k.offset)/(d.offset-k.offset))})):
-b.push({offset:1,color:new j(a[e-1].color)})}if(f){b.reverse();for(g=0,e=b.length;g<e;++g)d=b[g],d.offset=1-d.offset}return b};m.project=function(a,c,i,e){var a=a||h.identity,f=h.multiplyPoint(a,c.x1,c.y1),b=h.multiplyPoint(a,c.x2,c.y2),j=Math.atan2(b.y-f.y,b.x-f.x),d=h.project(b.x-f.x,b.y-f.y),f=h.multiplyPoint(d,f),b=h.multiplyPoint(d,b),f=new h.Matrix2D([h.rotate(-j),{dx:-f.x,dy:-f.y}]),b=h.multiplyPoint(f,b).x,a=[l(i.x,i.y,a,d,f,b),l(e.x,e.y,a,d,f,b),l(i.x,e.y,a,d,f,b),l(e.x,i.y,a,d,f,b)].sort(o),
-c=m.rescale(c.colors,a[0].o,a[3].o);Math.atan2(a[3].r.y-a[0].r.y,a[3].r.x-a[0].r.x);return{type:"linear",x1:a[0].p.x,y1:a[0].p.y,x2:a[3].p.x,y2:a[3].p.y,colors:c,angle:j}};return m});
+define("dojox/gfx/gradient", ["dojo/_base/lang", "./matrix", "dojo/_base/Color"], 
+  function(lang, m, Color){
+// Various utilities to deal with a linear gradient (mostly VML-specific)
+	var grad = lang.getObject("dojox.gfx.gradient", true);
+	var C = Color;
+	
+	grad.rescale = function(stops, from, to){
+		// summary:
+		//		Recalculates a gradient from 0-1 window to
+		//		"from"-"to" window blending and replicating colors,
+		//		if necessary.
+		// stops: Array
+		//		input gradient as a list of colors with offsets
+		//		(see dojox/gfx.defaultLinearGradient and dojox/gfx.defaultRadialGradient)
+		// from: Number
+		//		the beginning of the window, should be less than "to"
+		// to: Number
+		//		the end of the window, should be more than "from"
+
+		var len = stops.length, reverseFlag = (to < from), newStops;
+
+		// do we need to reverse the color table?
+		if(reverseFlag){
+			var tmp = from;
+			from = to;
+			to = tmp;
+		}
+		
+		// various edge cases
+		if(!len){
+			// no colors
+			return [];
+		}
+		if(to <= stops[0].offset){
+			// all colors are before the color table
+			newStops = [
+				{offset: 0, color: stops[0].color},
+				{offset: 1, color: stops[0].color}
+			];
+		}else if(from >= stops[len - 1].offset){
+			// all colors are after the color table
+			newStops = [
+				{offset: 0, color: stops[len - 1].color},
+				{offset: 1, color: stops[len - 1].color}
+			];
+		}else{
+			// main scanning algorithm
+			var span = to - from, stop, prev, i;
+			newStops = [];
+			if(from < 0){
+				newStops.push({offset: 0, color: new C(stops[0].color)});
+			}
+			for(i = 0; i < len; ++i){
+				stop = stops[i];
+				if(stop.offset >= from){
+					break;
+				}
+				// skip this color
+			}
+			if(i){
+				prev = stops[i - 1];
+				newStops.push({
+					offset: 0,
+					color: Color.blendColors(new C(prev.color), new C(stop.color), (from - prev.offset) / (stop.offset - prev.offset))
+				});
+			}else{
+				newStops.push({offset: 0, color: new C(stop.color)});
+			}
+			for(; i < len; ++i){
+				stop = stops[i];
+				if(stop.offset >= to){
+					break;
+				}
+				newStops.push({offset: (stop.offset - from) / span, color: new C(stop.color)});
+			}
+			if(i < len){
+				prev = stops[i - 1];
+				newStops.push({
+					offset: 1,
+					color: Color.blendColors(new C(prev.color), new C(stop.color), (to - prev.offset) / (stop.offset - prev.offset))
+				});
+			}else{
+				newStops.push({offset: 1, color: new C(stops[len - 1].color)});
+			}
+		}
+		
+		// reverse the color table, if needed
+		if(reverseFlag){
+			newStops.reverse();
+			for(i = 0, len = newStops.length; i < len; ++i){
+				stop = newStops[i];
+				stop.offset = 1 - stop.offset;
+			}
+		}
+		
+		return newStops;
+	};
+	
+	function getPoint(x, y, matrix, project, shiftAndRotate, scale){
+		var r = m.multiplyPoint(matrix, x, y),
+			p = m.multiplyPoint(project, r);
+		return {r: r, p: p, o: m.multiplyPoint(shiftAndRotate, p).x / scale};
+	}
+	
+	function sortPoints(a, b){
+		return a.o - b.o;
+	}
+	
+	grad.project = function(matrix, gradient, tl, rb, ttl, trb){
+		// summary:
+		//		Returns a new gradient using the "VML algorithm" and suitable for VML.
+		// matrix: dojox/gfx/matrix.Matrix2D|null
+		//		matrix to apply to a shape and its gradient
+		// gradient: Object
+		//		a linear gradient object to be transformed
+		// tl: dojox/gfx.Point
+		//		top-left corner of shape's bounding box
+		// rb: dojox/gfx.Point
+		//		right-bottom corner of shape's bounding box
+		// ttl: dojox/gfx.Point
+		//		top-left corner of shape's transformed bounding box
+		// trb: dojox/gfx.Point
+		//		right-bottom corner of shape's transformed bounding box
+		
+		matrix = matrix || m.identity;
+
+		var f1 = m.multiplyPoint(matrix, gradient.x1, gradient.y1),
+			f2 = m.multiplyPoint(matrix, gradient.x2, gradient.y2),
+			angle = Math.atan2(f2.y - f1.y, f2.x - f1.x),
+			project = m.project(f2.x - f1.x, f2.y - f1.y),
+			pf1 = m.multiplyPoint(project, f1),
+			pf2 = m.multiplyPoint(project, f2),
+			shiftAndRotate = new m.Matrix2D([m.rotate(-angle), {dx: -pf1.x, dy: -pf1.y}]),
+			scale = m.multiplyPoint(shiftAndRotate, pf2).x,
+			//comboMatrix = new m.Matrix2D([shiftAndRotate, project, matrix]),
+			// bbox-specific calculations
+			points = [
+					getPoint(tl.x, tl.y, matrix, project, shiftAndRotate, scale),
+					getPoint(rb.x, rb.y, matrix, project, shiftAndRotate, scale),
+					getPoint(tl.x, rb.y, matrix, project, shiftAndRotate, scale),
+					getPoint(rb.x, tl.y, matrix, project, shiftAndRotate, scale)
+				].sort(sortPoints),
+			from = points[0].o,
+			to   = points[3].o,
+			stops = grad.rescale(gradient.colors, from, to),
+			//angle2 = Math.atan2(Math.abs(points[3].r.y - points[0].r.y) * (f2.y - f1.y), Math.abs(points[3].r.x - points[0].r.x) * (f2.x - f1.x));
+			angle2 = Math.atan2(points[3].r.y - points[0].r.y, points[3].r.x - points[0].r.x);
+
+		return {
+			type: "linear",
+			x1: points[0].p.x, y1: points[0].p.y, x2: points[3].p.x, y2: points[3].p.y,
+			colors: stops,
+			// additional helpers (for VML)
+			angle: angle
+		};
+	};
+	
+	return grad;
+});

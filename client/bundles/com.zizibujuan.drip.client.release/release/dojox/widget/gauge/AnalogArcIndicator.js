@@ -1,2 +1,8 @@
-//>>built
-define("dojox/widget/gauge/AnalogArcIndicator",["dijit","dojo","dojox","dojo/require!dojox/gauges/AnalogArcIndicator"],function(c,a,b){a.provide("dojox.widget.gauge.AnalogArcIndicator");a.require("dojox.gauges.AnalogArcIndicator");b.widget.gauge.AnalogArcIndicator=b.gauges.AnalogArcIndicator});
+// wrapped by build app
+define("dojox/widget/gauge/AnalogArcIndicator", ["dojo","dijit","dojox","dojo/require!dojox/gauges/AnalogArcIndicator"], function(dojo,dijit,dojox){
+dojo.provide('dojox.widget.gauge.AnalogArcIndicator');
+dojo.require("dojox.gauges.AnalogArcIndicator");
+
+dojox.widget.gauge.AnalogArcIndicator = dojox.gauges.AnalogArcIndicator;
+
+});

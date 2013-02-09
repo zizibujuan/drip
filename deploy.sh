@@ -29,6 +29,9 @@ serverHome=/home/server/
 #product压缩文件
 zipFile=com.zizibujuan.drip.product-0.0.1-SNAPSHOT-linux.gtk.x86_64.zip
 
+#TODO：备份zip文件
+#$mavenDir$zipFile
+cp $mavenDir$zipFile /home/backup/
 
 #跳转到drip仓库所在的文件夹
 pushd $codeDir
@@ -44,7 +47,7 @@ mvn clean install -P rds_product
 
 popd
 
-#TODO：备份zip文件
+
 
 
 #关闭正在运行的服务器

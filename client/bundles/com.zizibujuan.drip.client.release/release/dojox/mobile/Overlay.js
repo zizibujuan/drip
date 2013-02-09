@@ -1,5 +1,112 @@
-//>>built
-define("dojox/mobile/Overlay","dojo/_base/declare,dojo/_base/lang,dojo/_base/sniff,dojo/_base/window,dojo/dom-class,dojo/dom-geometry,dojo/dom-style,dojo/window,dijit/_WidgetBase,dojo/_base/array,dijit/registry,./_css3".split(","),function(l,e,f,h,c,i,j,m,n,o,p,k){return l("dojox.mobile.Overlay",n,{baseClass:"mblOverlay mblOverlayHidden",_reposition:function(){var a=i.position(this.domNode),b=m.getBox();if(a.y+a.h!=b.h||"absolute"!=j.get(this.domNode,"position")&&3>f("android"))a.y=b.t+b.h-a.h,j.set(this.domNode,
-{position:"absolute",top:a.y+"px",bottom:"auto"});return a},show:function(a){o.forEach(p.findWidgets(this.domNode),function(a){a&&"auto"==a.height&&"function"==typeof a.resize&&a.resize()});var b=this._reposition();a&&(a=i.position(a),b.y<a.y&&(h.global.scrollBy(0,a.y+a.h-b.y),this._reposition()));var d=this.domNode;c.replace(d,["mblCoverv","mblIn"],["mblOverlayHidden","mblRevealv","mblOut","mblReverse","mblTransition"]);setTimeout(e.hitch(this,function(){var a=this.connect(d,k.name("transitionEnd"),
-function(){this.disconnect(a);c.remove(d,["mblCoverv","mblIn","mblTransition"]);this._reposition()});c.add(d,"mblTransition")}),100);var g=!1;this._moveHandle=this.connect(h.doc.documentElement,f("touch")?"ontouchmove":"onmousemove",function(){g=!0});this._repositionTimer=setInterval(e.hitch(this,function(){g?g=!1:this._reposition()}),50);return b},hide:function(){var a=this.domNode;if(this._moveHandle)this.disconnect(this._moveHandle),this._moveHandle=null,clearInterval(this._repositionTimer),this._repositionTimer=
-null;f("css3-animations")?(c.replace(a,["mblRevealv","mblOut","mblReverse"],["mblCoverv","mblIn","mblOverlayHidden","mblTransition"]),setTimeout(e.hitch(this,function(){var b=this.connect(a,k.name("transitionEnd"),function(){this.disconnect(b);c.replace(a,["mblOverlayHidden"],["mblRevealv","mblOut","mblReverse","mblTransition"])});c.add(a,"mblTransition")}),100)):c.replace(a,["mblOverlayHidden"],["mblCoverv","mblIn","mblRevealv","mblOut","mblReverse"])},onBlur:function(){return!1}})});
+define("dojox/mobile/Overlay", [
+	"dojo/_base/declare",
+	"dojo/_base/lang",
+	"dojo/_base/sniff",
+	"dojo/_base/window",
+	"dojo/dom-class",
+	"dojo/dom-geometry",
+	"dojo/dom-style",
+	"dojo/window",
+	"dijit/_WidgetBase",
+	"dojo/_base/array",
+	"dijit/registry",
+	"dojo/touch",
+	"./_css3"
+], function(declare, lang, has, win, domClass, domGeometry, domStyle, windowUtils, WidgetBase, array, registry, touch, css3){
+
+	return declare("dojox.mobile.Overlay", WidgetBase, {
+		// summary:
+		//		A non-templated widget that animates up from the bottom, 
+		//		overlaying the current content.
+
+		// baseClass: String
+		//		The name of the CSS class of this widget.
+		baseClass: "mblOverlay mblOverlayHidden",
+
+		_reposition: function(){
+			// summary:
+			//		Position the overlay at the bottom
+			// tags:
+			//		private
+			var popupPos = domGeometry.position(this.domNode);
+			var vp = windowUtils.getBox();
+			if((popupPos.y+popupPos.h) != vp.h // TODO: should be a has() test for position:fixed not scrolling
+				|| (domStyle.get(this.domNode, 'position') != 'absolute' && has('android') < 3)){ // android 2.x supports position:fixed but child transforms don't persist
+				popupPos.y = vp.t + vp.h - popupPos.h;
+				domStyle.set(this.domNode, { position: "absolute", top: popupPos.y + "px", bottom: "auto" });
+			}
+			return popupPos;
+		},
+
+		show: function(/*DomNode?*/aroundNode){
+			// summary:
+			//		Scroll the overlay up into view
+			array.forEach(registry.findWidgets(this.domNode), function(w){
+				if(w && w.height == "auto" && typeof w.resize == "function"){
+					w.resize();
+				}
+			});
+			var popupPos = this._reposition();
+			if(aroundNode){
+				var aroundPos = domGeometry.position(aroundNode);
+				if(popupPos.y < aroundPos.y){ // if the aroundNode is under the popup, try to scroll it up
+					win.global.scrollBy(0, aroundPos.y + aroundPos.h - popupPos.y);
+					this._reposition();
+				}
+			}
+			var _domNode = this.domNode;
+			domClass.replace(_domNode, ["mblCoverv", "mblIn"], ["mblOverlayHidden", "mblRevealv", "mblOut", "mblReverse", "mblTransition"]);
+			setTimeout(lang.hitch(this, function(){
+				var handler = this.connect(_domNode, css3.name("transitionEnd"), function(){
+					this.disconnect(handler);
+					domClass.remove(_domNode, ["mblCoverv", "mblIn", "mblTransition"]);
+					this._reposition();
+				});
+				domClass.add(_domNode, "mblTransition");
+			}), 100);
+			var skipReposition = false;
+
+			this._moveHandle = this.connect(win.doc.documentElement, touch.move,
+				function(){
+					skipReposition = true;
+				}
+			);
+			this._repositionTimer = setInterval(lang.hitch(this, function(){
+				if(skipReposition){ // don't reposition if busy
+					skipReposition = false;
+					return;
+				}
+				this._reposition();
+			}), 50); // yield a short time to allow for consolidation for better CPU throughput
+			return popupPos;
+		},
+
+		hide: function(){
+			// summary:
+			//		Scroll the overlay down and then make it invisible
+			var _domNode = this.domNode;
+			if(this._moveHandle){
+				this.disconnect(this._moveHandle);
+				this._moveHandle = null;
+				clearInterval(this._repositionTimer);
+				this._repositionTimer = null;
+			}
+			if(has("css3-animations")){
+				domClass.replace(_domNode, ["mblRevealv", "mblOut", "mblReverse"], ["mblCoverv", "mblIn", "mblOverlayHidden", "mblTransition"]);
+				setTimeout(lang.hitch(this, function(){
+					var handler = this.connect(_domNode, css3.name("transitionEnd"), function(){
+						this.disconnect(handler);
+						domClass.replace(_domNode, ["mblOverlayHidden"], ["mblRevealv", "mblOut", "mblReverse", "mblTransition"]);
+					});
+					domClass.add(_domNode, "mblTransition");
+				}), 100);
+			}else{
+				domClass.replace(_domNode, ["mblOverlayHidden"], ["mblCoverv", "mblIn", "mblRevealv", "mblOut", "mblReverse"]);
+			}
+		},
+
+		onBlur: function(/*Event*/e){
+			return false; // touching outside the overlay area does not call hide()
+		}
+	});
+});

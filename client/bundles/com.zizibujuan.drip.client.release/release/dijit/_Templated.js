@@ -1,3 +1,64 @@
-//>>built
-define("dijit/_Templated","./_WidgetBase,./_TemplatedMixin,./_WidgetsInTemplateMixin,dojo/_base/array,dojo/_base/declare,dojo/_base/lang,dojo/_base/kernel".split(","),function(h,i,j,k,l,e,m){e.extend(h,{waiRole:"",waiState:""});return l("dijit._Templated",[i,j],{widgetsInTemplate:!1,constructor:function(){m.deprecated(this.declaredClass+": dijit._Templated deprecated, use dijit._TemplatedMixin and if necessary dijit._WidgetsInTemplateMixin","","2.0")},_attachTemplateNodes:function(a,f){this.inherited(arguments);
-for(var g=e.isArray(a)?a:a.all||a.getElementsByTagName("*"),b=e.isArray(a)?0:-1;b<g.length;b++){var c=-1==b?a:g[b],d=f(c,"waiRole");d&&c.setAttribute("role",d);(d=f(c,"waiState"))&&k.forEach(d.split(/\s*,\s*/),function(a){-1!=a.indexOf("-")&&(a=a.split("-"),c.setAttribute("aria-"+a[0],a[1]))})}}})});
+define("dijit/_Templated", [
+	"./_WidgetBase",
+	"./_TemplatedMixin",
+	"./_WidgetsInTemplateMixin",
+	"dojo/_base/array", // array.forEach
+	"dojo/_base/declare", // declare
+	"dojo/_base/lang", // lang.extend lang.isArray
+	"dojo/_base/kernel" // kernel.deprecated
+], function(_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin, array, declare, lang, kernel){
+
+	// module:
+	//		dijit/_Templated
+
+	// These arguments can be specified for widgets which are used in templates.
+	// Since any widget can be specified as sub widgets in template, mix it
+	// into the base widget class.  (This is a hack, but it's effective.)
+	// Remove for 2.0.   Also, hide from API doc parser.
+	lang.extend(_WidgetBase, /*===== {} || =====*/ {
+		waiRole: "",
+		waiState:""
+	});
+
+	return declare("dijit._Templated", [_TemplatedMixin, _WidgetsInTemplateMixin], {
+		// summary:
+		//		Deprecated mixin for widgets that are instantiated from a template.
+		//		Widgets should use _TemplatedMixin plus if necessary _WidgetsInTemplateMixin instead.
+
+		// widgetsInTemplate: [protected] Boolean
+		//		Should we parse the template to find widgets that might be
+		//		declared in markup inside it?  False by default.
+		widgetsInTemplate: false,
+
+		constructor: function(){
+			kernel.deprecated(this.declaredClass + ": dijit._Templated deprecated, use dijit._TemplatedMixin and if necessary dijit._WidgetsInTemplateMixin", "", "2.0");
+		},
+
+		_attachTemplateNodes: function(rootNode, getAttrFunc){
+
+			this.inherited(arguments);
+
+			// Do deprecated waiRole and waiState
+			var nodes = lang.isArray(rootNode) ? rootNode : (rootNode.all || rootNode.getElementsByTagName("*"));
+			var x = lang.isArray(rootNode) ? 0 : -1;
+			for(; x<nodes.length; x++){
+				var baseNode = (x == -1) ? rootNode : nodes[x];
+
+				// waiRole, waiState
+				var role = getAttrFunc(baseNode, "waiRole");
+				if(role){
+					baseNode.setAttribute("role", role);
+				}
+				var values = getAttrFunc(baseNode, "waiState");
+				if(values){
+					array.forEach(values.split(/\s*,\s*/), function(stateValue){
+						if(stateValue.indexOf('-') != -1){
+							var pair = stateValue.split('-');
+							baseNode.setAttribute("aria-"+pair[0], pair[1]);
+						}
+					});
+				}
+			}
+		}
+	});
+});

@@ -1,5 +1,86 @@
-//>>built
-require({cache:{"url:drip/templates/ExerciseNode.html":'<div style="margin-bottom: 20px;">\n\t<\!-- TODO\uff1a\u5c06\u8fd9\u4e9bstyle\u63d0\u53d6\u5230\u6837\u5f0f\u6587\u4ef6\u4e2d --\>\n\t<div\n\t\tstyle="border-bottom: 1px solid #cacaca;padding-bottom:10px; background: #fbfbfb;">\n\t\t<div style="padding-top: 5px; padding-bottom: 10px" data-dojo-attach-point="divContent"></div>\n\t\t<div style="margin-top: 5px">\n\t\t\t<div style="text-align: right">\n\t\t\t\t<\!-- <input type="button" data-dojo-attach-point="buttonAnswer"></input> --\>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</div>',
-"url:drip/templates/ExerciseList.html":'<div style="width:736px;"></div>'}});
-define("drip/Exercise","dojo/_base/declare,dojo/_base/array,dojo/_base/lang,dojo/on,dijit/_WidgetBase,dijit/_TemplatedMixin,dijit/_WidgetsInTemplateMixin,dojo/store/JsonRest,mathEditor/dataUtil,dojo/text!./templates/ExerciseNode.html,dojo/text!./templates/ExerciseList.html,dojo/i18n!./nls/common".split(","),function(a,e,b,l,c,d,f,g,h,i,j){var k=a("drip.ExerciseNode",[c,d,f],{templateString:i,content:"",postCreate:function(){this.divContent.innerHTML=h.xmlStringToHtml(this.content)},_btnAnswerHandler:function(){alert("TODO\uff1a\u6dfb\u52a0\u5904\u7406\u51fd\u6570")}});
-return a("drip.Exercise",[c,d],{templateString:j,store:new g({target:"/exercises/"}),postCreate:function(){this.inherited(arguments);this.store.query().then(b.hitch(this,this._load))},_load:function(a){0==a.length?this.domNode.innerHTML="\u6ca1\u6709\u4e60\u9898\u505a,yeah!":(e.forEach(a,b.hitch(this,function(a){this.domNode.appendChild((new k({content:a.CONTENT})).domNode)})),MathJax.Hub.Queue(["Typeset",MathJax.Hub,this.domNode]))}})});
+require({cache:{
+'url:drip/templates/ExerciseNode.html':"<div style=\"margin-bottom: 20px;\">\n\t<!-- TODO：将这些style提取到样式文件中 -->\n\t<div\n\t\tstyle=\"border-bottom: 1px solid #cacaca;padding-bottom:10px; background: #fbfbfb;\">\n\t\t<div style=\"padding-top: 5px; padding-bottom: 10px\" data-dojo-attach-point=\"divContent\"></div>\n\t\t<div style=\"margin-top: 5px\">\n\t\t\t<div style=\"text-align: right\">\n\t\t\t\t<!-- <input type=\"button\" data-dojo-attach-point=\"buttonAnswer\"></input> -->\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</div>",
+'url:drip/templates/ExerciseList.html':"<div style=\"width:736px;\"></div>"}});
+define("drip/Exercise", ["dojo/_base/declare", 
+        "dojo/_base/array",
+        "dojo/_base/lang",
+        "dojo/on",
+        "dijit/_WidgetBase",
+        "dijit/_TemplatedMixin",
+        "dijit/_WidgetsInTemplateMixin",
+        "dojo/store/JsonRest",
+        "mathEditor/dataUtil",
+        "dojo/text!./templates/ExerciseNode.html",
+        "dojo/text!./templates/ExerciseList.html",
+        "dojo/i18n!./nls/common"],function(
+        		declare,
+        		array,
+        		lang,
+        		on,
+        		_WidgetBase,
+        		_TemplatedMixin,
+        		_WidgetsInTemplateMixin,
+        		JsonRest,
+        		dataUtil,
+        		nodeTemplate,
+        		listTemplate,
+        		common){
+	
+	var ExerciseNode = declare("drip.ExerciseNode",[_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin],{
+		 templateString: nodeTemplate,
+		 
+		 // content: String
+		 //		使用html格式描述的习题
+		 content:"",
+		 
+		 postCreate : function(){
+			 // 将自定义的xml字符串转换为html格式的字符串。
+			 this.divContent.innerHTML = dataUtil.xmlStringToHtml(this.content);
+			 // TODO:取消注释
+			 /*
+			 this.buttonAnswer.value = common.buttonAnswer;
+			 on(this.buttonAnswer,"click",lang.hitch(this, this._btnAnswerHandler));
+			 */
+		 },
+		 
+		 _btnAnswerHandler : function(e){
+			 alert("TODO：添加处理函数");
+		 }
+	});
+	
+	var Exercise = declare("drip.Exercise",[_WidgetBase, _TemplatedMixin],{
+		 templateString: listTemplate,
+		 
+		 // 因为该部件是习题专用的，所以将store硬编码在部件里
+		 store:new JsonRest({
+			 target:"/exercises/"
+		 }),
+		 
+		 // 如果没有习题，则显示没有习题，
+		 // 可扩展提示用户录入习题。
+		 postCreate : function(){
+			 this.inherited(arguments);
+			 this.store.query(/*TODO:加入分页信息*/).then(lang.hitch(this, this._load));
+		 },
+		 
+		 _load : function(items){
+			 if(items.length == 0){
+				 // TODO：定制样式
+				 this.domNode.innerHTML = "没有习题做,yeah!";
+			 }else{
+				 array.forEach(items, lang.hitch(this,function(item, index){
+					 var exerciseNode = new ExerciseNode({
+						 content : item.CONTENT
+					 });
+					 this.domNode.appendChild(exerciseNode.domNode);
+					 //this.domNode.innerHTML+=this.domNode.innerHTML+item.CONTENT;
+				 }));
+				 // 使用mathjax进行呈现
+				 MathJax.Hub.Queue(["Typeset",MathJax.Hub, this.domNode]);
+			 }
+		 }
+	
+	});
+	
+	return Exercise;
+});

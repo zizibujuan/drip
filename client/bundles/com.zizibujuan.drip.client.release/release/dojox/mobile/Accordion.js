@@ -1,13 +1,473 @@
-//>>built
-define("dojox/mobile/Accordion","dojo/_base/array,dojo/_base/declare,dojo/_base/lang,dojo/_base/sniff,dojo/dom,dojo/dom-class,dojo/dom-construct,dijit/_Contained,dijit/_Container,dijit/_WidgetBase,./iconUtils,./lazyLoadUtils,./_css3,require,dojo/has!dojo-bidi?dojox/mobile/bidi/Accordion".split(","),function(c,h,l,i,n,d,g,f,o,j,p,q,k,s,r){var m=h([j,f],{label:"Label",icon1:"",icon2:"",iconPos1:"",iconPos2:"",selected:!1,baseClass:"mblAccordionTitle",buildRendering:function(){this.inherited(arguments);
-var a=this.anchorNode=g.create("a",{className:"mblAccordionTitleAnchor"},this.domNode);a.href="javascript:void(0)";this.textBoxNode=g.create("div",{className:"mblAccordionTitleTextBox"},a);this.labelNode=g.create("span",{className:"mblAccordionTitleLabel",innerHTML:this._cv?this._cv(this.label):this.label},this.textBoxNode);this._isOnLine=this.inheritParams()},postCreate:function(){this._clickHandle=this.connect(this.domNode,"onclick","_onClick");n.setSelectable(this.domNode,!1)},inheritParams:function(){var a=
-this.getParent();if(a){if(this.icon1&&a.iconBase&&"/"===a.iconBase.charAt(a.iconBase.length-1))this.icon1=a.iconBase+this.icon1;if(!this.icon1)this.icon1=a.iconBase;if(!this.iconPos1)this.iconPos1=a.iconPos;if(this.icon2&&a.iconBase&&"/"===a.iconBase.charAt(a.iconBase.length-1))this.icon2=a.iconBase+this.icon2;if(!this.icon2)this.icon2=a.iconBase||this.icon1;if(!this.iconPos2)this.iconPos2=a.iconPos||this.iconPos1}return!!a},_setIcon:function(a,b){this.getParent()&&(this._set("icon"+b,a),this["iconParentNode"+
-b]||(this["iconParentNode"+b]=g.create("div",{className:"mblAccordionIconParent mblAccordionIconParent"+b},this.anchorNode,"first")),this["iconNode"+b]=p.setIcon(a,this["iconPos"+b],this["iconNode"+b],this.alt,this["iconParentNode"+b]),this["icon"+b]=a,d.toggle(this.domNode,"mblAccordionHasIcon",a&&"none"!==a))},_setIcon1Attr:function(a){this._setIcon(a,1)},_setIcon2Attr:function(a){this._setIcon(a,2)},startup:function(){this._started||(this._isOnLine||this.inheritParams(),this._isOnLine||this.set({icon1:this.icon1,
-icon2:this.icon2}),this.inherited(arguments))},_onClick:function(a){!1!==this.onClick(a)&&(a=this.getParent(),!a.fixedHeight&&"none"!==this.contentWidget.domNode.style.display?a.collapse(this.contentWidget,!a.animation):a.expand(this.contentWidget,!a.animation))},onClick:function(){},_setSelectedAttr:function(a){d.toggle(this.domNode,"mblAccordionTitleSelected",a);this._set("selected",a)}}),f=h(i("dojo-bidi")?"dojox.mobile.NonBidiAccordion":"dojox.mobile.Accordion",[j,o,f],{iconBase:"",iconPos:"",
-fixedHeight:!1,singleOpen:!1,animation:!0,roundRect:!1,duration:0.3,baseClass:"mblAccordion",_openSpace:1,startup:function(){if(!this._started){d.contains(this.domNode,"mblAccordionRoundRect")?this.roundRect=!0:this.roundRect&&d.add(this.domNode,"mblAccordionRoundRect");if(this.fixedHeight)this.singleOpen=!0;var a=this.getChildren();c.forEach(a,this._setupChild,this);var b;c.forEach(a,function(a){a.startup();a._at.startup();this.collapse(a,!0);a.selected&&(b=a)},this);!b&&this.fixedHeight&&(b=a[a.length-
-1]);b?this.expand(b,!0):this._updateLast();setTimeout(l.hitch(this,function(){this.resize()}),0);this._started=!0}},_setupChild:function(a){if("hidden"!=a.domNode.style.overflow)a.domNode.style.overflow=this.fixedHeight?"auto":"hidden";a._at=new m({label:a.label,alt:a.alt,icon1:a.icon1,icon2:a.icon2,iconPos1:a.iconPos1,iconPos2:a.iconPos2,contentWidget:a});g.place(a._at.domNode,a.domNode,"before");d.add(a.domNode,"mblAccordionPane")},addChild:function(a,b){this.inherited(arguments);this._started&&
-(this._setupChild(a),a._at.startup(),a.selected?(this.expand(a,!0),setTimeout(function(){a.domNode.style.height=""},0)):this.collapse(a))},removeChild:function(a){"number"==typeof a&&(a=this.getChildren()[a]);a&&a._at.destroy();this.inherited(arguments)},getChildren:function(){return c.filter(this.inherited(arguments),function(a){return!(a instanceof m)})},getSelectedPanes:function(){return c.filter(this.getChildren(),function(a){return"none"!=a.domNode.style.display})},resize:function(){if(this.fixedHeight){var a=
-c.filter(this.getChildren(),function(a){return"none"!=a._at.domNode.style.display}),b=this.domNode.clientHeight;c.forEach(a,function(a){b-=a._at.domNode.offsetHeight});this._openSpace=0<b?b:0;a=this.getSelectedPanes()[0];a.domNode.style[k.name("transition")]="";a.domNode.style.height=this._openSpace+"px"}},_updateLast:function(){var a=this.getChildren();c.forEach(a,function(b,c){d.toggle(b._at.domNode,"mblAccordionTitleLast",c===a.length-1&&!d.contains(b._at.domNode,"mblAccordionTitleSelected"))},
-this)},expand:function(a,b){if(a.lazy)q.instantiateLazyWidgets(a.containerNode,a.requires),a.lazy=!1;var d=this.getChildren();c.forEach(d,function(e){e.domNode.style[k.name("transition")]=b?"":"height "+this.duration+"s linear";if(e===a){e.domNode.style.display="";var c;if(this.fixedHeight)c=this._openSpace;else if(c=parseInt(e.height||e.domNode.getAttribute("height")),!c)e.domNode.style.height="",c=e.domNode.offsetHeight,e.domNode.style.height="0px";setTimeout(function(){e.domNode.style.height=c+
-"px"},0);this.select(a)}else this.singleOpen&&this.collapse(e,b)},this);this._updateLast()},collapse:function(a,b){if("none"!==a.domNode.style.display){a.domNode.style[k.name("transition")]=b?"":"height "+this.duration+"s linear";a.domNode.style.height="0px";if(!i("css3-animations")||b)a.domNode.style.display="none",this._updateLast();else{var c=this;setTimeout(function(){a.domNode.style.display="none";c._updateLast();if(!c.fixedHeight&&c.singleOpen)for(var b=c.getParent();b;b=b.getParent())if(d.contains(b.domNode,
-"mblView")){b&&b.resize&&b.resize();break}},1E3*this.duration)}this.deselect(a)}},select:function(a){a._at.set("selected",!0)},deselect:function(a){a._at.set("selected",!1)}});f.ChildWidgetProperties={alt:"",label:"",icon1:"",icon2:"",iconPos1:"",iconPos2:"",selected:!1,lazy:!1};l.extend(j,f.ChildWidgetProperties);return i("dojo-bidi")?h("dojox.mobile.Accordion",[f,r]):f});
+define("dojox/mobile/Accordion", [
+	"dojo/_base/array",
+	"dojo/_base/declare",
+	"dojo/_base/lang",
+	"dojo/_base/sniff",
+	"dojo/dom",
+	"dojo/dom-class",
+	"dojo/dom-construct",
+	"dijit/_Contained",
+	"dijit/_Container",
+	"dijit/_WidgetBase",
+	"./iconUtils",
+	"./lazyLoadUtils",
+	"./_css3",
+	"require",
+	"dojo/has!dojo-bidi?dojox/mobile/bidi/Accordion"
+], function(array, declare, lang, has, dom, domClass, domConstruct, Contained, Container, WidgetBase, iconUtils, lazyLoadUtils, css3, require, BidiAccordion){
+
+	// module:
+	//		dojox/mobile/Accordion
+
+	// inner class
+	var _AccordionTitle = declare([WidgetBase, Contained], {
+		// summary:
+		//		A widget for the title of the accordion.
+	
+		// label: String
+		//		The title of the accordion.
+		label: "Label",
+		
+		// icon1: String
+		//		A path for the unselected (typically dark) icon. If icon is not
+		//		specified, the iconBase parameter of the parent widget is used.
+		icon1: "",
+
+		// icon2: String
+		//		A path for the selected (typically highlight) icon. If icon is
+		//		not specified, the iconBase parameter of the parent widget or
+		//		icon1 is used.
+		icon2: "",
+
+		// iconPos1: String
+		//		The position of an aggregated unselected (typically dark)
+		//		icon. IconPos1 is a comma-separated list of values like
+		//		top,left,width,height (ex. "0,0,29,29"). If iconPos1 is not
+		//		specified, the iconPos parameter of the parent widget is used.
+		iconPos1: "",
+
+		// iconPos2: String
+		//		The position of an aggregated selected (typically highlight)
+		//		icon. IconPos2 is a comma-separated list of values like
+		//		top,left,width,height (ex. "0,0,29,29"). If iconPos2 is not
+		//		specified, the iconPos parameter of the parent widget or
+		//		iconPos1 is used.
+		iconPos2: "",
+
+		// selected: Boolean
+		//		If true, the widget is in the selected state.
+		selected: false,
+
+		// baseClass: String
+		//		The name of the CSS class of this widget.
+		baseClass: "mblAccordionTitle",
+
+		buildRendering: function(){
+			this.inherited(arguments);
+
+			var a = this.anchorNode = domConstruct.create("a", {
+				className: "mblAccordionTitleAnchor"
+			}, this.domNode);
+			a.href = "javascript:void(0)"; // for a11y
+
+			// text box
+			this.textBoxNode = domConstruct.create("div", {className:"mblAccordionTitleTextBox"}, a);
+			this.labelNode = domConstruct.create("span", {
+				className: "mblAccordionTitleLabel",
+				innerHTML: this._cv ? this._cv(this.label) : this.label
+			}, this.textBoxNode);
+
+			this._isOnLine = this.inheritParams();
+		},
+
+		postCreate: function(){
+			this._clickHandle = this.connect(this.domNode, "onclick", "_onClick");
+			dom.setSelectable(this.domNode, false);
+		},
+
+		inheritParams: function(){
+			var parent = this.getParent();
+			if(parent){
+				if(this.icon1 && parent.iconBase &&
+					parent.iconBase.charAt(parent.iconBase.length - 1) === '/'){
+					this.icon1 = parent.iconBase + this.icon1;
+				}
+				if(!this.icon1){ this.icon1 = parent.iconBase; }
+				if(!this.iconPos1){ this.iconPos1 = parent.iconPos; }
+				if(this.icon2 && parent.iconBase &&
+					parent.iconBase.charAt(parent.iconBase.length - 1) === '/'){
+					this.icon2 = parent.iconBase + this.icon2;
+				}
+				if(!this.icon2){ this.icon2 = parent.iconBase || this.icon1; }
+				if(!this.iconPos2){ this.iconPos2 = parent.iconPos || this.iconPos1; }
+			}
+			return !!parent;
+		},
+
+		_setIcon: function(icon, n){
+			// tags:
+			//		private
+			if(!this.getParent()){ return; } // icon may be invalid because inheritParams is not called yet
+			this._set("icon" + n, icon);
+			if(!this["iconParentNode" + n]){
+				this["iconParentNode" + n] = domConstruct.create("div",
+					{className:"mblAccordionIconParent mblAccordionIconParent" + n}, this.anchorNode, "first");
+			}
+			this["iconNode" + n] = iconUtils.setIcon(icon, this["iconPos" + n],
+				this["iconNode" + n], this.alt, this["iconParentNode" + n]);
+			this["icon" + n] = icon;
+			domClass.toggle(this.domNode, "mblAccordionHasIcon", icon && icon !== "none");
+		},
+
+		_setIcon1Attr: function(icon){
+			// tags:
+			//		private
+			this._setIcon(icon, 1);
+		},
+
+		_setIcon2Attr: function(icon){
+			// tags:
+			//		private
+			this._setIcon(icon, 2);
+		},
+
+		startup: function(){
+			if(this._started){ return; }
+			if(!this._isOnLine){
+				this.inheritParams();
+			}
+			if(!this._isOnLine){
+				this.set({ // retry applying the attribute
+					icon1: this.icon1,
+					icon2: this.icon2
+				});
+			}
+			this.inherited(arguments);
+		},
+
+		_onClick: function(e){
+			// summary:
+			//		Internal handler for click events.
+			// tags:
+			//		private
+			if(this.onClick(e) === false){ return; } // user's click action
+			var p = this.getParent();
+			if(!p.fixedHeight && this.contentWidget.domNode.style.display !== "none"){
+				p.collapse(this.contentWidget, !p.animation);
+			}else{
+				p.expand(this.contentWidget, !p.animation);
+			}
+		},
+
+		onClick: function(/*Event*/ /*===== e =====*/){
+			// summary:
+			//		User-defined function to handle clicks
+			// tags:
+			//		callback
+		},
+
+		_setSelectedAttr: function(/*Boolean*/selected){
+			// tags:
+			//		private
+			domClass.toggle(this.domNode, "mblAccordionTitleSelected", selected);
+			this._set("selected", selected);
+		}
+	});
+
+	var Accordion = declare(has("dojo-bidi") ? "dojox.mobile.NonBidiAccordion" : "dojox.mobile.Accordion", [WidgetBase, Container, Contained], {
+		// summary:
+		//		A layout widget that allows the user to freely navigate between panes.
+		// description:
+		//		Accordion has no specific child widget. Any widgets can be its
+		//		child. Typically dojox/mobile/Pane, dojox/mobile/Container,
+		//		or dojox/mobile/ContentPane are used as child widgets.
+
+		// iconBase: String
+		//		The default icon path for child widgets.
+		iconBase: "",
+
+		// iconPos: String
+		//		The default icon position for child widgets.
+		iconPos: "",
+
+		// fixedHeight: Boolean
+		//		If true, the entire accordion widget has fixed height regardless
+		//		of the height of each pane; in this mode, there is always an open pane and
+		//		collapsing a pane can only be done by opening a different pane.
+		fixedHeight: false,
+
+		// singleOpen: Boolean
+		//		If true, only one pane is open at a time. The current open pane
+		//		is collapsed, when another pane is opened.
+		singleOpen: false,
+
+		// animation: Boolean
+		//		If true, animation is used when a pane is opened or
+		//		collapsed. The animation works only on webkit browsers.
+		animation: true,
+
+		// roundRect: Boolean
+		//		If true, the widget shows rounded corners.
+		//		Adding the "mblAccordionRoundRect" class to domNode has the same effect.
+		roundRect: false,
+
+		/* internal properties */
+		duration: .3, // [seconds]
+
+		// baseClass: String
+		//		The name of the CSS class of this widget.
+		baseClass: "mblAccordion",
+
+		// _openSpace: [private] Number|String 
+		_openSpace: 1,
+
+		startup: function(){
+			if(this._started){ return; }
+
+			if(domClass.contains(this.domNode, "mblAccordionRoundRect")){
+				this.roundRect = true;
+			}else if(this.roundRect){
+				domClass.add(this.domNode, "mblAccordionRoundRect");
+			}
+
+			if(this.fixedHeight){
+				this.singleOpen = true;
+			}
+			var children = this.getChildren();
+			array.forEach(children, this._setupChild, this);
+			var sel;
+			array.forEach(children, function(child){
+				child.startup();
+				child._at.startup();
+				this.collapse(child, true);
+				if(child.selected){
+					sel = child;
+				}
+			}, this);
+			if(!sel && this.fixedHeight){
+				sel = children[children.length - 1];
+			}
+			if(sel){
+				this.expand(sel, true);
+			}else{
+				this._updateLast();
+			}
+			setTimeout(lang.hitch(this, function(){ this.resize(); }), 0);
+
+			this._started = true;
+		},
+
+		_setupChild: function(/*Widget*/ child){
+			// tags:
+			//		private
+			if(child.domNode.style.overflow != "hidden"){
+				child.domNode.style.overflow = this.fixedHeight ? "auto" : "hidden";
+			}
+			child._at = new _AccordionTitle({
+				label: child.label,
+				alt: child.alt,
+				icon1: child.icon1,
+				icon2: child.icon2,
+				iconPos1: child.iconPos1,
+				iconPos2: child.iconPos2,
+				contentWidget: child
+			});
+			domConstruct.place(child._at.domNode, child.domNode, "before");
+			domClass.add(child.domNode, "mblAccordionPane");
+		},
+
+		addChild: function(/*Widget*/ widget, /*int?*/ insertIndex){
+			this.inherited(arguments);
+			if(this._started){
+				this._setupChild(widget);
+				widget._at.startup();
+				if(widget.selected){
+					this.expand(widget, true);
+					setTimeout(function(){
+						widget.domNode.style.height = "";
+					}, 0);
+				}else{
+					this.collapse(widget);
+				}
+			}
+		},
+
+		removeChild: function(/*Widget|int*/ widget){
+			if(typeof widget == "number"){
+				widget = this.getChildren()[widget];
+			}
+			if(widget){
+				widget._at.destroy();
+			}
+			this.inherited(arguments);
+		},
+
+		getChildren: function(){
+			return array.filter(this.inherited(arguments), function(child){
+				return !(child instanceof _AccordionTitle);
+			});
+		},
+
+		getSelectedPanes: function(){
+			return array.filter(this.getChildren(), function(pane){
+				return pane.domNode.style.display != "none";
+			});
+		},
+
+		resize: function(){
+			if(this.fixedHeight){
+				var panes = array.filter(this.getChildren(), function(child){ // active pages
+					return child._at.domNode.style.display != "none";
+				});
+				var openSpace = this.domNode.clientHeight; // height of all panes
+				array.forEach(panes, function(child){
+					openSpace -= child._at.domNode.offsetHeight;
+				});
+				this._openSpace = openSpace > 0 ? openSpace : 0;
+				var sel = this.getSelectedPanes()[0];
+				sel.domNode.style[css3.name("transition")] = "";
+				sel.domNode.style.height = this._openSpace + "px";
+			}
+		},
+
+		_updateLast: function(){
+			// tags:
+			//		private
+			var children = this.getChildren();
+			array.forEach(children, function(c, i){
+				// add "mblAccordionTitleLast" to the last, closed accordion title
+				domClass.toggle(c._at.domNode, "mblAccordionTitleLast",
+					i === children.length - 1 && !domClass.contains(c._at.domNode, "mblAccordionTitleSelected"))
+			}, this);
+		},
+
+		expand: function(/*Widget*/pane, /*boolean*/noAnimation){
+			// summary:
+			//		Expands the given pane to make it visible.
+			// pane:
+			//		A pane widget to expand.
+			// noAnimation:
+			//		If true, the pane expands immediately without animation effect.
+			if(pane.lazy){
+				lazyLoadUtils.instantiateLazyWidgets(pane.containerNode, pane.requires);
+				pane.lazy = false;
+			}
+			var children = this.getChildren();
+			array.forEach(children, function(c, i){
+				c.domNode.style[css3.name("transition")] = noAnimation ? "" : "height "+this.duration+"s linear";
+				if(c === pane){
+					c.domNode.style.display = "";
+					var h;
+					if(this.fixedHeight){
+						h = this._openSpace;
+					}else{
+						h = parseInt(c.height || c.domNode.getAttribute("height")); // ScrollableView may have the height property
+						if(!h){
+							c.domNode.style.height = "";
+							h = c.domNode.offsetHeight;
+							c.domNode.style.height = "0px";
+						}
+					}
+					setTimeout(function(){ // necessary for webkitTransition to work
+						c.domNode.style.height = h + "px";
+					}, 0);
+					this.select(pane);
+				}else if(this.singleOpen){
+					this.collapse(c, noAnimation);
+				}
+			}, this);
+			this._updateLast();
+		},
+
+		collapse: function(/*Widget*/pane, /*boolean*/noAnimation){
+			// summary:
+			//		Collapses the given pane to close it.
+			// pane:
+			//		A pane widget to collapse.
+			// noAnimation:
+			//		If true, the pane collapses immediately without animation effect.
+			if(pane.domNode.style.display === "none"){ return; } // already collapsed
+			pane.domNode.style[css3.name("transition")] = noAnimation ? "" : "height "+this.duration+"s linear";
+			pane.domNode.style.height = "0px";
+			if(!has("css3-animations") || noAnimation){
+				pane.domNode.style.display = "none";
+				this._updateLast();
+			}else{
+				// Adding a webkitTransitionEnd handler to panes may cause conflict
+				// when the panes already have the one. (e.g. ScrollableView)
+				var _this = this;
+				setTimeout(function(){
+					pane.domNode.style.display = "none";
+					_this._updateLast();
+
+					// Need to call parent view's resize() especially when the Accordion is
+					// on a ScrollableView, the ScrollableView is scrolled to
+					// the bottom, and then expand any other pane while in the
+					// non-fixed singleOpen mode.
+					if(!_this.fixedHeight && _this.singleOpen){
+						for(var v = _this.getParent(); v; v = v.getParent()){
+							if(domClass.contains(v.domNode, "mblView")){
+								if(v && v.resize){ v.resize(); }
+								break;
+							}
+						}
+					}
+				}, this.duration*1000);
+			}
+			this.deselect(pane);
+		},
+
+		select: function(/*Widget*/pane){
+			// summary:
+			//		Highlights the title bar of the given pane.
+			// pane:
+			//		A pane widget to highlight.
+			pane._at.set("selected", true);
+		},
+
+		deselect: function(/*Widget*/pane){
+			// summary:
+			//		Unhighlights the title bar of the given pane.
+			// pane:
+			//		A pane widget to unhighlight.
+			pane._at.set("selected", false);
+		}
+	});
+	
+	Accordion.ChildWidgetProperties = {
+		// summary:
+		//		These properties can be specified for the children of a dojox/mobile/Accordion.
+
+		// alt: String
+		//		The alternate text of the Accordion title.
+		alt: "",
+		// label: String
+		//		The label of the Accordion title.
+		label: "",
+		// icon1: String
+		//		The unselected icon of the Accordion title.
+		icon1: "",
+		// icon2: String
+		//		The selected icon of the Accordion title.
+		icon2: "",
+		// iconPos1: String
+		//		The position ("top,left,width,height") of the unselected aggregated icon of the Accordion title.
+		iconPos1: "",
+		// iconPos2: String
+		//		The position ("top,left,width,height") of the selected aggregated icon of the Accordion title.
+		iconPos2: "",
+		// selected: Boolean
+		//		The selected state of the Accordion title.
+		selected: false,
+		// lazy: Boolean
+		//		Specifies that the Accordion child must be lazily loaded.
+		lazy: false
+	};
+
+	// Since any widget can be specified as an Accordion child, mix ChildWidgetProperties
+	// into the base widget class.  (This is a hack, but it's effective.)
+	// This is for the benefit of the parser.   Remove for 2.0.  Also, hide from doc viewer.
+	lang.extend(WidgetBase, /*===== {} || =====*/ Accordion.ChildWidgetProperties);
+
+	return has("dojo-bidi") ? declare("dojox.mobile.Accordion", [Accordion, BidiAccordion]) : Accordion;	
+});

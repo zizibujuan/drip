@@ -1,8 +1,231 @@
-//>>built
-define("dojox/charting/plot2d/Bubble","dojo/_base/lang,dojo/_base/declare,dojo/_base/array,./CartesianBase,./_PlotEvents,./common,dojox/lang/functional,dojox/lang/functional/reversed,dojox/lang/utils,dojox/gfx/fx".split(","),function(m,q,g,v,w,x,y,z,p,A){var B=z.lambda("item.purgeGroup()");return q("dojox.charting.plot2d.Bubble",[v,w],{defaultParams:{animate:null},optionalParams:{stroke:{},outline:{},shadow:{},fill:{},styleFunc:null,font:"",fontColor:""},constructor:function(h,e){this.opt=m.clone(m.mixin(this.opt,
-this.defaultParams));p.updateWithObject(this.opt,e);p.updateWithPattern(this.opt,e,this.optionalParams);if(!this.opt.labelFunc)this.opt.labelFunc=function(e,h,g){return this._getLabel(e.size,h,g)};this.animate=this.opt.animate},render:function(h,e){var i;if(this.zoom&&!this.isDataDirty())return this.performZoom(h,e);this.resetEvents();if(this.dirty=this.isDirty())g.forEach(this.series,B),this._eventSeries={},this.cleanGroup(),i=this.getGroup(),y.forEachRev(this.series,function(a){a.cleanGroup(i)});
-for(var n=this.chart.theme,m=this._hScaler.scaler.getTransformerFromModel(this._hScaler),p=this._vScaler.scaler.getTransformerFromModel(this._vScaler),q=this.events(),r=this.series.length-1;0<=r;--r){var b=this.series[r];if(!this.dirty&&!b.dirty)n.skip(),this._reconnectEvents(b.name);else if(b.cleanGroup(),b.data.length){if("number"!=typeof b.data[0]){i=b.group;var o=n.next("circle",[this.opt,b]),j=g.map(b.data,function(a){return a?{x:m(a.x)+e.l,y:h.height-e.b-p(a.y),radius:this._vScaler.bounds.scale*
-(a.size/2)}:null},this),f=null,k=null,l=null,t=this.opt.styleFunc,s=function(a){return t?n.addMixin(o,"circle",[a,t(a)],!0):n.addMixin(o,"circle",a,!0)};if(o.series.shadow&&(l=g.map(j,function(a,d){if(null!==a){var c=s(b.data[d]).series.shadow,c=i.createCircle({cx:a.x+c.dx,cy:a.y+c.dy,r:a.radius}).setStroke(c).setFill(c.color);this.animate&&this._animateBubble(c,h.height-e.b,a.radius);return c}return null},this),l.length))b.dyn.shadow=l[l.length-1].getStroke();if(o.series.outline&&(k=g.map(j,function(a,
-d){if(null!==a){var c=s(b.data[d]),c=x.makeStroke(c.series.outline);c.width=2*c.width+o.series.stroke.width;c=i.createCircle({cx:a.x,cy:a.y,r:a.radius}).setStroke(c);this.animate&&this._animateBubble(c,h.height-e.b,a.radius);return c}return null},this),k.length))b.dyn.outline=k[k.length-1].getStroke();f=g.map(j,function(a,d){if(null!==a){var c=s(b.data[d]),g={x:a.x-a.radius,y:a.y-a.radius,width:2*a.radius,height:2*a.radius},f=this._plotFill(c.series.fill,h,e),f=this._shapeFill(f,g),f=i.createCircle({cx:a.x,
-cy:a.y,r:a.radius}).setFill(f).setStroke(c.series.stroke);this.animate&&this._animateBubble(f,h.height-e.b,a.radius);this.createLabel(i,b.data[d],g,c);return f}return null},this);if(f.length)b.dyn.fill=f[f.length-1].getFill(),b.dyn.stroke=f[f.length-1].getStroke();if(q){var u=Array(f.length);g.forEach(f,function(a,d){if(null!==a){var c={element:"circle",index:d,run:b,shape:a,outline:k&&k[d]||null,shadow:l&&l[d]||null,x:b.data[d].x,y:b.data[d].y,r:b.data[d].size/2,cx:j[d].x,cy:j[d].y,cr:j[d].radius};
-this._connectEvents(c);u[d]=c}},this);this._eventSeries[b.name]=u}else delete this._eventSeries[b.name];b.dirty=!1}}else b.dirty=!1,n.skip()}this.dirty=!1;this.chart.isRightToLeft&&this.chart.isRightToLeft()&&this.chart.applyMirroring(this.group,h,e);return this},_animateBubble:function(h,e,g){A.animateTransform(m.delegate({shape:h,duration:1200,transform:[{name:"translate",start:[0,e],end:[0,0]},{name:"scale",start:[0,1/g],end:[1,1]},{name:"original"}]},this.animate)).play()}})});
+define("dojox/charting/plot2d/Bubble", ["dojo/_base/lang", "dojo/_base/declare", "dojo/_base/array", 
+		"./CartesianBase", "./_PlotEvents", "./common", "dojox/lang/functional", "dojox/lang/functional/reversed",
+		"dojox/lang/utils", "dojox/gfx/fx"], 
+	function(lang, declare, arr, CartesianBase, _PlotEvents, dc, df, dfr, du, fx){
+
+	var purgeGroup = dfr.lambda("item.purgeGroup()");
+
+	return declare("dojox.charting.plot2d.Bubble", [CartesianBase, _PlotEvents], {
+		// summary:
+		//		A plot representing bubbles.  Note that data for Bubbles requires 3 parameters,
+		//		in the form of:  { x, y, size }, where size determines the size of the bubble.
+		defaultParams: {
+			animate: null   // animate bars into place
+		},
+		optionalParams: {
+			// theme component
+			stroke:		{},
+			outline:	{},
+			shadow:		{},
+			fill:		{},
+			styleFunc:	null,
+			font:		"",
+			fontColor:	""
+		},
+
+		constructor: function(chart, kwArgs){
+			// summary:
+			//		Create a plot of bubbles.
+			// chart: dojox/charting/Chart
+			//		The chart this plot belongs to.
+			// kwArgs: dojox.charting.plot2d.__DefaultCtorArgs?
+			//		Optional keyword arguments object to help define plot parameters.
+			this.opt = lang.clone(lang.mixin(this.opt, this.defaultParams));
+			du.updateWithObject(this.opt, kwArgs);
+			du.updateWithPattern(this.opt, kwArgs, this.optionalParams);
+			if(!this.opt.labelFunc){
+				this.opt.labelFunc = function(value, fixed, precision){
+					return this._getLabel(value.size, fixed, precision);
+				};
+			}
+			this.animate = this.opt.animate;
+		},
+
+		//	override the render so that we are plotting only circles.
+		render: function(dim, offsets){
+			// summary:
+			//		Run the calculations for any axes for this plot.
+			// dim: Object
+			//		An object in the form of { width, height }
+			// offsets: Object
+			//		An object of the form { l, r, t, b}.
+			// returns: dojox/charting/plot2d/Bubble
+			//		A reference to this plot for functional chaining.
+			var s;
+			if(this.zoom && !this.isDataDirty()){
+				return this.performZoom(dim, offsets);
+			}
+			this.resetEvents();
+			this.dirty = this.isDirty();
+			if(this.dirty){
+				arr.forEach(this.series, purgeGroup);
+				this._eventSeries = {};
+				this.cleanGroup();
+				s = this.getGroup();
+				df.forEachRev(this.series, function(item){ item.cleanGroup(s); });
+			}
+
+			var t = this.chart.theme,
+				ht = this._hScaler.scaler.getTransformerFromModel(this._hScaler),
+				vt = this._vScaler.scaler.getTransformerFromModel(this._vScaler),
+				events = this.events();
+
+			for(var i = this.series.length - 1; i >= 0; --i){
+				var run = this.series[i];
+				if(!this.dirty && !run.dirty){
+					t.skip();
+					this._reconnectEvents(run.name);
+					continue;
+				}
+				run.cleanGroup();
+				if(!run.data.length){
+					run.dirty = false;
+					t.skip();
+					continue;
+				}
+
+				if(typeof run.data[0] == "number"){
+					console.warn("dojox.charting.plot2d.Bubble: the data in the following series cannot be rendered as a bubble chart; ", run);
+					continue;
+				}
+
+				s = run.group;
+				var theme = t.next("circle", [this.opt, run]),
+					points = arr.map(run.data, function(v){
+						return v ? {
+							x: ht(v.x) + offsets.l,
+							y: dim.height - offsets.b - vt(v.y),
+							radius: this._vScaler.bounds.scale * (v.size / 2)
+						} : null;
+					}, this);
+
+				var frontCircles = null, outlineCircles = null, shadowCircles = null, styleFunc = this.opt.styleFunc;
+
+				var getFinalTheme = function(item){
+					if(styleFunc){
+						return t.addMixin(theme, "circle", [item, styleFunc(item)], true);
+					}
+					return t.addMixin(theme, "circle", item, true);
+				};
+
+				// make shadows if needed
+				if(theme.series.shadow){
+					shadowCircles = arr.map(points, function(item, i){
+						if(item !== null){
+							var finalTheme = getFinalTheme(run.data[i]),
+								shadow = finalTheme.series.shadow;
+							var shape = s.createCircle({
+								cx: item.x + shadow.dx, cy: item.y + shadow.dy, r: item.radius
+							}).setStroke(shadow).setFill(shadow.color);
+							if(this.animate){
+								this._animateBubble(shape, dim.height - offsets.b, item.radius);
+							}
+							return shape;
+						}
+						return null;
+					}, this);
+					if(shadowCircles.length){
+						run.dyn.shadow = shadowCircles[shadowCircles.length - 1].getStroke();
+					}
+				}
+
+				// make outlines if needed
+				if(theme.series.outline){
+					outlineCircles = arr.map(points, function(item, i){
+						if(item !== null){
+							var finalTheme = getFinalTheme(run.data[i]),
+								outline = dc.makeStroke(finalTheme.series.outline);
+							outline.width = 2 * outline.width + theme.series.stroke.width;
+							var shape = s.createCircle({
+								cx: item.x, cy: item.y, r: item.radius
+							}).setStroke(outline);
+							if(this.animate){
+								this._animateBubble(shape, dim.height - offsets.b, item.radius);
+							}
+							return shape;
+						}
+						return null;
+					}, this);
+					if(outlineCircles.length){
+						run.dyn.outline = outlineCircles[outlineCircles.length - 1].getStroke();
+					}
+				}
+
+				//	run through the data and add the circles.
+				frontCircles = arr.map(points, function(item, i){
+					if(item !== null){
+						var finalTheme = getFinalTheme(run.data[i]),
+							rect = {
+								x: item.x - item.radius,
+								y: item.y - item.radius,
+								width:  2 * item.radius,
+								height: 2 * item.radius
+							};
+						var specialFill = this._plotFill(finalTheme.series.fill, dim, offsets);
+						specialFill = this._shapeFill(specialFill, rect);
+						var shape = s.createCircle({
+							cx: item.x, cy: item.y, r: item.radius
+						}).setFill(specialFill).setStroke(finalTheme.series.stroke);
+						if(this.animate){
+							this._animateBubble(shape, dim.height - offsets.b, item.radius);
+						}
+						this.createLabel(s, run.data[i], rect, finalTheme);
+						return shape;
+					}
+					return null;
+				}, this);
+				if(frontCircles.length){
+					run.dyn.fill   = frontCircles[frontCircles.length - 1].getFill();
+					run.dyn.stroke = frontCircles[frontCircles.length - 1].getStroke();
+				}
+
+				if(events){
+					var eventSeries = new Array(frontCircles.length);
+					arr.forEach(frontCircles, function(s, i){
+						if(s !== null){
+							var o = {
+								element: "circle",
+								index:   i,
+								run:     run,
+								shape:   s,
+								outline: outlineCircles && outlineCircles[i] || null,
+								shadow:  shadowCircles && shadowCircles[i] || null,
+								x:       run.data[i].x,
+								y:       run.data[i].y,
+								r:       run.data[i].size / 2,
+								cx:      points[i].x,
+								cy:      points[i].y,
+								cr:      points[i].radius
+							};
+							this._connectEvents(o);
+							eventSeries[i] = o;
+						}
+					}, this);
+					this._eventSeries[run.name] = eventSeries;
+				}else{
+					delete this._eventSeries[run.name];
+				}
+
+				run.dirty = false;
+			}
+			this.dirty = false;
+			// chart mirroring starts
+			if(this.chart.isRightToLeft && this.chart.isRightToLeft()){
+				this.chart.applyMirroring(this.group, dim, offsets);
+			}
+			// chart mirroring ends
+			return this;	//	dojox/charting/plot2d/Bubble
+		},
+		_animateBubble: function(shape, offset, size){
+			fx.animateTransform(lang.delegate({
+				shape: shape,
+				duration: 1200,
+				transform: [
+					{name: "translate", start: [0, offset], end: [0, 0]},
+					{name: "scale", start: [0, 1/size], end: [1, 1]},
+					{name: "original"}
+				]
+			}, this.animate)).play();
+		}
+	});
+});

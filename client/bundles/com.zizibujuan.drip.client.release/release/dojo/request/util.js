@@ -1,5 +1,145 @@
-//>>built
-define("dojo/request/util","exports,../errors/RequestError,../errors/CancelError,../Deferred,../io-query,../_base/array,../_base/lang".split(","),function(f,m,j,n,k,o,h){function p(b){return l(b)}f.deepCopy=function(b,c){for(var d in c){var e=b[d],a=c[d];e!==a&&(e&&"object"===typeof e&&a&&"object"===typeof a?f.deepCopy(e,a):b[d]=a)}return b};f.deepCreate=function(b,c){var c=c||{},d=h.delegate(b),e,a;for(e in b)(a=b[e])&&"object"===typeof a&&(d[e]=f.deepCreate(a,c[e]));return f.deepCopy(d,c)};var l=
-Object.freeze||function(b){return b};f.deferred=function(b,c,d,e,a,i){var g=new n(function(a){c&&c(g,b);return!a||!(a instanceof m)&&!(a instanceof j)?new j("Request canceled",b):a});g.response=b;g.isValid=d;g.isReady=e;g.handleResponse=a;d=g.then(p).otherwise(function(a){a.response=b;throw a;});f.notify&&d.then(h.hitch(f.notify,"emit","load"),h.hitch(f.notify,"emit","error"));e=d.then(function(a){return a.data||a.text});d=l(h.delegate(e,{response:d}));i&&g.then(function(a){i.call(g,a)},function(a){i.call(g,
-b,a)});g.promise=d;g.then=d.then;return g};f.addCommonMethods=function(b,c){o.forEach(c||["GET","POST","PUT","DELETE"],function(d){b[("DELETE"===d?"DEL":d).toLowerCase()]=function(c,a){a=h.delegate(a||{});a.method=d;return b(c,a)}})};f.parseArgs=function(b,c,d){var e=c.data,a=c.query;if(e&&!d&&"object"===typeof e)c.data=k.objectToQuery(e);a?("object"===typeof a&&(a=k.objectToQuery(a)),c.preventCache&&(a+=(a?"&":"")+"request.preventCache="+ +new Date)):c.preventCache&&(a="request.preventCache="+ +new Date);
-b&&a&&(b+=(~b.indexOf("?")?"&":"?")+a);return{url:b,options:c,getHeader:function(){return null}}};f.checkStatus=function(b){b=b||0;return 200<=b&&300>b||304===b||1223===b||!b}});
+define("dojo/request/util", [
+	'exports',
+	'../errors/RequestError',
+	'../errors/CancelError',
+	'../Deferred',
+	'../io-query',
+	'../_base/array',
+	'../_base/lang'
+], function(exports, RequestError, CancelError, Deferred, ioQuery, array, lang){
+	exports.deepCopy = function deepCopy(target, source){
+		for(var name in source){
+			var tval = target[name],
+				sval = source[name];
+			if(tval !== sval){
+				if(tval && typeof tval === 'object' && sval && typeof sval === 'object'){
+					exports.deepCopy(tval, sval);
+				}else{
+					target[name] = sval;
+				}
+			}
+		}
+		return target;
+	};
+
+	exports.deepCreate = function deepCreate(source, properties){
+		properties = properties || {};
+		var target = lang.delegate(source),
+			name, value;
+
+		for(name in source){
+			value = source[name];
+
+			if(value && typeof value === 'object'){
+				target[name] = exports.deepCreate(value, properties[name]);
+			}
+		}
+		return exports.deepCopy(target, properties);
+	};
+
+	var freeze = Object.freeze || function(obj){ return obj; };
+	function okHandler(response){
+		return freeze(response);
+	}
+
+	exports.deferred = function deferred(response, cancel, isValid, isReady, handleResponse, last){
+		var def = new Deferred(function(reason){
+			cancel && cancel(def, response);
+
+			if(!reason || !(reason instanceof RequestError) && !(reason instanceof CancelError)){
+				return new CancelError('Request canceled', response);
+			}
+			return reason;
+		});
+
+		def.response = response;
+		def.isValid = isValid;
+		def.isReady = isReady;
+		def.handleResponse = handleResponse;
+
+		function errHandler(error){
+			error.response = response;
+			throw error;
+		}
+		var responsePromise = def.then(okHandler).otherwise(errHandler);
+
+		if(exports.notify){
+			responsePromise.then(
+				lang.hitch(exports.notify, 'emit', 'load'),
+				lang.hitch(exports.notify, 'emit', 'error')
+			);
+		}
+
+		var dataPromise = responsePromise.then(function(response){
+				return response.data || response.text;
+			});
+
+		var promise = freeze(lang.delegate(dataPromise, {
+			response: responsePromise
+		}));
+
+
+		if(last){
+			def.then(function(response){
+				last.call(def, response);
+			}, function(error){
+				last.call(def, response, error);
+			});
+		}
+
+		def.promise = promise;
+		def.then = promise.then;
+
+		return def;
+	};
+
+	exports.addCommonMethods = function addCommonMethods(provider, methods){
+		array.forEach(methods||['GET', 'POST', 'PUT', 'DELETE'], function(method){
+			provider[(method === 'DELETE' ? 'DEL' : method).toLowerCase()] = function(url, options){
+				options = lang.delegate(options||{});
+				options.method = method;
+				return provider(url, options);
+			};
+		});
+	};
+
+	exports.parseArgs = function parseArgs(url, options, skipData){
+		var data = options.data,
+			query = options.query;
+		
+		if(data && !skipData){
+			if(typeof data === 'object'){
+				options.data = ioQuery.objectToQuery(data);
+			}
+		}
+
+		if(query){
+			if(typeof query === 'object'){
+				query = ioQuery.objectToQuery(query);
+			}
+			if(options.preventCache){
+				query += (query ? '&' : '') + 'request.preventCache=' + (+(new Date));
+			}
+		}else if(options.preventCache){
+			query = 'request.preventCache=' + (+(new Date));
+		}
+
+		if(url && query){
+			url += (~url.indexOf('?') ? '&' : '?') + query;
+		}
+
+		return {
+			url: url,
+			options: options,
+			getHeader: function(headerName){ return null; }
+		};
+	};
+
+	exports.checkStatus = function(stat){
+		stat = stat || 0;
+		return (stat >= 200 && stat < 300) || // allow any 2XX response code
+			stat === 304 ||                 // or, get it out of the cache
+			stat === 1223 ||                // or, Internet Explorer mangled the status code
+			!stat;                         // or, we're Titanium/browser chrome/chrome extension requesting a local file
+	};
+});

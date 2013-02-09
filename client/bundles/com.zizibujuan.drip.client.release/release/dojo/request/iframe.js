@@ -1,11 +1,430 @@
-//>>built
-define("dojo/request/iframe","module,require,./watch,./util,./handlers,../_base/lang,../io-query,../query,../has,../dom,../dom-construct,../_base/window".split(","),function(y,z,A,o,B,u,w,C,p,x,q,d){function D(){return!this.isFulfilled()}function E(){return!!this._finished}function F(a,b){if(!b)try{var f=a.options,h=c.doc(c._frame),e=f.handleAs;if("html"!==e){if("xml"===e)if("html"===h.documentElement.tagName.toLowerCase()){C("a",h.documentElement).orphan();var d=h.documentElement.innerText,d=d.replace(/>\s+</g,
-"><");a.text=u.trim(d)}else a.data=h;else a.text=h.getElementsByTagName("textarea")[0].value;B(a)}else a.data=h}catch(g){b=g}b?this.reject(b):this._finished?this.resolve(a):this.reject(Error("Invalid dojo/request/iframe request state"))}function G(){this._callNext()}function c(a,b,f){var d=o.parseArgs(a,o.deepCreate(H,b),!0),a=d.url,b=d.options;if("GET"!==b.method&&"POST"!==b.method)throw Error(b.method+" not supported by dojo/request/iframe");if(!c._frame)c._frame=c.create(c._iframeName,v+"();");
-a=o.deferred(d,null,D,E,F,G);a._callNext=function(){if(!this._calledNext)this._calledNext=!0,c._currentDfd=null,c._fireNextRequest()};a._legacy=f;c._dfdQueue.push(a);c._fireNextRequest();A(a);return f?a:a.promise}var r=y.id.replace(/[\/\.\-]/g,"_"),v=r+"_onload";d.global[v]||(d.global[v]=function(){var a=c._currentDfd;if(a){var b=x.byId(a.response.options.form)||a._tmpForm;if(b){for(var f=a._contentToClean,d=0;d<f.length;d++)for(var e=f[d],j=0;j<b.childNodes.length;j++){var g=b.childNodes[j];if(g.name===
-e){q.destroy(g);break}}a._originalAction&&b.setAttribute("action",a._originalAction);if(a._originalMethod)b.setAttribute("method",a._originalMethod),b.method=a._originalMethod;if(a._originalTarget)b.setAttribute("target",a._originalTarget),b.target=a._originalTarget}a._tmpForm&&(q.destroy(a._tmpForm),delete a._tmpForm);a._finished=!0}else c._fireNextRequest()});var H={method:"POST"};c.create=function(a,b,c){if(d.global[a])return d.global[a];if(d.global.frames[a])return d.global.frames[a];c||(p("config-useXDomain")&&
-p("config-dojoBlankHtmlUrl"),c=p("config-dojoBlankHtmlUrl")||z.toUrl("dojo/resources/blank.html"));b=q.place('<iframe id="'+a+'" name="'+a+'" src="'+c+'" onload="'+b+'" style="position: absolute; left: 1px; top: 1px; height: 1px; width: 1px; visibility: hidden">',d.body());return d.global[a]=b};c.doc=function(a){if(a.contentDocument)return a.contentDocument;var b=a.name;if(b){var c=d.doc.getElementsByTagName("iframe");if(a.document&&c[b].contentWindow&&c[b].contentWindow.document)return c[b].contentWindow.document;
-if(d.doc.frames[b]&&d.doc.frames[b].document)return d.doc.frames[b].document}return null};c.setSrc=function(a,b,c){a=d.global.frames[a.name];if(a.contentWindow)a=a.contentWindow;try{c?a.location.replace(b):a.location=b}catch(h){}};c._iframeName=r+"_IoIframe";c._notifyStart=function(){};c._dfdQueue=[];c._currentDfd=null;c._fireNextRequest=function(){var a;try{if(!c._currentDfd&&c._dfdQueue.length){do a=c._currentDfd=c._dfdQueue.shift();while(a&&(a.canceled||a.isCanceled&&a.isCanceled())&&c._dfdQueue.length);
-if(!a||a.canceled||a.isCanceled&&a.isCanceled())c._currentDfd=null;else{var b=a.response,f=b.options,h=a._contentToClean=[],e=x.byId(f.form),j=o.notify,g=f.data||null,k;!a._legacy&&"POST"===f.method&&!e?e=a._tmpForm=q.create("form",{name:r+"_form",style:{position:"absolute",top:"-1000px",left:"-1000px"}},d.body()):"GET"===f.method&&e&&-1<b.url.indexOf("?")&&(k=b.url.slice(b.url.indexOf("?")+1),g=u.mixin(w.queryToObject(k),g));if(e){if(!a._legacy){var i=e;do i=i.parentNode;while(i!==d.doc.documentElement);
-if(!i)e.style.position="absolute",e.style.left="-1000px",e.style.top="-1000px",d.body().appendChild(e);if(!e.name)e.name=r+"_form"}if(g){var i=function(a,b){q.create("input",{type:"hidden",name:a,value:b},e);h.push(a)},l;for(l in g){var m=g[l];if(u.isArray(m)&&1<m.length)for(k=0;k<m.length;k++)i(l,m[k]);else e[l]?e[l].value=m:i(l,m)}}var s=e.getAttributeNode("action"),n=e.getAttributeNode("method"),t=e.getAttributeNode("target");if(b.url)a._originalAction=s?s.value:null,s?s.value=b.url:e.setAttribute("action",
-b.url);if(a._legacy){if(!n||!n.value)mthdNode?mthdNode.value=f.method:fn.setAttribute("method",f.method)}else a._originalMethod=n?n.value:null,n?n.value=f.method:e.setAttribute("method",f.method);a._originalTarget=t?t.value:null;t?t.value=c._iframeName:e.setAttribute("target",c._iframeName);e.target=c._iframeName;j&&j.emit("send",b,a.promise.cancel);c._notifyStart(b);e.submit()}else{f="";if(b.options.data)f=b.options.data,"string"!==typeof f&&(f=w.objectToQuery(f));i=b.url+(-1<b.url.indexOf("?")?
-"&":"?")+f;j&&j.emit("send",b,a.promise.cancel);c._notifyStart(b);c.setSrc(c._frame,i,!0)}}}}catch(p){a.reject(p)}};o.addCommonMethods(c,["GET","POST"]);return c});
+define("dojo/request/iframe", [
+	'module',
+	'require',
+	'./watch',
+	'./util',
+	'./handlers',
+	'../_base/lang',
+	'../io-query',
+	'../query',
+	'../has',
+	'../dom',
+	'../dom-construct',
+	'../_base/window'/*=====,
+	'../request',
+	'../_base/declare' =====*/
+], function(module, require, watch, util, handlers, lang, ioQuery, query, has, dom, domConstruct, win/*=====, request, declare =====*/){
+	var mid = module.id.replace(/[\/\.\-]/g, '_'),
+		onload = mid + '_onload';
+
+	if(!win.global[onload]){
+		win.global[onload] = function(){
+			var dfd = iframe._currentDfd;
+			if(!dfd){
+				iframe._fireNextRequest();
+				return;
+			}
+
+			var response = dfd.response,
+				options = response.options,
+				formNode = dom.byId(options.form) || dfd._tmpForm;
+
+			if(formNode){
+				// remove all the hidden content inputs
+				var toClean = dfd._contentToClean;
+				for(var i=0; i<toClean.length; i++){
+					var key = toClean[i];
+					//Need to cycle over all nodes since we may have added
+					//an array value which means that more than one node could
+					//have the same .name value.
+					for(var j=0; j<formNode.childNodes.length; j++){
+						var childNode = formNode.childNodes[j];
+						if(childNode.name === key){
+							domConstruct.destroy(childNode);
+							break;
+						}
+					}
+				}
+
+				// restore original action + target
+				dfd._originalAction && formNode.setAttribute('action', dfd._originalAction);
+				if(dfd._originalMethod){
+					formNode.setAttribute('method', dfd._originalMethod);
+					formNode.method = dfd._originalMethod;
+				}
+				if(dfd._originalTarget){
+					formNode.setAttribute('target', dfd._originalTarget);
+					formNode.target = dfd._originalTarget;
+				}
+			}
+
+			if(dfd._tmpForm){
+				domConstruct.destroy(dfd._tmpForm);
+				delete dfd._tmpForm;
+			}
+
+			dfd._finished = true;
+		};
+	}
+
+	function create(name, onloadstr, uri){
+		if(win.global[name]){
+			return win.global[name];
+		}
+
+		if(win.global.frames[name]){
+			return win.global.frames[name];
+		}
+
+		if(!uri){
+			if(has('config-useXDomain') && !has('config-dojoBlankHtmlUrl')){
+				console.warn('dojo/request/iframe: When using cross-domain Dojo builds,' +
+					' please save dojo/resources/blank.html to your domain and set dojoConfig.dojoBlankHtmlUrl' +
+					' to the path on your domain to blank.html');
+			}
+			uri = (has('config-dojoBlankHtmlUrl')||require.toUrl('dojo/resources/blank.html'));
+		}
+
+		var frame = domConstruct.place(
+			'<iframe id="'+name+'" name="'+name+'" src="'+uri+'" onload="'+onloadstr+
+			'" style="position: absolute; left: 1px; top: 1px; height: 1px; width: 1px; visibility: hidden">',
+			win.body());
+
+		win.global[name] = frame;
+
+		return frame;
+	}
+
+	function setSrc(_iframe, src, replace){
+		var frame = win.global.frames[_iframe.name];
+
+		if(frame.contentWindow){
+			// We have an iframe node instead of the window
+			frame = frame.contentWindow;
+		}
+
+		try{
+			if(!replace){
+				frame.location = src;
+			}else{
+				frame.location.replace(src);
+			}
+		}catch(e){
+			console.log('dojo/request/iframe.setSrc: ', e);
+		}
+	}
+
+	function doc(iframeNode){
+		if(iframeNode.contentDocument){
+			return iframeNode.contentDocument;
+		}
+		var name = iframeNode.name;
+		if(name){
+			var iframes = win.doc.getElementsByTagName('iframe');
+			if(iframeNode.document && iframes[name].contentWindow && iframes[name].contentWindow.document){
+				return iframes[name].contentWindow.document;
+			}else if(win.doc.frames[name] && win.doc.frames[name].document){
+				return win.doc.frames[name].document;
+			}
+		}
+		return null;
+	}
+
+	function createForm(){
+		return domConstruct.create('form', {
+			name: mid + '_form',
+			style: {
+				position: 'absolute',
+				top: '-1000px',
+				left: '-1000px'
+			}
+		}, win.body());
+	}
+
+	function fireNextRequest(){
+		// summary:
+		//		Internal method used to fire the next request in the queue.
+		var dfd;
+		try{
+			if(iframe._currentDfd || !iframe._dfdQueue.length){
+				return;
+			}
+			do{
+				dfd = iframe._currentDfd = iframe._dfdQueue.shift();
+			}while(dfd && (dfd.canceled || (dfd.isCanceled && dfd.isCanceled())) && iframe._dfdQueue.length);
+
+			if(!dfd || dfd.canceled || (dfd.isCanceled && dfd.isCanceled())){
+				iframe._currentDfd = null;
+				return;
+			}
+
+			var response = dfd.response,
+				options = response.options,
+				c2c = dfd._contentToClean = [],
+				formNode = dom.byId(options.form),
+				notify = util.notify,
+				data = options.data || null,
+				queryStr;
+
+			if(!dfd._legacy && options.method === 'POST' && !formNode){
+				formNode = dfd._tmpForm = createForm();
+			}else if(options.method === 'GET' && formNode && response.url.indexOf('?') > -1){
+				queryStr = response.url.slice(response.url.indexOf('?') + 1);
+				data = lang.mixin(ioQuery.queryToObject(queryStr), data);
+			}
+
+			if(formNode){
+				if(!dfd._legacy){
+					var parentNode = formNode;
+					do{
+						parentNode = parentNode.parentNode;
+					}while(parentNode !== win.doc.documentElement);
+
+					// Append the form node or some browsers won't work
+					if(!parentNode){
+						formNode.style.position = 'absolute';
+						formNode.style.left = '-1000px';
+						formNode.style.top = '-1000px';
+						win.body().appendChild(formNode);
+					}
+
+					if(!formNode.name){
+						formNode.name = mid + '_form';
+					}
+				}
+
+				// if we have things in data, we need to add them to the form
+				// before submission
+				if(data){
+					var createInput = function(name, value){
+						domConstruct.create('input', {
+							type: 'hidden',
+							name: name,
+							value: value
+						}, formNode);
+						c2c.push(name);
+					};
+					for(var x in data){
+						var val = data[x];
+						if(lang.isArray(val) && val.length > 1){
+							for(var i=0; i<val.length; i++){
+								createInput(x, val[i]);
+							}
+						}else{
+							if(!formNode[x]){
+								createInput(x, val);
+							}else{
+								formNode[x].value = val;
+							}
+						}
+					}
+				}
+
+				//IE requires going through getAttributeNode instead of just getAttribute in some form cases,
+				//so use it for all.  See #2844
+				var actionNode = formNode.getAttributeNode('action'),
+					methodNode = formNode.getAttributeNode('method'),
+					targetNode = formNode.getAttributeNode('target');
+
+				if(response.url){
+					dfd._originalAction = actionNode ? actionNode.value : null;
+					if(actionNode){
+						actionNode.value = response.url;
+					}else{
+						formNode.setAttribute('action', response.url);
+					}
+				}
+
+				if(!dfd._legacy){
+					dfd._originalMethod = methodNode ? methodNode.value : null;
+					if(methodNode){
+						methodNode.value = options.method;
+					}else{
+						formNode.setAttribute('method', options.method);
+					}
+				}else{
+					if(!methodNode || !methodNode.value){
+						if(mthdNode){
+							mthdNode.value = options.method;
+						}else{
+							fn.setAttribute("method", options.method);
+						}
+					}
+				}
+
+				dfd._originalTarget = targetNode ? targetNode.value : null;
+				if(targetNode){
+					targetNode.value = iframe._iframeName;
+				}else{
+					formNode.setAttribute('target', iframe._iframeName);
+				}
+				formNode.target = iframe._iframeName;
+
+				notify && notify.emit('send', response, dfd.promise.cancel);
+				iframe._notifyStart(response);
+				formNode.submit();
+			}else{
+				// otherwise we post a GET string by changing URL location for the
+				// iframe
+
+				var extra = '';
+				if(response.options.data){
+					extra = response.options.data;
+					if(typeof extra !== 'string'){
+						extra = ioQuery.objectToQuery(extra);
+					}
+				}
+				var tmpUrl = response.url + (response.url.indexOf('?') > -1 ? '&' : '?') + extra;
+				notify && notify.emit('send', response, dfd.promise.cancel);
+				iframe._notifyStart(response);
+				iframe.setSrc(iframe._frame, tmpUrl, true);
+			}
+		}catch(e){
+			dfd.reject(e);
+		}
+	}
+
+	// dojo/request/watch handlers
+	function isValid(response){
+		return !this.isFulfilled();
+	}
+	function isReady(response){
+		return !!this._finished;
+	}
+	function handleResponse(response, error){
+		if(!error){
+			try{
+				var options = response.options,
+					doc = iframe.doc(iframe._frame),
+					handleAs = options.handleAs;
+
+				if(handleAs !== 'html'){
+					if(handleAs === 'xml'){
+						// IE6-8 have to parse the XML manually. See http://bugs.dojotoolkit.org/ticket/6334
+						if(doc.documentElement.tagName.toLowerCase() === 'html'){
+							query('a', doc.documentElement).orphan();
+							var xmlText = doc.documentElement.innerText;
+							xmlText = xmlText.replace(/>\s+</g, '><');
+							response.text = lang.trim(xmlText);
+						}else{
+							response.data = doc;
+						}
+					}else{
+						// 'json' and 'javascript' and 'text'
+						response.text = doc.getElementsByTagName('textarea')[0].value; // text
+					}
+					handlers(response);
+				}else{
+					response.data = doc;
+				}
+			}catch(e){
+				error = e;
+			}
+		}
+
+		if(error){
+			this.reject(error);
+		}else if(this._finished){
+			this.resolve(response);
+		}else{
+			this.reject(new Error('Invalid dojo/request/iframe request state'));
+		}
+	}
+	function last(response){
+		this._callNext();
+	}
+
+	var defaultOptions = {
+		method: 'POST'
+	};
+	function iframe(url, options, returnDeferred){
+		var response = util.parseArgs(url, util.deepCreate(defaultOptions, options), true);
+		url = response.url;
+		options = response.options;
+
+		if(options.method !== 'GET' && options.method !== 'POST'){
+			throw new Error(options.method + ' not supported by dojo/request/iframe');
+		}
+
+		if(!iframe._frame){
+			iframe._frame = iframe.create(iframe._iframeName, onload + '();');
+		}
+
+		var dfd = util.deferred(response, null, isValid, isReady, handleResponse, last);
+		dfd._callNext = function(){
+			if(!this._calledNext){
+				this._calledNext = true;
+				iframe._currentDfd = null;
+				iframe._fireNextRequest();
+			}
+		};
+		dfd._legacy = returnDeferred;
+
+		iframe._dfdQueue.push(dfd);
+		iframe._fireNextRequest();
+
+		watch(dfd);
+
+		return returnDeferred ? dfd : dfd.promise;
+	}
+
+	/*=====
+	iframe = function(url, options){
+		// summary:
+		//		Sends a request using an iframe element with the given URL and options.
+		// url: String
+		//		URL to request
+		// options: dojo/request/iframe.__Options?
+		//		Options for the request.
+		// returns: dojo/request.__Promise
+	};
+	iframe.__BaseOptions = declare(request.__BaseOptions, {
+		// form: DOMNode?
+		//		A form node to use to submit data to the server.
+		// data: String|Object?
+		//		Data to transfer. When making a GET request, this will
+		//		be converted to key=value parameters and appended to the
+		//		URL.
+	});
+	iframe.__MethodOptions = declare(null, {
+		// method: String?
+		//		The HTTP method to use to make the request. Must be
+		//		uppercase. Only `"GET"` and `"POST"` are accepted.
+		//		Default is `"POST"`.
+	});
+	iframe.__Options = declare([iframe.__BaseOptions, iframe.__MethodOptions]);
+
+	iframe.get = function(url, options){
+		// summary:
+		//		Send an HTTP GET request using an iframe element with the given URL and options.
+		// url: String
+		//		URL to request
+		// options: dojo/request/iframe.__BaseOptions?
+		//		Options for the request.
+		// returns: dojo/request.__Promise
+	};
+	iframe.post = function(url, options){
+		// summary:
+		//		Send an HTTP POST request using an iframe element with the given URL and options.
+		// url: String
+		//		URL to request
+		// options: dojo/request/iframe.__BaseOptions?
+		//		Options for the request.
+		// returns: dojo/request.__Promise
+	};
+	=====*/
+	iframe.create = create;
+	iframe.doc = doc;
+	iframe.setSrc = setSrc;
+
+	// TODO: Make these truly private in 2.0
+	iframe._iframeName = mid + '_IoIframe';
+	iframe._notifyStart = function(){};
+	iframe._dfdQueue = [];
+	iframe._currentDfd = null;
+	iframe._fireNextRequest = fireNextRequest;
+
+	util.addCommonMethods(iframe, ['GET', 'POST']);
+
+	return iframe;
+});

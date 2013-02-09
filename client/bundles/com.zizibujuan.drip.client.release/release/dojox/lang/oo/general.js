@@ -1,3 +1,69 @@
-//>>built
-define("dojox/lang/oo/general",["dijit","dojo","dojox","dojo/require!dojox/lang/oo/Decorator"],function(h,e,g){e.provide("dojox.lang.oo.general");e.require("dojox.lang.oo.Decorator");(function(){var a=g.lang.oo,d=a.makeDecorator,a=a.general,f=e.isFunction;a.augment=d(function(a,c,b){return"undefined"==typeof b?c:b});a.override=d(function(a,c,b){return"undefined"!=typeof b?c:b});a.shuffle=d(function(a,c,b){return f(b)?function(){return b.apply(this,c.apply(this,arguments))}:b});a.wrap=d(function(a,
-c,b){return function(){return c.call(this,b,arguments)}});a.tap=d(function(a,c){return function(){c.apply(this,arguments);return this}});a.before=d(function(a,c,b){return f(b)?function(){c.apply(this,arguments);return b.apply(this,arguments)}:c});a.after=d(function(a,c,b){return f(b)?function(){b.apply(this,arguments);return c.apply(this,arguments)}:c})})()});
+// wrapped by build app
+define("dojox/lang/oo/general", ["dojo","dijit","dojox","dojo/require!dojox/lang/oo/Decorator"], function(dojo,dijit,dojox){
+dojo.provide("dojox.lang.oo.general");
+
+dojo.require("dojox.lang.oo.Decorator");
+
+(function(){
+	var oo = dojox.lang.oo, md = oo.makeDecorator, oog = oo.general,
+		isF = dojo.isFunction;
+
+	// generally useful decorators
+
+	oog.augment = md(function(name, newValue, oldValue){
+		// summary:
+		//		add property, if it was not defined before
+		return typeof oldValue == "undefined" ? newValue : oldValue;
+	});
+
+	oog.override = md(function(name, newValue, oldValue){
+		// summary:
+		//		override property only if it was already present
+		return typeof oldValue != "undefined" ? newValue : oldValue;
+	});
+
+	oog.shuffle = md(function(name, newValue, oldValue){
+		// summary:
+		//		replaces arguments for an old method
+		return isF(oldValue) ?
+			function(){
+				return oldValue.apply(this, newValue.apply(this, arguments));
+			} : oldValue;
+	});
+
+	oog.wrap = md(function(name, newValue, oldValue){
+		// summary:
+		//		wraps the old values with a supplied function
+		return function(){ return newValue.call(this, oldValue, arguments); };
+	});
+
+	oog.tap = md(function(name, newValue, oldValue){
+		// summary:
+		//		always returns "this" ignoring the actual return
+		return function(){ newValue.apply(this, arguments); return this; };
+	});
+
+	oog.before = md(function(name, newValue, oldValue){
+		// summary:
+		//		creates a chain of calls where the new method is called
+		//		before the old method
+		return isF(oldValue) ?
+			function(){
+				newValue.apply(this, arguments);
+				return oldValue.apply(this, arguments);
+			} : newValue;
+	});
+
+	oog.after = md(function(name, newValue, oldValue){
+		// summary:
+		//		creates a chain of calls where the new method is called
+		//		after the old method
+		return isF(oldValue) ?
+			function(){
+				oldValue.apply(this, arguments);
+				return newValue.apply(this, arguments);
+			} : newValue;
+	});
+})();
+
+});

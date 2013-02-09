@@ -1,2 +1,3 @@
-//>>built
-define("dojox/grid/_RadioSelector",["../main","./_Selector"],function(a){return a.grid._RadioSelector});
+define("dojox/grid/_RadioSelector", ["../main", "./_Selector"], function(dojox){
+	return dojox.grid._RadioSelector;
+});

@@ -1,3 +1,36 @@
-//>>built
-define("dojox/dtl/tag/date",["dojo/_base/lang","../_base","../utils/date"],function(c,d,e){c.getObject("dojox.dtl.tag.date",!0);dojox.dtl.tag.date.NowNode=function(a,b){this._format=a;this.format=new e.DateFormat(a);this.contents=b};c.extend(d.tag.date.NowNode,{render:function(a,b){this.contents.set(this.format.format(new Date));return this.contents.render(a,b)},unrender:function(a,b){return this.contents.unrender(a,b)},clone:function(a){return new this.constructor(this._format,this.contents.clone(a))}});
-dojox.dtl.tag.date.now=function(a,b){var c=b.split_contents();if(2!=c.length)throw Error("'now' statement takes one argument");return new dojox.dtl.tag.date.NowNode(c[1].slice(1,-1),a.create_text_node())};return dojox.dtl.tag.date});
+define("dojox/dtl/tag/date", [
+	"dojo/_base/lang",
+	"../_base",
+	"../utils/date"
+], function(lang,dd,ddud){
+
+	lang.getObject("dojox.dtl.tag.date", true);
+
+	dojox.dtl.tag.date.NowNode = function(format, node){
+		this._format = format;
+		this.format = new ddud.DateFormat(format);
+		this.contents = node;
+	};
+	lang.extend(dd.tag.date.NowNode, {
+		render: function(context, buffer){
+			this.contents.set(this.format.format(new Date()));
+			return this.contents.render(context, buffer);
+		},
+		unrender: function(context, buffer){
+			return this.contents.unrender(context, buffer);
+		},
+		clone: function(buffer){
+			return new this.constructor(this._format, this.contents.clone(buffer));
+		}
+	});
+
+	dojox.dtl.tag.date.now = function(parser, token){
+		// Split by either :" or :'
+		var parts = token.split_contents();
+		if(parts.length != 2){
+			throw new Error("'now' statement takes one argument");
+		}
+		return new dojox.dtl.tag.date.NowNode(parts[1].slice(1, -1), parser.create_text_node());
+	};
+	return dojox.dtl.tag.date;
+});

@@ -1,24 +1,743 @@
-//>>built
-require({cache:{"url:dojox/atom/widget/templates/FeedEntryViewer.html":'<div class="feedEntryViewer">\n    <table border="0" width="100%" class="feedEntryViewerMenuTable" dojoAttachPoint="feedEntryViewerMenu" style="display: none;">\n        <tr width="100%"  dojoAttachPoint="entryCheckBoxDisplayOptions">\n            <td align="right">\n                <span class="feedEntryViewerMenu" dojoAttachPoint="displayOptions" dojoAttachEvent="onclick:_toggleOptions"></span>\n            </td>\n        </tr>\n        <tr class="feedEntryViewerDisplayCheckbox" dojoAttachPoint="entryCheckBoxRow" width="100%" style="display: none;">\n            <td dojoAttachPoint="feedEntryCelltitle">\n                <input type="checkbox" name="title" value="Title" dojoAttachPoint="feedEntryCheckBoxTitle" dojoAttachEvent="onclick:_toggleCheckbox"/>\n\t\t\t\t<label for="title" dojoAttachPoint="feedEntryCheckBoxLabelTitle"></label>\n            </td>\n            <td dojoAttachPoint="feedEntryCellauthors">\n                <input type="checkbox" name="authors" value="Authors" dojoAttachPoint="feedEntryCheckBoxAuthors" dojoAttachEvent="onclick:_toggleCheckbox"/>\n\t\t\t\t<label for="title" dojoAttachPoint="feedEntryCheckBoxLabelAuthors"></label>\n            </td>\n            <td dojoAttachPoint="feedEntryCellcontributors">\n                <input type="checkbox" name="contributors" value="Contributors" dojoAttachPoint="feedEntryCheckBoxContributors" dojoAttachEvent="onclick:_toggleCheckbox"/>\n\t\t\t\t<label for="title" dojoAttachPoint="feedEntryCheckBoxLabelContributors"></label>\n            </td>\n            <td dojoAttachPoint="feedEntryCellid">\n                <input type="checkbox" name="id" value="Id" dojoAttachPoint="feedEntryCheckBoxId" dojoAttachEvent="onclick:_toggleCheckbox"/>\n\t\t\t\t<label for="title" dojoAttachPoint="feedEntryCheckBoxLabelId"></label>\n            </td>\n            <td rowspan="2" align="right">\n                <span class="feedEntryViewerMenu" dojoAttachPoint="close" dojoAttachEvent="onclick:_toggleOptions"></span>\n            </td>\n\t\t</tr>\n\t\t<tr class="feedEntryViewerDisplayCheckbox" dojoAttachPoint="entryCheckBoxRow2" width="100%" style="display: none;">\n            <td dojoAttachPoint="feedEntryCellupdated">\n                <input type="checkbox" name="updated" value="Updated" dojoAttachPoint="feedEntryCheckBoxUpdated" dojoAttachEvent="onclick:_toggleCheckbox"/>\n\t\t\t\t<label for="title" dojoAttachPoint="feedEntryCheckBoxLabelUpdated"></label>\n            </td>\n            <td dojoAttachPoint="feedEntryCellsummary">\n                <input type="checkbox" name="summary" value="Summary" dojoAttachPoint="feedEntryCheckBoxSummary" dojoAttachEvent="onclick:_toggleCheckbox"/>\n\t\t\t\t<label for="title" dojoAttachPoint="feedEntryCheckBoxLabelSummary"></label>\n            </td>\n            <td dojoAttachPoint="feedEntryCellcontent">\n                <input type="checkbox" name="content" value="Content" dojoAttachPoint="feedEntryCheckBoxContent" dojoAttachEvent="onclick:_toggleCheckbox"/>\n\t\t\t\t<label for="title" dojoAttachPoint="feedEntryCheckBoxLabelContent"></label>\n            </td>\n        </tr>\n    </table>\n    \n    <table class="feedEntryViewerContainer" border="0" width="100%">\n        <tr class="feedEntryViewerTitle" dojoAttachPoint="entryTitleRow" style="display: none;">\n            <td>\n                <table width="100%" cellpadding="0" cellspacing="0" border="0">\n                    <tr class="graphic-tab-lgray">\n\t\t\t\t\t\t<td class="lp2">\n\t\t\t\t\t\t\t<span class="lp" dojoAttachPoint="entryTitleHeader"></span>\n\t\t\t\t\t\t</td>\n                    </tr>\n                    <tr>\n                        <td dojoAttachPoint="entryTitleNode">\n                        </td>\n                    </tr>\n                </table>\n            </td>\n        </tr>\n\n        <tr class="feedEntryViewerAuthor" dojoAttachPoint="entryAuthorRow" style="display: none;">\n            <td>\n                <table width="100%" cellpadding="0" cellspacing="0" border="0">\n                    <tr class="graphic-tab-lgray">\n\t\t\t\t\t\t<td class="lp2">\n\t\t\t\t\t\t\t<span class="lp" dojoAttachPoint="entryAuthorHeader"></span>\n\t\t\t\t\t\t</td>\n                    </tr>\n                    <tr>\n                        <td dojoAttachPoint="entryAuthorNode">\n                        </td>\n                    </tr>\n                </table>\n            </td>\n        </tr>\n\n        <tr class="feedEntryViewerContributor" dojoAttachPoint="entryContributorRow" style="display: none;">\n            <td>\n                <table width="100%" cellpadding="0" cellspacing="0" border="0">\n                    <tr class="graphic-tab-lgray">\n\t\t\t\t\t\t<td class="lp2">\n\t\t\t\t\t\t\t<span class="lp" dojoAttachPoint="entryContributorHeader"></span>\n\t\t\t\t\t\t</td>\n                    </tr>\n                    <tr>\n                        <td dojoAttachPoint="entryContributorNode" class="feedEntryViewerContributorNames">\n                        </td>\n                    </tr>\n                </table>\n            </td>\n        </tr>\n        \n        <tr class="feedEntryViewerId" dojoAttachPoint="entryIdRow" style="display: none;">\n            <td>\n                <table width="100%" cellpadding="0" cellspacing="0" border="0">\n                    <tr class="graphic-tab-lgray">\n\t\t\t\t\t\t<td class="lp2">\n\t\t\t\t\t\t\t<span class="lp" dojoAttachPoint="entryIdHeader"></span>\n\t\t\t\t\t\t</td>\n                    </tr>\n                    <tr>\n                        <td dojoAttachPoint="entryIdNode" class="feedEntryViewerIdText">\n                        </td>\n                    </tr>\n                </table>\n            </td>\n        </tr>\n    \n        <tr class="feedEntryViewerUpdated" dojoAttachPoint="entryUpdatedRow" style="display: none;">\n            <td>\n                <table width="100%" cellpadding="0" cellspacing="0" border="0">\n                    <tr class="graphic-tab-lgray">\n\t\t\t\t\t\t<td class="lp2">\n\t\t\t\t\t\t\t<span class="lp" dojoAttachPoint="entryUpdatedHeader"></span>\n\t\t\t\t\t\t</td>\n                    </tr>\n                    <tr>\n                        <td dojoAttachPoint="entryUpdatedNode" class="feedEntryViewerUpdatedText">\n                        </td>\n                    </tr>\n                </table>\n            </td>\n        </tr>\n    \n        <tr class="feedEntryViewerSummary" dojoAttachPoint="entrySummaryRow" style="display: none;">\n            <td>\n                <table width="100%" cellpadding="0" cellspacing="0" border="0">\n                    <tr class="graphic-tab-lgray">\n\t\t\t\t\t\t<td class="lp2">\n\t\t\t\t\t\t\t<span class="lp" dojoAttachPoint="entrySummaryHeader"></span>\n\t\t\t\t\t\t</td>\n                    </tr>\n                    <tr>\n                        <td dojoAttachPoint="entrySummaryNode">\n                        </td>\n                    </tr>\n                </table>\n            </td>\n        </tr>\n    \n        <tr class="feedEntryViewerContent" dojoAttachPoint="entryContentRow" style="display: none;">\n            <td>\n                <table width="100%" cellpadding="0" cellspacing="0" border="0">\n                    <tr class="graphic-tab-lgray">\n\t\t\t\t\t\t<td class="lp2">\n\t\t\t\t\t\t\t<span class="lp" dojoAttachPoint="entryContentHeader"></span>\n\t\t\t\t\t\t</td>\n                    </tr>\n                    <tr>\n                        <td dojoAttachPoint="entryContentNode">\n                        </td>\n                    </tr>\n                </table>\n            </td>\n        </tr>\n    </table>\n</div>\n',
-"url:dojox/atom/widget/templates/EntryHeader.html":'<span dojoAttachPoint="entryHeaderNode" class="entryHeaderNode"></span>\n'}});
-define("dojox/atom/widget/FeedEntryViewer","dojo/_base/kernel,dojo/_base/connect,dojo/_base/declare,dojo/_base/fx,dojo/_base/array,dojo/dom-style,dojo/dom-construct,dijit/_Widget,dijit/_Templated,dijit/_Container,dijit/layout/ContentPane,../io/Connection,dojo/text!./templates/FeedEntryViewer.html,dojo/text!./templates/EntryHeader.html,dojo/i18n!./nls/FeedEntryViewer".split(","),function(i,l,m,f,h,d,q,n,o,p,j,k,r,s,e){i.experimental("dojox.atom.widget.FeedEntryViewer");var k=m("dojox.atom.widget.FeedEntryViewer",
-[n,o,p],{entrySelectionTopic:"",_validEntryFields:{},displayEntrySections:"",_displayEntrySections:null,enableMenu:!1,enableMenuFade:!1,_optionButtonDisplayed:!0,templateString:r,_entry:null,_feed:null,_editMode:!1,postCreate:function(){if(""!==this.entrySelectionTopic)this._subscriptions=[i.subscribe(this.entrySelectionTopic,this,"_handleEvent")];this.displayOptions.innerHTML=e.displayOptions;this.feedEntryCheckBoxLabelTitle.innerHTML=e.title;this.feedEntryCheckBoxLabelAuthors.innerHTML=e.authors;
-this.feedEntryCheckBoxLabelContributors.innerHTML=e.contributors;this.feedEntryCheckBoxLabelId.innerHTML=e.id;this.close.innerHTML=e.close;this.feedEntryCheckBoxLabelUpdated.innerHTML=e.updated;this.feedEntryCheckBoxLabelSummary.innerHTML=e.summary;this.feedEntryCheckBoxLabelContent.innerHTML=e.content},startup:function(){this._displayEntrySections=""===this.displayEntrySections?"title,authors,contributors,summary,content,id,updated".split(","):this.displayEntrySections.split(",");this._setDisplaySectionsCheckboxes();
-this.enableMenu&&(d.set(this.feedEntryViewerMenu,"display",""),this.entryCheckBoxRow&&this.entryCheckBoxRow2&&this.enableMenuFade&&(f.fadeOut({node:this.entryCheckBoxRow,duration:250}).play(),f.fadeOut({node:this.entryCheckBoxRow2,duration:250}).play()))},clear:function(){this.destroyDescendants();this._feed=this._entry=null;this.clearNodes()},clearNodes:function(){h.forEach("entryTitleRow,entryAuthorRow,entryContributorRow,entrySummaryRow,entryContentRow,entryIdRow,entryUpdatedRow".split(","),function(a){d.set(this[a],
-"display","none")},this);h.forEach("entryTitleNode,entryTitleHeader,entryAuthorHeader,entryContributorHeader,entryContributorNode,entrySummaryHeader,entrySummaryNode,entryContentHeader,entryContentNode,entryIdNode,entryIdHeader,entryUpdatedHeader,entryUpdatedNode".split(","),function(a){for(;this[a].firstChild;)q.destroy(this[a].firstChild)},this)},setEntry:function(a,b){this.clear();this._validEntryFields={};this._entry=a;this._feed=b;null!==a&&(this.entryTitleHeader&&this.setTitleHeader(this.entryTitleHeader,
-a),this.entryTitleNode&&this.setTitle(this.entryTitleNode,this._editMode,a),this.entryAuthorHeader&&this.setAuthorsHeader(this.entryAuthorHeader,a),this.entryAuthorNode&&this.setAuthors(this.entryAuthorNode,this._editMode,a),this.entryContributorHeader&&this.setContributorsHeader(this.entryContributorHeader,a),this.entryContributorNode&&this.setContributors(this.entryContributorNode,this._editMode,a),this.entryIdHeader&&this.setIdHeader(this.entryIdHeader,a),this.entryIdNode&&this.setId(this.entryIdNode,
-this._editMode,a),this.entryUpdatedHeader&&this.setUpdatedHeader(this.entryUpdatedHeader,a),this.entryUpdatedNode&&this.setUpdated(this.entryUpdatedNode,this._editMode,a),this.entrySummaryHeader&&this.setSummaryHeader(this.entrySummaryHeader,a),this.entrySummaryNode&&this.setSummary(this.entrySummaryNode,this._editMode,a),this.entryContentHeader&&this.setContentHeader(this.entryContentHeader,a),this.entryContentNode&&this.setContent(this.entryContentNode,this._editMode,a));this._displaySections()},
-setTitleHeader:function(a,b){if(b.title&&b.title.value&&null!==b.title.value){var c=new g({title:e.title});a.appendChild(c.domNode)}},setTitle:function(a,b,c){c.title&&c.title.value&&null!==c.title.value&&("text"==c.title.type?(c=document.createTextNode(c.title.value),a.appendChild(c)):(b=document.createElement("span"),b=new j({refreshOnShow:!0,executeScripts:!1},b),b.attr("content",c.title.value),a.appendChild(b.domNode)),this.setFieldValidity("title",!0))},setAuthorsHeader:function(a,b){if(b.authors&&
-0<b.authors.length){var c=new g({title:e.authors});a.appendChild(c.domNode)}},setAuthors:function(a,b,c){a.innerHTML="";if(c.authors&&0<c.authors.length)for(var d in c.authors)if(c.authors[d].name){b=a;if(c.authors[d].uri){var e=document.createElement("a");b.appendChild(e);e.href=c.authors[d].uri;b=e}e=c.authors[d].name;c.authors[d].email&&(e=e+" ("+c.authors[d].email+")");e=document.createTextNode(e);b.appendChild(e);b=document.createElement("br");a.appendChild(b);this.setFieldValidity("authors",
-!0)}},setContributorsHeader:function(a,b){if(b.contributors&&0<b.contributors.length){var c=new g({title:e.contributors});a.appendChild(c.domNode)}},setContributors:function(a,b,c){if(c.contributors&&0<c.contributors.length)for(var d in c.contributors)b=document.createTextNode(c.contributors[d].name),a.appendChild(b),b=document.createElement("br"),a.appendChild(b),this.setFieldValidity("contributors",!0)},setIdHeader:function(a,b){if(b.id&&null!==b.id){var c=new g({title:e.id});a.appendChild(c.domNode)}},
-setId:function(a,b,c){c.id&&null!==c.id&&(b=document.createTextNode(c.id),a.appendChild(b),this.setFieldValidity("id",!0))},setUpdatedHeader:function(a,b){if(b.updated&&null!==b.updated){var c=new g({title:e.updated});a.appendChild(c.domNode)}},setUpdated:function(a,b,c){c.updated&&null!==c.updated&&(b=document.createTextNode(c.updated),a.appendChild(b),this.setFieldValidity("updated",!0))},setSummaryHeader:function(a,b){if(b.summary&&b.summary.value&&null!==b.summary.value){var c=new g({title:e.summary});
-a.appendChild(c.domNode)}},setSummary:function(a,b,c){c.summary&&c.summary.value&&null!==c.summary.value&&(b=document.createElement("span"),b=new j({refreshOnShow:!0,executeScripts:!1},b),b.attr("content",c.summary.value),a.appendChild(b.domNode),this.setFieldValidity("summary",!0))},setContentHeader:function(a,b){if(b.content&&b.content.value&&null!==b.content.value){var c=new g({title:e.content});a.appendChild(c.domNode)}},setContent:function(a,b,c){c.content&&c.content.value&&null!==c.content.value&&
-(b=document.createElement("span"),b=new j({refreshOnShow:!0,executeScripts:!1},b),b.attr("content",c.content.value),a.appendChild(b.domNode),this.setFieldValidity("content",!0))},_displaySections:function(){d.set(this.entryTitleRow,"display","none");d.set(this.entryAuthorRow,"display","none");d.set(this.entryContributorRow,"display","none");d.set(this.entrySummaryRow,"display","none");d.set(this.entryContentRow,"display","none");d.set(this.entryIdRow,"display","none");d.set(this.entryUpdatedRow,"display",
-"none");for(var a in this._displayEntrySections){var b=this._displayEntrySections[a].toLowerCase();"title"===b&&this.isFieldValid("title")&&d.set(this.entryTitleRow,"display","");"authors"===b&&this.isFieldValid("authors")&&d.set(this.entryAuthorRow,"display","");"contributors"===b&&this.isFieldValid("contributors")&&d.set(this.entryContributorRow,"display","");"summary"===b&&this.isFieldValid("summary")&&d.set(this.entrySummaryRow,"display","");"content"===b&&this.isFieldValid("content")&&d.set(this.entryContentRow,
-"display","");"id"===b&&this.isFieldValid("id")&&d.set(this.entryIdRow,"display","");"updated"===b&&this.isFieldValid("updated")&&d.set(this.entryUpdatedRow,"display","")}},setDisplaySections:function(a){null!==a?(this._displayEntrySections=a,this._displaySections()):this._displayEntrySections="title,authors,contributors,summary,content,id,updated".split(",")},_setDisplaySectionsCheckboxes:function(){var a="title,authors,contributors,summary,content,id,updated".split(","),b;for(b in a)-1==h.indexOf(this._displayEntrySections,
-a[b])?d.set(this["feedEntryCell"+a[b]],"display","none"):this["feedEntryCheckBox"+a[b].substring(0,1).toUpperCase()+a[b].substring(1)].checked=!0},_readDisplaySections:function(){var a=[];this.feedEntryCheckBoxTitle.checked&&a.push("title");this.feedEntryCheckBoxAuthors.checked&&a.push("authors");this.feedEntryCheckBoxContributors.checked&&a.push("contributors");this.feedEntryCheckBoxSummary.checked&&a.push("summary");this.feedEntryCheckBoxContent.checked&&a.push("content");this.feedEntryCheckBoxId.checked&&
-a.push("id");this.feedEntryCheckBoxUpdated.checked&&a.push("updated");this._displayEntrySections=a},_toggleCheckbox:function(a){a.checked=a.checked?!1:!0;this._readDisplaySections();this._displaySections()},_toggleOptions:function(){if(this.enableMenu){var a,b;this._optionButtonDisplayed?(this.enableMenuFade?(a=f.fadeOut({node:this.entryCheckBoxDisplayOptions,duration:250}),l.connect(a,"onEnd",this,function(){d.set(this.entryCheckBoxDisplayOptions,"display","none");d.set(this.entryCheckBoxRow,"display",
-"");d.set(this.entryCheckBoxRow2,"display","");f.fadeIn({node:this.entryCheckBoxRow,duration:250}).play();f.fadeIn({node:this.entryCheckBoxRow2,duration:250}).play()}),a.play()):(d.set(this.entryCheckBoxDisplayOptions,"display","none"),d.set(this.entryCheckBoxRow,"display",""),d.set(this.entryCheckBoxRow2,"display","")),this._optionButtonDisplayed=!1):(this.enableMenuFade?(a=f.fadeOut({node:this.entryCheckBoxRow,duration:250}),b=f.fadeOut({node:this.entryCheckBoxRow2,duration:250}),l.connect(a,"onEnd",
-this,function(){d.set(this.entryCheckBoxRow,"display","none");d.set(this.entryCheckBoxRow2,"display","none");d.set(this.entryCheckBoxDisplayOptions,"display","");f.fadeIn({node:this.entryCheckBoxDisplayOptions,duration:250}).play()}),a.play(),b.play()):(d.set(this.entryCheckBoxRow,"display","none"),d.set(this.entryCheckBoxRow2,"display","none"),d.set(this.entryCheckBoxDisplayOptions,"display","")),this._optionButtonDisplayed=!0)}},_handleEvent:function(a){a.source!=this&&("set"==a.action&&a.entry?
-this.setEntry(a.entry,a.feed):"delete"==a.action&&a.entry&&a.entry==this._entry&&this.clear())},setFieldValidity:function(a,b){a&&(a.toLowerCase(),this._validEntryFields[a]=b)},isFieldValid:function(a){return this._validEntryFields[a.toLowerCase()]},getEntry:function(){return this._entry},getFeed:function(){return this._feed},destroy:function(){this.clear();h.forEach(this._subscriptions,i.unsubscribe)}}),g=k.EntryHeader=m("dojox.atom.widget.EntryHeader",[n,o,p],{title:"",templateString:s,postCreate:function(){this.setListHeader()},
-setListHeader:function(a){this.clear();if(a)this.title=a;this.entryHeaderNode.appendChild(document.createTextNode(this.title))},clear:function(){this.destroyDescendants();if(this.entryHeaderNode)for(var a=0;a<this.entryHeaderNode.childNodes.length;a++)this.entryHeaderNode.removeChild(this.entryHeaderNode.childNodes[a])},destroy:function(){this.clear()}});return k});
+require({cache:{
+'url:dojox/atom/widget/templates/FeedEntryViewer.html':"<div class=\"feedEntryViewer\">\n    <table border=\"0\" width=\"100%\" class=\"feedEntryViewerMenuTable\" dojoAttachPoint=\"feedEntryViewerMenu\" style=\"display: none;\">\n        <tr width=\"100%\"  dojoAttachPoint=\"entryCheckBoxDisplayOptions\">\n            <td align=\"right\">\n                <span class=\"feedEntryViewerMenu\" dojoAttachPoint=\"displayOptions\" dojoAttachEvent=\"onclick:_toggleOptions\"></span>\n            </td>\n        </tr>\n        <tr class=\"feedEntryViewerDisplayCheckbox\" dojoAttachPoint=\"entryCheckBoxRow\" width=\"100%\" style=\"display: none;\">\n            <td dojoAttachPoint=\"feedEntryCelltitle\">\n                <input type=\"checkbox\" name=\"title\" value=\"Title\" dojoAttachPoint=\"feedEntryCheckBoxTitle\" dojoAttachEvent=\"onclick:_toggleCheckbox\"/>\n\t\t\t\t<label for=\"title\" dojoAttachPoint=\"feedEntryCheckBoxLabelTitle\"></label>\n            </td>\n            <td dojoAttachPoint=\"feedEntryCellauthors\">\n                <input type=\"checkbox\" name=\"authors\" value=\"Authors\" dojoAttachPoint=\"feedEntryCheckBoxAuthors\" dojoAttachEvent=\"onclick:_toggleCheckbox\"/>\n\t\t\t\t<label for=\"title\" dojoAttachPoint=\"feedEntryCheckBoxLabelAuthors\"></label>\n            </td>\n            <td dojoAttachPoint=\"feedEntryCellcontributors\">\n                <input type=\"checkbox\" name=\"contributors\" value=\"Contributors\" dojoAttachPoint=\"feedEntryCheckBoxContributors\" dojoAttachEvent=\"onclick:_toggleCheckbox\"/>\n\t\t\t\t<label for=\"title\" dojoAttachPoint=\"feedEntryCheckBoxLabelContributors\"></label>\n            </td>\n            <td dojoAttachPoint=\"feedEntryCellid\">\n                <input type=\"checkbox\" name=\"id\" value=\"Id\" dojoAttachPoint=\"feedEntryCheckBoxId\" dojoAttachEvent=\"onclick:_toggleCheckbox\"/>\n\t\t\t\t<label for=\"title\" dojoAttachPoint=\"feedEntryCheckBoxLabelId\"></label>\n            </td>\n            <td rowspan=\"2\" align=\"right\">\n                <span class=\"feedEntryViewerMenu\" dojoAttachPoint=\"close\" dojoAttachEvent=\"onclick:_toggleOptions\"></span>\n            </td>\n\t\t</tr>\n\t\t<tr class=\"feedEntryViewerDisplayCheckbox\" dojoAttachPoint=\"entryCheckBoxRow2\" width=\"100%\" style=\"display: none;\">\n            <td dojoAttachPoint=\"feedEntryCellupdated\">\n                <input type=\"checkbox\" name=\"updated\" value=\"Updated\" dojoAttachPoint=\"feedEntryCheckBoxUpdated\" dojoAttachEvent=\"onclick:_toggleCheckbox\"/>\n\t\t\t\t<label for=\"title\" dojoAttachPoint=\"feedEntryCheckBoxLabelUpdated\"></label>\n            </td>\n            <td dojoAttachPoint=\"feedEntryCellsummary\">\n                <input type=\"checkbox\" name=\"summary\" value=\"Summary\" dojoAttachPoint=\"feedEntryCheckBoxSummary\" dojoAttachEvent=\"onclick:_toggleCheckbox\"/>\n\t\t\t\t<label for=\"title\" dojoAttachPoint=\"feedEntryCheckBoxLabelSummary\"></label>\n            </td>\n            <td dojoAttachPoint=\"feedEntryCellcontent\">\n                <input type=\"checkbox\" name=\"content\" value=\"Content\" dojoAttachPoint=\"feedEntryCheckBoxContent\" dojoAttachEvent=\"onclick:_toggleCheckbox\"/>\n\t\t\t\t<label for=\"title\" dojoAttachPoint=\"feedEntryCheckBoxLabelContent\"></label>\n            </td>\n        </tr>\n    </table>\n    \n    <table class=\"feedEntryViewerContainer\" border=\"0\" width=\"100%\">\n        <tr class=\"feedEntryViewerTitle\" dojoAttachPoint=\"entryTitleRow\" style=\"display: none;\">\n            <td>\n                <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n                    <tr class=\"graphic-tab-lgray\">\n\t\t\t\t\t\t<td class=\"lp2\">\n\t\t\t\t\t\t\t<span class=\"lp\" dojoAttachPoint=\"entryTitleHeader\"></span>\n\t\t\t\t\t\t</td>\n                    </tr>\n                    <tr>\n                        <td dojoAttachPoint=\"entryTitleNode\">\n                        </td>\n                    </tr>\n                </table>\n            </td>\n        </tr>\n\n        <tr class=\"feedEntryViewerAuthor\" dojoAttachPoint=\"entryAuthorRow\" style=\"display: none;\">\n            <td>\n                <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n                    <tr class=\"graphic-tab-lgray\">\n\t\t\t\t\t\t<td class=\"lp2\">\n\t\t\t\t\t\t\t<span class=\"lp\" dojoAttachPoint=\"entryAuthorHeader\"></span>\n\t\t\t\t\t\t</td>\n                    </tr>\n                    <tr>\n                        <td dojoAttachPoint=\"entryAuthorNode\">\n                        </td>\n                    </tr>\n                </table>\n            </td>\n        </tr>\n\n        <tr class=\"feedEntryViewerContributor\" dojoAttachPoint=\"entryContributorRow\" style=\"display: none;\">\n            <td>\n                <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n                    <tr class=\"graphic-tab-lgray\">\n\t\t\t\t\t\t<td class=\"lp2\">\n\t\t\t\t\t\t\t<span class=\"lp\" dojoAttachPoint=\"entryContributorHeader\"></span>\n\t\t\t\t\t\t</td>\n                    </tr>\n                    <tr>\n                        <td dojoAttachPoint=\"entryContributorNode\" class=\"feedEntryViewerContributorNames\">\n                        </td>\n                    </tr>\n                </table>\n            </td>\n        </tr>\n        \n        <tr class=\"feedEntryViewerId\" dojoAttachPoint=\"entryIdRow\" style=\"display: none;\">\n            <td>\n                <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n                    <tr class=\"graphic-tab-lgray\">\n\t\t\t\t\t\t<td class=\"lp2\">\n\t\t\t\t\t\t\t<span class=\"lp\" dojoAttachPoint=\"entryIdHeader\"></span>\n\t\t\t\t\t\t</td>\n                    </tr>\n                    <tr>\n                        <td dojoAttachPoint=\"entryIdNode\" class=\"feedEntryViewerIdText\">\n                        </td>\n                    </tr>\n                </table>\n            </td>\n        </tr>\n    \n        <tr class=\"feedEntryViewerUpdated\" dojoAttachPoint=\"entryUpdatedRow\" style=\"display: none;\">\n            <td>\n                <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n                    <tr class=\"graphic-tab-lgray\">\n\t\t\t\t\t\t<td class=\"lp2\">\n\t\t\t\t\t\t\t<span class=\"lp\" dojoAttachPoint=\"entryUpdatedHeader\"></span>\n\t\t\t\t\t\t</td>\n                    </tr>\n                    <tr>\n                        <td dojoAttachPoint=\"entryUpdatedNode\" class=\"feedEntryViewerUpdatedText\">\n                        </td>\n                    </tr>\n                </table>\n            </td>\n        </tr>\n    \n        <tr class=\"feedEntryViewerSummary\" dojoAttachPoint=\"entrySummaryRow\" style=\"display: none;\">\n            <td>\n                <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n                    <tr class=\"graphic-tab-lgray\">\n\t\t\t\t\t\t<td class=\"lp2\">\n\t\t\t\t\t\t\t<span class=\"lp\" dojoAttachPoint=\"entrySummaryHeader\"></span>\n\t\t\t\t\t\t</td>\n                    </tr>\n                    <tr>\n                        <td dojoAttachPoint=\"entrySummaryNode\">\n                        </td>\n                    </tr>\n                </table>\n            </td>\n        </tr>\n    \n        <tr class=\"feedEntryViewerContent\" dojoAttachPoint=\"entryContentRow\" style=\"display: none;\">\n            <td>\n                <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n                    <tr class=\"graphic-tab-lgray\">\n\t\t\t\t\t\t<td class=\"lp2\">\n\t\t\t\t\t\t\t<span class=\"lp\" dojoAttachPoint=\"entryContentHeader\"></span>\n\t\t\t\t\t\t</td>\n                    </tr>\n                    <tr>\n                        <td dojoAttachPoint=\"entryContentNode\">\n                        </td>\n                    </tr>\n                </table>\n            </td>\n        </tr>\n    </table>\n</div>\n",
+'url:dojox/atom/widget/templates/EntryHeader.html':"<span dojoAttachPoint=\"entryHeaderNode\" class=\"entryHeaderNode\"></span>\n"}});
+define("dojox/atom/widget/FeedEntryViewer", [
+	"dojo/_base/kernel",
+	"dojo/_base/connect",
+	"dojo/_base/declare",
+	"dojo/_base/fx",
+	"dojo/_base/array",
+	"dojo/dom-style",
+	"dojo/dom-construct",
+	"dijit/_Widget",
+	"dijit/_Templated",
+	"dijit/_Container",
+	"dijit/layout/ContentPane",
+	"../io/Connection",
+	"dojo/text!./templates/FeedEntryViewer.html",
+	"dojo/text!./templates/EntryHeader.html",
+	"dojo/i18n!./nls/FeedEntryViewer"
+], function (dojo, connect, declare, fx, arrayUtil, domStyle, domConstruct, _Widget, _Templated, _Container, ContentPane, Connection, template, headerTemplate, i18nViewer) {
+
+dojo.experimental("dojox.atom.widget.FeedEntryViewer");
+
+
+var FeedEntryViewer = declare("dojox.atom.widget.FeedEntryViewer", [_Widget, _Templated, _Container],{
+	// summary:
+	//		An ATOM feed entry editor for publishing updated ATOM entries, or viewing non-editable entries.
+
+	entrySelectionTopic: "",	//The topic to listen on for entries to edit.
+
+	_validEntryFields: {},		//The entry fields that were present on the entry and are being displayed.
+								//This works in conjunction with what is selected to be displayed.
+	displayEntrySections: "", //What current sections of the entries to display as a comma separated list.
+	_displayEntrySections: null,
+	
+	//Control options for the display options menu.
+	enableMenu: false,
+	enableMenuFade: false,
+	_optionButtonDisplayed: true,
+
+	//Templates for the HTML rendering.  Need to figure these out better, admittedly.
+	templateString: template,
+	
+	_entry: null, //The entry that is being viewed/edited.
+	_feed: null, //The feed the entry came from.
+
+	_editMode: false, //Flag denoting the state of the widget, in edit mode or not.
+	
+	postCreate: function(){
+		if(this.entrySelectionTopic !== ""){
+			this._subscriptions = [dojo.subscribe(this.entrySelectionTopic, this, "_handleEvent")];
+		}
+		var _nlsResources = i18nViewer;
+		this.displayOptions.innerHTML = _nlsResources.displayOptions;
+		this.feedEntryCheckBoxLabelTitle.innerHTML = _nlsResources.title;
+		this.feedEntryCheckBoxLabelAuthors.innerHTML = _nlsResources.authors;
+		this.feedEntryCheckBoxLabelContributors.innerHTML = _nlsResources.contributors;
+		this.feedEntryCheckBoxLabelId.innerHTML = _nlsResources.id;
+		this.close.innerHTML = _nlsResources.close;
+		this.feedEntryCheckBoxLabelUpdated.innerHTML = _nlsResources.updated;
+		this.feedEntryCheckBoxLabelSummary.innerHTML = _nlsResources.summary;
+		this.feedEntryCheckBoxLabelContent.innerHTML = _nlsResources.content;
+	},
+
+	startup: function(){
+		if(this.displayEntrySections === ""){
+			this._displayEntrySections = ["title","authors","contributors","summary","content","id","updated"];
+		}else{
+			this._displayEntrySections = this.displayEntrySections.split(",");
+		}
+		this._setDisplaySectionsCheckboxes();
+
+		if(this.enableMenu){
+			domStyle.set(this.feedEntryViewerMenu, 'display', '');
+			if(this.entryCheckBoxRow && this.entryCheckBoxRow2){
+				if(this.enableMenuFade){
+					fx.fadeOut({node: this.entryCheckBoxRow,duration: 250}).play();
+					fx.fadeOut({node: this.entryCheckBoxRow2,duration: 250}).play();
+				}
+			}
+		}
+	},
+
+	clear: function(){
+		// summary:
+		//		Function to clear the state of the widget.
+
+		this.destroyDescendants();
+		this._entry=null;
+		this._feed=null;
+		this.clearNodes();
+	},
+	
+	clearNodes: function(){
+		// summary:
+		//		Function to clear all the display nodes for the ATOM entry from the viewer.
+
+		arrayUtil.forEach([
+			"entryTitleRow", "entryAuthorRow", "entryContributorRow", "entrySummaryRow", "entryContentRow",
+			"entryIdRow", "entryUpdatedRow"
+			], function(node){
+				domStyle.set(this[node], "display", "none");
+			}, this);
+
+		arrayUtil.forEach([
+			"entryTitleNode", "entryTitleHeader", "entryAuthorHeader", "entryContributorHeader",
+			"entryContributorNode", "entrySummaryHeader", "entrySummaryNode", "entryContentHeader",
+			"entryContentNode", "entryIdNode", "entryIdHeader", "entryUpdatedHeader", "entryUpdatedNode"
+			], function(part){
+				while(this[part].firstChild){
+					domConstruct.destroy(this[part].firstChild);
+				}
+			}
+		,this);
+		
+	},
+
+	setEntry: function(/*object*/entry, /*object*/feed, /*boolean*/leaveMenuState){
+		// summary:
+		//		Function to set the current entry that is being edited.
+		// entry:
+		//		Instance of dojox.atom.io.model.Entry to display for reading/editing.
+		this.clear();
+		this._validEntryFields = {};
+		this._entry = entry;
+		this._feed = feed;
+
+		if(entry !== null){
+			// Handle the title.
+			if(this.entryTitleHeader){
+				this.setTitleHeader(this.entryTitleHeader, entry);
+			}
+			
+			if(this.entryTitleNode){
+				this.setTitle(this.entryTitleNode, this._editMode, entry);
+			}
+
+			if(this.entryAuthorHeader){
+				this.setAuthorsHeader(this.entryAuthorHeader, entry);
+			}
+
+			if(this.entryAuthorNode){
+				this.setAuthors(this.entryAuthorNode, this._editMode, entry);
+			}
+			
+			if(this.entryContributorHeader){
+				this.setContributorsHeader(this.entryContributorHeader, entry);
+			}
+
+			if(this.entryContributorNode){
+				this.setContributors(this.entryContributorNode, this._editMode, entry);
+			}
+
+			if(this.entryIdHeader){
+				this.setIdHeader(this.entryIdHeader, entry);
+			}
+
+			if(this.entryIdNode){
+				this.setId(this.entryIdNode, this._editMode, entry);
+			}
+
+			if(this.entryUpdatedHeader){
+				this.setUpdatedHeader(this.entryUpdatedHeader, entry);
+			}
+
+			if(this.entryUpdatedNode){
+				this.setUpdated(this.entryUpdatedNode, this._editMode, entry);
+			}
+
+			if(this.entrySummaryHeader){
+				this.setSummaryHeader(this.entrySummaryHeader, entry);
+			}
+
+			if(this.entrySummaryNode){
+				this.setSummary(this.entrySummaryNode, this._editMode, entry);
+			}
+
+			if(this.entryContentHeader){
+				this.setContentHeader(this.entryContentHeader, entry);
+			}
+
+			if(this.entryContentNode){
+				this.setContent(this.entryContentNode, this._editMode, entry);
+			}
+		}
+		this._displaySections();
+	},
+
+	setTitleHeader: function(/*DOMNode*/ titleHeaderNode, /*object*/entry){
+		// summary:
+		//		Function to set the contents of the title header node in the template to some value.
+		// description:
+		//		Function to set the contents of the title header node in the template to some value.
+		//		This exists specifically so users can over-ride how the title data is filled out from an entry.
+		// titleAnchorNode:
+		//		The DOM node to attach the title data to.
+		// editMode:
+		//		Boolean to indicate if the display should be in edit mode or not.
+		// entry:
+		//		The Feed Entry to work with.
+
+		if(entry.title && entry.title.value && entry.title.value !== null){
+			var _nlsResources = i18nViewer;
+			var titleHeader = new EntryHeader({title: _nlsResources.title});
+			titleHeaderNode.appendChild(titleHeader.domNode);
+		}
+	},
+
+	setTitle: function(titleAnchorNode, editMode, entry){
+		// summary:
+		//		Function to set the contents of the title node in the template to some value from the entry.
+		// description:
+		//		Function to set the contents of the title node in the template to some value from the entry.
+		//		This exists specifically so users can over-ride how the title data is filled out from an entry.
+		// titleAnchorNode:
+		//		The DOM node to attach the title data to.
+		// editMode:
+		//		Boolean to indicate if the display should be in edit mode or not.
+		// entry:
+		//		The Feed Entry to work with.
+		if(entry.title && entry.title.value && entry.title.value !== null){
+			if(entry.title.type == "text"){
+				var titleNode = document.createTextNode(entry.title.value);
+				titleAnchorNode.appendChild(titleNode);
+			}else{
+				var titleViewNode = document.createElement("span");
+				var titleView = new ContentPane({refreshOnShow: true, executeScripts: false}, titleViewNode);
+				titleView.attr('content', entry.title.value);
+				titleAnchorNode.appendChild(titleView.domNode);
+			}
+			this.setFieldValidity("title", true);
+		}
+	},
+
+	setAuthorsHeader: function(/*DOMNode*/ authorHeaderNode, /*object*/entry){
+		// summary:
+		//		Function to set the title format for the authors section of the author row in the template to some value from the entry.
+		// description:
+		//		Function to set the title format for the authors section of the author row in the template to some value from the entry.
+		//		This exists specifically so users can over-ride how the author data is filled out from an entry.
+		// authorHeaderNode:
+		//		The DOM node to attach the author section header data to.
+		// entry:
+		//		The Feed Entry to work with.
+		if(entry.authors && entry.authors.length > 0){
+			var _nlsResources = i18nViewer;
+			var authorHeader = new EntryHeader({title: _nlsResources.authors});
+			authorHeaderNode.appendChild(authorHeader.domNode);
+		}
+	},
+
+	setAuthors: function(/*DOMNode*/ authorsAnchorNode, /*boolean*/editMode, /*object*/entry){
+		// summary:
+		//		Function to set the contents of the author node in the template to some value from the entry.
+		// description:
+		//		Function to set the contents of the author node in the template to some value from the entry.
+		//		This exists specifically so users can over-ride how the title data is filled out from an entry.
+		// authorsAnchorNode:
+		//		The DOM node to attach the author data to.
+		// editMode:
+		//		Boolean to indicate if the display should be in edit mode or not.
+		// entry:
+		//		The Feed Entry to work with.
+		authorsAnchorNode.innerHTML = "";
+		if(entry.authors && entry.authors.length > 0){
+			for(var i in entry.authors){
+				if(entry.authors[i].name){
+					var anchor = authorsAnchorNode;
+					if(entry.authors[i].uri){
+						var link = document.createElement("a");
+						anchor.appendChild(link);
+						link.href = entry.authors[i].uri;
+						anchor = link;
+					}
+					var name = entry.authors[i].name;
+					if(entry.authors[i].email){
+						name = name + " (" + entry.authors[i].email + ")";
+					}
+					var authorNode = document.createTextNode(name);
+					anchor.appendChild(authorNode);
+					var breakNode = document.createElement("br");
+					authorsAnchorNode.appendChild(breakNode);
+					this.setFieldValidity("authors", true);
+				}
+			}
+		}
+	},
+
+	setContributorsHeader: function(/*DOMNode*/ contributorsHeaderNode, /*object*/entry){
+		// summary:
+		//		Function to set the contents of the contributor header node in the template to some value from the entry.
+		// description:
+		//		Function to set the contents of the contributor header node in the template to some value from the entry.
+		//		This exists specifically so users can over-ride how the title data is filled out from an entry.
+		// contributorsHeaderNode:
+		//		The DOM node to attach the contributor title to.
+		// entry:
+		//		The Feed Entry to work with.
+		if(entry.contributors && entry.contributors.length > 0){
+			var _nlsResources = i18nViewer;
+			var contributorHeader = new EntryHeader({title: _nlsResources.contributors});
+			contributorsHeaderNode.appendChild(contributorHeader.domNode);
+		}
+	},
+
+
+	setContributors: function(/*DOMNode*/ contributorsAnchorNode, /*boolean*/editMode, /*object*/entry){
+		// summary:
+		//		Function to set the contents of the contributor node in the template to some value from the entry.
+		// description:
+		//		Function to set the contents of the contributor node in the template to some value from the entry.
+		//		This exists specifically so users can over-ride how the title data is filled out from an entry.
+		// contributorsAnchorNode:
+		//		The DOM node to attach the contributor data to.
+		// editMode:
+		//		Boolean to indicate if the display should be in edit mode or not.
+		// entry:
+		//		The Feed Entry to work with.
+		if(entry.contributors && entry.contributors.length > 0){
+			for(var i in entry.contributors){
+				var contributorNode = document.createTextNode(entry.contributors[i].name);
+				contributorsAnchorNode.appendChild(contributorNode);
+				var breakNode = document.createElement("br");
+				contributorsAnchorNode.appendChild(breakNode);
+				this.setFieldValidity("contributors", true);
+			}
+		}
+	},
+
+				 
+	setIdHeader: function(/*DOMNode*/ idHeaderNode, /*object*/entry){
+		// summary:
+		//		Function to set the contents of the ID  node in the template to some value from the entry.
+		// description:
+		//		Function to set the contents of the ID node in the template to some value from the entry.
+		//		This exists specifically so users can over-ride how the title data is filled out from an entry.
+		// idAnchorNode:
+		//		The DOM node to attach the ID data to.
+		// entry:
+		//		The Feed Entry to work with.
+		if(entry.id && entry.id !== null){
+			var _nlsResources = i18nViewer;
+			var idHeader = new EntryHeader({title: _nlsResources.id});
+			idHeaderNode.appendChild(idHeader.domNode);
+		}
+	},
+
+
+	setId: function(/*DOMNode*/ idAnchorNode, /*boolean*/editMode, /*object*/entry){
+		// summary:
+		//		Function to set the contents of the ID  node in the template to some value from the entry.
+		// description:
+		//		Function to set the contents of the ID node in the template to some value from the entry.
+		//		This exists specifically so users can over-ride how the title data is filled out from an entry.
+		// idAnchorNode:
+		//		The DOM node to attach the ID data to.
+		// editMode:
+		//		Boolean to indicate if the display should be in edit mode or not.
+		// entry:
+		//		The Feed Entry to work with.
+		if(entry.id && entry.id !== null){
+			var idNode = document.createTextNode(entry.id);
+			idAnchorNode.appendChild(idNode);
+			this.setFieldValidity("id", true);
+		}
+	},
+	
+	setUpdatedHeader: function(/*DOMNode*/ updatedHeaderNode, /*object*/entry){
+		// summary:
+		//		Function to set the contents of the updated header node in the template to some value from the entry.
+		// description:
+		//		Function to set the contents of the updated header node in the template to some value from the entry.
+		//		This exists specifically so users can over-ride how the title data is filled out from an entry.
+		// updatedHeaderNode:
+		//		The DOM node to attach the updated header data to.
+		// entry:
+		//		The Feed Entry to work with.
+		if(entry.updated && entry.updated !== null){
+			var _nlsResources = i18nViewer;
+			var updatedHeader = new EntryHeader({title: _nlsResources.updated});
+			updatedHeaderNode.appendChild(updatedHeader.domNode);
+		}
+	},
+
+	setUpdated: function(/*DOMNode*/ updatedAnchorNode, /*boolean*/editMode, /*object*/entry){
+		// summary:
+		//		Function to set the contents of the updated  node in the template to some value from the entry.
+		// description:
+		//		Function to set the contents of the updated node in the template to some value from the entry.
+		//		This exists specifically so users can over-ride how the title data is filled out from an entry.
+		// updatedAnchorNode:
+		//		The DOM node to attach the udpated data to.
+		// editMode:
+		//		Boolean to indicate if the display should be in edit mode or not.
+		// entry:
+		//		The Feed Entry to work with.
+		if(entry.updated && entry.updated !== null){
+			var updatedNode = document.createTextNode(entry.updated);
+			updatedAnchorNode.appendChild(updatedNode);
+			this.setFieldValidity("updated", true);
+		}
+	},
+
+	setSummaryHeader: function(/*DOMNode*/ summaryHeaderNode, /*object*/entry){
+		// summary:
+		//		Function to set the contents of the summary  node in the template to some value from the entry.
+		// description:
+		//		Function to set the contents of the summary node in the template to some value from the entry.
+		//		This exists specifically so users can over-ride how the title data is filled out from an entry.
+		// summaryHeaderNode:
+		//		The DOM node to attach the summary title to.
+		// entry:
+		//		The Feed Entry to work with.
+		if(entry.summary && entry.summary.value && entry.summary.value !== null){
+			var _nlsResources = i18nViewer;
+			var summaryHeader = new EntryHeader({title: _nlsResources.summary});
+			summaryHeaderNode.appendChild(summaryHeader.domNode);
+		}
+	},
+
+
+	setSummary: function(/*DOMNode*/ summaryAnchorNode, /*boolean*/editMode, /*object*/entry){
+		// summary:
+		//		Function to set the contents of the summary  node in the template to some value from the entry.
+		// description:
+		//		Function to set the contents of the summary node in the template to some value from the entry.
+		//		This exists specifically so users can over-ride how the title data is filled out from an entry.
+		// summaryAnchorNode:
+		//		The DOM node to attach the summary data to.
+		// editMode:
+		//		Boolean to indicate if the display should be in edit mode or not.
+		// entry:
+		//		The Feed Entry to work with.
+		if(entry.summary && entry.summary.value && entry.summary.value !== null){
+			var summaryViewNode = document.createElement("span");
+			var summaryView = new ContentPane({refreshOnShow: true, executeScripts: false}, summaryViewNode);
+			summaryView.attr('content', entry.summary.value);
+			summaryAnchorNode.appendChild(summaryView.domNode);
+			this.setFieldValidity("summary", true);
+		}
+	},
+
+	setContentHeader: function(/*DOMNode*/ contentHeaderNode, /*object*/entry){
+		// summary:
+		//		Function to set the contents of the content node in the template to some value from the entry.
+		// description:
+		//		Function to set the contents of the content node in the template to some value from the entry.
+		//		This exists specifically so users can over-ride how the title data is filled out from an entry.
+		// contentHeaderNode:
+		//		The DOM node to attach the content data to.
+		// entry:
+		//		The Feed Entry to work with.
+		if(entry.content && entry.content.value && entry.content.value !== null){
+			var _nlsResources = i18nViewer;
+			var contentHeader = new EntryHeader({title: _nlsResources.content});
+			contentHeaderNode.appendChild(contentHeader.domNode);
+		}
+	},
+
+	setContent: function(/*DOMNode*/ contentAnchorNode, /*boolean*/editMode, /*object*/entry){
+		// summary:
+		//		Function to set the contents of the content node in the template to some value from the entry.
+		// description:
+		//		Function to set the contents of the content node in the template to some value from the entry.
+		//		This exists specifically so users can over-ride how the title data is filled out from an entry.
+		// contentAnchorNode:
+		//		The DOM node to attach the content data to.
+		// editMode:
+		//		Boolean to indicate if the display should be in edit mode or not.
+		// entry:
+		//		The Feed Entry to work with.
+		if(entry.content && entry.content.value && entry.content.value !== null){
+			var contentViewNode = document.createElement("span");
+			var contentView = new ContentPane({refreshOnShow: true, executeScripts: false},contentViewNode);
+			contentView.attr('content', entry.content.value);
+			contentAnchorNode.appendChild(contentView.domNode);
+			this.setFieldValidity("content", true);
+		}
+	},
+
+
+	_displaySections: function(){
+		// summary:
+		//		Internal function for determining which sections of the view to actually display.
+		// returns:
+		//		Nothing.
+		domStyle.set(this.entryTitleRow, 'display', 'none');
+		domStyle.set(this.entryAuthorRow, 'display', 'none');
+		domStyle.set(this.entryContributorRow, 'display', 'none');
+		domStyle.set(this.entrySummaryRow, 'display', 'none');
+		domStyle.set(this.entryContentRow, 'display', 'none');
+		domStyle.set(this.entryIdRow, 'display', 'none');
+		domStyle.set(this.entryUpdatedRow, 'display', 'none');
+
+		for(var i in this._displayEntrySections){
+			var section = this._displayEntrySections[i].toLowerCase();
+			if(section === "title" && this.isFieldValid("title")){
+				domStyle.set(this.entryTitleRow, 'display', '');
+			}
+			if(section === "authors" && this.isFieldValid("authors")){
+				domStyle.set(this.entryAuthorRow, 'display', '');
+			}
+			if(section === "contributors" && this.isFieldValid("contributors")){
+				domStyle.set(this.entryContributorRow, 'display', '');
+			}
+			if(section === "summary" && this.isFieldValid("summary")){
+				domStyle.set(this.entrySummaryRow, 'display', '');
+			}
+			if(section === "content" && this.isFieldValid("content")){
+				domStyle.set(this.entryContentRow, 'display', '');
+			}
+			if(section === "id" && this.isFieldValid("id")){
+				domStyle.set(this.entryIdRow, 'display', '');
+			}
+			if(section === "updated" && this.isFieldValid("updated")){
+				domStyle.set(this.entryUpdatedRow, 'display', '');
+			}
+
+		}
+	},
+
+	setDisplaySections: function(/*array*/sectionsArray){
+		// summary:
+		//		Function for setting which sections of the entry should be displayed.
+		// sectionsArray:
+		//		Array of string names that indicate which sections to display.
+		// returns:
+		//		Nothing.
+		if(sectionsArray !== null){
+			this._displayEntrySections = sectionsArray;
+			this._displaySections();
+		}else{
+			this._displayEntrySections = ["title","authors","contributors","summary","content","id","updated"];
+		}
+	},
+
+	_setDisplaySectionsCheckboxes: function(){
+		// summary:
+		//		Internal function for setting which checkboxes on the display are selected.
+		// returns:
+		//		Nothing.
+		var items = ["title","authors","contributors","summary","content","id","updated"];
+		for(var i in items){
+			if(arrayUtil.indexOf(this._displayEntrySections, items[i]) == -1){
+				domStyle.set(this["feedEntryCell"+items[i]], 'display', 'none');
+			}else{
+				this["feedEntryCheckBox"+items[i].substring(0,1).toUpperCase()+items[i].substring(1)].checked=true;
+			}
+		}
+	},
+
+	_readDisplaySections: function(){
+		// summary:
+		//		Internal function for reading what is currently checked for display and generating the display list from it.
+		var checkedList = [];
+
+		if(this.feedEntryCheckBoxTitle.checked){
+			checkedList.push("title");
+		}
+		if(this.feedEntryCheckBoxAuthors.checked){
+			checkedList.push("authors");
+		}
+		if(this.feedEntryCheckBoxContributors.checked){
+			checkedList.push("contributors");
+		}
+		if(this.feedEntryCheckBoxSummary.checked){
+			checkedList.push("summary");
+		}
+		if(this.feedEntryCheckBoxContent.checked){
+			checkedList.push("content");
+		}
+		if(this.feedEntryCheckBoxId.checked){
+			checkedList.push("id");
+		}
+		if(this.feedEntryCheckBoxUpdated.checked){
+			checkedList.push("updated");
+		}
+		this._displayEntrySections = checkedList;
+	},
+
+	_toggleCheckbox: function(/*object*/checkBox){
+		// summary:
+		//		Internal function for determining of a particular entry is editable.
+		// description:
+		//		Internal function for determining of a particular entry is editable.
+		//		This is used for determining if the delete action should be displayed or not.
+		// checkBox:
+		//		The checkbox object to toggle the selection on.
+		if(checkBox.checked){
+			checkBox.checked=false;
+		}else{
+			checkBox.checked=true;
+		}
+		this._readDisplaySections();
+		this._displaySections();
+	},
+
+	_toggleOptions: function(/*object*/checkBox){
+		// summary:
+		//		Internal function for determining of a particular entry is editable.
+		// description:
+		//		Internal function for determining of a particular entry is editable.
+		//		This is used for determining if the delete action should be displayed or not.
+		// checkBox:
+		//		The checkbox object to toggle the selection on.
+		if(this.enableMenu){
+			var fade = null;
+			var anim;
+			var anim2;
+			if(this._optionButtonDisplayed){
+				if(this.enableMenuFade){
+					anim = fx.fadeOut({node: this.entryCheckBoxDisplayOptions,duration: 250});
+					connect.connect(anim, "onEnd", this, function(){
+						domStyle.set(this.entryCheckBoxDisplayOptions, 'display', 'none');
+						domStyle.set(this.entryCheckBoxRow, 'display', '');
+						domStyle.set(this.entryCheckBoxRow2, 'display', '');
+						fx.fadeIn({node: this.entryCheckBoxRow, duration: 250}).play();
+						fx.fadeIn({node: this.entryCheckBoxRow2, duration: 250}).play();
+					});
+					anim.play();
+				}else{
+					domStyle.set(this.entryCheckBoxDisplayOptions, 'display', 'none');
+					domStyle.set(this.entryCheckBoxRow, 'display', '');
+					domStyle.set(this.entryCheckBoxRow2, 'display', '');
+				}
+				this._optionButtonDisplayed=false;
+			}else{
+				if(this.enableMenuFade){
+					anim = fx.fadeOut({node: this.entryCheckBoxRow,duration: 250});
+					anim2 = fx.fadeOut({node: this.entryCheckBoxRow2,duration: 250});
+					connect.connect(anim, "onEnd", this, function(){
+						domStyle.set(this.entryCheckBoxRow, 'display', 'none');
+						domStyle.set(this.entryCheckBoxRow2, 'display', 'none');
+						domStyle.set(this.entryCheckBoxDisplayOptions, 'display', '');
+						fx.fadeIn({node: this.entryCheckBoxDisplayOptions, duration: 250}).play();
+					});
+					anim.play();
+					anim2.play();
+				}else{
+					domStyle.set(this.entryCheckBoxRow, 'display', 'none');
+					domStyle.set(this.entryCheckBoxRow2, 'display', 'none');
+					domStyle.set(this.entryCheckBoxDisplayOptions, 'display', '');
+				}
+				this._optionButtonDisplayed=true;
+			}
+		}
+	},
+
+	_handleEvent: function(/*object*/entrySelectionEvent){
+		// summary:
+		//		Internal function for listening to a topic that will handle entry notification.
+		// entrySelectionEvent:
+		//		The topic message containing the entry that was selected for view.
+		// returns:
+		//		Nothing.
+		if(entrySelectionEvent.source != this){
+			if(entrySelectionEvent.action == "set" && entrySelectionEvent.entry){
+				this.setEntry(entrySelectionEvent.entry, entrySelectionEvent.feed);
+			}else if(entrySelectionEvent.action == "delete" && entrySelectionEvent.entry && entrySelectionEvent.entry == this._entry){
+				this.clear();
+			}
+		}
+	},
+
+	setFieldValidity: function(/*string*/field, /*boolean*/isValid){
+		// summary:
+		//		Function to set whether a field in the view is valid and displayable.
+		// description:
+		//		Function to set whether a field in the view is valid and displayable.
+		//		This is needed for over-riding of the set* functions and customization of how data is displayed in the attach point.
+		//		So if custom implementations use their own display logic, they can still enable the field.
+		// field:
+		//		The field name to set the valid parameter on.  Such as 'content', 'id', etc.
+		// isValid:
+		//		Flag denoting if the field is valid or not.
+		// returns:
+		//		Nothing.
+		if(field){
+			var lowerField = field.toLowerCase();
+			this._validEntryFields[field] = isValid;
+		}
+	},
+	
+	isFieldValid: function(/*string*/field){
+		// summary:
+		//		Function to return if a displayable field is valid or not
+		// field:
+		//		The field name to get the valid parameter of.  Such as 'content', 'id', etc.
+		// returns:
+		//		boolean denoting if the field is valid and set.
+		return this._validEntryFields[field.toLowerCase()];
+	},
+
+	getEntry: function(){
+		return this._entry;
+	},
+
+	getFeed: function(){
+		 return this._feed;
+	},
+
+	destroy: function(){
+		this.clear();
+		arrayUtil.forEach(this._subscriptions, dojo.unsubscribe);
+	}
+});
+
+var EntryHeader = FeedEntryViewer.EntryHeader = declare("dojox.atom.widget.EntryHeader", [_Widget, _Templated, _Container],{
+	// summary:
+	//		Widget representing a header in a FeedEntryViewer/Editor
+	title: "",
+	templateString: headerTemplate,
+
+	postCreate: function(){
+		this.setListHeader();
+	},
+
+	setListHeader: function(/*string*/title){
+		this.clear();
+		if(title){
+			this.title = title;
+		}
+		var textNode = document.createTextNode(this.title);
+		this.entryHeaderNode.appendChild(textNode);
+	},
+
+	clear: function(){
+		this.destroyDescendants();
+		 if(this.entryHeaderNode){
+			 for(var i = 0; i < this.entryHeaderNode.childNodes.length; i++){
+				 this.entryHeaderNode.removeChild(this.entryHeaderNode.childNodes[i]);
+			 }
+		 }
+	},
+
+	destroy: function(){
+		this.clear();
+	}
+});
+
+
+return FeedEntryViewer;
+});

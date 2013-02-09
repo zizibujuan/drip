@@ -2,6 +2,10 @@ package com.zizibujuan.drip.server.dao;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import com.zizibujuan.drip.server.util.PageInfo;
 
 /**
  * 用户关系 数据访问接口。
@@ -46,5 +50,28 @@ public interface UserRelationDao {
 	 * @param followUserId 被关注用户标识
 	 */
 	void delete(Long userId, Long followUserId);
+
+	/**
+	 * 获取我关注的用户列表
+	 * @param pageInfo 分页信息
+	 * @param localUserId 在本网站的用户标识
+	 * @return 关注的用户列表，如果没有则返回空的列表。
+	 * map结构：
+	 * 		following:我关注的用户标识，Long类型
+	 * </pre>
+	 */
+	List<Map<String, Object>> getFollowing(PageInfo pageInfo, Long localUserId);
+
+	/**
+	 * 获取关注我的用户列表
+	 * @param pageInfo 分页信息
+	 * @param localUserId 在本网站的用户标识
+	 * @return 关注我的用户列表，如果没有则返回空的列表。
+	 * <pre>
+	 * map结构：
+	 * 		follower:关注我的用户标识，Long类型
+	 * </pre>
+	 */
+	List<Map<String, Object>> getFollowers(PageInfo pageInfo, Long localUserId);
 
 }

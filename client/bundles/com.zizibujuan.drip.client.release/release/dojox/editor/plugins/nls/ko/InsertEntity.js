@@ -1,2 +1,5 @@
-//>>built
-define("dojox/editor/plugins/nls/ko/InsertEntity",{insertEntity:"\uae30\ud638 \uc0bd\uc785"});
+define(
+"dojox/editor/plugins/nls/ko/InsertEntity", ({
+	insertEntity: "기호 삽입"
+})
+);

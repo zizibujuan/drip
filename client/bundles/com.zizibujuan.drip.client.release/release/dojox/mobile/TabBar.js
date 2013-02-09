@@ -1,7 +1,189 @@
-//>>built
-define("dojox/mobile/TabBar","dojo/_base/array,dojo/_base/declare,dojo/_base/window,dojo/dom-class,dojo/dom-construct,dojo/dom-geometry,dojo/dom-style,dijit/_Contained,dijit/_Container,dijit/_WidgetBase,./TabBarButton,dojo/has,dojo/has!dojo-bidi?dojox/mobile/bidi/TabBar".split(","),function(g,j,l,f,m,h,n,e,o,p,r,k,q){e=j(k("dojo-bidi")?"dojox.mobile.NonBidiTabBar":"dojox.mobile.TabBar",[p,o,e],{iconBase:"",iconPos:"",barType:"tabBar",closable:!1,center:!0,syncWithViews:!1,tag:"ul",selectOne:!0,baseClass:"mblTabBar",
-_fixedButtonWidth:76,_fixedButtonMargin:17,_largeScreenWidth:500,buildRendering:function(){this.domNode=this.srcNodeRef||m.create(this.tag);this.reset();this.inherited(arguments)},postCreate:function(){if(this.syncWithViews){var b=function(a){var b=g.filter(this.getChildren(),function(b){return b.moveTo==="#"+a.id||b.moveTo===a.id})[0];b&&b.set("selected",!0)};this.subscribe("/dojox/mobile/afterTransitionIn",b);this.subscribe("/dojox/mobile/startView",b)}},startup:function(){this._started||(this.inherited(arguments),
-this.resize())},reset:function(){var b=this._barType;if("object"===typeof this.barType){this._barType=this.barType["*"];for(var a in this.barType)if(f.contains(l.doc.documentElement,a)){this._barType=this.barType[a];break}}else this._barType=this.barType;b&&f.remove(this.domNode,this.baseClass+(b.charAt(0).toUpperCase()+b.substring(1)));f.add(this.domNode,this.baseClass+(this._barType.charAt(0).toUpperCase()+this._barType.substring(1)))},resize:function(b){var a;b&&b.w?(h.setMarginBox(this.domNode,
-b),b=b.w):b="absolute"===n.get(this.domNode,"position")?h.getContentBox(this.domNode).w:h.getMarginBox(this.domNode).w;var e=this._fixedButtonWidth,i=this._fixedButtonMargin,c=g.map(this.getChildren(),function(a){return a.domNode});f.toggle(this.domNode,"mblTabBarNoIcons",!g.some(this.getChildren(),function(a){return a.iconNode1}));f.toggle(this.domNode,"mblTabBarNoText",!g.some(this.getChildren(),function(a){return a.label}));var d=0;if("tabBar"==this._barType)if(this.containerNode.style.paddingLeft=
-"",d=Math.floor((b-(e+2*i)*c.length)/2),b<this._largeScreenWidth||0>d)for(a=0;a<c.length;a++)c[a].style.width=Math.round(98/c.length)+"%",c[a].style.margin="0";else{for(a=0;a<c.length;a++)c[a].style.width=e+"px",c[a].style.margin="0 "+i+"px";if(0<c.length)c[0].style.marginLeft=d+i+"px";this.containerNode.style.padding="0px"}else{for(a=0;a<c.length;a++)c[a].style.width=c[a].style.margin="";a=this.getParent();if(this.center&&(!a||!f.contains(a.domNode,"mblHeading"))){d=b;for(a=0;a<c.length;a++)d-=h.getMarginBox(c[a]).w;
-d=Math.floor(d/2)}this.containerNode.style.paddingLeft=d?d+"px":""}},getSelectedTab:function(){return g.filter(this.getChildren(),function(b){return b.selected})[0]},onCloseButtonClick:function(){return!0}});return k("dojo-bidi")?j("dojox.mobile.TabBar",[e,q]):e});
+define("dojox/mobile/TabBar", [
+	"dojo/_base/array",
+	"dojo/_base/declare",
+	"dojo/_base/window",
+	"dojo/dom-class",
+	"dojo/dom-construct",
+	"dojo/dom-geometry",
+	"dojo/dom-style",
+	"dijit/_Contained",
+	"dijit/_Container",
+	"dijit/_WidgetBase",
+	"./TabBarButton",// to load TabBarButton for you (no direct references)
+	"dojo/has",
+	"dojo/has!dojo-bidi?dojox/mobile/bidi/TabBar"	
+], function(array, declare, win, domClass, domConstruct, domGeometry, domStyle, Contained, Container, WidgetBase, TabBarButton, has, BidiTabBar){
+
+	// module:
+	//		dojox/mobile/TabBar
+
+	var TabBar =  declare(has("dojo-bidi") ? "dojox.mobile.NonBidiTabBar" : "dojox.mobile.TabBar", [WidgetBase, Container, Contained],{
+		// summary:
+		//		A bar widget that has buttons to control visibility of views.
+		// description:
+		//		TabBar is a container widget that has typically multiple
+		//		TabBarButtons which controls visibility of views. It can be used
+		//		as a tab container.
+
+		// iconBase: String
+		//		The default icon path for child items.
+		iconBase: "",
+
+		// iconPos: String
+		//		The default icon position for child items.
+		iconPos: "",
+
+		// barType: String
+		//		"tabBar", "segmentedControl", "standardTab", "slimTab", "flatTab",
+		//		or "tallTab"
+		barType: "tabBar",
+
+		// closable: Boolean
+		//		If true, user can close (destroy) a child tab by clicking the X on the tab.
+		//		This property is NOT effective for "tabBar" and "tallBar".
+		closable: false,
+
+		// center: Boolean
+		//		If true, place the tabs in the center of the bar.
+		//		This property is NOT effective for "tabBar".
+		center: true,
+
+		// syncWithViews: Boolean
+		//		If true, this widget listens to view transition events to be
+		//		synchronized with view's visibility.
+		syncWithViews: false,
+
+		// tag: String
+		//		A name of html tag to create as domNode.
+		tag: "ul",
+
+		/* internal properties */
+		// selectOne: [private] Boolean
+		//		Specifies that only one item can be selected.
+		selectOne: true,
+		baseClass: "mblTabBar",
+		_fixedButtonWidth: 76,
+		_fixedButtonMargin: 17,
+		_largeScreenWidth: 500,
+
+		buildRendering: function(){
+			this.domNode = this.srcNodeRef || domConstruct.create(this.tag);
+			this.reset();
+			this.inherited(arguments);
+		},
+
+		postCreate: function(){
+			if(this.syncWithViews){ // see also RoundRect#postCreate
+				var f = function(view, moveTo, dir, transition, context, method){
+					var child = array.filter(this.getChildren(), function(w){
+						return w.moveTo === "#" + view.id || w.moveTo === view.id; })[0];
+					if(child){ child.set("selected", true); }
+				};
+				this.subscribe("/dojox/mobile/afterTransitionIn", f);
+				this.subscribe("/dojox/mobile/startView", f);
+			}
+		},
+
+		startup: function(){
+			if(this._started){ return; }
+			this.inherited(arguments);
+			this.resize();
+		},
+
+		reset: function(){
+			// summary:
+			//		Resets the widget to its initial state.
+			var prev = this._barType;
+			if(typeof this.barType === "object"){
+				this._barType = this.barType["*"];
+				for(var c in this.barType){
+					if(domClass.contains(win.doc.documentElement, c)){
+						this._barType = this.barType[c];
+						break;
+					}
+				}
+			}else{
+				this._barType = this.barType;
+			}
+			var cap = function(s){
+				return s.charAt(0).toUpperCase() + s.substring(1);
+			};
+			if(prev){
+				domClass.remove(this.domNode, this.baseClass + cap(prev));
+			}
+			domClass.add(this.domNode, this.baseClass + cap(this._barType));
+		},
+
+		resize: function(size){
+			var i, w;
+			if(size && size.w){
+				domGeometry.setMarginBox(this.domNode, size);
+				w = size.w;
+			}else{
+				// Calculation of the bar width varies according to its "position" value.
+				// When the widget is used as a fixed bar, its position would be "absolute".
+				w = domStyle.get(this.domNode, "position") === "absolute" ?
+					domGeometry.getContentBox(this.domNode).w : domGeometry.getMarginBox(this.domNode).w;
+			}
+			var bw = this._fixedButtonWidth;
+			var bm = this._fixedButtonMargin;
+			var arr = array.map(this.getChildren(), function(w){ return w.domNode; });
+
+			domClass.toggle(this.domNode, "mblTabBarNoIcons",
+							!array.some(this.getChildren(), function(w){ return w.iconNode1; }));
+			domClass.toggle(this.domNode, "mblTabBarNoText",
+							!array.some(this.getChildren(), function(w){ return w.label; }));
+
+			var margin = 0;
+			if (this._barType == "tabBar"){
+				this.containerNode.style.paddingLeft = "";
+				margin = Math.floor((w - (bw + bm * 2) * arr.length) / 2);
+				if(w < this._largeScreenWidth || margin < 0){
+					// If # of buttons is 4, for example, assign "25%" to each button.
+					// More precisely, 1%(left margin) + 98%(bar width) + 1%(right margin)
+					for(i = 0; i < arr.length; i++){
+						arr[i].style.width = Math.round(98/arr.length) + "%";
+						arr[i].style.margin = "0";
+					}
+				}else{
+					// Fixed width buttons. Mainly for larger screen such as iPad.
+					for(i = 0; i < arr.length; i++){
+						arr[i].style.width = bw + "px";
+						arr[i].style.margin = "0 " + bm + "px";
+					}
+					if(arr.length > 0){
+						arr[0].style.marginLeft = margin + bm + "px";
+					}
+					this.containerNode.style.padding = "0px";
+				}
+			}else{
+				for(i = 0; i < arr.length; i++){
+					arr[i].style.width = arr[i].style.margin = "";
+				}
+				var parent = this.getParent();
+				if(this.center && (!parent || !domClass.contains(parent.domNode, "mblHeading"))){
+					margin = w;
+					for(i = 0; i < arr.length; i++){
+						margin -= domGeometry.getMarginBox(arr[i]).w;
+					}
+					margin = Math.floor(margin/2);
+				}
+				this.containerNode.style.paddingLeft = margin ? margin + "px" : "";
+			}
+		},
+
+		getSelectedTab: function(){
+			// summary:
+			//		Returns the first selected child.
+			return array.filter(this.getChildren(), function(w){ return w.selected; })[0];
+		},
+
+		onCloseButtonClick: function(/*TabBarButton*/tab){
+			// summary:
+			//		Called whenever the close button [X] of a child tab is clicked.
+			return true;
+		}
+	});
+	
+	return has("dojo-bidi")?declare("dojox.mobile.TabBar", [TabBar, BidiTabBar]):TabBar;	
+});

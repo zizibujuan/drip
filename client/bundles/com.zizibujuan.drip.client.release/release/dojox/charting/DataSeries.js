@@ -1,6 +1,185 @@
-//>>built
-define("dojox/charting/DataSeries",["dojo/_base/lang","dojo/_base/declare","dojo/_base/array","dojo/_base/connect","dojox/lang/functional"],function(d,g,f,e,h){return g("dojox.charting.DataSeries",null,{constructor:function(a,c,b){this.store=a;this.kwArgs=c;this.value=b?d.isFunction(b)?b:d.isObject(b)?d.hitch(this,"_dictValue",h.keys(b),b):d.hitch(this,"_fieldValue",b):d.hitch(this,"_defaultValue");this.data=[];this._events=[];this.store.getFeatures()["dojo.data.api.Notification"]&&this._events.push(e.connect(this.store,
-"onNew",this,"_onStoreNew"),e.connect(this.store,"onDelete",this,"_onStoreDelete"),e.connect(this.store,"onSet",this,"_onStoreSet"));this._initialRendering=!0;this.fetch()},destroy:function(){f.forEach(this._events,e.disconnect)},setSeriesObject:function(a){this.series=a},_dictValue:function(a,c,b,d){var e={};f.forEach(a,function(a){e[a]=b.getValue(d,c[a])});return e},_fieldValue:function(a,c,b){return c.getValue(b,a)},_defaultValue:function(a,c){return a.getValue(c,"value")},fetch:function(){if(!this._inFlight){this._inFlight=
-!0;var a=d.delegate(this.kwArgs);a.onComplete=d.hitch(this,"_onFetchComplete");a.onError=d.hitch(this,"onFetchError");this.store.fetch(a)}},_onFetchComplete:function(a){this.items=a;this._buildItemMap();this.data=f.map(this.items,function(a){return this.value(this.store,a)},this);this._pushDataChanges();this._inFlight=!1},onFetchError:function(){this._inFlight=!1},_buildItemMap:function(){if(this.store.getFeatures()["dojo.data.api.Identity"]){var a={};f.forEach(this.items,function(c,b){a[this.store.getIdentity(c)]=
-b},this);this.itemMap=a}},_pushDataChanges:function(){if(this.series)this.series.chart.updateSeries(this.series.name,this,this._initialRendering),this._initialRendering=!1,this.series.chart.delayedRender()},_onStoreNew:function(){this.fetch()},_onStoreDelete:function(a){this.items&&f.some(this.items,function(c,b){return c===a?(this.items.splice(b,1),this._buildItemMap(),this.data.splice(b,1),!0):!1},this)&&this._pushDataChanges()},_onStoreSet:function(a){if(this.itemMap){var c=this.itemMap[this.store.getIdentity(a)];
-"number"==typeof c&&(this.data[c]=this.value(this.store,this.items[c]),this._pushDataChanges())}else this.items&&f.some(this.items,function(b,c){return b===a?(this.data[c]=this.value(this.store,b),!0):!1},this)&&this._pushDataChanges()}})});
+define("dojox/charting/DataSeries", ["dojo/_base/lang", "dojo/_base/declare", "dojo/_base/array", "dojo/_base/connect", "dojox/lang/functional"],
+	function(Lang, declare, ArrayUtil, connect, df){
+
+	return declare("dojox.charting.DataSeries", null, {
+		constructor: function(store, kwArgs, value){
+			// summary:
+			//		Series adapter for dojo.data stores.
+			// store: Object
+			//		A dojo.data store object.
+			// kwArgs: Object
+			//		A store-specific keyword parameters used for fetching items.
+			//		See dojo/data/api/Read.fetch().
+			// value: Function|Object|String
+			//		Function, which takes a store, and an object handle, and
+			//		produces an output possibly inspecting the store's item. Or
+			//		a dictionary object, which tells what names to extract from
+			//		an object and how to map them to an output. Or a string, which
+			//		is a numeric field name to use for plotting. If undefined, null
+			//		or empty string (the default), "value" field is extracted.
+			this.store = store;
+			this.kwArgs = kwArgs;
+	
+			if(value){
+				if(Lang.isFunction(value)){
+					this.value = value;
+				}else if(Lang.isObject(value)){
+					this.value = Lang.hitch(this, "_dictValue",
+						df.keys(value), value);
+				}else{
+					this.value = Lang.hitch(this, "_fieldValue", value);
+				}
+			}else{
+				this.value = Lang.hitch(this, "_defaultValue");
+			}
+	
+			this.data = [];
+	
+			this._events = [];
+	
+			if(this.store.getFeatures()["dojo.data.api.Notification"]){
+				this._events.push(
+					connect.connect(this.store, "onNew", this, "_onStoreNew"),
+					connect.connect(this.store, "onDelete", this, "_onStoreDelete"),
+					connect.connect(this.store, "onSet", this, "_onStoreSet")
+				);
+			}
+
+			this._initialRendering = true;
+			this.fetch();
+		},
+	
+		destroy: function(){
+			// summary:
+			//		Clean up before GC.
+			ArrayUtil.forEach(this._events, connect.disconnect);
+		},
+	
+		setSeriesObject: function(series){
+			// summary:
+			//		Sets a dojox.charting.Series object we will be working with.
+			// series: dojox.charting.Series
+			//		Our interface to the chart.
+			this.series = series;
+		},
+	
+		// value transformers
+	
+		_dictValue: function(keys, dict, store, item){
+			var o = {};
+			ArrayUtil.forEach(keys, function(key){
+				o[key] = store.getValue(item, dict[key]);
+			});
+			return o;
+		},
+	
+		_fieldValue: function(field, store, item){
+			return store.getValue(item, field);
+		},
+	
+		_defaultValue: function(store, item){
+			return store.getValue(item, "value");
+		},
+	
+		// store fetch loop
+	
+		fetch: function(){
+			// summary:
+			//		Fetches data from the store and updates a chart.
+			if(!this._inFlight){
+				this._inFlight = true;
+				var kwArgs = Lang.delegate(this.kwArgs);
+				kwArgs.onComplete = Lang.hitch(this, "_onFetchComplete");
+				kwArgs.onError = Lang.hitch(this, "onFetchError");
+				this.store.fetch(kwArgs);
+			}
+		},
+	
+		_onFetchComplete: function(items, request){
+			this.items = items;
+			this._buildItemMap();
+			this.data = ArrayUtil.map(this.items, function(item){
+				return this.value(this.store, item);
+			}, this);
+			this._pushDataChanges();
+			this._inFlight = false;
+		},
+	
+		onFetchError: function(errorData, request){
+			// summary:
+			//		As stub to process fetch errors. Provide so user can attach to
+			//		it with dojo.connect(). See dojo/data/api/Read fetch() for
+			//		details: onError property.
+			this._inFlight = false;
+		},
+	
+		_buildItemMap: function(){
+			if(this.store.getFeatures()["dojo.data.api.Identity"]){
+				var itemMap = {};
+				ArrayUtil.forEach(this.items, function(item, index){
+					itemMap[this.store.getIdentity(item)] = index;
+				}, this);
+				this.itemMap = itemMap;
+			}
+		},
+	
+		_pushDataChanges: function(){
+			if(this.series){
+				this.series.chart.updateSeries(this.series.name, this, this._initialRendering);
+				this._initialRendering = false;
+				this.series.chart.delayedRender();
+			}
+		},
+	
+		// store notification handlers
+	
+		_onStoreNew: function(){
+			// the only thing we can do is to re-fetch items
+			this.fetch();
+		},
+	
+		_onStoreDelete: function(item){
+			// we cannot do anything with deleted item, the only way is to compare
+			// items for equality
+			if(this.items){
+				var flag = ArrayUtil.some(this.items, function(it, index){
+					if(it === item){
+						this.items.splice(index, 1);
+						this._buildItemMap();
+						this.data.splice(index, 1);
+						return true;
+					}
+					return false;
+				}, this);
+				if(flag){
+					this._pushDataChanges();
+				}
+			}
+		},
+	
+		_onStoreSet: function(item){
+			if(this.itemMap){
+				// we can use our handy item map, if the store supports Identity
+				var id = this.store.getIdentity(item), index = this.itemMap[id];
+				if(typeof index == "number"){
+					this.data[index] = this.value(this.store, this.items[index]);
+					this._pushDataChanges();
+				}
+			}else{
+				// otherwise we have to rely on item's equality
+				if(this.items){
+					var flag = ArrayUtil.some(this.items, function(it, index){
+						if(it === item){
+							this.data[index] = this.value(this.store, it);
+							return true;
+						}
+						return false;
+					}, this);
+					if(flag){
+						this._pushDataChanges();
+					}
+				}
+			}
+		}
+	});
+});

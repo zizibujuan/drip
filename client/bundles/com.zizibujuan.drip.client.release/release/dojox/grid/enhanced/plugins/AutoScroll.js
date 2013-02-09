@@ -1,7 +1,181 @@
-//>>built
-define("dojox/grid/enhanced/plugins/AutoScroll","dojo/_base/declare,dojo/_base/array,dojo/_base/lang,dojo/_base/html,dojo/_base/window,../_Plugin,../../_RowSelector,../../EnhancedGrid".split(","),function(k,l,m,j,n,o,p,q){k=k("dojox.grid.enhanced.plugins.AutoScroll",o,{name:"autoScroll",autoScrollInterval:1E3,autoScrollMargin:30,constructor:function(c,a){this.grid=c;this._scrolling=this.readyForAutoScroll=!1;a=m.isObject(a)?a:{};if("interval"in a)this.autoScrollInterval=a.interval;if("margin"in a)this.autoScrollMargin=
-a.margin;this._initEvents();this._mixinGrid()},_initEvents:function(){var c=this.grid;this.connect(c,"onCellMouseDown",function(){this.readyForAutoScroll=!0});this.connect(c,"onHeaderCellMouseDown",function(){this.readyForAutoScroll=!0});this.connect(c,"onRowSelectorMouseDown",function(){this.readyForAutoScroll=!0});this.connect(n.doc,"onmouseup",function(){this._manageAutoScroll(!0);this.readyForAutoScroll=!1});this.connect(n.doc,"onmousemove",function(a){if(this.readyForAutoScroll){this._event=
-a;var b=j.position(c.domNode),e=c._getHeaderHeight(),d=this.autoScrollMargin,f=a.clientY,i=a.clientX,a=b.y,g=b.x,h=b.h,b=b.w;if(i>=g&&i<=g+b){if(f>=a+e&&f<a+e+d){this._manageAutoScroll(!1,!0,!1);return}if(f>a+h-d&&f<=a+h){this._manageAutoScroll(!1,!0,!0);return}if(f>=a&&f<=a+h&&l.some(c.views.views,function(a){if(a instanceof p)return!1;var b=j.position(a.domNode);if(i<b.x+d&&i>=b.x)return this._manageAutoScroll(!1,!1,!1,a),!0;return i>b.x+b.w-d&&i<b.x+b.w?(this._manageAutoScroll(!1,!1,!0,a),!0):
-!1},this))return}this._manageAutoScroll(!0)}})},_mixinGrid:function(){var c=this.grid;c.onStartAutoScroll=function(){};c.onEndAutoScroll=function(){}},_fireEvent:function(c,a){var b=this.grid;switch(c){case "start":b.onStartAutoScroll.apply(b,a);break;case "end":b.onEndAutoScroll.apply(b,a)}},_manageAutoScroll:function(c,a,b,e){if(c)this._scrolling=!1,clearInterval(this._handler);else if(!this._scrolling)this._scrolling=!0,this._fireEvent("start",[a,b,e]),this._autoScroll(a,b,e),this._handler=setInterval(m.hitch(this,
-"_autoScroll",a,b,e),this.autoScrollInterval)},_autoScroll:function(c,a,b){var e=this.grid,d=null;if(c){var f=e.scroller.firstVisibleRow+(a?1:-1);0<=f&&f<e.rowCount&&(e.scrollToRow(f),d=f)}else d=this._scrollColumn(a,b);null!==d&&this._fireEvent("end",[c,a,b,d,this._event])},_scrollColumn:function(c,a){var b=a.scrollboxNode,e=null;if(b.clientWidth<b.scrollWidth){var d=l.filter(this.grid.layout.cells,function(a){return!a.hidden}),f=j.position(a.domNode),i,g,h;if(c){i=b.clientWidth;for(h=0;h<d.length;++h)if(g=
-j.position(d[h].getHeaderNode()),g=g.x-f.x+g.w,g>i){e=d[h].index;b.scrollLeft+=g-i+10;break}}else{i=0;for(h=d.length-1;0<=h;--h)if(g=j.position(d[h].getHeaderNode()),g=g.x-f.x,g<i){e=d[h].index;b.scrollLeft+=g-i-10;break}}}return e}});q.registerPlugin(k);return k});
+define("dojox/grid/enhanced/plugins/AutoScroll", [
+	"dojo/_base/declare",
+	"dojo/_base/array",
+	"dojo/_base/lang",
+	"dojo/_base/html",
+	"dojo/_base/window",
+	"../_Plugin",
+	"../../_RowSelector",
+	"../../EnhancedGrid"
+], function(declare, array, lang, html, win, _Plugin, _RowSelector, EnhancedGrid){
+
+var AutoScroll = declare("dojox.grid.enhanced.plugins.AutoScroll", _Plugin, {
+	// summary:
+	//		Provides horizontal and vertical auto-scroll for grid.
+	
+	// name: String
+	//		Plugin name
+	name: "autoScroll",
+	
+	// autoScrollInterval: Integer
+	//		The time interval (in miliseconds) between 2 scrolling.
+	autoScrollInterval: 1000,
+	
+	// autoScrollMargin: Integer
+	//		The width (in pixel) of the margin area where autoscroll can be triggered.
+	autoScrollMargin: 30,
+	
+	constructor: function(grid, args){
+		this.grid = grid;
+		this.readyForAutoScroll = false;
+		this._scrolling = false;
+		args = lang.isObject(args) ? args : {};
+		if("interval" in args){
+			this.autoScrollInterval = args.interval;
+		}
+		if("margin" in args){
+			this.autoScrollMargin = args.margin;
+		}
+		this._initEvents();
+		this._mixinGrid();
+	},
+	_initEvents: function(){
+		var g = this.grid;
+		this.connect(g, "onCellMouseDown", function(){
+			this.readyForAutoScroll = true;
+		});
+		this.connect(g, "onHeaderCellMouseDown", function(){
+			this.readyForAutoScroll = true;
+		});
+		this.connect(g, "onRowSelectorMouseDown", function(){
+			this.readyForAutoScroll = true;
+		});
+		this.connect(win.doc, "onmouseup", function(evt){
+			this._manageAutoScroll(true);
+			this.readyForAutoScroll = false;
+		});
+		this.connect(win.doc, "onmousemove", function(evt){
+			if(this.readyForAutoScroll){
+				this._event = evt;
+				var gridPos = html.position(g.domNode),
+					hh = g._getHeaderHeight(),
+					margin = this.autoScrollMargin,
+					ey = evt.clientY, ex = evt.clientX,
+					gy = gridPos.y, gx = gridPos.x,
+					gh = gridPos.h, gw = gridPos.w;
+				if(ex >= gx && ex <= gx + gw){
+					if(ey >= gy + hh && ey < gy + hh + margin){
+						this._manageAutoScroll(false, true, false);
+						return;
+					}else if(ey > gy + gh - margin && ey <= gy + gh){
+						this._manageAutoScroll(false, true, true);
+						return;
+					}else if(ey >= gy && ey <= gy + gh){
+						var withinSomeview = array.some(g.views.views, function(view, i){
+							if(view instanceof _RowSelector){
+								return false;
+							}
+							var viewPos = html.position(view.domNode);
+							if(ex < viewPos.x + margin && ex >= viewPos.x){
+								this._manageAutoScroll(false, false, false, view);
+								return true;
+							}else if(ex > viewPos.x + viewPos.w - margin && ex < viewPos.x + viewPos.w){
+								this._manageAutoScroll(false, false, true, view);
+								return true;
+							}
+							return false;
+						}, this);
+						if(withinSomeview){
+							return;
+						}
+					}
+				}
+				//stop autoscroll.
+				this._manageAutoScroll(true);
+			}
+		});
+	},
+	_mixinGrid: function(){
+		var g = this.grid;
+		g.onStartAutoScroll = function(/*isVertical, isForward*/){};
+		g.onEndAutoScroll = function(/*isVertical, isForward, view, scrollToRowIndex, event*/){};
+	},
+	_fireEvent: function(eventName, args){
+		var g = this.grid;
+		switch(eventName){
+			case "start":
+				g.onStartAutoScroll.apply(g, args);
+				break;
+			case "end":
+				g.onEndAutoScroll.apply(g, args);
+				break;
+		}
+	},
+	_manageAutoScroll: function(toStop, isVertical, isForward, view){
+		if(toStop){
+			this._scrolling = false;
+			clearInterval(this._handler);
+		}else if(!this._scrolling){
+			this._scrolling = true;
+			this._fireEvent("start", [isVertical, isForward, view]);
+			this._autoScroll(isVertical, isForward, view);
+			this._handler = setInterval(lang.hitch(this, "_autoScroll", isVertical, isForward, view), this.autoScrollInterval);
+		}
+	},
+	_autoScroll: function(isVertical, isForward, view){
+		var g = this.grid,
+			target = null;
+		if(isVertical){
+			var targetRow = g.scroller.firstVisibleRow + (isForward ? 1 : -1);
+			if(targetRow >= 0 && targetRow < g.rowCount){
+				g.scrollToRow(targetRow);
+				target = targetRow;
+			}
+		}else{
+			target = this._scrollColumn(isForward, view);
+		}
+		if(target !== null){
+			this._fireEvent("end", [isVertical, isForward, view, target, this._event]);
+		}
+	},
+	_scrollColumn: function(isForward, view){
+		var node = view.scrollboxNode,
+			target = null;
+		if(node.clientWidth < node.scrollWidth){
+			var cells = array.filter(this.grid.layout.cells, function(cell){
+				return !cell.hidden;
+			});
+			var viewPos = html.position(view.domNode);
+			var limit, edge, headerPos, i;
+			if(isForward){
+				limit = node.clientWidth;
+				for(i = 0; i < cells.length; ++i){
+					headerPos = html.position(cells[i].getHeaderNode());
+					edge = headerPos.x - viewPos.x + headerPos.w;
+					if(edge > limit){
+						target = cells[i].index;
+						node.scrollLeft += edge - limit + 10;
+						break;
+					}
+				}
+			}else{
+				limit = 0;
+				for(i = cells.length - 1; i >= 0; --i){
+					headerPos = html.position(cells[i].getHeaderNode());
+					edge = headerPos.x - viewPos.x;
+					if(edge < limit){
+						target = cells[i].index;
+						node.scrollLeft += edge - limit - 10;
+						break;
+					}
+				}
+			}
+		}
+		return target;
+	}
+});
+
+EnhancedGrid.registerPlugin(AutoScroll);
+
+return AutoScroll;
+});

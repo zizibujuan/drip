@@ -1,3 +1,54 @@
-//>>built
-define("dojox/rpc/JsonRPC",["dojo","dojox","dojox/rpc/Service"],function(d,c){function e(b){return{serialize:function(a,f,c){a={id:this._requestId++,method:f.name,params:c};if(b)a.jsonrpc=b;return{data:d.toJson(a),handleAs:"json",contentType:"application/json",transport:"POST"}},deserialize:function(a){"Error"==a.name&&(a=d.fromJson(a.responseText));if(a.error){var b=Error(a.error.message||a.error);b._rpcErrorObject=a.error;return b}return a.result}}}c.rpc.envelopeRegistry.register("JSON-RPC-1.0",
-function(b){return"JSON-RPC-1.0"==b},d.mixin({namedParams:!1},e()));c.rpc.envelopeRegistry.register("JSON-RPC-2.0",function(b){return"JSON-RPC-2.0"==b},e("2.0"))});
+define("dojox/rpc/JsonRPC", ["dojo", "dojox", "dojox/rpc/Service"], function(dojo, dojox) {
+
+	function jsonRpcEnvelope(version){
+		return {
+			serialize: function(smd, method, data, options){
+				//not converted to json it self. This  will be done, if
+				//appropriate, at the transport level
+	
+				var d = {
+					id: this._requestId++,
+					method: method.name,
+					params: data
+				};
+				if(version){
+					d.jsonrpc = version;
+				}
+				return {
+					data: dojo.toJson(d),
+					handleAs:'json',
+					contentType: 'application/json',
+					transport:"POST"
+				};
+			},
+	
+			deserialize: function(obj){
+				if ('Error' == obj.name){
+					obj = dojo.fromJson(obj.responseText);
+				}
+				if(obj.error) {
+					var e = new Error(obj.error.message || obj.error);
+					e._rpcErrorObject = obj.error;
+					return e;
+				}
+				return obj.result;
+			}
+		};
+	}
+	dojox.rpc.envelopeRegistry.register(
+		"JSON-RPC-1.0",
+		function(str){
+			return str == "JSON-RPC-1.0";
+		},
+		dojo.mixin({namedParams:false},jsonRpcEnvelope()) // 1.0 will only work with ordered params
+	);
+
+	dojox.rpc.envelopeRegistry.register(
+		"JSON-RPC-2.0",
+		function(str){
+			return str == "JSON-RPC-2.0";
+		},
+		jsonRpcEnvelope("2.0")
+	);
+
+});

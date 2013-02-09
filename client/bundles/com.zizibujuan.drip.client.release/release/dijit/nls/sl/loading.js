@@ -1,2 +1,6 @@
-//>>built
-define("dijit/nls/sl/loading",{loadingState:"Nalaganje ...",errorState:"Oprostite, pri\u0161lo je do napake."});
+define(
+"dijit/nls/sl/loading", ({
+	loadingState: "Nalaganje ...",
+	errorState: "Oprostite, prišlo je do napake."
+})
+);

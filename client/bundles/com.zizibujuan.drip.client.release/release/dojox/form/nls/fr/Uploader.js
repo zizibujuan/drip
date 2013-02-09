@@ -1,2 +1,5 @@
-//>>built
-define("dojox/form/nls/fr/Uploader",{label:"S\u00e9lectionner les fichiers..."});
+define(
+"dojox/form/nls/fr/Uploader", ({
+	label: "Sélectionner les fichiers..."
+})
+);

@@ -1,7 +1,168 @@
-//>>built
-define("dojox/jsonPath/query",["dijit","dojo","dojox"],function(t,n,l){n.provide("dojox.jsonPath.query");l.jsonPath.query=function(m,p,g){g||(g={});var r=[],n=function(a){return r[a]}.name;if("PATH"==g.resultType&&"RESULT"==g.evalType)throw Error("RESULT based evaluation not supported with PATH based results");var d={resultType:g.resultType||"VALUE",normalize:function(a){for(var c=[],a=a.replace(/'([^']|'')*'/g,function(a){return n+"("+(r.push(eval(a))-1)+")"}),b=-1;b!=c.length;)b=c.length,a=a.replace(/(\??\([^\(\)]*\))/g,
-function(a){return"#"+(c.push(a)-1)});a=a.replace(/[\['](#[0-9]+)[\]']/g,"[$1]").replace(/'?\.'?|\['?/g,";").replace(/;;;|;;/g,";..;").replace(/;$|'?\]|'$/g,"");for(b=-1;b!=a;)b=a,a=a.replace(/#([0-9]+)/g,function(a,b){return c[b]});return a.split(";")},asPaths:function(a){for(var c=0;c<a.length;c++){for(var b="$",d=a[c],o=1,g=d.length;o<g;o++)b+=/^[0-9*]+$/.test(d[o])?"["+d[o]+"]":"['"+d[o]+"']";a[c]=b}return a},exec:function(a,c,b){function i(a,b,c){a&&a.hasOwnProperty(b)&&"VALUE"!=d.resultType&&
-f.push(h.concat([b]));c?j=a[b]:a&&a.hasOwnProperty(b)&&j.push(a[b])}function g(a){j.push(a);f.push(h);d.walk(a,function(b){if("object"===typeof a[b]){var c=h;h=h.concat(b);g(a[b]);h=c}})}function n(a,b){if(b instanceof Array){var c=b.length,d=0,k=c,e=1;a.replace(/^(-?[0-9]*):(-?[0-9]*):?(-?[0-9]*)$/g,function(a,b,c,s){d=parseInt(b||d);k=parseInt(c||k);e=parseInt(s||e)});d=0>d?Math.max(0,d+c):Math.min(c,d);k=0>k?Math.max(0,k+c):Math.min(c,k);for(c=d;c<k;c+=e)i(b,c)}}function l(a){var b=e.match(/^_str\(([0-9]+)\)$/);
-return b?r[b[1]]:a}function m(a){if(/^\(.*?\)$/.test(e))i(a,d.eval(e,a),b);else if("*"===e)d.walk(a,b&&a instanceof Array?function(b){d.walk(a[b],function(c){i(a[b],c)})}:function(b){i(a,b)});else if(".."===e)g(a);else if(/,/.test(e))for(var c=e.split(/'?,'?/),f=0,h=c.length;f<h;f++)i(a,l(c[f]));else/^\?\(.*?\)$/.test(e)?d.walk(a,function(b){d.eval(e.replace(/^\?\((.*?)\)$/,"$1"),a[b])&&i(a,b)}):/^(-?[0-9]*):(-?[0-9]*):?([0-9]*)$/.test(e)?n(e,a):(e=l(e),b&&a instanceof Array&&!/^[0-9*]+$/.test(e)?
-d.walk(a,function(b){i(a[b],e)}):i(a,e,b))}for(var h=["$"],j=b?c:[c],f=[h];a.length;){var e=a.shift();if(null===(c=j)||void 0===c)return c;var j=[],p=f,f=[];b?m(c):d.walk(c,function(a){h=p[a]||h;m(c[a])})}if("BOTH"==d.resultType){for(var f=d.asPaths(f),a=[],q=0;q<f.length;q++)a.push({path:f[q],value:j[q]});return a}return"PATH"==d.resultType?d.asPaths(f):j},walk:function(a,c){if(a instanceof Array)for(var b=0,d=a.length;b<d;b++)b in a&&c(b);else if("object"===typeof a)for(b in a)a.hasOwnProperty(b)&&
-c(b)},eval:function(a,c){try{return l&&c&&eval(a.replace(/@/g,"v"))}catch(b){throw new SyntaxError("jsonPath: "+b.message+": "+a.replace(/@/g,"v").replace(/\^/g,"_a"));}}},l=m;return p&&m?d.exec(d.normalize(p).slice(1),m,"RESULT"==g.evalType):!1}});
+// wrapped by build app
+define("dojox/jsonPath/query", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+dojo.provide("dojox.jsonPath.query");
+
+dojox.jsonPath.query = function(/*Object*/ obj, /*String*/ expr, /*Object*/ arg){
+	// summary:
+	//		Perform jsonPath query `expr` on javascript object or json string `obj`
+	// obj:
+	//		object || json string to perform query on
+	// expr:
+	//		jsonPath expression (string) to be evaluated
+	// arg:
+	//		{} special arguments.
+	//
+	//		- resultType: "VALUE"||"BOTH"||"PATH"} (defaults to value)
+	//		- evalType: "RESULT"||"ITEM"} (defaults to ?)
+
+	var re = dojox.jsonPath._regularExpressions;
+	if (!arg){arg={};}
+
+	var strs = [];
+	function _str(i){ return strs[i];}
+	var _strName = _str.name;
+	var acc;
+	if (arg.resultType == "PATH" && arg.evalType == "RESULT") throw Error("RESULT based evaluation not supported with PATH based results");
+	var P = {
+		resultType: arg.resultType || "VALUE",
+		normalize: function(expr){
+			var subx = [];
+			expr = expr.replace(/'([^']|'')*'/g, function(t){return _strName + "("+(strs.push(eval(t))-1)+")";});
+			var ll = -1;
+			while(ll!=subx.length){
+				ll=subx.length;//TODO: Do expression syntax checking
+				expr = expr.replace(/(\??\([^\(\)]*\))/g, function($0){return "#"+(subx.push($0)-1);});
+			}
+			expr = expr.replace(/[\['](#[0-9]+)[\]']/g,'[$1]')
+						  .replace(/'?\.'?|\['?/g, ";")
+						  .replace(/;;;|;;/g, ";..;")
+						  .replace(/;$|'?\]|'$/g, "");
+			ll = -1;
+			while(ll!=expr){
+				ll=expr;
+					 expr = expr.replace(/#([0-9]+)/g, function($0,$1){return subx[$1];});
+			}
+			return expr.split(";");
+		},
+		asPaths: function(paths){
+			for (var j=0;j<paths.length;j++){
+			var p = "$";
+			var x= paths[j];
+			for (var i=1,n=x.length; i<n; i++)
+				p += /^[0-9*]+$/.test(x[i]) ? ("["+x[i]+"]") : ("['"+x[i]+"']");
+			paths[j]=p;
+		  }
+			return paths;
+		},
+		exec: function(locs, val, rb){
+			var path = ['$'];
+			var result=rb?val:[val];
+			var paths=[path];
+			function add(v, p,def){
+			  if (v && v.hasOwnProperty(p) && P.resultType != "VALUE") paths.push(path.concat([p]));
+				if (def)
+				  result = v[p];
+			  else if (v && v.hasOwnProperty(p))
+					result.push(v[p]);
+			}
+			function desc(v){
+				result.push(v);
+				paths.push(path);
+				P.walk(v,function(i){
+					if (typeof v[i] ==='object')  {
+						var oldPath = path;
+						path = path.concat(i);
+						desc(v[i]);
+						path = oldPath;
+					}
+				});
+			}
+			function slice(loc, val){
+				if (val instanceof Array){
+					var len=val.length, start=0, end=len, step=1;
+					loc.replace(/^(-?[0-9]*):(-?[0-9]*):?(-?[0-9]*)$/g, function($0,$1,$2,$3){start=parseInt($1||start);end=parseInt($2||end);step=parseInt($3||step);});
+					start = (start < 0) ? Math.max(0,start+len) : Math.min(len,start);
+					end = (end < 0) ? Math.max(0,end+len) : Math.min(len,end);
+				  	for (var i=start; i<end; i+=step)
+						add(val,i);
+				}
+			}
+			function repStr(str){
+				var i=loc.match(/^_str\(([0-9]+)\)$/);
+				return i?strs[i[1]]:str;
+			}
+			function oper(val){
+				if (/^\(.*?\)$/.test(loc)) // [(expr)]
+					add(val, P.eval(loc, val),rb);
+				else if (loc === "*"){
+					P.walk(val, rb && val instanceof Array ? // if it is result based, there is no point to just return the same array
+					function(i){P.walk(val[i],function(j){ add(val[i],j); })} :
+					function(i){ add(val,i); });
+				}
+				else if (loc === "..")
+					desc(val);
+				else if (/,/.test(loc)){ // [name1,name2,...]
+					for (var s=loc.split(/'?,'?/),i=0,n=s.length; i<n; i++)
+						add(val,repStr(s[i]));
+				}
+				else if (/^\?\(.*?\)$/.test(loc)) // [?(expr)]
+					P.walk(val, function(i){ if (P.eval(loc.replace(/^\?\((.*?)\)$/,"$1"),val[i])) add(val,i); });
+				else if (/^(-?[0-9]*):(-?[0-9]*):?([0-9]*)$/.test(loc)) // [start:end:step]  python slice syntax
+					slice(loc, val);
+				else {
+					loc=repStr(loc);
+					if (rb && val instanceof Array && !/^[0-9*]+$/.test(loc))
+						P.walk(val, function(i){ add(val[i], loc)});
+					else
+						add(val,loc,rb);
+				}
+
+			}
+			while (locs.length){
+				var loc = locs.shift();
+				if ((val = result) === null || val===undefined) return val;
+				result = [];
+				var valPaths = paths;
+				paths = [];
+				if (rb)
+					oper(val)
+				else
+					P.walk(val,function(i){path=valPaths[i]||path;oper(val[i])});
+			}
+			if (P.resultType == "BOTH"){
+				paths = P.asPaths(paths);
+				var newResult = [];
+				for (var i =0;i <paths.length;i++)
+					newResult.push({path:paths[i],value:result[i]});
+				return newResult;
+			}
+			return P.resultType == "PATH" ? P.asPaths(paths):result;
+		},
+		walk: function(val, f){
+			if (val instanceof Array){
+				for (var i=0,n=val.length; i<n; i++)
+					if (i in val)
+						f(i);
+			}
+			else if (typeof val === "object"){
+				for (var m in val)
+					if (val.hasOwnProperty(m))
+						f(m);
+			}
+		},
+		eval: function(x, v){
+			try { return $ && v && eval(x.replace(/@/g,'v')); }
+			catch(e){ throw new SyntaxError("jsonPath: " + e.message + ": " + x.replace(/@/g, "v").replace(/\^/g, "_a")); }
+		}
+	};
+
+	var $ = obj;
+	if (expr && obj){
+		return P.exec(P.normalize(expr).slice(1), obj, arg.evalType == "RESULT");
+	}
+
+	return false;
+
+};
+
+});

@@ -1,6 +1,217 @@
-//>>built
-define("dojox/lang/docs",["dijit","dojo","dojox"],function(x,f,r){f.provide("dojox.lang.docs");(function(){function w(){}var g={},h=[],m=r.lang.docs._loadedDocs={},k=function(c,a){g[a]=c},p=function(c){var a=c.type||"",b,e=!1,d=!1,l,a=a.replace(/\?/,function(){e=!0;return""}),a=a.replace(/\[\]/,function(){d=!0;return""});a.match(/HTML/)?a="string":"String"==a||"Number"==a||"Boolean"==a||"Object"==a||"Array"==a||"Integer"==a||"Function"==a?a=a.toLowerCase():"bool"==a?a="boolean":a?(b=f.getObject(a)||
-{},l=!0):b={};b=b||{type:a};d&&(b={items:b,type:"array"},l=!1);if(!l){if(e)b.optional=!0;if(/const/.test(c.tags))b.readonly=!0}return b},s=function(c,a){var b=m[a];if(b){c.description=b.description;c.properties={};c.methods={};if(b.properties)for(var e=b.properties,d=0,l=e.length;d<l;d++)if("prototype"==e[d].scope)(c.properties[e[d].name]=p(e[d])).description=e[d].summary;if(b.methods){e=b.methods;for(d=0,l=e.length;d<l;d++)if((a=e[d].name)&&"prototype"==e[d].scope){var n=c.methods[a]={};n.description=
-e[d].summary;var j=e[d].parameters;if(j){n.parameters=[];for(var o=0,g=j.length;o<g;o++){var h=j[o],k=n.parameters[o]=p(h);k.name=h.name;k.optional="optional"==h.usage}}if((j=e[d]["return-types"])&&j[0])if(j=p(j[0]),j.type)n.returns=j}}(b=b.superclass)&&(c["extends"]=f.getObject(b))}},q=function(c){h.push(c)},t=f.declare;f.declare=function(c){var a=t.apply(this,arguments);k(a,c);return a};f.mixin(f.declare,t);var u,v=f.require;f.require=function(c){q(c);return v.apply(this,arguments)};r.lang.docs.init=
-function(c){function a(){f.require=v;h=null;try{f.xhrGet({sync:!c,url:f.baseUrl+"../util/docscripts/api.json",handleAs:"text"}).addCallbacks(function(a){m=(new Function("return "+a))();k=s;for(var b in g)k(g[b],b);g=null},w)}catch(a){}}if(u)return null;u=!0;var b=function(a,b){return f.xhrGet({sync:b||!c,url:f.baseUrl+"../util/docscripts/api/"+a+".json",handleAs:"text"}).addCallback(function(a){var a=(new Function("return "+a))(),b;for(b in a)m[b]||(m[b]=a[b])})};try{var e=h.shift();b(e,!0).addCallbacks(function(){q=
-function(a){if(!m[a])try{b(a)}catch(c){m[a]={}}};f.forEach(h,function(a){q(a)});h=null;k=s;for(i in g)k(g[i],i);g=null},a)}catch(d){a()}return null}})()});
+// wrapped by build app
+define("dojox/lang/docs", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+dojo.provide("dojox.lang.docs");
+
+// Extracts information from the API docs to apply a schema representation to dojo classes.
+// This can be utilized for runtime metadata retrieval and type checking
+(function(){
+	function error(error){
+		console.log("Warning, the API docs must be available at ../util/docscripts/api.json "+
+		"or ../util/docscripts/api/*.json "+
+		"in order for dojox.lang.docs to supply schema information, but it could not be loaded: " + error);
+	}
+
+	var declaredClasses = {};
+	var requiredModules = [];
+	var _docs = dojox.lang.docs._loadedDocs = {};
+
+	var schemifyClass = function(clazz, name){
+		// initial implementation records classes until they are ready
+		declaredClasses[name] = clazz;
+	};
+	var getType = function(typeDef){
+		var type = typeDef.type || '';
+		var typeObj, optional = false, array = false, dontModify;
+		type = type.replace(/\?/, function(){
+			optional = true;
+			return '';
+		});
+		type = type.replace(/\[\]/, function(){
+			array = true;
+			return '';
+		});
+		if(type.match(/HTML/)){
+			// HTML String and other "types" of strings are really just strings
+			type = "string";
+		}else if(type == 'String' || type == 'Number' ||
+				type == 'Boolean' || type == 'Object' ||
+				type == 'Array' || type == 'Integer' || type == "Function"){
+			type = type.toLowerCase();
+		}else if(type == "bool"){
+			type = "boolean";
+		}else if(type){
+			typeObj = dojo.getObject(type) || {};
+			dontModify = true;
+		}else{
+			typeObj = {};
+		}
+		typeObj = typeObj || {type:type};
+		if(array){
+			typeObj = {items:typeObj, type:"array"};
+			dontModify = false;
+		}
+		if(!dontModify){
+			if(optional){
+				typeObj.optional = true;
+			}
+			if(/const/.test(typeDef.tags)){
+				typeObj.readonly = true;
+			}
+		}
+		return typeObj;
+	};
+	var actualSchemifyClass = function(clazz, name){
+		var docForClass = _docs[name];
+		if(docForClass){
+			clazz.description = docForClass.description;
+			clazz.properties = {};
+			clazz.methods = {};
+
+			if(docForClass.properties){
+				var props = docForClass.properties;
+				for(var i=0, l=props.length; i<l; i++){
+					if(props[i].scope == "prototype"){
+						var propDef = clazz.properties[props[i].name] = getType(props[i]);
+						propDef.description = props[i].summary;
+					}
+				}
+			}
+
+			// translate the methods to JSON Schema
+			if(docForClass.methods){
+				var methods = docForClass.methods;
+				for(i=0, l=methods.length; i<l; i++){
+					name = methods[i].name;
+					if(name && methods[i].scope == "prototype"){
+						var methodDef = clazz.methods[name] = {};
+						methodDef.description = methods[i].summary;
+						var parameters = methods[i].parameters;
+						if(parameters){
+							methodDef.parameters = [];
+							for(var j=0, k=parameters.length; j<k; j++){
+								var param = parameters[j];
+								var paramDef = methodDef.parameters[j] = getType(param);
+								paramDef.name = param.name;
+								paramDef.optional = "optional" == param.usage;
+							}
+						}
+						var ret = methods[i]['return-types'];
+						if(ret && ret[0]){
+							var returns = getType(ret[0]);
+							if(returns.type){
+								methodDef.returns = returns;
+							}
+						}
+					}
+				}
+			}
+
+			var superclass = docForClass.superclass;
+			if(superclass){
+				clazz["extends"] = dojo.getObject(superclass);
+			}
+		}
+	};
+	var requireDocs = function(moduleName){
+		requiredModules.push(moduleName);
+	};
+
+	// hook into all declared classes
+	var defaultDeclare = dojo.declare;
+	dojo.declare = function(name){
+		var clazz = defaultDeclare.apply(this, arguments);
+		schemifyClass(clazz, name);
+		return clazz;
+	};
+	dojo.mixin(dojo.declare, defaultDeclare);
+	var initialized;
+
+	// hook into dojo.require
+	var defaultRequire = dojo.require;
+	dojo.require = function(moduleName){
+		requireDocs(moduleName);
+		var module = defaultRequire.apply(this, arguments);
+		return module;
+	};
+
+	dojox.lang.docs.init = function(/*Boolean*/async){
+		// summary:
+		//		Loads the documentation and applies it to the previously defined classes
+		//		and any future defined classes
+		// async:
+		//		 If true, the documentation will be loaded asynchronously
+		function loadFullDocs(){
+			dojo.require = defaultRequire;
+			requiredModules = null;
+			try{
+				dojo.xhrGet({
+					sync:!async,
+					url: dojo.baseUrl + '../util/docscripts/api.json',
+					handleAs: 'text'
+				}).addCallbacks(function(obj){
+					_docs = (new Function("return " + obj))();
+					obj = null;
+					schemifyClass = actualSchemifyClass;
+
+					for(var i in declaredClasses){
+						schemifyClass(declaredClasses[i], i);
+					}
+					declaredClasses = null;
+				}, error);
+			}catch(e){
+				error(e);
+			}
+		}
+		
+		if(initialized){
+			return null;
+		}
+		initialized = true;
+
+		var getSplitDocs = function(moduleName, sync){
+			return dojo.xhrGet({
+				sync: sync||!async,
+				url: dojo.baseUrl + '../util/docscripts/api/' + moduleName + '.json',
+				handleAs: 'text'
+			}).addCallback(function(obj){
+				obj = (new Function("return " + obj))();
+				for(var clazz in obj){
+					if(!_docs[clazz]){
+						_docs[clazz] = obj[clazz];
+					}
+				}
+			});
+		};
+		try{
+			var firstMod = requiredModules.shift();
+			getSplitDocs(firstMod, true).addCallbacks(function(){
+				requireDocs = function(moduleName){
+					if(!_docs[moduleName]){
+						try{
+							getSplitDocs(moduleName);
+						}catch(e){
+							_docs[moduleName] = {};
+						}
+					}
+				};
+				//console.log(requiredModules);
+				dojo.forEach(requiredModules, function(mod){
+					requireDocs(mod);
+				});
+				requiredModules = null;
+
+				schemifyClass = actualSchemifyClass;
+
+				for(i in declaredClasses){
+					schemifyClass(declaredClasses[i], i);
+				}
+				declaredClasses = null;
+			},loadFullDocs);
+		}catch(e){
+			loadFullDocs();
+		}
+		return null;
+	}
+})();
+
+});

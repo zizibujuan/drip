@@ -2,9 +2,12 @@ package com.zizibujuan.drip.server.dao.mysql;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 import com.zizibujuan.drip.server.dao.UserRelationDao;
 import com.zizibujuan.drip.server.exception.dao.DataAccessException;
+import com.zizibujuan.drip.server.util.PageInfo;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 
 /**
@@ -51,6 +54,20 @@ public class UserRelationDaoImpl extends AbstractDao implements UserRelationDao 
 	@Override
 	public void delete(Long userId, Long followUserId) {
 		DatabaseUtil.update(getDataSource(), SQL_DELETE_RELATION, userId, followUserId);
+	}
+
+	private static final String SQL_LIST_FOLLOWING = "SELECT WATCH_USER_ID \"following\" FROM DRIP_USER_RELATION WHERE USER_ID = ? ORDER BY CRT_TM";
+	@Override
+	public List<Map<String, Object>> getFollowing(PageInfo pageInfo,
+			Long localUserId) {
+		return DatabaseUtil.queryForList(getDataSource(), SQL_LIST_FOLLOWING, pageInfo, localUserId);
+	}
+
+	private static final String SQL_LIST_FOLLOWERS = "SELECT USER_ID \"follower\" FROM DRIP_USER_RELATION WHERE WATCH_USER_ID = ? ORDER BY CRT_TM";
+	@Override
+	public List<Map<String, Object>> getFollowers(PageInfo pageInfo,
+			Long localUserId) {
+		return DatabaseUtil.queryForList(getDataSource(), SQL_LIST_FOLLOWERS, pageInfo, localUserId);
 	}
 
 }

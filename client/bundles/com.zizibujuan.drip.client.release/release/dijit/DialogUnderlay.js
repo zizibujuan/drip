@@ -1,5 +1,186 @@
-//>>built
-define("dijit/DialogUnderlay","dojo/_base/declare,dojo/_base/lang,dojo/aspect,dojo/dom-attr,dojo/dom-construct,dojo/dom-style,dojo/on,dojo/_base/window,dojo/window,./_Widget,./_TemplatedMixin,./BackgroundIframe,./Viewport,./main".split(","),function(h,e,q,i,j,k,f,r,g,l,m,n,o,p){var b=h("dijit.DialogUnderlay",[l,m],{templateString:"<div class='dijitDialogUnderlayWrapper'><div class='dijitDialogUnderlay' tabIndex='0' data-dojo-attach-point='node'></div></div>",dialogId:"","class":"",_modalConnects:[],
-_setDialogIdAttr:function(a){i.set(this.node,"id",a+"_underlay");this._set("dialogId",a)},_setClassAttr:function(a){this.node.className="dijitDialogUnderlay "+a;this._set("class",a)},postCreate:function(){this.inherited(arguments);j.place(this.domNode,this.ownerDocumentBody,"first");this.own(f(this.node,"click, focus",e.hitch(this,function(a){if(a.target==this.node)this.onFocus()})))},onFocus:function(){},layout:function(){var a=this.node.style,b=this.domNode.style;b.display="none";var d=g.getBox(this.ownerDocument);
-b.top=d.t+"px";b.left=d.l+"px";a.width=d.w+"px";a.height=d.h+"px";b.display="block"},show:function(){this.domNode.style.display="block";this.open=!0;this.layout();this.bgIframe=new n(this.domNode);var a=g.get(this.ownerDocument);this._modalConnects=[o.on("resize",e.hitch(this,"layout")),f(a,"scroll",e.hitch(this,"layout"))]},hide:function(){this.bgIframe.destroy();delete this.bgIframe;for(this.domNode.style.display="none";this._modalConnects.length;)this._modalConnects.pop().remove();this.open=!1},
-destroy:function(){for(;this._modalConnects.length;)this._modalConnects.pop().remove();this.inherited(arguments)}});b.show=function(a,e,d){var c=b._singleton;!c||c._destroyed?c=p._underlay=b._singleton=new b(a):a&&c.set(a);k.set(c.domNode,"zIndex",e);c.open||c.show();c.onFocus=d||function(){}};b.hide=function(){var a=b._singleton;a&&!a._destroyed&&a.hide()};return b});
+define("dijit/DialogUnderlay", [
+	"dojo/_base/declare", // declare
+	"dojo/_base/lang", // lang.hitch
+	"dojo/aspect", // aspect.after
+	"dojo/dom-attr", // domAttr.set
+	"dojo/dom-construct",
+	"dojo/dom-style", // domStyle.getComputedStyle
+	"dojo/on",
+	"dojo/_base/window",
+	"dojo/window", // winUtils.getBox, winUtils.get
+	"./_Widget",
+	"./_TemplatedMixin",
+	"./BackgroundIframe",
+	"./Viewport",
+	"./main" // for back-compat, exporting dijit._underlay (remove in 2.0)
+], function(declare, lang, aspect, domAttr, domConstruct, domStyle, on,
+			win, winUtils, _Widget, _TemplatedMixin, BackgroundIframe, Viewport, dijit){
+
+	// module:
+	//		dijit/DialogUnderlay
+
+	var DialogUnderlay = declare("dijit.DialogUnderlay", [_Widget, _TemplatedMixin], {
+		// summary:
+		//		A component used to block input behind a `dijit/Dialog`.
+		//
+		//		Normally this class should not be instantiated directly, but rather shown and hidden via
+		//		DialogUnderlay.show() and DialogUnderlay.hide().  And usually the module is not accessed directly
+		//		at all, since the underlay is shown and hidden by Dialog.DialogLevelManager.
+		//
+		//		The underlay itself can be styled based on and id:
+		//	|	#myDialog_underlay { background-color:red; }
+		//
+		//		In the case of `dijit.Dialog`, this id is based on the id of the Dialog,
+		//		suffixed with _underlay.
+
+		// Template has two divs; outer div is used for fade-in/fade-out, and also to hold background iframe.
+		// Inner div has opacity specified in CSS file.
+		templateString: "<div class='dijitDialogUnderlayWrapper'><div class='dijitDialogUnderlay' tabIndex='0' data-dojo-attach-point='node'></div></div>",
+
+		// Parameters on creation or updatable later
+
+		// dialogId: String
+		//		Id of the dialog.... DialogUnderlay's id is based on this id
+		dialogId: "",
+
+		// class: String
+		//		This class name is used on the DialogUnderlay node, in addition to dijitDialogUnderlay
+		"class": "",
+
+		// This will get overwritten as soon as show() is call, but leave an empty array in case hide() or destroy()
+		// is called first.   The array is shared between instances but that's OK because we never write into it.
+		_modalConnects: [],
+
+		_setDialogIdAttr: function(id){
+			domAttr.set(this.node, "id", id + "_underlay");
+			this._set("dialogId", id);
+		},
+
+		_setClassAttr: function(clazz){
+			this.node.className = "dijitDialogUnderlay " + clazz;
+			this._set("class", clazz);
+		},
+
+		postCreate: function(){
+			// summary:
+			//		Append the underlay to the body
+
+			this.inherited(arguments);
+
+			// Place myself as the first child of <body> so that I get focus if the user tabs in from the URL bar
+			domConstruct.place(this.domNode, this.ownerDocumentBody, "first");
+
+			// If user clicks the underlay, or tabs into it from the URL bar, then focus the top level Dialog.
+			// But be careful to ignore bubbled focus events from focus on menus, etc.
+			this.own(
+				on(this.node, "click, focus", lang.hitch(this, function(evt){
+					if(evt.target == this.node){
+						this.onFocus();
+					}
+				}))
+			);
+		},
+
+		onFocus: function(){
+			// Called when underlay is focused or clicked.   Override to get notification
+		},
+
+		layout: function(){
+			// summary:
+			//		Sets the background to the size of the viewport
+			//
+			// description:
+			//		Sets the background to the size of the viewport (rather than the size
+			//		of the document) since we need to cover the whole browser window, even
+			//		if the document is only a few lines long.
+			// tags:
+			//		private
+
+			var is = this.node.style,
+				os = this.domNode.style;
+
+			// hide the background temporarily, so that the background itself isn't
+			// causing scrollbars to appear (might happen when user shrinks browser
+			// window and then we are called to resize)
+			os.display = "none";
+
+			// then resize and show
+			var viewport = winUtils.getBox(this.ownerDocument);
+			os.top = viewport.t + "px";
+			os.left = viewport.l + "px";
+			is.width = viewport.w + "px";
+			is.height = viewport.h + "px";
+			os.display = "block";
+		},
+
+		show: function(){
+			// summary:
+			//		Show the dialog underlay
+			this.domNode.style.display = "block";
+			this.open = true;
+			this.layout();
+			this.bgIframe = new BackgroundIframe(this.domNode);
+
+			var win = winUtils.get(this.ownerDocument);
+			this._modalConnects = [
+				Viewport.on("resize", lang.hitch(this, "layout")),
+				on(win, "scroll", lang.hitch(this, "layout"))
+			];
+
+		},
+
+		hide: function(){
+			// summary:
+			//		Hides the dialog underlay
+
+			this.bgIframe.destroy();
+			delete this.bgIframe;
+			this.domNode.style.display = "none";
+			while(this._modalConnects.length){ (this._modalConnects.pop()).remove(); }
+			this.open = false;
+		},
+
+		destroy: function(){
+			while(this._modalConnects.length){ (this._modalConnects.pop()).remove(); }
+			this.inherited(arguments);
+		}
+	});
+
+	DialogUnderlay.show = function(/*Object*/ attrs, /*Number*/ zIndex, /*Function?*/ onFocus){
+		// summary:
+		//		Display the underlay with the given attributes set.  If the underlay is already displayed,
+		//		then adjust it's attributes as specified.
+		// attrs:
+		//		The parameters to create DialogUnderlay with.
+		// zIndex:
+		//		zIndex of the underlay
+		// onFocus:
+		//		Function to call if the underlay is clicked or focused
+
+		var underlay = DialogUnderlay._singleton;
+		if(!underlay || underlay._destroyed){
+			underlay = dijit._underlay = DialogUnderlay._singleton = new DialogUnderlay(attrs);
+		}else{
+			if(attrs){ underlay.set(attrs); }
+		}
+		domStyle.set(underlay.domNode, 'zIndex', zIndex);
+		if(!underlay.open){
+			underlay.show();
+		}
+		underlay.onFocus = onFocus || function(){};
+	};
+
+	DialogUnderlay.hide = function(){
+		// summary:
+		//		Hide the underlay.
+
+		// Guard code in case the underlay widget has already been destroyed
+		// because we are being called during page unload (when all widgets are destroyed)
+		var underlay = DialogUnderlay._singleton;
+		if(underlay && !underlay._destroyed){
+			underlay.hide();
+		}
+	};
+
+	return DialogUnderlay;
+});

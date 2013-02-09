@@ -1,8 +1,378 @@
-//>>built
-define("dijit/_KeyNavMixin","dojo/_base/array,dojo/_base/declare,dojo/dom-attr,dojo/keys,dojo/_base/lang,dojo/on,dijit/registry,dijit/_FocusMixin".split(","),function(j,g,f,c,b,e,h,i){return g("dijit._KeyNavMixin",i,{tabIndex:"0",childSelector:null,postCreate:function(){this.inherited(arguments);f.set(this.domNode,"tabIndex",this.tabIndex);if(!this._keyNavCodes){var a=this._keyNavCodes={};a[c.HOME]=b.hitch(this,"focusFirstChild");a[c.END]=b.hitch(this,"focusLastChild");a[this.isLeftToRight()?c.LEFT_ARROW:
-c.RIGHT_ARROW]=b.hitch(this,"_onLeftArrow");a[this.isLeftToRight()?c.RIGHT_ARROW:c.LEFT_ARROW]=b.hitch(this,"_onRightArrow");a[c.UP_ARROW]=b.hitch(this,"_onUpArrow");a[c.DOWN_ARROW]=b.hitch(this,"_onDownArrow")}var d=this,a="string"==typeof this.childSelector?this.childSelector:b.hitch(this,"childSelector");this.own(e(this.domNode,"keypress",b.hitch(this,"_onContainerKeypress")),e(this.domNode,"keydown",b.hitch(this,"_onContainerKeydown")),e(this.domNode,"focus",b.hitch(this,"_onContainerFocus")),
-e(this.containerNode,e.selector(a,"focusin"),function(a){d._onChildFocus(h.getEnclosingWidget(this),a)}))},_onLeftArrow:function(){},_onRightArrow:function(){},_onUpArrow:function(){},_onDownArrow:function(){},focus:function(){this.focusFirstChild()},focusFirstChild:function(){},focusLastChild:function(){},focusChild:function(a,d){a&&(this.focusedChild&&a!==this.focusedChild&&this._onChildBlur(this.focusedChild),a.set("tabIndex",this.tabIndex),a.focus(d?"end":"start"))},_onContainerFocus:function(a){a.target!==
-this.domNode||this.focusedChild||this.focusFirstChild()},_onFocus:function(){f.set(this.domNode,"tabIndex","-1");this.inherited(arguments)},_onBlur:function(a){f.set(this.domNode,"tabIndex",this.tabIndex);this.focusedChild&&(this.focusedChild.set("tabIndex","-1"),this._set("focusedChild",null));this.inherited(arguments)},_onChildFocus:function(a){if(a&&a!=this.focusedChild)this.focusedChild&&!this.focusedChild._destroyed&&this.focusedChild.set("tabIndex","-1"),a.set("tabIndex",this.tabIndex),this.lastFocused=
-a,this._set("focusedChild",a)},_searchString:"",multiCharSearchDuration:1E3,onKeyboardSearch:function(a){a&&this.focusChild(a)},_keyboardSearchCompare:function(a,d){var b=a.domNode,b=(a.label||(b.focusNode?b.focusNode.label:"")||b.innerText||b.textContent||"").replace(/^\s+/,"").substr(0,d.length).toLowerCase();return d.length&&b==d?-1:0},_onContainerKeydown:function(a){var b=this._keyNavCodes[a.keyCode];if(b)b(a,this.focusedChild),a.stopPropagation(),a.preventDefault(),this._searchString=""},_onContainerKeypress:function(a){if(!(32>=
-a.charCode||a.ctrlKey||a.altKey)){var d=null,c,e=0,f=b.hitch(this,function(){this._searchTimer&&this._searchTimer.remove();this._searchString+=g;var a=/^(.)\1*$/.test(this._searchString)?1:this._searchString.length;c=this._searchString.substr(0,a);this._searchTimer=this.defer(function(){this._searchTimer=null;this._searchString=""},this.multiCharSearchDuration);var b=this.focusedChild||null;if(1==a||!b)if(b=this._getNextFocusableChild(b,1),!b)return;a=b;do{var f=this._keyboardSearchCompare(b,c);f&&
-0==e++&&(d=b);if(-1==f){e=-1;break}b=this._getNextFocusableChild(b,1)}while(b!=a)}),g=String.fromCharCode(a.charCode).toLowerCase();f();this.onKeyboardSearch(d,a,c,e)}},_onChildBlur:function(){},_getNextFocusableChild:function(){return null}})});
+define("dijit/_KeyNavMixin", [
+	"dojo/_base/array", // array.forEach
+	"dojo/_base/declare", // declare
+	"dojo/dom-attr", // domAttr.set
+	"dojo/keys", // keys.END keys.HOME, keys.LEFT_ARROW etc.
+	"dojo/_base/lang", // lang.hitch
+	"dojo/on",
+	"dijit/registry",
+	"dijit/_FocusMixin"        // to make _onBlur() work
+], function(array, declare, domAttr, keys, lang, on, registry, _FocusMixin){
+
+	// module:
+	//		dijit/_KeyNavMixin
+
+	return declare("dijit._KeyNavMixin", _FocusMixin, {
+		// summary:
+		//		A mixin to allow arrow key and letter key navigation of child or descendant widgets.
+		//		It can be used by dijit/_Container based widgets with a flat list of children,
+		//		or more complex widgets like dijit/Tree.
+		//
+		//		To use this mixin, the subclass must:
+		//
+		//			- Implement  focusFirstChild(), focusLastChild(), _onLeftArrow(), _onRightArrow()
+		//			  _onDownArrow(), _onUpArrow() methods to handle home/end/left/right/up/down keystrokes.
+		//			- Implement _getNextFocusableChild() to find the next or previous child relative to a current child.
+		//			  Next and previous in this context refer to a linear ordering of the children or descendants used
+		//			  by letter key search.
+		//			- Set all descendants' initial tabIndex to "-1"; both initial descendants and any
+		//			  descendants added later, by for example addChild()
+		//			- Define childSelector to a function or string that identifies focusable child widgets
+		//
+		//		Also, child widgets must implement a focus() method.
+
+		/*=====
+		 // focusedChild: [protected readonly] Widget
+		 //		The currently focused child widget, or null if there isn't one
+		 focusedChild: null,
+
+		 // _keyNavCodes: Object
+		 //		Hash mapping key code (arrow keys and home/end key) to functions to handle those keys.
+		 //		Usually not used directly, as subclasses can instead override _onLeftArrow() etc.
+		 _keyNavCodes: {},
+		 =====*/
+
+		// tabIndex: String
+		//		Tab index of the container; same as HTML tabIndex attribute.
+		//		Note then when user tabs into the container, focus is immediately
+		//		moved to the first item in the container.
+		tabIndex: "0",
+
+		// childSelector: [protected abstract] Function||String
+		//		Selector (passed to on.selector()) used to identify what to treat as a child widget.   Used to monitor
+		//		focus events and set this.focusedChild.   Must be set by implementing class.   If this is a string
+		//		(ex: "> *") then the implementing class must require dojo/query.
+		childSelector: null,
+
+		postCreate: function(){
+			this.inherited(arguments);
+
+			// Set tabIndex on this.domNode.  Will be automatic after #7381 is fixed.
+			domAttr.set(this.domNode, "tabIndex", this.tabIndex);
+
+			if(!this._keyNavCodes){
+				var keyCodes = this._keyNavCodes = {};
+				keyCodes[keys.HOME] = lang.hitch(this, "focusFirstChild");
+				keyCodes[keys.END] = lang.hitch(this, "focusLastChild");
+				keyCodes[this.isLeftToRight() ? keys.LEFT_ARROW : keys.RIGHT_ARROW] = lang.hitch(this, "_onLeftArrow");
+				keyCodes[this.isLeftToRight() ? keys.RIGHT_ARROW : keys.LEFT_ARROW] = lang.hitch(this, "_onRightArrow");
+				keyCodes[keys.UP_ARROW] = lang.hitch(this, "_onUpArrow");
+				keyCodes[keys.DOWN_ARROW] = lang.hitch(this, "_onDownArrow");
+			}
+
+			var self = this,
+				childSelector = typeof this.childSelector == "string" ? this.childSelector :
+					lang.hitch(this, "childSelector");
+			this.own(
+				on(this.domNode, "keypress", lang.hitch(this, "_onContainerKeypress")),
+				on(this.domNode, "keydown", lang.hitch(this, "_onContainerKeydown")),
+				on(this.domNode, "focus", lang.hitch(this, "_onContainerFocus")),
+				on(this.containerNode, on.selector(childSelector, "focusin"), function(evt){
+					self._onChildFocus(registry.getEnclosingWidget(this), evt);
+				})
+			);
+		},
+
+		_onLeftArrow: function(){
+			// summary:
+			//		Called on left arrow key, or right arrow key if widget is in RTL mode.
+			//		Should go back to the previous child in horizontal container widgets like Toolbar.
+			// tags:
+			//		extension
+		},
+
+		_onRightArrow: function(){
+			// summary:
+			//		Called on right arrow key, or left arrow key if widget is in RTL mode.
+			//		Should go to the next child in horizontal container widgets like Toolbar.
+			// tags:
+			//		extension
+		},
+
+		_onUpArrow: function(){
+			// summary:
+			//		Called on up arrow key. Should go to the previous child in vertical container widgets like Menu.
+			// tags:
+			//		extension
+		},
+
+		_onDownArrow: function(){
+			// summary:
+			//		Called on down arrow key. Should go to the next child in vertical container widgets like Menu.
+			// tags:
+			//		extension
+		},
+
+		focus: function(){
+			// summary:
+			//		Default focus() implementation: focus the first child.
+			this.focusFirstChild();
+		},
+
+		focusFirstChild: function(){
+			// summary:
+			//		Focus the first focusable child in the container.
+			// tags:
+			//		abstract extension
+		},
+
+		focusLastChild: function(){
+			// summary:
+			//		Focus the last focusable child in the container.
+			// tags:
+			//		abstract extension
+		},
+
+		focusChild: function(/*dijit/_WidgetBase*/ widget, /*Boolean*/ last){
+			// summary:
+			//		Focus specified child widget.
+			// widget:
+			//		Reference to container's child widget
+			// last:
+			//		If true and if widget has multiple focusable nodes, focus the
+			//		last one instead of the first one
+			// tags:
+			//		protected
+
+			if(!widget){
+				return;
+			}
+
+			if(this.focusedChild && widget !== this.focusedChild){
+				this._onChildBlur(this.focusedChild);	// used by _MenuBase
+			}
+			widget.set("tabIndex", this.tabIndex);	// for IE focus outline to appear, must set tabIndex before focus
+			widget.focus(last ? "end" : "start");
+
+			// Don't set focusedChild here, because the focus event should trigger a call to _onChildFocus(), which will
+			// set it.   More importantly, _onChildFocus(), which may be executed asynchronously (after this function
+			//  returns) needs to know the old focusedChild to set its tabIndex to -1.
+		},
+
+		_onContainerFocus: function(evt){
+			// summary:
+			//		Handler for when the container itself gets focus.
+			// description:
+			//		Initially the container itself has a tabIndex, but when it gets
+			//		focus, switch focus to first child...
+			// tags:
+			//		private
+
+			// Note that we can't use _onFocus() because switching focus from the
+			// _onFocus() handler confuses the focus.js code
+			// (because it causes _onFocusNode() to be called recursively).
+			// Also, _onFocus() would fire when focus went directly to a child widget due to mouse click.
+
+			// Ignore spurious focus events:
+			//	1. focus on a child widget bubbles on FF
+			//	2. on IE, clicking the scrollbar of a select dropdown moves focus from the focused child item to me
+			if(evt.target !== this.domNode || this.focusedChild){
+				return;
+			}
+
+			this.focusFirstChild();
+		},
+
+		_onFocus: function(){
+			// When the container gets focus by being tabbed into, or a descendant gets focus by being clicked,
+			// set the container's tabIndex to -1 (don't remove as that breaks Safari 4) so that tab or shift-tab
+			// will go to the fields after/before the container, rather than the container itself
+			domAttr.set(this.domNode, "tabIndex", "-1");
+
+			this.inherited(arguments);
+		},
+
+		_onBlur: function(evt){
+			// When focus is moved away the container, and its descendant (popup) widgets,
+			// then restore the container's tabIndex so that user can tab to it again.
+			// Note that using _onBlur() so that this doesn't happen when focus is shifted
+			// to one of my child widgets (typically a popup)
+
+			domAttr.set(this.domNode, "tabIndex", this.tabIndex);
+			if(this.focusedChild){
+				this.focusedChild.set("tabIndex", "-1");
+				this._set("focusedChild", null);
+			}
+			this.inherited(arguments);
+		},
+
+		_onChildFocus: function(/*dijit/_WidgetBase*/ child){
+			// summary:
+			//		Called when a child widget gets focus, either by user clicking
+			//		it, or programatically by arrow key handling code.
+			// description:
+			//		It marks that the current node is the selected one, and the previously
+			//		selected node no longer is.
+
+			if(child && child != this.focusedChild){
+				if(this.focusedChild && !this.focusedChild._destroyed){
+					// mark that the previously focusable node is no longer focusable
+					this.focusedChild.set("tabIndex", "-1");
+				}
+
+				// mark that the new node is the currently selected one
+				child.set("tabIndex", this.tabIndex);
+				this.lastFocused = child;		// back-compat for Tree, remove for 2.0
+				this._set("focusedChild", child);
+			}
+		},
+
+		_searchString: "",
+		// multiCharSearchDuration: Number
+		//		If multiple characters are typed where each keystroke happens within
+		//		multiCharSearchDuration of the previous keystroke,
+		//		search for nodes matching all the keystrokes.
+		//
+		//		For example, typing "ab" will search for entries starting with
+		//		"ab" unless the delay between "a" and "b" is greater than multiCharSearchDuration.
+		multiCharSearchDuration: 1000,
+
+		onKeyboardSearch: function(/*dijit/_WidgetBase*/ item, /*Event*/ evt, /*String*/ searchString, /*Number*/ numMatches){
+			// summary:
+			//		When a key is pressed that matches a child item,
+			//		this method is called so that a widget can take appropriate action is necessary.
+			// tags:
+			//		protected
+			if(item){
+				this.focusChild(item);
+			}
+		},
+
+		_keyboardSearchCompare: function(/*dijit/_WidgetBase*/ item, /*String*/ searchString){
+			// summary:
+			//		Compares the searchString to the widget's text label, returning:
+			//
+			//			* -1: a high priority match  and stop searching
+			//		 	* 0: not a match
+			//		 	* 1: a match but keep looking for a higher priority match
+			// tags:
+			//		private
+
+			var element = item.domNode,
+				text = item.label || (element.focusNode ? element.focusNode.label : '') || element.innerText || element.textContent || "",
+				currentString = text.replace(/^\s+/, '').substr(0, searchString.length).toLowerCase();
+
+			return (!!searchString.length && currentString == searchString) ? -1 : 0; // stop searching after first match by default
+		},
+
+		_onContainerKeydown: function(evt){
+			// summary:
+			//		When a key is pressed, if it's an arrow key etc. then it's handled here.
+			// tags:
+			//		private
+
+			var func = this._keyNavCodes[evt.keyCode];
+			if(func){
+				func(evt, this.focusedChild);
+				evt.stopPropagation();
+				evt.preventDefault();
+				this._searchString = ''; // so a DOWN_ARROW b doesn't search for ab
+			}
+		},
+
+		_onContainerKeypress: function(evt){
+			// summary:
+			//		When a printable key is pressed, it's handled here, searching by letter.
+			// tags:
+			//		private
+
+			if(evt.charCode <= 32){
+				// Avoid duplicate events on firefox (this is an arrow key that will be handled by keydown handler)
+				return;
+			}
+
+			if(evt.ctrlKey || evt.altKey){
+				return;
+			}
+
+			var
+				matchedItem = null,
+				searchString,
+				numMatches = 0,
+				search = lang.hitch(this, function(){
+					if(this._searchTimer){
+						this._searchTimer.remove();
+					}
+					this._searchString += keyChar;
+					var allSameLetter = /^(.)\1*$/.test(this._searchString);
+					var searchLen = allSameLetter ? 1 : this._searchString.length;
+					searchString = this._searchString.substr(0, searchLen);
+					// commented out code block to search again if the multichar search fails after a smaller timeout
+					//this._searchTimer = this.defer(function(){ // this is the "failure" timeout
+					//	this._typingSlowly = true; // if the search fails, then treat as a full timeout
+					//	this._searchTimer = this.defer(function(){ // this is the "success" timeout
+					//		this._searchTimer = null;
+					//		this._searchString = '';
+					//	}, this.multiCharSearchDuration >> 1);
+					//}, this.multiCharSearchDuration >> 1);
+					this._searchTimer = this.defer(function(){ // this is the "success" timeout
+						this._searchTimer = null;
+						this._searchString = '';
+					}, this.multiCharSearchDuration);
+					var currentItem = this.focusedChild || null;
+					if(searchLen == 1 || !currentItem){
+						currentItem = this._getNextFocusableChild(currentItem, 1); // skip current
+						if(!currentItem){
+							return;
+						} // no items
+					}
+					var stop = currentItem;
+					do{
+						var rc = this._keyboardSearchCompare(currentItem, searchString);
+						if(!!rc && numMatches++ == 0){
+							matchedItem = currentItem;
+						}
+						if(rc == -1){ // priority match
+							numMatches = -1;
+							break;
+						}
+						currentItem = this._getNextFocusableChild(currentItem, 1);
+					}while(currentItem != stop);
+					// commented out code block to search again if the multichar search fails after a smaller timeout
+					//if(!numMatches && (this._typingSlowly || searchLen == 1)){
+					//	this._searchString = '';
+					//	if(searchLen > 1){
+					//		// if no matches and they're typing slowly, then go back to first letter searching
+					//		search();
+					//	}
+					//}
+				}),
+				keyChar = String.fromCharCode(evt.charCode).toLowerCase();
+
+			search();
+			// commented out code block to search again if the multichar search fails after a smaller timeout
+			//this._typingSlowly = false;
+			this.onKeyboardSearch(matchedItem, evt, searchString, numMatches);
+		},
+
+		_onChildBlur: function(/*dijit/_WidgetBase*/ /*===== widget =====*/){
+			// summary:
+			//		Called when focus leaves a child widget to go
+			//		to a sibling widget.
+			//		Used by MenuBase.js (TODO: move code there)
+			// tags:
+			//		protected
+		},
+
+		_getNextFocusableChild: function(child){
+			// summary:
+			//		Returns the next focusable child, compared to "child".
+			// child: Widget
+			//		The current widget
+			// tags:
+			//		abstract extension
+
+			return null;	// dijit/_WidgetBase
+		}
+	});
+});
