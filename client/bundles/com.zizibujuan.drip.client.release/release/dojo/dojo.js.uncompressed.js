@@ -24261,6 +24261,917 @@ define([
 });
 
 },
+'dijit/form/Button':function(){
+define([
+	"require",
+	"dojo/_base/declare", // declare
+	"dojo/dom-class", // domClass.toggle
+	"dojo/has",			// has("dijit-legacy-requires")
+	"dojo/_base/kernel", // kernel.deprecated
+	"dojo/_base/lang", // lang.trim
+	"dojo/ready",
+	"./_FormWidget",
+	"./_ButtonMixin",
+	"dojo/text!./templates/Button.html"
+], function(require, declare, domClass, has, kernel, lang, ready, _FormWidget, _ButtonMixin, template){
+
+// module:
+//		dijit/form/Button
+
+// Back compat w/1.6, remove for 2.0
+if(has("dijit-legacy-requires")){
+	ready(0, function(){
+		var requires = ["dijit/form/DropDownButton", "dijit/form/ComboButton", "dijit/form/ToggleButton"];
+		require(requires);	// use indirection so modules not rolled into a build
+	});
+}
+
+var Button = declare("dijit.form.Button" + (has("dojo-bidi") ? "_NoBidi" : ""), [_FormWidget, _ButtonMixin], {
+	// summary:
+	//		Basically the same thing as a normal HTML button, but with special styling.
+	// description:
+	//		Buttons can display a label, an icon, or both.
+	//		A label should always be specified (through innerHTML) or the label
+	//		attribute.  It can be hidden via showLabel=false.
+	// example:
+	// |	<button data-dojo-type="dijit/form/Button" onClick="...">Hello world</button>
+	//
+	// example:
+	// |	var button1 = new Button({label: "hello world", onClick: foo});
+	// |	dojo.body().appendChild(button1.domNode);
+
+	// showLabel: Boolean
+	//		Set this to true to hide the label text and display only the icon.
+	//		(If showLabel=false then iconClass must be specified.)
+	//		Especially useful for toolbars.
+	//		If showLabel=true, the label will become the title (a.k.a. tooltip/hint) of the icon.
+	//
+	//		The exception case is for computers in high-contrast mode, where the label
+	//		will still be displayed, since the icon doesn't appear.
+	showLabel: true,
+
+	// iconClass: String
+	//		Class to apply to DOMNode in button to make it display an icon
+	iconClass: "dijitNoIcon",
+	_setIconClassAttr: { node: "iconNode", type: "class" },
+
+	baseClass: "dijitButton",
+
+	templateString: template,
+
+	// Map widget attributes to DOMNode attributes.
+	_setValueAttr: "valueNode",
+	_setNameAttr: function(name){
+		// avoid breaking existing subclasses where valueNode undefined.  Perhaps in 2.0 require it to be defined?
+		if(this.valueNode){
+			this._attrToDom("name", name, "valueNode");
+		}
+	},
+
+	_fillContent: function(/*DomNode*/ source){
+		// Overrides _Templated._fillContent().
+		// If button label is specified as srcNodeRef.innerHTML rather than
+		// this.params.label, handle it here.
+		// TODO: remove the method in 2.0, parser will do it all for me
+		if(source && (!this.params || !("label" in this.params))){
+			var sourceLabel = lang.trim(source.innerHTML);
+			if(sourceLabel){
+				this.label = sourceLabel; // _applyAttributes will be called after buildRendering completes to update the DOM
+			}
+		}
+	},
+
+	_setShowLabelAttr: function(val){
+		if(this.containerNode){
+			domClass.toggle(this.containerNode, "dijitDisplayNone", !val);
+		}
+		this._set("showLabel", val);
+	},
+
+	setLabel: function(/*String*/ content){
+		// summary:
+		//		Deprecated.  Use set('label', ...) instead.
+		kernel.deprecated("dijit.form.Button.setLabel() is deprecated.  Use set('label', ...) instead.", "", "2.0");
+		this.set("label", content);
+	},
+
+	_setLabelAttr: function(/*String*/ content){
+		// summary:
+		//		Hook for set('label', ...) to work.
+		// description:
+		//		Set the label (text) of the button; takes an HTML string.
+		//		If the label is hidden (showLabel=false) then and no title has
+		//		been specified, then label is also set as title attribute of icon.
+		this.inherited(arguments);
+		if(!this.showLabel && !("title" in this.params)){
+			this.titleNode.title = lang.trim(this.containerNode.innerText || this.containerNode.textContent || '');
+		}
+	}
+});
+
+if(has("dojo-bidi")){
+	Button = declare("dijit.form.Button", Button, {
+		_setLabelAttr: function(/*String*/ content){
+			this.inherited(arguments);
+			if(this.titleNode.title){
+				this.applyTextDir(this.titleNode, this.titleNode.title);
+			}
+		},
+
+		_setTextDirAttr: function(/*String*/ textDir){
+			if(this._created && this.textDir != textDir){
+				this._set("textDir", textDir);
+				this._setLabelAttr(this.label); // call applyTextDir on both focusNode and titleNode
+			}
+		}
+	});
+}
+
+return Button;
+});
+
+},
+'dijit/form/_FormWidget':function(){
+define([
+	"dojo/_base/declare",	// declare
+	"dojo/sniff",			// has("dijit-legacy-requires"), has("win8app")
+	"dojo/_base/kernel",	// kernel.deprecated
+	"dojo/ready",
+	"../_Widget",
+	"../_CssStateMixin",
+	"../_TemplatedMixin",
+	"./_FormWidgetMixin"
+], function(declare, has, kernel, ready, _Widget, _CssStateMixin, _TemplatedMixin, _FormWidgetMixin){
+
+
+// module:
+//		dijit/form/_FormWidget
+
+// Back compat w/1.6, remove for 2.0
+if(has("dijit-legacy-requires")){
+	ready(0, function(){
+		var requires = ["dijit/form/_FormValueWidget"];
+		require(requires);	// use indirection so modules not rolled into a build
+	});
+}
+
+return declare("dijit.form._FormWidget", [_Widget, _TemplatedMixin, _CssStateMixin, _FormWidgetMixin], {
+	// summary:
+	//		Base class for widgets corresponding to native HTML elements such as `<checkbox>` or `<button>`,
+	//		which can be children of a `<form>` node or a `dijit/form/Form` widget.
+	//
+	// description:
+	//		Represents a single HTML element.
+	//		All these widgets should have these attributes just like native HTML input elements.
+	//		You can set them during widget construction or afterwards, via `dijit/_WidgetBase.set()`.
+	//
+	//		They also share some common methods.
+
+	setDisabled: function(/*Boolean*/ disabled){
+		// summary:
+		//		Deprecated.  Use set('disabled', ...) instead.
+		kernel.deprecated("setDisabled("+disabled+") is deprecated. Use set('disabled',"+disabled+") instead.", "", "2.0");
+		this.set('disabled', disabled);
+	},
+
+	setValue: function(/*String*/ value){
+		// summary:
+		//		Deprecated.  Use set('value', ...) instead.
+		kernel.deprecated("dijit.form._FormWidget:setValue("+value+") is deprecated.  Use set('value',"+value+") instead.", "", "2.0");
+		this.set('value', value);
+	},
+
+	getValue: function(){
+		// summary:
+		//		Deprecated.  Use get('value') instead.
+		kernel.deprecated(this.declaredClass+"::getValue() is deprecated. Use get('value') instead.", "", "2.0");
+		return this.get('value');
+	},
+
+	postMixInProperties: function(){
+		// Setup name=foo string to be referenced from the template (but only if a name has been specified).
+		// Unfortunately we can't use _setNameAttr to set the name in IE due to IE limitations, see #8484, #8660.
+		// But when IE6 and IE7 are desupported, then we probably don't need this anymore, so should remove it in 2.0.
+		// Also, don't do this for Windows 8 Store Apps because it causes a security exception (see #16452).
+		// Regarding escaping, see heading "Attribute values" in
+		// http://www.w3.org/TR/REC-html40/appendix/notes.html#h-B.3.2
+		this.nameAttrSetting = (this.name && !has("win8app")) ? ('name="' + this.name.replace(/"/g, "&quot;") + '"') : '';
+		this.inherited(arguments);
+	},
+
+	// Override automatic assigning type --> focusNode, it causes exception on IE.
+	// Instead, type must be specified as ${type} in the template, as part of the original DOM
+	_setTypeAttr: null
+});
+
+});
+
+},
+'dijit/_CssStateMixin':function(){
+define([
+	"dojo/_base/array", // array.forEach array.map
+	"dojo/_base/declare", // declare
+	"dojo/dom", // dom.isDescendant()
+	"dojo/dom-class", // domClass.toggle
+	"dojo/has",
+	"dojo/_base/lang", // lang.hitch
+	"dojo/on",
+	"dojo/domReady",
+	"dojo/_base/window", // win.body
+	"./registry"
+], function(array, declare, dom, domClass, has, lang, on, domReady, win, registry){
+
+// module:
+//		dijit/_CssStateMixin
+
+	var CssStateMixin = declare("dijit._CssStateMixin", [], {
+		// summary:
+		//		Mixin for widgets to set CSS classes on the widget DOM nodes depending on hover/mouse press/focus
+		//		state changes, and also higher-level state changes such becoming disabled or selected.
+		//
+		// description:
+		//		By mixing this class into your widget, and setting the this.baseClass attribute, it will automatically
+		//		maintain CSS classes on the widget root node (this.domNode) depending on hover,
+		//		active, focus, etc. state.   Ex: with a baseClass of dijitButton, it will apply the classes
+		//		dijitButtonHovered and dijitButtonActive, as the user moves the mouse over the widget and clicks it.
+		//
+		//		It also sets CSS like dijitButtonDisabled based on widget semantic state.
+		//
+		//		By setting the cssStateNodes attribute, a widget can also track events on subnodes (like buttons
+		//		within the widget).
+
+		/*=====
+		 // cssStateNodes: [protected] Object
+		 //		Subclasses may define a cssStateNodes property that lists sub-nodes within the widget that
+		 //		need CSS classes applied on mouse hover/press and focus.
+		 //
+		 //		Each entry in this optional hash is a an attach-point name (like "upArrowButton") mapped to a CSS class name
+		 //		(like "dijitUpArrowButton"). Example:
+		 //	|		{
+		 //	|			"upArrowButton": "dijitUpArrowButton",
+		 //	|			"downArrowButton": "dijitDownArrowButton"
+		 //	|		}
+		 //		The above will set the CSS class dijitUpArrowButton to the this.upArrowButton DOMNode when it
+		 //		is hovered, etc.
+		 cssStateNodes: {},
+		 =====*/
+
+		// hovering: [readonly] Boolean
+		//		True if cursor is over this widget
+		hovering: false,
+
+		// active: [readonly] Boolean
+		//		True if mouse was pressed while over this widget, and hasn't been released yet
+		active: false,
+
+		_applyAttributes: function(){
+			// This code would typically be in postCreate(), but putting in _applyAttributes() for
+			// performance: so the class changes happen before DOM is inserted into the document.
+			// Change back to postCreate() in 2.0.  See #11635.
+
+			this.inherited(arguments);
+
+			// Monitoring changes to disabled, readonly, etc. state, and update CSS class of root node
+			array.forEach(["disabled", "readOnly", "checked", "selected", "focused", "state", "hovering", "active", "_opened"], function(attr){
+				this.watch(attr, lang.hitch(this, "_setStateClass"));
+			}, this);
+
+			// Track hover and active mouse events on widget root node, plus possibly on subnodes
+			for(var ap in this.cssStateNodes || {}){
+				this._trackMouseState(this[ap], this.cssStateNodes[ap]);
+			}
+			this._trackMouseState(this.domNode, this.baseClass);
+
+			// Set state initially; there's probably no hover/active/focus state but widget might be
+			// disabled/readonly/checked/selected so we want to set CSS classes for those conditions.
+			this._setStateClass();
+		},
+
+		_cssMouseEvent: function(/*Event*/ event){
+			// summary:
+			//		Handler for CSS event on this.domNode. Sets hovering and active properties depending on mouse state,
+			//		which triggers _setStateClass() to set appropriate CSS classes for this.domNode.
+
+			if(!this.disabled){
+				switch(event.type){
+					case "mouseover":
+						this._set("hovering", true);
+						this._set("active", this._mouseDown);
+						break;
+					case "mouseout":
+						this._set("hovering", false);
+						this._set("active", false);
+						break;
+					case "mousedown":
+					case "touchstart":
+						this._set("active", true);
+						break;
+					case "mouseup":
+					case "touchend":
+						this._set("active", false);
+						break;
+				}
+			}
+		},
+
+		_setStateClass: function(){
+			// summary:
+			//		Update the visual state of the widget by setting the css classes on this.domNode
+			//		(or this.stateNode if defined) by combining this.baseClass with
+			//		various suffixes that represent the current widget state(s).
+			//
+			// description:
+			//		In the case where a widget has multiple
+			//		states, it sets the class based on all possible
+			//		combinations.  For example, an invalid form widget that is being hovered
+			//		will be "dijitInput dijitInputInvalid dijitInputHover dijitInputInvalidHover".
+			//
+			//		The widget may have one or more of the following states, determined
+			//		by this.state, this.checked, this.valid, and this.selected:
+			//
+			//		- Error - ValidationTextBox sets this.state to "Error" if the current input value is invalid
+			//		- Incomplete - ValidationTextBox sets this.state to "Incomplete" if the current input value is not finished yet
+			//		- Checked - ex: a checkmark or a ToggleButton in a checked state, will have this.checked==true
+			//		- Selected - ex: currently selected tab will have this.selected==true
+			//
+			//		In addition, it may have one or more of the following states,
+			//		based on this.disabled and flags set in _onMouse (this.active, this.hovering) and from focus manager (this.focused):
+			//
+			//		- Disabled	- if the widget is disabled
+			//		- Active		- if the mouse (or space/enter key?) is being pressed down
+			//		- Focused		- if the widget has focus
+			//		- Hover		- if the mouse is over the widget
+
+			// Compute new set of classes
+			var newStateClasses = this.baseClass.split(" ");
+
+			function multiply(modifier){
+				newStateClasses = newStateClasses.concat(array.map(newStateClasses, function(c){
+					return c + modifier;
+				}), "dijit" + modifier);
+			}
+
+			if(!this.isLeftToRight()){
+				// For RTL mode we need to set an addition class like dijitTextBoxRtl.
+				multiply("Rtl");
+			}
+
+			var checkedState = this.checked == "mixed" ? "Mixed" : (this.checked ? "Checked" : "");
+			if(this.checked){
+				multiply(checkedState);
+			}
+			if(this.state){
+				multiply(this.state);
+			}
+			if(this.selected){
+				multiply("Selected");
+			}
+			if(this._opened){
+				multiply("Opened");
+			}
+
+			if(this.disabled){
+				multiply("Disabled");
+			}else if(this.readOnly){
+				multiply("ReadOnly");
+			}else{
+				if(this.active){
+					multiply("Active");
+				}else if(this.hovering){
+					multiply("Hover");
+				}
+			}
+
+			if(this.focused){
+				multiply("Focused");
+			}
+
+			// Remove old state classes and add new ones.
+			// For performance concerns we only write into domNode.className once.
+			var tn = this.stateNode || this.domNode,
+				classHash = {};	// set of all classes (state and otherwise) for node
+
+			array.forEach(tn.className.split(" "), function(c){
+				classHash[c] = true;
+			});
+
+			if("_stateClasses" in this){
+				array.forEach(this._stateClasses, function(c){
+					delete classHash[c];
+				});
+			}
+
+			array.forEach(newStateClasses, function(c){
+				classHash[c] = true;
+			});
+
+			var newClasses = [];
+			for(var c in classHash){
+				newClasses.push(c);
+			}
+			tn.className = newClasses.join(" ");
+
+			this._stateClasses = newStateClasses;
+		},
+
+		_subnodeCssMouseEvent: function(node, clazz, evt){
+			// summary:
+			//		Handler for hover/active mouse event on widget's subnode
+			if(this.disabled || this.readOnly){
+				return;
+			}
+
+			function hover(isHovering){
+				domClass.toggle(node, clazz + "Hover", isHovering);
+			}
+
+			function active(isActive){
+				domClass.toggle(node, clazz + "Active", isActive);
+			}
+
+			function focused(isFocused){
+				domClass.toggle(node, clazz + "Focused", isFocused);
+			}
+
+			switch(evt.type){
+				case "mouseover":
+					hover(true);
+					break;
+				case "mouseout":
+					hover(false);
+					active(false);
+					break;
+				case "mousedown":
+				case "touchstart":
+					active(true);
+					break;
+				case "mouseup":
+				case "touchend":
+					active(false);
+					break;
+				case "focus":
+				case "focusin":
+					focused(true);
+					break;
+				case "blur":
+				case "focusout":
+					focused(false);
+					break;
+			}
+		},
+
+		_trackMouseState: function(/*DomNode*/ node, /*String*/ clazz){
+			// summary:
+			//		Track mouse/focus events on specified node and set CSS class on that node to indicate
+			//		current state.   Usually not called directly, but via cssStateNodes attribute.
+			// description:
+			//		Given class=foo, will set the following CSS class on the node
+			//
+			//		- fooActive: if the user is currently pressing down the mouse button while over the node
+			//		- fooHover: if the user is hovering the mouse over the node, but not pressing down a button
+			//		- fooFocus: if the node is focused
+			//
+			//		Note that it won't set any classes if the widget is disabled.
+			// node: DomNode
+			//		Should be a sub-node of the widget, not the top node (this.domNode), since the top node
+			//		is handled specially and automatically just by mixing in this class.
+			// clazz: String
+			//		CSS class name (ex: dijitSliderUpArrow)
+
+			// Flag for listener code below to call this._cssMouseEvent() or this._subnodeCssMouseEvent()
+			// when node is hovered/active
+			node._cssState = clazz;
+		}
+	});
+
+	domReady(function(){
+		// Document level listener to catch hover etc. events on widget root nodes and subnodes.
+		// Note that when the mouse is moved quickly, a single onmouseenter event could signal that multiple widgets
+		// have been hovered or unhovered (try test_Accordion.html)
+		function handler(evt){
+			// Poor man's event propagation.  Don't propagate event to ancestors of evt.relatedTarget,
+			// to avoid processing mouseout events moving from a widget's domNode to a descendant node;
+			// such events shouldn't be interpreted as a mouseleave on the widget.
+			if(!dom.isDescendant(evt.relatedTarget, evt.target)){
+				for(var node = evt.target; node && node != evt.relatedTarget; node = node.parentNode){
+					// Process any nodes with _cssState property.   They are generally widget root nodes,
+					// but could also be sub-nodes within a widget
+					if(node._cssState){
+						var widget = registry.getEnclosingWidget(node);
+						if(widget){
+							if(node == widget.domNode){
+								// event on the widget's root node
+								widget._cssMouseEvent(evt);
+							}else{
+								// event on widget's sub-node
+								widget._subnodeCssMouseEvent(node, node._cssState, evt);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		function ieHandler(evt){
+			evt.target = evt.srcElement;
+			handler(evt);
+		}
+
+		// Use addEventListener() (and attachEvent() on IE) to catch the relevant events even if other handlers
+		// (on individual nodes) call evt.stopPropagation().
+		// Currently typematic.js is doing that, not sure why.
+		// Don't monitor mouseover/mouseout on mobile because iOS generates "phantom" mouseover/mouseout events when
+		// drag-scrolling, at the point in the viewport where the drag originated.   Test the Tree in api viewer.
+		var body = win.body(),
+			types = (has("touch") ? [] : ["mouseover", "mouseout"]).concat(["mousedown", "touchstart", "mouseup", "touchend"]);
+		array.forEach(types, function(type){
+			if(body.addEventListener){
+				body.addEventListener(type, handler, true);	// W3C
+			}else{
+				body.attachEvent("on" + type, ieHandler);	// IE
+			}
+		});
+
+		// Track focus events on widget sub-nodes that have been registered via _trackMouseState().
+		// However, don't track focus events on the widget root nodes, because focus is tracked via the
+		// focus manager (and it's not really tracking focus, but rather tracking that focus is on one of the widget's
+		// nodes or a subwidget's node or a popup node, etc.)
+		// Remove for 2.0 (if focus CSS needed, just use :focus pseudo-selector).
+		on(body, "focusin, focusout", function(evt){
+			var node = evt.target;
+			if(node._cssState && !node.getAttribute("widgetId")){
+				var widget = registry.getEnclosingWidget(node);
+				widget._subnodeCssMouseEvent(node, node._cssState, evt);
+			}
+		});
+	});
+
+	return CssStateMixin;
+});
+
+},
+'dijit/form/_FormWidgetMixin':function(){
+define([
+	"dojo/_base/array", // array.forEach
+	"dojo/_base/declare", // declare
+	"dojo/dom-attr", // domAttr.set
+	"dojo/dom-style", // domStyle.get
+	"dojo/_base/lang", // lang.hitch lang.isArray
+	"dojo/mouse", // mouse.isLeft
+	"dojo/on",
+	"dojo/sniff", // has("webkit")
+	"dojo/window", // winUtils.scrollIntoView
+	"../a11y"	// a11y.hasDefaultTabStop
+], function(array, declare, domAttr, domStyle, lang, mouse, on, has, winUtils, a11y){
+
+// module:
+//		dijit/form/_FormWidgetMixin
+
+return declare("dijit.form._FormWidgetMixin", null, {
+	// summary:
+	//		Mixin for widgets corresponding to native HTML elements such as `<checkbox>` or `<button>`,
+	//		which can be children of a `<form>` node or a `dijit/form/Form` widget.
+	//
+	// description:
+	//		Represents a single HTML element.
+	//		All these widgets should have these attributes just like native HTML input elements.
+	//		You can set them during widget construction or afterwards, via `dijit/_WidgetBase.set()`.
+	//
+	//		They also share some common methods.
+
+	// name: [const] String
+	//		Name used when submitting form; same as "name" attribute or plain HTML elements
+	name: "",
+
+	// alt: String
+	//		Corresponds to the native HTML `<input>` element's attribute.
+	alt: "",
+
+	// value: String
+	//		Corresponds to the native HTML `<input>` element's attribute.
+	value: "",
+
+	// type: [const] String
+	//		Corresponds to the native HTML `<input>` element's attribute.
+	type: "text",
+
+	// type: String
+	//		Apply aria-label in markup to the widget's focusNode
+	"aria-label": "focusNode",
+
+	// tabIndex: String
+	//		Order fields are traversed when user hits the tab key
+	tabIndex: "0",
+	_setTabIndexAttr: "focusNode",	// force copy even when tabIndex default value, needed since Button is <span>
+
+	// disabled: Boolean
+	//		Should this widget respond to user input?
+	//		In markup, this is specified as "disabled='disabled'", or just "disabled".
+	disabled: false,
+
+	// intermediateChanges: Boolean
+	//		Fires onChange for each value change or only on demand
+	intermediateChanges: false,
+
+	// scrollOnFocus: Boolean
+	//		On focus, should this widget scroll into view?
+	scrollOnFocus: true,
+
+	// Override _WidgetBase mapping id to this.domNode, needs to be on focusNode so <label> etc.
+	// works with screen reader
+	_setIdAttr: "focusNode",
+
+	_setDisabledAttr: function(/*Boolean*/ value){
+		this._set("disabled", value);
+		domAttr.set(this.focusNode, 'disabled', value);
+		if(this.valueNode){
+			domAttr.set(this.valueNode, 'disabled', value);
+		}
+		this.focusNode.setAttribute("aria-disabled", value ? "true" : "false");
+
+		if(value){
+			// reset these, because after the domNode is disabled, we can no longer receive
+			// mouse related events, see #4200
+			this._set("hovering", false);
+			this._set("active", false);
+
+			// clear tab stop(s) on this widget's focusable node(s)  (ComboBox has two focusable nodes)
+			var attachPointNames = "tabIndex" in this.attributeMap ? this.attributeMap.tabIndex :
+				("_setTabIndexAttr" in this) ? this._setTabIndexAttr : "focusNode";
+			array.forEach(lang.isArray(attachPointNames) ? attachPointNames : [attachPointNames], function(attachPointName){
+				var node = this[attachPointName];
+				// complex code because tabIndex=-1 on a <div> doesn't work on FF
+				if(has("webkit") || a11y.hasDefaultTabStop(node)){	// see #11064 about webkit bug
+					node.setAttribute('tabIndex', "-1");
+				}else{
+					node.removeAttribute('tabIndex');
+				}
+			}, this);
+		}else{
+			if(this.tabIndex != ""){
+				this.set('tabIndex', this.tabIndex);
+			}
+		}
+	},
+
+	_onFocus: function(/*String*/ by){
+		// If user clicks on the widget, even if the mouse is released outside of it,
+		// this widget's focusNode should get focus (to mimic native browser behavior).
+		// Browsers often need help to make sure the focus via mouse actually gets to the focusNode.
+		// TODO: consider removing all of this for 2.0 or sooner, see #16622 etc.
+		if(by == "mouse" && this.isFocusable()){
+			// IE exhibits strange scrolling behavior when refocusing a node so only do it when !focused.
+			var focusHandle = this.own(on(this.focusNode, "focus", function(){
+				mouseUpHandle.remove();
+				focusHandle.remove();
+			}))[0];
+			// Set a global event to handle mouseup, so it fires properly
+			// even if the cursor leaves this.domNode before the mouse up event.
+			var mouseUpHandle = this.own(on(this.ownerDocumentBody, "mouseup, touchend", lang.hitch(this, function(){
+				mouseUpHandle.remove();
+				focusHandle.remove();
+				// if here, then the mousedown did not focus the focusNode as the default action
+				if(this.focused){
+					this.focus();
+				}
+			})))[0];
+		}
+		if(this.scrollOnFocus){
+			this.defer(function(){ winUtils.scrollIntoView(this.domNode); }); // without defer, the input caret position can change on mouse click
+		}
+		this.inherited(arguments);
+	},
+
+	isFocusable: function(){
+		// summary:
+		//		Tells if this widget is focusable or not.  Used internally by dijit.
+		// tags:
+		//		protected
+		return !this.disabled && this.focusNode && (domStyle.get(this.domNode, "display") != "none");
+	},
+
+	focus: function(){
+		// summary:
+		//		Put focus on this widget
+		if(!this.disabled && this.focusNode.focus){
+			try{ this.focusNode.focus(); }catch(e){}/*squelch errors from hidden nodes*/
+		}
+	},
+
+	compare: function(/*anything*/ val1, /*anything*/ val2){
+		// summary:
+		//		Compare 2 values (as returned by get('value') for this widget).
+		// tags:
+		//		protected
+		if(typeof val1 == "number" && typeof val2 == "number"){
+			return (isNaN(val1) && isNaN(val2)) ? 0 : val1 - val2;
+		}else if(val1 > val2){
+			return 1;
+		}else if(val1 < val2){
+			return -1;
+		}else{
+			return 0;
+		}
+	},
+
+	onChange: function(/*===== newValue =====*/){
+		// summary:
+		//		Callback when this widget's value is changed.
+		// tags:
+		//		callback
+	},
+
+	// _onChangeActive: [private] Boolean
+	//		Indicates that changes to the value should call onChange() callback.
+	//		This is false during widget initialization, to avoid calling onChange()
+	//		when the initial value is set.
+	_onChangeActive: false,
+
+	_handleOnChange: function(/*anything*/ newValue, /*Boolean?*/ priorityChange){
+		// summary:
+		//		Called when the value of the widget is set.  Calls onChange() if appropriate
+		// newValue:
+		//		the new value
+		// priorityChange:
+		//		For a slider, for example, dragging the slider is priorityChange==false,
+		//		but on mouse up, it's priorityChange==true.  If intermediateChanges==false,
+		//		onChange is only called form priorityChange=true events.
+		// tags:
+		//		private
+		if(this._lastValueReported == undefined && (priorityChange === null || !this._onChangeActive)){
+			// this block executes not for a change, but during initialization,
+			// and is used to store away the original value (or for ToggleButton, the original checked state)
+			this._resetValue = this._lastValueReported = newValue;
+		}
+		this._pendingOnChange = this._pendingOnChange
+			|| (typeof newValue != typeof this._lastValueReported)
+			|| (this.compare(newValue, this._lastValueReported) != 0);
+		if((this.intermediateChanges || priorityChange || priorityChange === undefined) && this._pendingOnChange){
+			this._lastValueReported = newValue;
+			this._pendingOnChange = false;
+			if(this._onChangeActive){
+				if(this._onChangeHandle){
+					this._onChangeHandle.remove();
+				}
+				// defer allows hidden value processing to run and
+				// also the onChange handler can safely adjust focus, etc
+				this._onChangeHandle = this.defer(
+					function(){
+						this._onChangeHandle = null;
+						this.onChange(newValue);
+					}); // try to collapse multiple onChange's fired faster than can be processed
+			}
+		}
+	},
+
+	create: function(){
+		// Overrides _Widget.create()
+		this.inherited(arguments);
+		this._onChangeActive = true;
+	},
+
+	destroy: function(){
+		if(this._onChangeHandle){ // destroy called before last onChange has fired
+			this._onChangeHandle.remove();
+			this.onChange(this._lastValueReported);
+		}
+		this.inherited(arguments);
+	}
+});
+
+});
+
+},
+'dijit/form/_ButtonMixin':function(){
+define([
+	"dojo/_base/declare", // declare
+	"dojo/dom", // dom.setSelectable
+	"dojo/has",
+	"../registry"        // registry.byNode
+], function(declare, dom, has, registry){
+
+// module:
+//		dijit/form/_ButtonMixin
+
+	var ButtonMixin = declare("dijit.form._ButtonMixin" + (has("dojo-bidi") ? "_NoBidi" : ""), null, {
+		// summary:
+		//		A mixin to add a thin standard API wrapper to a normal HTML button
+		// description:
+		//		A label should always be specified (through innerHTML) or the label attribute.
+		//
+		//		Attach points:
+		//
+		//		- focusNode (required): this node receives focus
+		//		- valueNode (optional): this node's value gets submitted with FORM elements
+		//		- containerNode (optional): this node gets the innerHTML assignment for label
+		// example:
+		// |	<button data-dojo-type="dijit/form/Button" onClick="...">Hello world</button>
+		// example:
+		// |	var button1 = new Button({label: "hello world", onClick: foo});
+		// |	dojo.body().appendChild(button1.domNode);
+
+		// label: HTML String
+		//		Content to display in button.
+		label: "",
+
+		// type: [const] String
+		//		Type of button (submit, reset, button, checkbox, radio)
+		type: "button",
+
+		__onClick: function(/*Event*/ e){
+			// summary:
+			//		Internal function to divert the real click onto the hidden INPUT that has a native default action associated with it
+			// type:
+			//		private
+			e.stopPropagation();
+			e.preventDefault();
+			if(!this.disabled){
+				// cannot use on.emit since button default actions won't occur
+				this.valueNode.click(e);
+			}
+			return false;
+		},
+
+		_onClick: function(/*Event*/ e){
+			// summary:
+			//		Internal function to handle click actions
+			if(this.disabled){
+				e.stopPropagation();
+				e.preventDefault();
+				return false;
+			}
+			if(this.onClick(e) === false){
+				e.preventDefault();
+			}
+			cancelled = e.defaultPrevented;
+
+			// Signal Form/Dialog to submit/close.  For 2.0, consider removing this code and instead making the Form/Dialog
+			// listen for bubbled click events where evt.target.type == "submit" && !evt.defaultPrevented.
+			if(!cancelled && this.type == "submit" && !(this.valueNode || this.focusNode).form){
+				for(var node = this.domNode; node.parentNode; node = node.parentNode){
+					var widget = registry.byNode(node);
+					if(widget && typeof widget._onSubmit == "function"){
+						widget._onSubmit(e);
+						e.preventDefault(); // action has already occurred
+						cancelled = true;
+						break;
+					}
+				}
+			}
+
+			return !cancelled;
+		},
+
+		postCreate: function(){
+			this.inherited(arguments);
+			dom.setSelectable(this.focusNode, false);
+		},
+
+		onClick: function(/*Event*/ /*===== e =====*/){
+			// summary:
+			//		Callback for when button is clicked.
+			//		If type="submit", return true to perform submit, or false to cancel it.
+			// type:
+			//		callback
+			return true;		// Boolean
+		},
+
+		_setLabelAttr: function(/*String*/ content){
+			// summary:
+			//		Hook for set('label', ...) to work.
+			// description:
+			//		Set the label (text) of the button; takes an HTML string.
+			this._set("label", content);
+			var labelNode = this.containerNode || this.focusNode;
+			labelNode.innerHTML = content;
+		}
+	});
+
+	if(has("dojo-bidi")){
+		ButtonMixin = declare("dijit.form._ButtonMixin", ButtonMixin, {
+			_setLabelAttr: function(){
+				this.inherited(arguments);
+				var labelNode = this.containerNode || this.focusNode;
+				this.applyTextDir(labelNode);
+			}
+		});
+	}
+
+	return ButtonMixin;
+
+});
+
+},
+'url:dijit/form/templates/Button.html':"<span class=\"dijit dijitReset dijitInline\" role=\"presentation\"\n\t><span class=\"dijitReset dijitInline dijitButtonNode\"\n\t\tdata-dojo-attach-event=\"ondijitclick:__onClick\" role=\"presentation\"\n\t\t><span class=\"dijitReset dijitStretch dijitButtonContents\"\n\t\t\tdata-dojo-attach-point=\"titleNode,focusNode\"\n\t\t\trole=\"button\" aria-labelledby=\"${id}_label\"\n\t\t\t><span class=\"dijitReset dijitInline dijitIcon\" data-dojo-attach-point=\"iconNode\"></span\n\t\t\t><span class=\"dijitReset dijitToggleButtonIconChar\">&#x25CF;</span\n\t\t\t><span class=\"dijitReset dijitInline dijitButtonText\"\n\t\t\t\tid=\"${id}_label\"\n\t\t\t\tdata-dojo-attach-point=\"containerNode\"\n\t\t\t></span\n\t\t></span\n\t></span\n\t><input ${!nameAttrSetting} type=\"${type}\" value=\"${value}\" class=\"dijitOffScreen\"\n\t\tdata-dojo-attach-event=\"onclick:_onClick\"\n\t\ttabIndex=\"-1\" role=\"presentation\" data-dojo-attach-point=\"valueNode\"\n/></span>\n",
+'dijit/nls/zh/loading':function(){
+define(
+({
+	loadingState: "正在加载...",
+	errorState: "对不起，发生了错误"
+})
+);
+
+},
 '*now':function(r){r(['dojo/i18n!*preload*dojo/nls/dojo*["ar","ca","cs","da","de","el","en-gb","en-us","es-es","fi-fi","fr-fr","he-il","hu","it-it","ja-jp","ko-kr","nl-nl","nb","pl","pt-br","pt-pt","ru","sk","sl","sv","th","tr","zh-tw","zh-cn","ROOT"]']);}
 }});
 (function(){

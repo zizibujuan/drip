@@ -123,7 +123,13 @@ var profile = {
 			         "dijit/popup",
 			         "dijit/layout/ContentPane",
 			         "dijit/Viewport",
-			         "dijit/layout/utils"
+			         "dijit/layout/utils",
+			         "dijit/form/Button",
+			         "dijit/nls/zh/loading"/*,
+			         			         "dijit/form/_ButtonMixin",
+			         "dijit/form/_FormWidget",
+			         "dijit/form/_FormWidgetMixin",
+			         "dijit/_CssStateMixin",*/
 			         ],
 			boot: true,
 			customBase: true

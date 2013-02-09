@@ -1,4 +1,4 @@
-Build started: Sat Feb 09 2013 09:29:41 GMT+0800 (CST)
+Build started: Sat Feb 09 2013 10:37:19 GMT+0800 (CST)
 Build application version: 1.7.0dev (23930)
 Messages:
 info(100) Assumed module uses legacy loader API.
@@ -1074,6 +1074,13 @@ dojo/dojo:
 	dijit/popup
 	dijit/place
 	dijit/BackgroundIframe
+	dijit/form/Button
+	dijit/form/_FormWidget
+	dijit/_CssStateMixin
+	dijit/form/_FormWidgetMixin
+	dijit/form/_ButtonMixin
+	dijit/form/templates/Button.html
+	dijit/nls/zh/loading
 
 mathEditor/Editor:
 	mathEditor/Editor
@@ -1089,7 +1096,6 @@ mathEditor/Editor:
 	dijit/DropDownMenu
 	dijit/templates/Menu.html
 	dijit/_MenuBase
-	dijit/_CssStateMixin
 	dijit/_KeyNavContainer
 	dijit/_KeyNavMixin
 	dijit/MenuItem
@@ -1102,4 +1108,4 @@ mathEditor/Editor:
 Process finished normally
 	errors: 0
 	warnings: 37
-	build time: 1554.961 seconds
+	build time: 1592.943 seconds
