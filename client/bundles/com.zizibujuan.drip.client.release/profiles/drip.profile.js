@@ -20,7 +20,7 @@ var profile = {
 	mini: true,
 	
 	// 使用Closure Compiler作为javascript的压缩器，最新版本也支持uglify,closure压缩
-	//optimize: 'uglify',
+	optimize: 'uglify',
 	
 	// 设置压缩layers的工具，如果没有设置，默认为"shrinksafe"。最新版本也支持uglify,closure
 	layerOptimize: 'uglify',
@@ -100,7 +100,8 @@ var profile = {
 	
 	layers:{
 		'dojo/dojo':{
-			include:['dojo/i18n',
+			include:[// dojo
+			         'dojo/i18n',
 			         'dojo/domReady',
 			         "dojo/parser",
 			         "dojo/store/JsonRest",
@@ -116,7 +117,13 @@ var profile = {
 			         "dojo/touch",
 			         "dojo/window",
 			         "dojo/uacss",
-			         "dojo/hccss"
+			         "dojo/hccss",
+			         // dijit
+			         "dijit/TooltipDialog",
+			         "dijit/popup",
+			         "dijit/layout/ContentPane",
+			         "dijit/Viewport",
+			         "dijit/layout/utils"
 			         ],
 			boot: true,
 			customBase: true
