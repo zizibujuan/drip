@@ -190,7 +190,6 @@ margin-bottom: -268px;
 
 .drip_home_signup{
 	float:right;
-	margin-top: 30px;
 }
 
 .drip_note{
@@ -435,6 +434,10 @@ margin-bottom: -268px;
 .site_introduces .site_introduce {
 	float: left;
 	width: 290px;
+}
+
+.site_introduces .site_introduce + .site_introduce {
+margin-left: 25px;
 }
 
 .site_introduces .site_introduce_illustration {
