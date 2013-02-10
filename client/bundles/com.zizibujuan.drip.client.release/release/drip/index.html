@@ -9,19 +9,6 @@
 <title>孜孜不倦 · 高等数学</title>
 <link rel="stylesheet" type="text/css" href="drip/resources/index.css" />
 
-<!-- 新浪微博登录脚本 -->
-<script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js?appkey=1418861879" 
-type="text/javascript" charset="utf-8"></script>
-
-<!-- qq登录脚本 -->
-<script type="text/javascript"
-src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js" 
-data-appid="100339592" 
-data-redirecturi="http://zizibujuan.com" charset="utf-8"></script>
-
-
-
-
 </head>
 <body style="padding: 0px;margin: 0px">
 <div id="wrapper">
@@ -44,35 +31,23 @@ data-redirecturi="http://zizibujuan.com" charset="utf-8"></script>
 	<div class="drip_welcome_area clearfix">
 		<div class="container">
 			<div class="drip_home_signup">
-				<a href="/login/renren">
-					<img alt="用人人帐号登录" src="drip/resources/images/renren_login_white_234_48.png" style="border:none"></img>
-				</a>
-				<p class="drip_note">不用注册，与<span style="color:#369;font-weight: bold;">人人</span>好友一起学习</p>
-			
-				<div id="wb_connect_btn"></div>
-				<script type="text/javascript">
-				WB2.anyWhere(function(W){
-				    W.widget.connectButton({
-				        id: "wb_connect_btn",
-				        type: '1,1',
-				        callback : {
-				            login:function(o){
-				                alert(o.screen_name)
-				            },
-				            logout:function(){
-				                alert('logout');
-				            }
-				        }
-				    });
-				});
-				</script>
+				<p class="drip_note">不用注册，直接用以下帐号登录</p>
+				<div>
+					<a href="/login/qq">
+						<img alt="用qq帐号登录" src="drip/resources/images/qq_login_5.png"></img>
+					</a>
+				</div>
+				<div>
+					<a href="/login/renren">
+						<img alt="用人人帐号登录" src="drip/resources/images/renren_login_white_234_48.png"></img>
+					</a>
+				</div>
+				<div>
+					<a href="/login/sinaWeibo">
+						<img alt="用新浪微博帐号登录" src="drip/resources/images/sina_weibo_login_48.png"></img>
+					</a>
+				</div>
 				
-				<span id="qqLoginBtn"></span>
-				<script type="text/javascript">
-				    QC.Login({
-				       btnId:"qqLoginBtn"	//插入按钮的节点id
-				});
-				</script>
 			</div>
 			<div class="drip_heading">
 				<p>一起交流学习心得</p>
@@ -81,30 +56,29 @@ data-redirecturi="http://zizibujuan.com" charset="utf-8"></script>
 			<p class="drip_subheading">
 				<!-- 在这里，大家一起出题、做题、编写讲义、分享教学视频 
 				不论年龄大小，不论身处何处，大家一起出题、做题、讨论。			
-				<br/>现已开放<strong>高等数学</strong>专区-->
-				营造一个开放、优质的<span style="color:#00a300">高等数学</span>学习环境，<br/>
-				欢迎同学们来这里一起学习，拓宽视野，共同进步。
+				<br/>现已开放<strong>高等数学</strong>专区
+				营造一个开放、优质的学习环境，<br/>
+				欢迎同学们来这里一起学习，拓宽视野，共同进步。-->
 			</p>
 		</div>
 	</div>
 	<!-- 待定稿 -->
 	<div class="container">
-	
 		<div class="site_introduces">
-			<div class="site_introduce">
-				<img class="site_introduce_illustration">
-				<h3>在这里，我能做什么？</h3>
-				<p>解答习题，录入习题，知道好友在学什么，优化和评价好友做的作业。还有很多功能陆续开发中...</p>
-			</div>
-			<div class="site_introduce">
-				<img class="site_introduce_illustration">
-				<h3>快速录入数学公式</h3>
-				<p>本网站提供首个纯键盘的快速数学公式编辑器，<strong>只要会读数学符号就会写数学公式</strong>。如果不会读，请参考<a href="#">数学符号读法</a>。</p>
-			</div>
 			<div class="site_introduce">
 				<img class="site_introduce_illustration">
 				<h3>免费的开放学习平台</h3>
 				<p>无论你是谁，来自哪里，都可与全世界最优秀的人一起学习，享用高质量的教育资源，当然也离不开您在这里贡献的一点一滴。</p>
+			</div>
+			<div class="site_introduce">
+				<img class="site_introduce_illustration">
+				<h3>在这里，我能做什么</h3>
+				<p>与大家一起维护习题，解答习题，一起编写和翻译优秀的文档。关注好友学习动态，优化和评价好友做的作业。</p>
+			</div>
+			<div class="site_introduce">
+				<img class="site_introduce_illustration">
+				<h3>快速录入数学公式</h3>
+				<p>本网站提供首个纯键盘的快速数学公式编辑器，<strong>只要会读数学符号就会写数学公式</strong>。请参考<a href="#">数学编辑器帮助手册</a>。</p>
 			</div>
 		</div>
 		<!-- 网站帮助，介绍完站支持哪些操作  -->
