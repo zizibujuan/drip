@@ -18,7 +18,9 @@ Import-Package: com.zizibujuan.drip.server.service,
  org.osgi.util.tracker;version="1.5.1",
  org.slf4j;version="1.6.4",
  weibo4j,
+ weibo4j.http,
  weibo4j.model,
+ weibo4j.org.json,
  weibo4j.util
 Bundle-ActivationPolicy: lazy
 Require-Bundle: javax.servlet;bundle-version="3.0.0"

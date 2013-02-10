@@ -14,5 +14,7 @@ Bundle-ClassPath: lib/commons-codec.jar,
  lib/log4j-1.2.16.jar,
  .
 Export-Package: weibo4j,
+ weibo4j.http,
  weibo4j.model,
+ weibo4j.org.json,
  weibo4j.util

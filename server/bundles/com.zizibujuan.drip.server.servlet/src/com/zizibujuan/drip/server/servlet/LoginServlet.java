@@ -1,8 +1,6 @@
 package com.zizibujuan.drip.server.servlet;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
@@ -18,15 +16,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.commons.logging.Log;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import weibo4j.Account;
 import weibo4j.model.WeiboException;
-import weibo4j.util.BareBonesBrowserLaunch;
 
 import com.qq.connect.QQConnectException;
 import com.qq.connect.api.OpenID;
@@ -173,14 +170,21 @@ public class LoginServlet extends BaseServlet {
 		resp.sendRedirect("/");
 	}
 
-	private Map<String, Object> qqUserToDripUser(UserInfoBean qzoneUserInfoBean) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 	private void processSinaWeiboLogin(HttpServletRequest req,
-			HttpServletResponse resp, String code) {
-		// TODO Auto-generated method stub
+			HttpServletResponse resp, String code) throws IOException {
+		weibo4j.Oauth oauth = new weibo4j.Oauth();
+		try {
+			weibo4j.http.AccessToken accessTokenObj = oauth.getAccessTokenByCode(code);
+			String accessToken = accessTokenObj.getAccessToken();
+			Account am = new Account();
+			am.client.setToken(accessToken);
+			weibo4j.org.json.JSONObject userInfo = am.getAccountPrivacy();
+			logger.info("微博用户信息:"+userInfo.toString());
+			
+			resp.sendRedirect("/");
+		} catch (WeiboException e) {
+			logger.error("使用微博帐号登录失败", e);
+		}
 		
 	}
 
@@ -312,6 +316,11 @@ public class LoginServlet extends BaseServlet {
 		return renrenUserInfo;
 	}
 
+	private Map<String, Object> qqUserToDripUser(UserInfoBean qzoneUserInfoBean) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	/**
 	 * 根据城市名称获取城市代码。如果province和city为null，则获取contry的编码；
 	 * 如果city为null，则获取province的编码；否则获取city的编码。
