@@ -1,6 +1,8 @@
 package com.zizibujuan.drip.server.servlet;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
@@ -16,11 +18,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.logging.Log;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import weibo4j.model.WeiboException;
+import weibo4j.util.BareBonesBrowserLaunch;
 
 import com.qq.connect.QQConnectException;
 import com.qq.connect.api.OpenID;
@@ -84,7 +90,12 @@ public class LoginServlet extends BaseServlet {
 				}
 				return;
 			}else if(pathInfo.equals("/sinaWeibo")){
-				
+				weibo4j.Oauth oauth = new weibo4j.Oauth();
+				try {
+					BareBonesBrowserLaunch.openURL(oauth.authorize("code","state_weibo",""));
+				} catch (WeiboException e) {
+					logger.error("打开新浪微博授权页面失败",e);
+				}
 				return;
 			}
 		}
