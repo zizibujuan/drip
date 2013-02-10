@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="drip.product" uid="com.zizibujuan.drip.product" id="com.zizibujuan.drip.product" version="0.0.1.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="drip.product" uid="com.zizibujuan.drip.product" id="com.zizibujuan.drip.product" application="com.zizibujuan.drip.application" version="0.0.1.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -42,6 +42,7 @@
       <plugin id="com.zizibujuan.drip.server.servlet"/>
       <plugin id="com.zizibujuan.drip.server.util"/>
       <plugin id="com.zizibujuan.jdbc.mysql"/>
+      <plugin id="com.zizibujuan.server.oauth2.sinaWeibo"/>
       <plugin id="javax.servlet"/>
       <plugin id="org.apache.commons.logging"/>
       <plugin id="org.apache.felix.gogo.command"/>
@@ -89,6 +90,7 @@
       <plugin id="com.zizibujuan.drip.server.servlet" autoStart="true" startLevel="0" />
       <plugin id="com.zizibujuan.drip.server.util" autoStart="true" startLevel="0" />
       <plugin id="com.zizibujuan.jdbc.mysql" autoStart="true" startLevel="0" />
+      <plugin id="com.zizibujuan.server.oauth2.sinaWeibo" autoStart="true" startLevel="0" />
       <plugin id="javax.servlet" autoStart="true" startLevel="0" />
       <plugin id="org.apache.commons.logging" autoStart="true" startLevel="0" />
       <plugin id="org.apache.felix.gogo.command" autoStart="true" startLevel="0" />
