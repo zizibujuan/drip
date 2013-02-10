@@ -1,4 +1,4 @@
-Build started: Sat Feb 09 2013 10:37:19 GMT+0800 (CST)
+Build started: Sun Feb 10 2013 14:04:51 GMT+0800 (CST)
 Build application version: 1.7.0dev (23930)
 Messages:
 info(100) Assumed module uses legacy loader API.
@@ -1108,4 +1108,4 @@ mathEditor/Editor:
 Process finished normally
 	errors: 0
 	warnings: 37
-	build time: 1592.943 seconds
+	build time: 1580.816 seconds
