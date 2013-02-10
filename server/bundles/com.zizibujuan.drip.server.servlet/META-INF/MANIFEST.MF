@@ -24,4 +24,5 @@ Export-Package: com.zizibujuan.drip.server.servlet
 Bundle-ClassPath: .,
  lib/commons-fileupload-1.2.2.jar,
  lib/renren/json-simple-1.1.1.jar,
- lib/renren/Renren-api-java-sdk.jar
+ lib/renren/Renren-api-java-sdk.jar,
+ lib/qq/Sdk4J.jar
