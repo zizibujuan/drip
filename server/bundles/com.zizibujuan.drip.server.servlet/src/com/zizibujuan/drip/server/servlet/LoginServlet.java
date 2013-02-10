@@ -90,17 +90,27 @@ public class LoginServlet extends BaseServlet {
 				}
 				return;
 			}else if(pathInfo.equals("/sinaWeibo")){
-				weibo4j.Oauth oauth = new weibo4j.Oauth();
-				try {
-					BareBonesBrowserLaunch.openURL(oauth.authorize("code","state_weibo",""));
-				} catch (WeiboException e) {
-					logger.error("打开新浪微博授权页面失败",e);
+				String code = req.getParameter("code");
+				if(code != null && !code.isEmpty()){
+					processSinaWeiboLogin(req, resp, code);
+				}else{
+					redirectToSinaWeiboLoginPage(req, resp);
 				}
 				return;
 			}
 		}
 		
 		super.doGet(req, resp);
+	}
+
+	private void redirectToSinaWeiboLoginPage(HttpServletRequest req,
+			HttpServletResponse resp) throws IOException {
+		weibo4j.Oauth oauth = new weibo4j.Oauth();
+		try {
+			resp.sendRedirect(oauth.authorize("code","state_weibo",""));
+		} catch (WeiboException e) {
+			logger.error("打开新浪微博授权页面失败",e);
+		}
 	}
 
 	private void redirectToRenrenLoginPage(HttpServletResponse resp)
@@ -166,6 +176,12 @@ public class LoginServlet extends BaseServlet {
 	private Map<String, Object> qqUserToDripUser(UserInfoBean qzoneUserInfoBean) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private void processSinaWeiboLogin(HttpServletRequest req,
+			HttpServletResponse resp, String code) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private void processRenrenLogin(HttpServletRequest req,
