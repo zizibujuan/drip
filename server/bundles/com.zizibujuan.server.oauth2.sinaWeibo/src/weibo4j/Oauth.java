@@ -8,6 +8,8 @@ import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.commons.codec.binary.Base64;
+
 import weibo4j.http.AccessToken;
 import weibo4j.http.BASE64Encoder;
 import weibo4j.model.PostParameter;
@@ -50,8 +52,14 @@ public class Oauth extends Weibo{
 		m.update(t[1].getBytes());
 		String part1Expect = BASE64Encoder.encode(m.doFinal());
 
+		// 修改前
+		/*
 		sun.misc.BASE64Decoder decode = new sun.misc.BASE64Decoder();
-		String s = new String(decode.decodeBuffer(t[1]));
+		String s = new String(decode.decodeBuffer(t[1]));*/
+		// FIXME:修改后
+		Base64 base64 = new Base64();
+		String s = new String(base64.decode(t[1].getBytes()));
+		
 		if (part1.equals(part1Expect)) {
 			return ts(s);
 		} else {

@@ -11,11 +11,6 @@ import javax.imageio.stream.MemoryCacheImageInputStream;
 import weibo4j.model.Constants;
 import weibo4j.model.WeiboException;
 
-import com.sun.imageio.plugins.bmp.BMPImageReader;
-import com.sun.imageio.plugins.gif.GIFImageReader;
-import com.sun.imageio.plugins.jpeg.JPEGImageReader;
-import com.sun.imageio.plugins.png.PNGImageReader;
-
 /**
  * 临时存储上传图片的内容，格式，文件信息等
  * 
@@ -67,6 +62,8 @@ public class ImageItem {
 			Iterator itr = ImageIO.getImageReaders(mcis);
 			while (itr.hasNext()) {
 				ImageReader reader = (ImageReader) itr.next();
+				//修改前
+				/*
 				if (reader instanceof GIFImageReader) {
 					type = "image/gif";
 				} else if (reader instanceof JPEGImageReader) {
@@ -74,6 +71,18 @@ public class ImageItem {
 				} else if (reader instanceof PNGImageReader) {
 					type = "image/png";
 				} else if (reader instanceof BMPImageReader) {
+					type = "application/x-bmp";
+				}*/
+				// FIXME：修改后
+				String formatName = reader.getFormatName();
+				System.out.println(formatName);
+				if (formatName.equals("GIF")) {
+					type = "image/gif";
+				} else if (formatName.equals("JPEG")) {
+					type = "image/jpeg";
+				} else if (formatName.equals("PNG")) {
+					type = "image/png";
+				} else if (formatName.equals("BMP")) {
 					type = "application/x-bmp";
 				}
 			}
