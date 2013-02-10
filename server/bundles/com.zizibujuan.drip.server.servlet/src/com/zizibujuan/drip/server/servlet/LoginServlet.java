@@ -22,13 +22,18 @@ import org.json.simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.qq.connect.QQConnectException;
+import com.qq.connect.api.OpenID;
+import com.qq.connect.api.qzone.UserInfo;
+import com.qq.connect.javabeans.AccessToken;
+import com.qq.connect.javabeans.qzone.UserInfoBean;
+import com.qq.connect.oauth.Oauth;
 import com.renren.api.client.RenrenApiClient;
 import com.renren.api.client.RenrenApiConfig;
 import com.renren.api.client.utils.HttpURLUtils;
 import com.zizibujuan.drip.server.service.ApplicationPropertyService;
 import com.zizibujuan.drip.server.service.OAuthUserMapService;
 import com.zizibujuan.drip.server.service.UserService;
-import com.zizibujuan.drip.server.util.ApplicationPropertyKey;
 import com.zizibujuan.drip.server.util.OAuthConstants;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
@@ -71,12 +76,85 @@ public class LoginServlet extends BaseServlet {
 				}
 				return;
 			} else if (pathInfo.equals("/qq")) {
-
+				String code = req.getParameter("code");
+				if(code != null && !code.isEmpty()){
+					processQQLogin(req, resp, code);
+				}else{
+					redirectToQQLoginPage(req, resp);
+				}
+				return;
+			}else if(pathInfo.equals("/sinaWeibo")){
+				
 				return;
 			}
 		}
 		
 		super.doGet(req, resp);
+	}
+
+	private void redirectToRenrenLoginPage(HttpServletResponse resp)
+			throws UnsupportedEncodingException, IOException {
+		String appId = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_APP_ID);
+		String hrefTemplate= applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_LOGIN_PAGE_URL_TMPL);
+		String redirectUri = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_REDIRECT_URL);
+		redirectUri = URLEncoder.encode(redirectUri, "UTF-8");
+		
+		String href=MessageFormat.format(hrefTemplate, appId,redirectUri);
+		resp.sendRedirect(href);
+	}
+	
+	private void redirectToQQLoginPage(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+        	resp.sendRedirect(new Oauth().getAuthorizeURL(req));
+        } catch (QQConnectException e) {
+            logger.error("获取qq登录页面失败", e);
+        }
+	}
+
+	private void processQQLogin(HttpServletRequest req,
+			HttpServletResponse resp, String code) throws IOException {
+		try {
+			AccessToken accessTokenObj = new Oauth().getAccessTokenByRequest(req);
+			String accessToken = null;
+			String openID = null;
+			long tokenExpireIn = 0L;
+			
+			accessToken = accessTokenObj.getAccessToken();
+			if(accessToken.equals("")){
+				logger.error("没有获取到响应参数");
+				return;
+			}
+		
+			tokenExpireIn = accessTokenObj.getExpireIn();
+			req.getSession().setAttribute("qq_access_token", accessToken);
+			req.getSession().setAttribute("qq_token_expirein", tokenExpireIn);
+			
+			OpenID openIDObj = new OpenID(accessToken);
+			openID = openIDObj.getUserOpenID();
+			UserInfo qzoneUserInfo = new UserInfo(accessToken, openID);
+			UserInfoBean qzoneUserInfoBean = qzoneUserInfo.getUserInfo();
+			
+			if(qzoneUserInfoBean.getRet() != 0){
+				logger.error(qzoneUserInfoBean.getMsg());
+				return;
+			}
+			
+			Map<String,Object> userMapperInfo = oAuthUserMapService.getUserMapperInfo(OAuthConstants.QQ, openID);
+			if(userMapperInfo.isEmpty()){
+				Map<String, Object> renrenUserInfo = qqUserToDripUser(qzoneUserInfoBean);
+				userMapperInfo = userService.importUser(renrenUserInfo);
+			}
+			
+		
+		} catch (QQConnectException e) {
+			e.printStackTrace();
+		}
+		resp.sendRedirect("/");
+	}
+
+	private Map<String, Object> qqUserToDripUser(UserInfoBean qzoneUserInfoBean) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	private void processRenrenLogin(HttpServletRequest req,
@@ -285,18 +363,6 @@ public class LoginServlet extends BaseServlet {
 		tinyUrlMap.put("height", height);
 		avatarList.add(tinyUrlMap);
 	}
-
-	private void redirectToRenrenLoginPage(HttpServletResponse resp)
-			throws UnsupportedEncodingException, IOException {
-		String appId = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_APP_ID);
-		String hrefTemplate= applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_LOGIN_PAGE_URL_TMPL);
-		String redirectUri = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_REDIRECT_URL);
-		redirectUri = URLEncoder.encode(redirectUri, "UTF-8");
-		
-		String href=MessageFormat.format(hrefTemplate, appId,redirectUri);
-		resp.sendRedirect(href);
-	}
-
 
 	private static final String KEY_LOGIN = "login";
 	private static final String KEY_PASSWORD = "password";

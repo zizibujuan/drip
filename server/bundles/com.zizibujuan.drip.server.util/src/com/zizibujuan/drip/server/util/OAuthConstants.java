@@ -17,6 +17,17 @@ public class OAuthConstants {
 	 */
 	public static final int RENREN = 101;
 	
+	/**
+	 * qq
+	 */
+	public static final int QQ = 201;
+	
+	/**
+	 * 新浪微博
+	 */
+	public static final int SINA_WEIBO = 301;
+	
+	
 
 	public static final String KEY_RENREN_APP_ID = "renren.app.id";
 	public static final String KEY_RENREN_APP_KEY = "renren.app.key";
