@@ -29,7 +29,7 @@ var profile = {
 	stripConsole: 'all',
 	
 	selectorEngine: "lite",
-	/* 
+	
     defaultConfig: {
         hasCache:{
             "dojo-built": 1,
@@ -38,8 +38,10 @@ var profile = {
             "host-browser": 1,
             "config-selectorEngine": "lite"
         },
-        async: 1
-    },*/
+        async: 1,
+        
+        baseUrl: 'dojo'
+    },
 	
 	staticHasFeatures: {
 		"config-deferredInstrumentation": 0,
@@ -101,6 +103,7 @@ var profile = {
 	layers:{
 		'dojo/dojo':{
 			include:[// dojo
+			         'dojo/dojo',
 			         'dojo/i18n',
 			         'dojo/domReady',
 			         "dojo/parser",
@@ -121,7 +124,7 @@ var profile = {
 			         // dijit
 			         "dijit/TooltipDialog",
 			         "dijit/popup",
-			         //"dijit/layout/ContentPane", FIXME:不能正确导入国际化文件
+			         "dijit/layout/ContentPane",
 			         "dijit/Viewport",
 			         "dijit/layout/utils",
 			         "dijit/form/Button"

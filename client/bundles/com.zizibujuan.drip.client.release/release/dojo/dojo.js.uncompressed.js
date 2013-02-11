@@ -1903,7 +1903,8 @@
 	}
 })
 (this.dojoConfig || this.djConfig || this.require || {}, {
-		async:0,
+		async:1,
+		baseUrl:"dojo",
 		hasCache:{
 				'config-selectorEngine':"lite",
 				'config-tlmSiblingOfDojo':1,
