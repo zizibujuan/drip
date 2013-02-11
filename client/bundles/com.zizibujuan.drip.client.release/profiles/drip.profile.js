@@ -121,7 +121,7 @@ var profile = {
 			         // dijit
 			         "dijit/TooltipDialog",
 			         "dijit/popup",
-			         "dijit/layout/ContentPane",
+			         //"dijit/layout/ContentPane", FIXME:不能正确导入国际化文件
 			         "dijit/Viewport",
 			         "dijit/layout/utils",
 			         "dijit/form/Button"
