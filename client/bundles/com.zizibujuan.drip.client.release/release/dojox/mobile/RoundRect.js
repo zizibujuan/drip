@@ -1,2 +1,2 @@
 //>>built
-define("dojox/mobile/RoundRect",["dojo/_base/declare","dojo/dom-class","./Container"],function(declare,domClass,Container){return declare("dojox.mobile.RoundRect",Container,{shadow:!1,baseClass:"mblRoundRect",buildRendering:function(){this.inherited(arguments),this.shadow&&domClass.add(this.domNode,"mblShadow")}})})
+define("dojox/mobile/RoundRect",["dojo/_base/declare","dojo/dom-class","./Container"],function(a,b,c){return a("dojox.mobile.RoundRect",c,{shadow:!1,baseClass:"mblRoundRect",buildRendering:function(){this.inherited(arguments);this.shadow&&b.add(this.domNode,"mblShadow")}})});

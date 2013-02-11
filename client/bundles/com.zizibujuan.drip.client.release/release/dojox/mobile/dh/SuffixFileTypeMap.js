@@ -1,2 +1,2 @@
 //>>built
-define("dojox/mobile/dh/SuffixFileTypeMap",["dojo/_base/lang"],function(lang){var o={};return lang.setObject("dojox.mobile.dh.SuffixFileTypeMap",o),o.map={html:"html",json:"json"},o.add=function(key,contentType){this.map[key]=contentType},o.getContentType=function(fileName){var fileType=(fileName||"").replace(/.*\./,"");return this.map[fileType]},o})
+define("dojox/mobile/dh/SuffixFileTypeMap",["dojo/_base/lang"],function(b){var a={};b.setObject("dojox.mobile.dh.SuffixFileTypeMap",a);a.map={html:"html",json:"json"};a.add=function(a,b){this.map[a]=b};a.getContentType=function(a){return this.map[(a||"").replace(/.*\./,"")]};return a});

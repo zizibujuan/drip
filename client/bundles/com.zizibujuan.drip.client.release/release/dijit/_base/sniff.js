@@ -1,2 +1,2 @@
 //>>built
-define("dijit/_base/sniff",["dojo/uacss"],function(){})
+define("dijit/_base/sniff",["dojo/uacss"],function(){});

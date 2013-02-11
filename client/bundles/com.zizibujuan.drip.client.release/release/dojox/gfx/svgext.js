@@ -1,2 +1,2 @@
 //>>built
-define("dojox/gfx/svgext",["./_base","./svg"],function(g,svg){var svgext=g.svgext={};return svg.Shape.extend({addRenderingOption:function(option,value){return this.rawNode.setAttribute(option,value),this}}),svgext})
+define("dojox/gfx/svgext",["./_base","./svg"],function(a,b){var c=a.svgext={};b.Shape.extend({addRenderingOption:function(a,b){this.rawNode.setAttribute(a,b);return this}});return c});

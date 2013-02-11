@@ -1,2 +1,2 @@
 //>>built
-define("dojox/atom/widget/nls/hr/FeedViewerEntry",{deleteButton:"[Izbriši]"})
+define("dojox/atom/widget/nls/hr/FeedViewerEntry",{deleteButton:"[Izbri\u0161i]"});

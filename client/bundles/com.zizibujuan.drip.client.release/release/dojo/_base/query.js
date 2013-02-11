@@ -1,2 +1,2 @@
 //>>built
-define("dojo/_base/query",["../query","./NodeList"],function(query){return query})
+define("dojo/_base/query",["../query","./NodeList"],function(a){return a});

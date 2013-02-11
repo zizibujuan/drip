@@ -1,2 +1,2 @@
 //>>built
-define("dojox/wire",["./wire/_base"],function(){})
+define("dojox/wire",["./wire/_base"],function(){});

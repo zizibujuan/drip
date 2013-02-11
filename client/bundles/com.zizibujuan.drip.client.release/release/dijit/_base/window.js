@@ -1,2 +1,2 @@
 //>>built
-define("dijit/_base/window",["dojo/window","../main"],function(windowUtils,dijit){dijit.getDocumentWindow=function(doc){return windowUtils.get(doc)}})
+define("dijit/_base/window",["dojo/window","../main"],function(b,a){a.getDocumentWindow=function(a){return b.get(a)}});

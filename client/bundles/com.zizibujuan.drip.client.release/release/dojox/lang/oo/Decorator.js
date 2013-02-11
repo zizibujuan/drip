@@ -1,2 +1,2 @@
 //>>built
-define("dojox/lang/oo/Decorator",["dojo","dijit","dojox"],function(dojo,dijit,dojox){dojo.provide("dojox.lang.oo.Decorator"),function(){var oo=dojox.lang.oo,D=oo.Decorator=function(value,decorator){this.value=value,this.decorator=typeof decorator=="object"?function(){return decorator.exec.apply(decorator,arguments)}:decorator};oo.makeDecorator=function(decorator){return function(value){return new D(value,decorator)}}}()})
+define("dojox/lang/oo/Decorator",["dojo","dijit","dojox"],function(b,e,d){b.provide("dojox.lang.oo.Decorator");(function(){var c=d.lang.oo,b=c.Decorator=function(b,a){this.value=b;this.decorator="object"==typeof a?function(){return a.exec.apply(a,arguments)}:a};c.makeDecorator=function(c){return function(a){return new b(a,c)}}})()});

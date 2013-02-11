@@ -1,2 +1,2 @@
 //>>built
-define("dojox/charting/themes/Ireland",["../SimpleTheme","./common"],function(SimpleTheme,themes){return themes.Ireland=new SimpleTheme({colors:["#abdbcb","#435a51","#70998b","#78d596","#5f8074"]}),themes.Ireland})
+define("dojox/charting/themes/Ireland",["../SimpleTheme","./common"],function(b,a){a.Ireland=new b({colors:["#abdbcb","#435a51","#70998b","#78d596","#5f8074"]});return a.Ireland});

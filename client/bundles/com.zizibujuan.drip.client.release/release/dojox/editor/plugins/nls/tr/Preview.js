@@ -1,2 +1,2 @@
 //>>built
-define("dojox/editor/plugins/nls/tr/Preview",{preview:"Önizleme"})
+define("dojox/editor/plugins/nls/tr/Preview",{preview:"\u00d6nizleme"});

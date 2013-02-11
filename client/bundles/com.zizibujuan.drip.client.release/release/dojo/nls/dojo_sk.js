@@ -1,2 +1,2 @@
 //>>built
-define("dojo/nls/dojo_sk",{"dijit/nls/loading":{loadingState:"Zavádza sa...",errorState:"Ľutujeme, ale vyskytla sa chyba"}})
+define("dojo/nls/dojo_sk",{"dijit/nls/loading":{loadingState:"Zav\u00e1dza sa...",errorState:"\u013dutujeme, ale vyskytla sa chyba"}});

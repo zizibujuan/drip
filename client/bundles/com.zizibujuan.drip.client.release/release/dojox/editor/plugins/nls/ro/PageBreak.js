@@ -1,2 +1,2 @@
 //>>built
-define("dojox/editor/plugins/nls/ro/PageBreak",{pageBreak:"Întrerupere pagină"})
+define("dojox/editor/plugins/nls/ro/PageBreak",{pageBreak:"\u00centrerupere pagin\u0103"});

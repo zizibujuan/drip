@@ -1,2 +1,2 @@
 //>>built
-define("dojox/mobile/EdgeToEdgeDataList",["dojo/_base/declare","./EdgeToEdgeList","./_DataListMixin"],function(declare,EdgeToEdgeList,DataListMixin){return declare("dojox.mobile.EdgeToEdgeDataList",[EdgeToEdgeList,DataListMixin],{})})
+define("dojox/mobile/EdgeToEdgeDataList",["dojo/_base/declare","./EdgeToEdgeList","./_DataListMixin"],function(a,b,c){return a("dojox.mobile.EdgeToEdgeDataList",[b,c],{})});

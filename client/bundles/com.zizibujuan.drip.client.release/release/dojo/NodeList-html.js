@@ -1,2 +1,2 @@
 //>>built
-define("dojo/NodeList-html",["./query","./_base/lang","./html"],function(query,lang,html){var NodeList=query.NodeList;return lang.extend(NodeList,{html:function(content,params){var dhs=new html._ContentSetter(params||{});return this.forEach(function(elm){dhs.node=elm,dhs.set(content),dhs.tearDown()}),this}}),NodeList})
+define("dojo/NodeList-html",["./query","./_base/lang","./html"],function(a,b,d){a=a.NodeList;b.extend(a,{html:function(a,b){var c=new d._ContentSetter(b||{});this.forEach(function(b){c.node=b;c.set(a);c.tearDown()});return this}});return a});

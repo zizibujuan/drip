@@ -1,2 +1,2 @@
 //>>built
-define("dojox/mobile/bidi/_DataListMixin",["dojo/_base/declare","./common"],function(declare,common){return declare(null,{createListItem:function(item){var w=this.inherited(arguments);return w.set("textDir",this.textDir),w}})})
+define("dojox/mobile/bidi/_DataListMixin",["dojo/_base/declare","./common"],function(a){return a(null,{createListItem:function(a){var b=this.inherited(arguments);b.set("textDir",this.textDir);return b}})});

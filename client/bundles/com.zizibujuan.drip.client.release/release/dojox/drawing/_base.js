@@ -1,2 +1,2 @@
 //>>built
-define("dojox/drawing/_base",["dojo","./annotations/Label","./Drawing"],function(dojo,L,Drawing){return dojo.experimental("dojox.drawing"),Drawing})
+define("dojox/drawing/_base",["dojo","./annotations/Label","./Drawing"],function(a,c,b){a.experimental("dojox.drawing");return b});

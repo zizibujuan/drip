@@ -1,2 +1,2 @@
 //>>built
-define("dojox/mobile/compat",["dojo/_base/lang","dojo/_base/sniff"],function(lang,has){var dm=lang.getObject("dojox.mobile",!0);if(!(has("webkit")||has("ie")>=10)){var s="dojox/mobile/_compat";require([s])}return dm})
+define("dojox/mobile/compat",["dojo/_base/lang","dojo/_base/sniff"],function(b,a){var c=b.getObject("dojox.mobile",!0);a("webkit")||10<=a("ie")||require(["dojox/mobile/_compat"]);return c});

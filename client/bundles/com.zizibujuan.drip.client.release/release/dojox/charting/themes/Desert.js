@@ -1,2 +1,2 @@
 //>>built
-define("dojox/charting/themes/Desert",["../SimpleTheme","./common"],function(SimpleTheme,themes){return themes.Desert=new SimpleTheme({colors:["#ffebd5","#806544","#fdc888","#80766b","#cda26e"]}),themes.Desert})
+define("dojox/charting/themes/Desert",["../SimpleTheme","./common"],function(b,a){a.Desert=new b({colors:["#ffebd5","#806544","#fdc888","#80766b","#cda26e"]});return a.Desert});

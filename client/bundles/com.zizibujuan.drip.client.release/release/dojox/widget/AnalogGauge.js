@@ -1,2 +1,2 @@
 //>>built
-define("dojox/widget/AnalogGauge",["dojo","dijit","dojox","dojo/require!dojox/widget/gauge/_Gauge,dojox/gauges/AnalogGauge"],function(dojo,dijit,dojox){dojo.provide("dojox.widget.AnalogGauge"),dojo.require("dojox.widget.gauge._Gauge"),dojo.require("dojox.gauges.AnalogGauge"),dojox.widget.AnalogGauge=dojox.gauges.AnalogGauge,dojox.widget.gauge.AnalogLineIndicator=dojox.gauges.AnalogLineIndicator})
+define("dojox/widget/AnalogGauge",["dojo","dijit","dojox","dojo/require!dojox/widget/gauge/_Gauge,dojox/gauges/AnalogGauge"],function(b,c,a){b.provide("dojox.widget.AnalogGauge");b.require("dojox.widget.gauge._Gauge");b.require("dojox.gauges.AnalogGauge");a.widget.AnalogGauge=a.gauges.AnalogGauge;a.widget.gauge.AnalogLineIndicator=a.gauges.AnalogLineIndicator});

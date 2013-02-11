@@ -1,2 +1,2 @@
 //>>built
-define("dojo/NodeList",["./query"],function(query){return query.NodeList})
+define("dojo/NodeList",["./query"],function(a){return a.NodeList});

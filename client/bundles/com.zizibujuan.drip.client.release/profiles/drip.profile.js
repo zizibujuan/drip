@@ -20,10 +20,10 @@ var profile = {
 	mini: true,
 	
 	// 使用Closure Compiler作为javascript的压缩器，最新版本也支持uglify,closure压缩
-	optimize: 'uglify',
+	optimize: 'closure',
 	
 	// 设置压缩layers的工具，如果没有设置，默认为"shrinksafe"。最新版本也支持uglify,closure
-	layerOptimize: 'uglify',
+	layerOptimize: 'closure',
 	
 	// 将代码中的所有console语句删掉。也可以设置为“warn”，删除除了console.error之外的所有console语句
 	stripConsole: 'all',
@@ -124,11 +124,7 @@ var profile = {
 			         "dijit/layout/ContentPane",
 			         "dijit/Viewport",
 			         "dijit/layout/utils",
-			         "dijit/form/Button",/*,
-			         			         "dijit/form/_ButtonMixin",
-			         "dijit/form/_FormWidget",
-			         "dijit/form/_FormWidgetMixin",
-			         "dijit/_CssStateMixin",*/
+			         "dijit/form/Button"
 			         ],
 			boot: true,
 			customBase: true

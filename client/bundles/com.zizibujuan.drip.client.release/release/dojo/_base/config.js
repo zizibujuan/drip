@@ -1,2 +1,2 @@
 //>>built
-define("dojo/_base/config",["../has","require"],function(has,require){var result={},src=require.rawConfig,p;for(p in src)result[p]=src[p];return result.locale||(result.locale=(navigator.language||navigator.userLanguage).toLowerCase()),result})
+define("dojo/_base/config",["../has","require"],function(e,d){var a={},c=d.rawConfig,b;for(b in c)a[b]=c[b];if(!a.locale)a.locale=(navigator.language||navigator.userLanguage).toLowerCase();return a});

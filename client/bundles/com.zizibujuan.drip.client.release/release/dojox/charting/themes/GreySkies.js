@@ -1,2 +1,2 @@
 //>>built
-define("dojox/charting/themes/GreySkies",["../SimpleTheme","./common"],function(SimpleTheme,themes){return themes.GreySkies=new SimpleTheme,themes.GreySkies})
+define("dojox/charting/themes/GreySkies",["../SimpleTheme","./common"],function(b,a){a.GreySkies=new b;return a.GreySkies});

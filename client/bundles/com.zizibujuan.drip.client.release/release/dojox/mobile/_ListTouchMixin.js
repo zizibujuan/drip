@@ -1,2 +1,2 @@
 //>>built
-define("dojox/mobile/_ListTouchMixin",["dojo/_base/declare","dijit/form/_ListBase"],function(declare,ListBase){return declare("dojox.mobile._ListTouchMixin",ListBase,{postCreate:function(){this.inherited(arguments),this._listConnect("click","_onClick")},_onClick:function(evt,target){this._setSelectedAttr(target),this.onClick(target)}})})
+define("dojox/mobile/_ListTouchMixin",["dojo/_base/declare","dijit/form/_ListBase"],function(a,c){return a("dojox.mobile._ListTouchMixin",c,{postCreate:function(){this.inherited(arguments);this._listConnect("click","_onClick")},_onClick:function(a,b){this._setSelectedAttr(b);this.onClick(b)}})});

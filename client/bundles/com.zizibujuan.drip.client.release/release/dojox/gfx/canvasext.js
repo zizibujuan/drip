@@ -1,2 +1,2 @@
 //>>built
-define("dojox/gfx/canvasext",["./_base","./canvas"],function(gfx,canvas){var ext=gfx.canvasext={};return canvas.Surface.extend({getImageData:function(rect){return"pendingRender"in this&&this._render(!0),this.rawNode.getContext("2d").getImageData(rect.x,rect.y,rect.width,rect.height)},getContext:function(){return this.rawNode.getContext("2d")}}),ext})
+define("dojox/gfx/canvasext",["./_base","./canvas"],function(b,c){var d=b.canvasext={};c.Surface.extend({getImageData:function(a){"pendingRender"in this&&this._render(!0);return this.rawNode.getContext("2d").getImageData(a.x,a.y,a.width,a.height)},getContext:function(){return this.rawNode.getContext("2d")}});return d});

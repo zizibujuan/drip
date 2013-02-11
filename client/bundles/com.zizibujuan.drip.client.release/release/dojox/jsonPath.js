@@ -1,2 +1,2 @@
 //>>built
-define("dojox/jsonPath",["./jsonPath/query"],function(){})
+define("dojox/jsonPath",["./jsonPath/query"],function(){});

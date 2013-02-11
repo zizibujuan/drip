@@ -1,2 +1,2 @@
 //>>built
-define("dojox/form/uploader/plugins/HTML5",[],function(){return 0,{}})
+define("dojox/form/uploader/plugins/HTML5",[],function(){return{}});

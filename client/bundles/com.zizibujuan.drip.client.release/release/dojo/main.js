@@ -1,2 +1,2 @@
 //>>built
-define("dojo/main",["./_base/kernel","./has","require","./sniff","./_base/lang","./_base/array","./_base/config","./ready","./_base/declare","./_base/connect","./_base/Deferred","./_base/json","./_base/Color","require","./_base/browser","require"],function(kernel,has,require,sniff,lang,array,config,ready){return config.isDebug&&require(["./_firebug/firebug"]),0,kernel})
+define("dojo/main","./_base/kernel,./has,require,./sniff,./_base/lang,./_base/array,./_base/config,./ready,./_base/declare,./_base/connect,./_base/Deferred,./_base/json,./_base/Color,require,./_base/browser,require".split(","),function(a,d,b,e,f,g,c){c.isDebug&&b(["./_firebug/firebug"]);return a});
