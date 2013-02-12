@@ -34,7 +34,7 @@ public interface UserService {
 	Map<String,Object> login(String email, String password);
 	
 	/**
-	 * 用户登录，主要是记录使用第三方网站进行登录。注意第三方用户的所有信息都是从本地获取，每天晚上定时从第三方同步用户信息。
+	 * 用户登录，主要是记录使用第三方网站进行登录。注意每天晚上定时从第三方同步用户信息。
 	 * @param localUserId 本网站用户标识
 	 * @param connectUserId 本网站为第三方网站用户生成的用户标识
 	 * @param siteId 网站标识，参考 {@link OAuthConstants}

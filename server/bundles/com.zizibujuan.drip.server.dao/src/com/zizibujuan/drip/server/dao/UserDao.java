@@ -44,7 +44,8 @@ public interface UserDao {
 	 * 		id: 用户标识
 	 * 		email: 邮箱
 	 * 		mobile：手机号
-	 * 		displayName: 显示名
+	 * 		realName：真实姓名
+	 * 		nickName: 昵称
 	 * 		fanCount：粉丝数
 	 * 		followCount: 关注人数
 	 * 		exerDraftCount： 习题草稿数
@@ -52,7 +53,7 @@ public interface UserDao {
 	 * 		answerCount： 习题总数 = 习题草稿数+发布的习题数
 	 * </pre>
 	 */
-	Map<String, Object> getSimple(Long userId);
+	Map<String, Object> getSimple(Long userId); //TODO:这个方法比getPublicInfo返回的信息多一些，方法名需要重构。
 	
 	/**
 	 * 获取用户基本信息，是用户可以对外公开的信息，剔除掉了用户的隐私信息

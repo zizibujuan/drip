@@ -95,7 +95,8 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			//"LOGIN_PWD," + 登录密码，不在session中缓存
 			//支持三种大小的头像信息
 			"MOBILE \"mobile\"," +
-			"REAL_NAME \"displayName\"," +
+			"REAL_NAME \"realName\"," +
+			"NICK_NAME \"nickName\"," +
 			//"CRT_TM \"createTime\" " +
 			"FAN_COUNT \"fanCount\","+
 			"FOLLOW_COUNT \"followCount\","+

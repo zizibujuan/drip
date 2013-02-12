@@ -18,18 +18,18 @@ public interface ConnectUserDao {
 	/**
 	 * 获取接入的第三方网站用户的基本信息。只包含页面显示信息，不包含用户隐私信息。
 	 * 
-	 * @param mapUserId 映射标识
+	 * @param connectUserId 本网站为第三方网站生成的用户标识
 	 * @return 用户基本信息，不包含敏感数据，因为第三方传过来的数据基本都过滤了敏感数据的，所以可以全部查出。
 	 * <pre>
 	 * map结构：
-	 *		mapUserId：映射标识
+	 *		connectUserId：映射标识
 	 *		nickName：用户昵称
 	 *		homeCityCode：用户家乡所在城市编码
 	 *		sex：用户性别
 	 *		siteId：来自哪个网站的标识
 	 * </pre>
 	 */
-	Map<String, Object> getPublicInfo(Long mapUserId);
+	Map<String, Object> getPublicInfo(Long connectUserId);
 	
 	/**
 	 * 将第三方网站的用户基本信息保存起来

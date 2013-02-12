@@ -78,14 +78,14 @@ public class UserServiceImpl implements UserService {
 		}else{
 			// 第三方网站注册用户
 			// 获取基本信息
-			userInfo = userDao.getSimple(localUserId);
-			userInfo.put("siteId", siteId); // 注明是使用人人帐号登录的
+			userInfo = connectUserDao.getPublicInfo(connectUserId);
 			// 获取头像信息
 			Map<String,Object> avatarInfo = userAvatarDao.get(connectUserId, isLocalUser);
 			userInfo.putAll(avatarInfo);
 			
 			// 只获取统计信息，用户的其余信息实时来自第三方网站
-			userInfo = userDao.getUserStatistics(localUserId);
+			Map<String,Object> StatisticsInfo = userDao.getUserStatistics(localUserId);
+			userInfo.putAll(StatisticsInfo);
 			return userInfo;
 		}
 		

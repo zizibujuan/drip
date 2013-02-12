@@ -86,6 +86,7 @@ public class UserServiceTests {
 			localUserId = Long.valueOf(mapUserInfo.get("localUserId").toString());
 			connectUserId = Long.valueOf(mapUserInfo.get("connectUserId").toString());
 			Map<String,Object> result = userService.getPublicInfo(localUserId);
+			
 			Assert.assertEquals(localUserId.longValue(), NumberUtils.toLong(result.get("id").toString()));
 			Assert.assertEquals(siteId, NumberUtils.toInt(result.get("siteId").toString()));
 			Assert.assertEquals(nickName, result.get("nickName").toString());
@@ -215,4 +216,100 @@ public class UserServiceTests {
 	 * </pre>
 	 */
 
+	/**
+	 * 测试使用第三方网站用户登录
+	 */
+	@Test
+	public void testLogin_Oauth(){
+		UserService userService = ServiceHolder.getDefault().getUserService();
+		
+		Long localUserId = null;
+		Long connectUserId = null;
+		
+		int siteId = OAuthConstants.RENREN;
+		String userId = "X1234567890";
+		String nickName = "xman_nickName";
+		String loginName = "xman_loginName";
+		String sex = "1";
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(2013, 1, 1);
+		Date birthDay = calendar.getTime();
+		String homeCityCode = "156130100";
+		
+		try{
+			Map<String, Object> userInfo = new HashMap<String, Object>();
+			userInfo.put("siteId", siteId);
+			userInfo.put("userId", userId);
+			userInfo.put("loginName", loginName);
+			userInfo.put("nickName", nickName);
+			userInfo.put("sex", sex);
+			userInfo.put("birthDay", birthDay);
+			userInfo.put("homeCityCode", homeCityCode);
+			
+			// 头像
+			List<Map<String,Object>> avatarList = new ArrayList<Map<String,Object>>();
+			Oauth2Helper.addUserImage(avatarList,"tinyUrl","http://a",50,50);
+			Oauth2Helper.addUserImage(avatarList,"headUrl","http://b",100,100);
+			Oauth2Helper.addUserImage(avatarList,"mainUrl","http://c",200,200);
+			userInfo.put("avatar", avatarList);
+			
+			
+			// 确认一下数据都已经插入到各自的表中。
+			Map<String,Object> mapUserInfo = userService.importUser(userInfo);
+			localUserId = Long.valueOf(mapUserInfo.get("localUserId").toString());
+			connectUserId = Long.valueOf(mapUserInfo.get("connectUserId").toString());
+			
+			/**
+			 * 用户登录，主要是记录使用第三方网站进行登录。注意第三方用户的所有信息都是从本地获取，每天晚上定时从第三方同步用户信息。
+			 * @param localUserId 本网站用户标识
+			 * @param connectUserId 本网站为第三方网站用户生成的用户标识
+			 * @param siteId 网站标识，参考 {@link OAuthConstants}
+			 * @return 如果系统中存在该用户信息则返回，否则返回空的map对象。
+			 * <pre>
+			 * 	map结构为：
+			 * 		id: 本地用户标识
+			 * 		siteId：与哪个网站的用户关联
+			 *  这些信息，如果是本地用户从数据库中获取，如果是第三方用户，则从返回的记录中直接获取，不走后台
+			 * 		email: 邮箱
+			 * 		mobile：手机号
+			 * 		nickName: 显示名
+			 * 这些字段是按照网站提供的图片尺寸大小从小到大排列的
+			 * 		smallImageUrl: 小头像
+			 * 		largeImageUrl: 
+			 * 		largerImageUrl:
+			 * 		xLargeImageUrl:
+			 * 
+			 * 以下字段从本地用户信息中获取
+			 * 		fanCount：粉丝数
+			 * 		followCount: 关注人数
+			 * 		exerDraftCount： 习题草稿数
+			 * 		exerPublishCount：发布的习题数
+			 * 		answerCount： 习题总数 = 习题草稿数+发布的习题数
+			 * </pre>
+			 */
+			Map<String,Object> result = userService.login(localUserId, connectUserId, siteId);
+			
+			Assert.assertEquals(localUserId.longValue(), NumberUtils.toLong(result.get("id").toString()));
+			Assert.assertEquals(siteId, NumberUtils.toInt(result.get("siteId").toString()));
+			Assert.assertNull(result.get("email"));
+			Assert.assertNull(result.get("mobile"));
+			Assert.assertEquals(nickName, result.get("nickName").toString());
+			Assert.assertNull(result.get("realName"));
+			
+			// 对比头像信息
+			Assert.assertEquals("http://a", result.get("smallImageUrl").toString());
+			Assert.assertEquals("http://b", result.get("largeImageUrl").toString());
+			Assert.assertEquals("http://c", result.get("largerImageUrl").toString());
+			
+			// 统计信息
+			Assert.assertEquals(0, Integer.valueOf(result.get("fanCount").toString()).intValue());
+			Assert.assertEquals(0, Integer.valueOf(result.get("followCount").toString()).intValue());
+			Assert.assertEquals(0, Integer.valueOf(result.get("exerDraftCount").toString()).intValue());
+			Assert.assertEquals(0, Integer.valueOf(result.get("exerPublishCount").toString()).intValue());
+			Assert.assertEquals(0, Integer.valueOf(result.get("answerCount").toString()).intValue());
+			
+		}finally{
+			this.reset(userId, localUserId, connectUserId);
+		}
+	}
 }
