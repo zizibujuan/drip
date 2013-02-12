@@ -129,6 +129,7 @@ public interface UserDao {
 	 * map结构
 	 * 		loginName:登录名
 	 * 		nickName:昵称
+	 * 		realName:真实姓名
 	 * 		sex:性别代码
 	 * 		headUrl:头像链接
 	 * 		homeCityCode:家乡所在城市编码
@@ -160,10 +161,11 @@ public interface UserDao {
 	Map<String, Object> getUserStatistics(Long localUserId);
 
 	/**
-	 * 判断这个映射标识对应的用户是不是本网站注册用户
+	 * 判断这个映射标识对应的用户是不是本网站注册用户。将在0.0.2版本中删除
 	 * @param mapUserId 映射标识
 	 * @return 如果是本网站注册用户则返回<code>true</code>;否则返回<code>false</code>
 	 */
+	@Deprecated
 	boolean isLocalUser(Long mapUserId);
 
 }

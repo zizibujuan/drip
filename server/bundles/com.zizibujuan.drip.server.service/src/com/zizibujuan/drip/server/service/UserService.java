@@ -34,19 +34,21 @@ public interface UserService {
 	Map<String,Object> login(String email, String password);
 	
 	/**
-	 * 用户登录，主要是记录使用第三方网站进行登录
+	 * 用户登录，主要是记录使用第三方网站进行登录。注意第三方用户的所有信息都是从本地获取，每天晚上定时从第三方同步用户信息。
 	 * @param localUserId 本网站用户标识
 	 * @param mapUserId 与第三方网站用户映射标识
 	 * @param siteId 网站标识，参考 {@link OAuthConstants}
 	 * @return 如果系统中存在该用户信息则返回，否则返回空的map对象。
 	 * <pre>
 	 * 	map结构为：
-	 * 		id: 用户标识
+	 * 		id: 本地用户标识
+	 * 		mapUserId: 映射用户标识
+	 * 		site：与哪个网站的用户关联
 	 *  这些信息，如果是本地用户从数据库中获取，如果是第三方用户，则从返回的记录中直接获取，不走后台
 	 * 		email: 邮箱
 	 * 		mobile：手机号
 	 * 		displayName: 显示名
-	 * 这些字段是按照网站提供的图片大小从小到打排列的
+	 * 这些字段是按照网站提供的图片尺寸大小从小到大排列的
 	 * 		smallImageUrl: 小头像
 	 * 		largeImageUrl: 
 	 * 		largerImageUrl:
@@ -87,13 +89,14 @@ public interface UserService {
 	 * map结构
 	 * 		loginName:登录名
 	 * 		nickName:昵称
+	 * 		realName:真实姓名
 	 * 		sex:性别代码
 	 * 		headUrl:头像链接
 	 * 		homeCityCode:家乡所在城市编码
 	 * 		homeCity:家乡所在城市名称
-	 * 		authSiteId：第三方网站标识 {@link OAuthConstants}
+	 * 		siteId：第三方网站标识 {@link OAuthConstants}
 	 * 					如果是使用第三方网站的用户登录，则是第三方网站用户标识；如果是用本网站用户登录，则是本网站用户标识
-	 * 		authUserId: 第三方网站的用户标识
+	 * 		userId: 第三方网站的用户标识
 	 * 		avatar：用户头像列表
 	 * 			urlName:头像名称
 	 * 			url：头像链接
@@ -108,6 +111,11 @@ public interface UserService {
 	 * </pre>
 	 */
 	Map<String,Object> importUser(Map<String, Object> userInfo);
+	
+	/**
+	 * 同步用户信息。
+	 */
+	Map<String,Object> syncUserInfo(Map<String, Object> userInfo);
 
 	/**
 	 * 获取用户基本信息，是用户可以对外公开的信息，剔除掉了用户的隐私信息。
@@ -149,5 +157,12 @@ public interface UserService {
 	 * </pre>
 	 */
 	Map<String, Object> getPublicInfo(Long localUserId, Long mapUserId);
+
+	/**
+	 * 获取可以公开的用户信息，这些信息会在其他用户的页面上显示。
+	 * @param localUserId 本地用户标识
+	 * @return 可以公开的用户信息。
+	 */
+	Map<String, Object> getPublicInfo(Long localUserId);
 
 }

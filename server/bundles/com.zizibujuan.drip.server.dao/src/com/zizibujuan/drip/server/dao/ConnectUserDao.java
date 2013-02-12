@@ -23,10 +23,10 @@ public interface ConnectUserDao {
 	 * <pre>
 	 * map结构：
 	 *		mapUserId：映射标识
-	 *		displayName：显示的用户名
+	 *		nickName：用户昵称
 	 *		homeCityCode：用户家乡所在城市编码
 	 *		sex：用户性别
-	 *		fromSite：来自哪个网站的标识
+	 *		siteId：来自哪个网站的标识
 	 * </pre>
 	 */
 	Map<String, Object> getPublicInfo(Long mapUserId);
@@ -44,9 +44,9 @@ public interface ConnectUserDao {
 	 * 		headUrl:头像链接
 	 * 		homeCityCode:家乡所在城市编码
 	 * 		homeCity:家乡所在城市名称
-	 * 		authSiteId：第三方网站标识 {@link OAuthConstants}
+	 * 		siteId：第三方网站标识 {@link OAuthConstants}
 	 * 					如果是使用第三方网站的用户登录，则是第三方网站用户标识；如果是用本网站用户登录，则是本网站用户标识
-	 * 		authUserId: 第三方网站的用户标识
+	 * 		userId: 第三方网站的用户标识
 	 * 		avatar：用户头像列表
 	 * 			urlName:头像名称
 	 * 			url：头像链接

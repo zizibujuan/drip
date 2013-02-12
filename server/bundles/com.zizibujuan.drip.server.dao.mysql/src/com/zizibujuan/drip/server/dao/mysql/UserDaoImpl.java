@@ -66,10 +66,11 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 					userInfo.get("md5Password"),
 					userInfo.get("mobile"),
 					userInfo.get("realName"));
-			// 在关联表中添加一条记录，自己关联自己
-			Long mapUserId = oAuthUserMapDao.mapUserId(con, OAuthConstants.ZIZIBUJUAN, String.valueOf(userId), userId);
+			// 在关联表中添加一条记录，自己关联自己,本地用户也需要添加一个关联关系
+			// 不需要添加一个字段来标识是不是本地用户，只要两个用户标识相等，则必是本地用户，代码中根据这个逻辑判断。
+			Long mapUserId = oAuthUserMapDao.mapUser(con, userId, userId, true);
 			// 在用户属性表中初始化属性值
-			userAttributesDao.initUserState(con, mapUserId);
+			userAttributesDao.initUserState(con, mapUserId, true);
 			// 添加完用户之后，需要在用户关系表中，添加一条用户关注用户自己的记录
 			userRelationDao.watch(con, userId, userId);
 			con.commit();
@@ -178,12 +179,10 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	public Map<String,Object> importUser(Map<String, Object> userInfo) {
 		Map<String,Object> result = new HashMap<String, Object>();
 		Long localUserId = null;
-		Long mapUserId = null;
+		Long connectUserId = null;
 		
 		Connection con = null;
 		
-		int authSiteId = Integer.valueOf(userInfo.get("authSiteId").toString());
-		String authUserId = userInfo.get("authUserId").toString();
 		@SuppressWarnings("unchecked")
 		List<Map<String,Object>> avatarList = (List<Map<String, Object>>) userInfo.get("avatar");
 		try{
@@ -191,18 +190,18 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			con.setAutoCommit(false);
 			// 在本地用户表中建立一个只有标识的记录
 			localUserId = this.addLocalUserId(con);
+			// 在第三方用户表中存储用户信息,connectUserId是本网站为第三方网站用户产生的代理主键
+			connectUserId = connectUserDao.add(con, userInfo);
 			// 将本地用户与第三方用户关联起来
-			mapUserId = oAuthUserMapDao.mapUserId(con, authSiteId, authUserId, localUserId);
-			// 在第三方用户表中存储用户信息
-			// 注意：这里先建立映射数据，然后将映射标识存储在第三方网站用户表中。
-			userInfo.put("mapUserId", mapUserId);
-			connectUserDao.add(con, userInfo);
-			// 初始化用户属性表
-			userAttributesDao.initUserState(con, mapUserId);
-			// 自己关注自己，使用drip用户标识
-			userRelationDao.watch(con, localUserId, localUserId);
+			oAuthUserMapDao.mapUser(con,localUserId, connectUserId, true);
+			
+			// 初始化用户属性表,导入的用户肯定都是第三方网站的用户。
+			userAttributesDao.initUserState(con, connectUserId, false);
+			// 自己关注自己，使用drip用户标识, 在关注的表中，也要加入connectUserId, 这样可以跟踪哪个网站的用户关注的比较多
+			// 但是为了可以顺利迁移，最好存储connectUserId
+			userRelationDao.watch(con, connectUserId, connectUserId);
 			if(avatarList != null && avatarList.size()>0){
-				userAvatarDao.add(con, mapUserId, avatarList);
+				userAvatarDao.add(con, connectUserId, avatarList);
 			}
 			con.commit();
 		}catch(SQLException e){
@@ -215,8 +214,8 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			DatabaseUtil.closeConnection(con);
 		}
 		
-		result.put("LOCAL_USER_ID", localUserId);
-		result.put("MAP_USER_ID", mapUserId);
+		result.put("localUserId", localUserId);
+		result.put("connectUserId", connectUserId);
 		return result;
 	}
 	

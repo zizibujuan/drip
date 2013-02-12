@@ -15,23 +15,25 @@ import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
  */
 public class ConnectUserDaoImpl extends AbstractDao implements ConnectUserDao {
 
+	
 	private static final String SQL_GET_CONNECT_USER_PUBLIC = "SELECT " +
-			"a.MAP_USER_ID \"mapUserId\"," +
-			"a.NICK_NAME \"displayName\"," +
+			"a.DBID \"connectUserId\"," +
+			"a.NICK_NAME \"nickName\"," +
 			"a.HOME_CITY_CODE \"homeCityCode\"," +
 			"a.SEX \"sex\"," +
-			"b.OAUTH_SITE_ID \"fromSite\" " +
-			"FROM DRIP_CONNECT_USER_INFO a, DRIP_OAUTH_USER_MAP b " +
-			"WHERE a.MAP_USER_ID=? AND a.MAP_USER_ID=b.DBID";
+			"a.SITE_ID \"siteId\" " +
+			"FROM DRIP_CONNECT_USER_INFO a " +
+			"WHERE a.DBID=?";
 	@Override
-	public Map<String, Object> getPublicInfo(Long mapUserId) {
-		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_CONNECT_USER_PUBLIC, mapUserId);
+	public Map<String, Object> getPublicInfo(Long connectUserId) {
+		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_CONNECT_USER_PUBLIC, connectUserId);
 	}
 
 	private static final String SQL_INSERT_CONNECT_USER = "INSERT INTO DRIP_CONNECT_USER_INFO " +
-			"(MAP_USER_ID," +
-			"LOGIN_NAME," +
+			"(LOGIN_NAME," +
 			"NICK_NAME," +
+			"SITE_ID," +
+			"USER_ID," +
 			"EMAIL," +
 			"MOBILE," +
 			"REAL_NAME," +
@@ -41,24 +43,36 @@ public class ConnectUserDaoImpl extends AbstractDao implements ConnectUserDao {
 			"INTRODUCE," +
 			"CREATE_TIME) " +
 			"VALUES " +
-			"(?,?,?,?,?,?,?,?,?,?,now())";
+			"(?,?,?,?,?,?,?,?,?,?,?,now())";
 
 	@Override
 	public Long add(Connection con, Map<String, Object> connectUserInfo) throws SQLException {
-		Object mapUserId = connectUserInfo.get("mapUserId");
 		// TODO:继续添加更详细的用户信息。
+		Object siteId = connectUserInfo.get("siteId");
+		Object userId = connectUserInfo.get("userId");
 		Object loginName = connectUserInfo.get("loginName");
 		Object nickName = connectUserInfo.get("nickName");
+		Object realName = connectUserInfo.get("realName");//FIXME:nickName与realName显示优先级的问题
 		// 注意为EMAIL字段添加了唯一性约束字段，所以如果email不存在，要置为null，而不是转化为一个空的字符串。
 		Object email  = connectUserInfo.get("email");
 		Object mobile = connectUserInfo.get("mobile");
-		Object realName = connectUserInfo.get("realName");
+		
 		Object sex = connectUserInfo.get("sex");
 		Object homeCityCode = connectUserInfo.get("homeCityCode");
 		Object homeCity = connectUserInfo.get("homeCity");
 		Object introduce = connectUserInfo.get("introduce");
 		
 		return DatabaseUtil.insert(con, SQL_INSERT_CONNECT_USER, 
-				mapUserId, loginName,nickName,email,mobile,realName,sex,homeCityCode,homeCity,introduce);
+				loginName,
+				nickName,
+				siteId, 
+				userId,
+				email,
+				mobile,
+				realName,
+				sex,
+				homeCityCode,
+				homeCity,
+				introduce);
 	}
 }

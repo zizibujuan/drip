@@ -24,23 +24,28 @@ public class UserAttributesDaoImpl extends AbstractDao implements UserAttributes
 
 	private static final Logger logger = LoggerFactory.getLogger(UserAttributesDaoImpl.class);
 	
-	private static final String SQL_UPDATE_LAST_LOGIN_MILLIS = "UPDATE DRIP_USER_ATTRIBUTES SET ATTR_VALUE=UNIX_TIMESTAMP(now()) WHERE MAP_USER_ID= %s AND ATTR_NAME='%s'";
-	private static final String SQL_UPDATE_LOGIN_COUNT = "UPDATE DRIP_USER_ATTRIBUTES SET ATTR_VALUE=(cast(ATTR_VALUE as SIGNED)+1) WHERE MAP_USER_ID= %s AND ATTR_NAME='%s'";
+	private static final String SQL_UPDATE_LAST_LOGIN_MILLIS = "UPDATE DRIP_USER_ATTRIBUTES SET ATTR_VALUE=UNIX_TIMESTAMP(now()) WHERE USER_ID= %s AND ATTR_NAME='%s' AND IS_LOCAL_USER=%s";
+	private static final String SQL_UPDATE_LOGIN_COUNT = "UPDATE DRIP_USER_ATTRIBUTES SET ATTR_VALUE=(cast(ATTR_VALUE as SIGNED)+1) WHERE USER_ID= %s AND ATTR_NAME='%s' AND IS_LOCAL_USER=%s";
 	@Override
-	public void updateLoginState(Long userId) {
+	public void updateLoginState(Long userId, boolean isLocalUser) {
 		Connection con = null;
 		Statement pst = null;
 		try{
+			int localUser = isLocalUser?1:0;
 			con = getDataSource().getConnection();
 			con.setAutoCommit(false);
 			pst = con.createStatement();
-			String lastLogin = String.format(SQL_UPDATE_LAST_LOGIN_MILLIS,userId,ApplicationPropertyKey.LOGIN_LAST_LOGIN_MILLIS);
+			String lastLogin = String.format(SQL_UPDATE_LAST_LOGIN_MILLIS,userId,ApplicationPropertyKey.LOGIN_LAST_LOGIN_MILLIS,localUser);
 			pst.addBatch(lastLogin);
-			String loginCount = String.format(SQL_UPDATE_LOGIN_COUNT,userId,ApplicationPropertyKey.LOGIN_COUNT);
+			String loginCount = String.format(SQL_UPDATE_LOGIN_COUNT,userId,ApplicationPropertyKey.LOGIN_COUNT,localUser);
 			pst.addBatch(loginCount);
 			pst.executeBatch();
 			con.commit();
 		}catch(SQLException e){
+			DatabaseUtil.safeRollback(con);
+			logger.error("初始化用户信息失败，sql语句是:" + SQL_INSERT_USER_ATTRIBUTES, e);
+			throw new DataAccessException(e);
+		}catch(Exception e){
 			DatabaseUtil.safeRollback(con);
 			logger.error("初始化用户信息失败，sql语句是:" + SQL_INSERT_USER_ATTRIBUTES, e);
 			throw new DataAccessException(e);
@@ -51,29 +56,33 @@ public class UserAttributesDaoImpl extends AbstractDao implements UserAttributes
 	}
 
 	private static final String SQL_INSERT_USER_ATTRIBUTES = "INSERT INTO DRIP_USER_ATTRIBUTES " +
-			"(MAP_USER_ID," +
+			"(USER_ID," +
+			"IS_LOCAL_USER," +
 			"ATTR_NAME," +
 			"ATTR_VALUE)" +
-			"VALUES(?,?,?)";
+			"VALUES(?,?,?,?)";
 	// FIXME:需不需要做一个行列转换，变成一个专门存放用户统计信息或活动信息的表
 	@Override
-	public void initUserState(Connection con, Long userId) throws SQLException {
+	public void initUserState(Connection con, Long userId, boolean isLocalUser) throws SQLException {
 		PreparedStatement pst = null;
 		try{
 			pst = con.prepareStatement(SQL_INSERT_USER_ATTRIBUTES);
 			pst.setLong(1, userId);
-			pst.setString(2, ApplicationPropertyKey.LOGIN_LAST_LOGIN_MILLIS);
-			pst.setNull(3, Types.VARCHAR);
+			pst.setBoolean(2, isLocalUser);
+			pst.setString(3, ApplicationPropertyKey.LOGIN_LAST_LOGIN_MILLIS);
+			pst.setNull(4, Types.VARCHAR);
 			pst.addBatch();
 			
 			pst.setLong(1, userId);
-			pst.setString(2, ApplicationPropertyKey.INVALID_PASSWORD_ATTEMPTS);
-			pst.setString(3, "0");
+			pst.setBoolean(2, isLocalUser);
+			pst.setString(3, ApplicationPropertyKey.INVALID_PASSWORD_ATTEMPTS);
+			pst.setString(4, "0");
 			pst.addBatch();
 			
 			pst.setLong(1, userId);
-			pst.setString(2, ApplicationPropertyKey.LOGIN_COUNT);
-			pst.setString(3, "0");
+			pst.setBoolean(2, isLocalUser);
+			pst.setString(3, ApplicationPropertyKey.LOGIN_COUNT);
+			pst.setString(4, "0");
 			pst.addBatch();
 			
 			pst.executeBatch();

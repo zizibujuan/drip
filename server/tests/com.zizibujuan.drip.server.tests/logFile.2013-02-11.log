@@ -1,0 +1,164 @@
+703  [Component Resolve Thread] INFO  c.z.d.s.s.i.ApplicationPropertyServiceImpl - 注入ApplicationPropertyDao
+713  [Component Resolve Thread] INFO  c.z.drip.server.servlet.Activator - applicationPropertyService In activator:com.zizibujuan.drip.server.service.impl.ApplicationPropertyServiceImpl@1579a30
+1090 [Start Level Event Dispatcher] INFO  c.z.drip.server.servlet.Activator - applicationPropertyService In activator:com.zizibujuan.drip.server.service.impl.ApplicationPropertyServiceImpl@1579a30
+1387 [main] INFO  c.z.d.s.s.i.ApplicationPropertyServiceImpl - 注销ApplicationPropertyDao
+201  [Component Resolve Thread] INFO  c.z.drip.server.dao.mysql.DaoHolder - 注入datasourceService
+204  [Component Resolve Thread] INFO  c.z.drip.server.dao.mysql.DaoHolder - com.zizibujuan.dbaccess.mysql.service.DataSourceServiceImpl@1d6fbb3
+845  [main] INFO  c.z.drip.server.dao.mysql.DaoHolder - 注销datasourceService
+203  [Component Resolve Thread] INFO  c.z.drip.server.dao.mysql.DaoHolder - 注入datasourceService
+206  [Component Resolve Thread] INFO  c.z.drip.server.dao.mysql.DaoHolder - com.zizibujuan.dbaccess.mysql.service.DataSourceServiceImpl@5a3923
+908  [main] INFO  c.z.drip.server.dao.mysql.DaoHolder - 注销datasourceService
+241  [Component Resolve Thread] INFO  c.z.drip.server.dao.mysql.DaoHolder - 注入datasourceService
+244  [Component Resolve Thread] INFO  c.z.drip.server.dao.mysql.DaoHolder - com.zizibujuan.dbaccess.mysql.service.DataSourceServiceImpl@1d6fbb3
+278  [Start Level Event Dispatcher] INFO  c.z.d.s.s.i.ApplicationPropertyServiceImpl - 注入ApplicationPropertyDao
+279  [Start Level Event Dispatcher] INFO  c.z.drip.server.servlet.Activator - applicationPropertyService In activator:com.zizibujuan.drip.server.service.impl.ApplicationPropertyServiceImpl@39c8c1
+1069 [Component Resolve Thread] INFO  c.z.d.server.dao.mysql.UserDaoImpl - 注入userRelationDao
+1070 [Component Resolve Thread] INFO  c.z.d.server.dao.mysql.UserDaoImpl - 注入oAuthUserMapDao
+1082 [Component Resolve Thread] INFO  c.z.d.server.dao.mysql.UserDaoImpl - 注入userAvatarDao
+1083 [Component Resolve Thread] INFO  c.z.d.server.dao.mysql.UserDaoImpl - 注入connectUserDao
+1084 [Component Resolve Thread] INFO  c.z.d.server.dao.mysql.UserDaoImpl - 注入userAttributesDao
+1084 [Component Resolve Thread] INFO  c.z.d.s.dao.mysql.ExerciseDaoImpl - 注入userDao
+1085 [Component Resolve Thread] INFO  c.z.d.s.dao.mysql.ExerciseDaoImpl - 注入ActivityDao
+1086 [Component Resolve Thread] INFO  c.z.d.s.dao.mysql.AnswerDaoImpl - 注入userDao
+1087 [Component Resolve Thread] INFO  c.z.d.s.dao.mysql.AnswerDaoImpl - 注入ActivityDao
+1087 [Component Resolve Thread] INFO  c.z.d.s.dao.mysql.ExerciseDaoImpl - 注入AnswerDao
+1087 [Component Resolve Thread] INFO  c.z.d.s.s.impl.ExerciseServiceImpl - 注入exerciseDao
+1087 [Component Resolve Thread] INFO  c.z.d.server.servlet.ServiceHolder - 注入ExerciseService
+1119 [Component Resolve Thread] INFO  c.z.d.s.s.impl.UserServiceImpl - 注入userDao
+1120 [Component Resolve Thread] INFO  c.z.d.s.s.impl.UserServiceImpl - 注入userAttributesDao
+1120 [Component Resolve Thread] INFO  c.z.d.s.s.impl.UserServiceImpl - 注入userAvatarDao
+1120 [Component Resolve Thread] INFO  c.z.d.s.s.impl.UserServiceImpl - 注入connectUserDao
+1121 [Component Resolve Thread] INFO  c.z.d.s.s.impl.UserServiceImpl - 注入applicationPropertyService
+1121 [Component Resolve Thread] INFO  c.z.d.server.servlet.ServiceHolder - 注入UserService
+1123 [Component Resolve Thread] INFO  c.z.d.s.s.impl.ActivityServiceImpl - 注入ActivityDao
+1123 [Component Resolve Thread] INFO  c.z.d.s.s.impl.ActivityServiceImpl - 注入ExerciseDao
+1123 [Component Resolve Thread] INFO  c.z.d.s.s.impl.ActivityServiceImpl - 注入answerDao
+1123 [Component Resolve Thread] INFO  c.z.d.s.s.impl.ActivityServiceImpl - 注入userService
+1124 [Component Resolve Thread] INFO  c.z.d.server.servlet.ServiceHolder - 注入ActivityService
+1156 [Component Resolve Thread] INFO  c.z.d.s.s.impl.AccessLogServiceImpl - 注入AccessLogDao
+1156 [Component Resolve Thread] INFO  c.z.d.server.servlet.ServiceHolder - 注入AccessLogService
+1156 [Component Resolve Thread] INFO  c.z.d.server.servlet.ServiceHolder - 注入ApplicationPropertyService
+1156 [Component Resolve Thread] INFO  c.z.d.server.servlet.ServiceHolder - applicationPropertyService In ServiceHolder:com.zizibujuan.drip.server.service.impl.ApplicationPropertyServiceImpl@39c8c1
+1158 [Component Resolve Thread] INFO  c.z.d.s.s.impl.AnswerServiceImpl - 注入AnswerDao
+1159 [Component Resolve Thread] INFO  c.z.d.s.s.impl.AnswerServiceImpl - 注入ExerciseGuideDao
+1159 [Component Resolve Thread] INFO  c.z.d.server.servlet.ServiceHolder - 注入answerService
+1160 [Component Resolve Thread] INFO  c.z.d.s.s.i.OAuthUserMapServiceImpl - 注入oAuthUserMapDao
+1160 [Component Resolve Thread] INFO  c.z.d.server.servlet.ServiceHolder - 注入oAuthUserMapService
+1162 [Component Resolve Thread] INFO  c.z.d.s.s.i.UserRelationServiceImpl - 注入userRelationDao
+1163 [Component Resolve Thread] INFO  c.z.d.s.s.i.UserRelationServiceImpl - 注入oAuthUserMapDao
+1163 [Component Resolve Thread] INFO  c.z.d.s.s.i.UserRelationServiceImpl - 注入userService
+1163 [Component Resolve Thread] INFO  c.z.d.server.servlet.ServiceHolder - 注入userRelationService
+1745 [main] INFO  c.z.d.s.dao.mysql.ExerciseDaoImpl - 注销AnswerDao
+1747 [main] INFO  c.z.d.s.s.impl.ActivityServiceImpl - 注销answerDao
+1747 [main] INFO  c.z.d.s.s.impl.AnswerServiceImpl - 注销AnswerDao
+1748 [main] INFO  c.z.d.s.dao.mysql.AnswerDaoImpl - 注销ActivityDao
+1748 [main] INFO  c.z.d.s.dao.mysql.AnswerDaoImpl - 注销userDao
+1748 [main] INFO  c.z.d.s.s.i.UserRelationServiceImpl - 注销userRelationDao
+1749 [main] INFO  c.z.d.server.dao.mysql.UserDaoImpl - 注销userRelationDao
+1749 [main] INFO  c.z.d.s.s.impl.UserServiceImpl - 注销userAvatarDao
+1750 [main] INFO  c.z.d.server.dao.mysql.UserDaoImpl - 注销userAvatarDao
+1750 [main] INFO  c.z.d.s.s.impl.UserServiceImpl - 注销userAttributesDao
+1750 [main] INFO  c.z.d.server.dao.mysql.UserDaoImpl - 注销userAttributesDao
+1751 [main] INFO  c.z.d.s.dao.mysql.ExerciseDaoImpl - 注销ActivityDao
+1751 [main] INFO  c.z.d.s.s.impl.ActivityServiceImpl - 注销ActivityDao
+1752 [main] INFO  c.z.d.s.s.impl.UserServiceImpl - 注销userDao
+1762 [main] INFO  c.z.d.s.dao.mysql.ExerciseDaoImpl - 注销userDao
+1762 [main] INFO  c.z.d.server.dao.mysql.UserDaoImpl - 注销connectUserDao
+1762 [main] INFO  c.z.d.server.dao.mysql.UserDaoImpl - 注销oAuthUserMapDao
+1763 [main] INFO  c.z.d.s.s.impl.ExerciseServiceImpl - 注销exerciseDao
+1763 [main] INFO  c.z.d.s.s.impl.ActivityServiceImpl - 注销exerciseDao
+1764 [main] INFO  c.z.d.s.s.i.ApplicationPropertyServiceImpl - 注销ApplicationPropertyDao
+1765 [main] INFO  c.z.d.s.s.impl.AccessLogServiceImpl - 注销AccessLogDao
+1766 [main] INFO  c.z.d.s.s.i.OAuthUserMapServiceImpl - 注销oAuthUserMapDao
+1767 [main] INFO  c.z.d.s.s.i.UserRelationServiceImpl - 注销oAuthUserMapDao
+1768 [main] INFO  c.z.drip.server.dao.mysql.DaoHolder - 注销datasourceService
+1768 [main] INFO  c.z.d.s.s.impl.AnswerServiceImpl - 注销ExerciseGuideDao
+1769 [main] INFO  c.z.d.s.s.impl.UserServiceImpl - 注销connectUserDao
+1770 [main] INFO  c.z.d.server.servlet.ServiceHolder - 注销userRelationService
+1771 [main] INFO  c.z.d.s.s.i.UserRelationServiceImpl - 注销userService
+1771 [main] INFO  c.z.d.s.s.impl.UserServiceImpl - 注销applicationPropertyService
+1772 [main] INFO  c.z.d.server.servlet.ServiceHolder - 注销ApplicationPropertyService
+1772 [main] INFO  c.z.d.server.servlet.ServiceHolder - 注销AccessLogService
+1773 [main] INFO  c.z.d.server.servlet.ServiceHolder - 注销answerService
+1773 [main] INFO  c.z.d.server.servlet.ServiceHolder - 注销UserService
+1774 [main] INFO  c.z.d.s.s.impl.ActivityServiceImpl - 注销userService
+1774 [main] INFO  c.z.d.server.servlet.ServiceHolder - 注销ExerciseService
+1775 [main] INFO  c.z.d.server.servlet.ServiceHolder - 注销ActivityService
+1775 [main] INFO  c.z.d.server.servlet.ServiceHolder - 注销oAuthUserMapService
+199  [Component Resolve Thread] INFO  c.z.drip.server.dao.mysql.DaoHolder - 注入datasourceService
+202  [Component Resolve Thread] INFO  c.z.drip.server.dao.mysql.DaoHolder - com.zizibujuan.dbaccess.mysql.service.DataSourceServiceImpl@1d2b9b7
+230  [Start Level Event Dispatcher] INFO  c.z.d.s.s.i.ApplicationPropertyServiceImpl - 注入ApplicationPropertyDao
+230  [Start Level Event Dispatcher] INFO  c.z.drip.server.servlet.Activator - applicationPropertyService In activator:com.zizibujuan.drip.server.service.impl.ApplicationPropertyServiceImpl@16eb6bc
+592  [Component Resolve Thread] INFO  c.z.d.server.dao.mysql.UserDaoImpl - 注入userRelationDao
+593  [Component Resolve Thread] INFO  c.z.d.server.dao.mysql.UserDaoImpl - 注入oAuthUserMapDao
+595  [Component Resolve Thread] INFO  c.z.d.server.dao.mysql.UserDaoImpl - 注入userAvatarDao
+595  [Component Resolve Thread] INFO  c.z.d.server.dao.mysql.UserDaoImpl - 注入connectUserDao
+596  [Component Resolve Thread] INFO  c.z.d.server.dao.mysql.UserDaoImpl - 注入userAttributesDao
+597  [Component Resolve Thread] INFO  c.z.d.s.dao.mysql.ExerciseDaoImpl - 注入userDao
+597  [Component Resolve Thread] INFO  c.z.d.s.dao.mysql.ExerciseDaoImpl - 注入ActivityDao
+598  [Component Resolve Thread] INFO  c.z.d.s.dao.mysql.AnswerDaoImpl - 注入userDao
+599  [Component Resolve Thread] INFO  c.z.d.s.dao.mysql.AnswerDaoImpl - 注入ActivityDao
+599  [Component Resolve Thread] INFO  c.z.d.s.dao.mysql.ExerciseDaoImpl - 注入AnswerDao
+599  [Component Resolve Thread] INFO  c.z.d.s.s.impl.ExerciseServiceImpl - 注入exerciseDao
+599  [Component Resolve Thread] INFO  c.z.d.server.servlet.ServiceHolder - 注入ExerciseService
+601  [Component Resolve Thread] INFO  c.z.d.s.s.impl.UserServiceImpl - 注入userDao
+601  [Component Resolve Thread] INFO  c.z.d.s.s.impl.UserServiceImpl - 注入userAttributesDao
+601  [Component Resolve Thread] INFO  c.z.d.s.s.impl.UserServiceImpl - 注入userAvatarDao
+601  [Component Resolve Thread] INFO  c.z.d.s.s.impl.UserServiceImpl - 注入connectUserDao
+602  [Component Resolve Thread] INFO  c.z.d.s.s.impl.UserServiceImpl - 注入applicationPropertyService
+602  [Component Resolve Thread] INFO  c.z.d.server.servlet.ServiceHolder - 注入UserService
+603  [Component Resolve Thread] INFO  c.z.d.s.s.impl.ActivityServiceImpl - 注入ActivityDao
+603  [Component Resolve Thread] INFO  c.z.d.s.s.impl.ActivityServiceImpl - 注入ExerciseDao
+604  [Component Resolve Thread] INFO  c.z.d.s.s.impl.ActivityServiceImpl - 注入answerDao
+604  [Component Resolve Thread] INFO  c.z.d.s.s.impl.ActivityServiceImpl - 注入userService
+604  [Component Resolve Thread] INFO  c.z.d.server.servlet.ServiceHolder - 注入ActivityService
+606  [Component Resolve Thread] INFO  c.z.d.s.s.impl.AccessLogServiceImpl - 注入AccessLogDao
+606  [Component Resolve Thread] INFO  c.z.d.server.servlet.ServiceHolder - 注入AccessLogService
+606  [Component Resolve Thread] INFO  c.z.d.server.servlet.ServiceHolder - 注入ApplicationPropertyService
+606  [Component Resolve Thread] INFO  c.z.d.server.servlet.ServiceHolder - applicationPropertyService In ServiceHolder:com.zizibujuan.drip.server.service.impl.ApplicationPropertyServiceImpl@16eb6bc
+607  [Component Resolve Thread] INFO  c.z.d.s.s.impl.AnswerServiceImpl - 注入AnswerDao
+608  [Component Resolve Thread] INFO  c.z.d.s.s.impl.AnswerServiceImpl - 注入ExerciseGuideDao
+608  [Component Resolve Thread] INFO  c.z.d.server.servlet.ServiceHolder - 注入answerService
+609  [Component Resolve Thread] INFO  c.z.d.s.s.i.OAuthUserMapServiceImpl - 注入oAuthUserMapDao
+610  [Component Resolve Thread] INFO  c.z.d.server.servlet.ServiceHolder - 注入oAuthUserMapService
+611  [Component Resolve Thread] INFO  c.z.d.s.s.i.UserRelationServiceImpl - 注入userRelationDao
+611  [Component Resolve Thread] INFO  c.z.d.s.s.i.UserRelationServiceImpl - 注入oAuthUserMapDao
+611  [Component Resolve Thread] INFO  c.z.d.s.s.i.UserRelationServiceImpl - 注入userService
+611  [Component Resolve Thread] INFO  c.z.d.server.servlet.ServiceHolder - 注入userRelationService
+1169 [main] INFO  c.z.d.s.s.impl.ActivityServiceImpl - 注销answerDao
+1170 [main] INFO  c.z.d.s.dao.mysql.ExerciseDaoImpl - 注销AnswerDao
+1173 [main] INFO  c.z.d.s.s.impl.AnswerServiceImpl - 注销AnswerDao
+1176 [main] INFO  c.z.d.s.dao.mysql.AnswerDaoImpl - 注销ActivityDao
+1176 [main] INFO  c.z.d.s.dao.mysql.AnswerDaoImpl - 注销userDao
+1177 [main] INFO  c.z.d.s.s.i.UserRelationServiceImpl - 注销userRelationDao
+1177 [main] INFO  c.z.d.server.dao.mysql.UserDaoImpl - 注销userRelationDao
+1178 [main] INFO  c.z.d.server.dao.mysql.UserDaoImpl - 注销userAvatarDao
+1178 [main] INFO  c.z.d.s.s.impl.UserServiceImpl - 注销userAvatarDao
+1179 [main] INFO  c.z.d.s.s.impl.UserServiceImpl - 注销userAttributesDao
+1179 [main] INFO  c.z.d.server.dao.mysql.UserDaoImpl - 注销userAttributesDao
+1179 [main] INFO  c.z.d.s.s.impl.ActivityServiceImpl - 注销ActivityDao
+1180 [main] INFO  c.z.d.s.dao.mysql.ExerciseDaoImpl - 注销ActivityDao
+1180 [main] INFO  c.z.d.s.dao.mysql.ExerciseDaoImpl - 注销userDao
+1181 [main] INFO  c.z.d.s.s.impl.UserServiceImpl - 注销userDao
+1189 [main] INFO  c.z.d.server.dao.mysql.UserDaoImpl - 注销connectUserDao
+1189 [main] INFO  c.z.d.server.dao.mysql.UserDaoImpl - 注销oAuthUserMapDao
+1190 [main] INFO  c.z.d.s.s.impl.ExerciseServiceImpl - 注销exerciseDao
+1190 [main] INFO  c.z.d.s.s.impl.ActivityServiceImpl - 注销exerciseDao
+1191 [main] INFO  c.z.d.s.s.i.ApplicationPropertyServiceImpl - 注销ApplicationPropertyDao
+1194 [main] INFO  c.z.d.s.s.impl.AccessLogServiceImpl - 注销AccessLogDao
+1195 [main] INFO  c.z.d.s.s.i.UserRelationServiceImpl - 注销oAuthUserMapDao
+1195 [main] INFO  c.z.d.s.s.i.OAuthUserMapServiceImpl - 注销oAuthUserMapDao
+1195 [main] INFO  c.z.drip.server.dao.mysql.DaoHolder - 注销datasourceService
+1196 [main] INFO  c.z.d.s.s.impl.AnswerServiceImpl - 注销ExerciseGuideDao
+1197 [main] INFO  c.z.d.s.s.impl.UserServiceImpl - 注销connectUserDao
+1199 [main] INFO  c.z.d.server.servlet.ServiceHolder - 注销userRelationService
+1199 [main] INFO  c.z.d.s.s.i.UserRelationServiceImpl - 注销userService
+1200 [main] INFO  c.z.d.s.s.impl.UserServiceImpl - 注销applicationPropertyService
+1200 [main] INFO  c.z.d.server.servlet.ServiceHolder - 注销ApplicationPropertyService
+1201 [main] INFO  c.z.d.server.servlet.ServiceHolder - 注销AccessLogService
+1201 [main] INFO  c.z.d.server.servlet.ServiceHolder - 注销answerService
+1202 [main] INFO  c.z.d.s.s.impl.ActivityServiceImpl - 注销userService
+1202 [main] INFO  c.z.d.server.servlet.ServiceHolder - 注销UserService
+1203 [main] INFO  c.z.d.server.servlet.ServiceHolder - 注销ExerciseService
+1203 [main] INFO  c.z.d.server.servlet.ServiceHolder - 注销ActivityService
+1204 [main] INFO  c.z.d.server.servlet.ServiceHolder - 注销oAuthUserMapService
