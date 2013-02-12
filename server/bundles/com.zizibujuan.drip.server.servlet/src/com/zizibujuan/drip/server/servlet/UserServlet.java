@@ -239,8 +239,7 @@ public class UserServlet extends BaseServlet {
 		String pathInfo = req.getPathInfo();
 		if(pathInfo != null && !pathInfo.equals("/")){
 			Long localUserId = Long.valueOf(pathInfo.split("/")[1]);
-			Long mapUserId = Long.valueOf(req.getParameter("mapUserId"));
-			Map<String,Object> userInfo = userService.getPublicInfo(localUserId, mapUserId);
+			Map<String,Object> userInfo = userService.getPublicInfo(localUserId);
 			Long userRelationId = userRelationService.getRelationId(UserSession.getLocalUserId(req),localUserId);
 			if(userRelationId != null){
 				userInfo.put("userRelationId", userRelationId);

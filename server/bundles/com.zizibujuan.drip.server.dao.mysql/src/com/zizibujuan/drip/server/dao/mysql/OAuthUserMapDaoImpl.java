@@ -14,6 +14,20 @@ import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
  */
 public class OAuthUserMapDaoImpl extends AbstractDao implements OAuthUserMapDao {
 
+	private static final String SQL_GET_MAP_USER_INFO= "SELECT a.DBID \"mapUserId\"," +
+			"a.LOCAL_USER_ID \"localUserId\", " +
+			"a.CONNECT_USER_ID \"connectUserId\" " +
+			"FROM DRIP_OAUTH_USER_MAP a, DRIP_CONNECT_USER_INFO b" +
+			"WHERE " +
+			"b.SITE_ID=? AND " +
+			"b.USER_ID=? AND " +
+			"a.CONNECT_USER_ID = b.DBID";
+			
+	@Override
+	public Map<String, Object> getUserMapperInfo(int authSiteId, String authUserId) {
+		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_MAP_USER_INFO, authSiteId, authUserId);
+	}
+	
 	private static final String SQL_INSERT_AUTH_USER_MAP = "INSERT INTO DRIP_OAUTH_USER_MAP (" +
 			"LOCAL_USER_ID," +
 			"CONNECT_USER_ID," +

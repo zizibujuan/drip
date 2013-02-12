@@ -36,14 +36,13 @@ public interface UserService {
 	/**
 	 * 用户登录，主要是记录使用第三方网站进行登录。注意第三方用户的所有信息都是从本地获取，每天晚上定时从第三方同步用户信息。
 	 * @param localUserId 本网站用户标识
-	 * @param mapUserId 与第三方网站用户映射标识
+	 * @param connectUserId 本网站为第三方网站用户生成的用户标识
 	 * @param siteId 网站标识，参考 {@link OAuthConstants}
 	 * @return 如果系统中存在该用户信息则返回，否则返回空的map对象。
 	 * <pre>
 	 * 	map结构为：
 	 * 		id: 本地用户标识
-	 * 		mapUserId: 映射用户标识
-	 * 		site：与哪个网站的用户关联
+	 * 		siteId：与哪个网站的用户关联
 	 *  这些信息，如果是本地用户从数据库中获取，如果是第三方用户，则从返回的记录中直接获取，不走后台
 	 * 		email: 邮箱
 	 * 		mobile：手机号
@@ -62,7 +61,7 @@ public interface UserService {
 	 * 		answerCount： 习题总数 = 习题草稿数+发布的习题数
 	 * </pre>
 	 */
-	Map<String, Object> login(Long localUserId, Long mapUserId, int siteId);
+	Map<String, Object> login(Long localUserId, Long connectUserId, int siteId);
 
 	/**
 	 * 获取用户登录信息，返回到客户端的，所以不能包含用户隐私信息。
@@ -118,7 +117,7 @@ public interface UserService {
 	Map<String,Object> syncUserInfo(Map<String, Object> userInfo);
 
 	/**
-	 * 获取用户基本信息，是用户可以对外公开的信息，剔除掉了用户的隐私信息。
+	 * 获取可以公开的用户信息，这些信息会在其他用户的页面上显示，剔除掉了用户的隐私信息。
 	 * 因为用户信息存储在多个表中，这里将一些基本的可公开的用户信息组合在一起。<br/>
 	 * 返回的信息包含三类信息:
 	 * <ul>
@@ -129,8 +128,8 @@ public interface UserService {
 	 * 
 	 * <p>在界面上可以直接通过mapUserId获取用户信息，无需id</p>
 	 * @param localUserId 本网站用户标识
-	 * @param mapUserId 本网站用户与第三方用户的映射标识
-	 * @return 如果系统中存在该用户信息则返回，否则返回空的map对象。
+	 * @param localUserId 本地用户标识
+	 * @return 可以公开的用户信息。如果系统中存在该用户信息则返回，否则返回空的map对象。
 	 * <pre>
 	 * 	map结构为：
 	 * 		id: 本地用户标识，即localUserId
@@ -155,13 +154,6 @@ public interface UserService {
 	 * 			county：县
 	 * 		siteId:网站标识
 	 * </pre>
-	 */
-	Map<String, Object> getPublicInfo(Long localUserId, Long mapUserId);
-
-	/**
-	 * 获取可以公开的用户信息，这些信息会在其他用户的页面上显示。
-	 * @param localUserId 本地用户标识
-	 * @return 可以公开的用户信息。
 	 */
 	Map<String, Object> getPublicInfo(Long localUserId);
 

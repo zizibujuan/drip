@@ -16,7 +16,6 @@ import com.zizibujuan.drip.server.util.servlet.UserSession;
  * @author jinzw
  * @since 0.0.1
  */
-@Deprecated
 public class LoginCommand{
 	private static final String KEY_LOGIN = "login";
 	private static final String KEY_PASSWORD = "password";

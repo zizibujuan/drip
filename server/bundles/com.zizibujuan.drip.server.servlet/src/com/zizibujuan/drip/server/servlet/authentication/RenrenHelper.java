@@ -106,12 +106,12 @@ public class RenrenHelper {
 			userMapperInfo = userService.importUser(renrenUserInfo);
 		}
 		Long localUserId = Long.valueOf(userMapperInfo.get("localUserId").toString());
-		Long mapUserId = Long.valueOf(userMapperInfo.get("MAP_USER_ID").toString());
+		Long connectUserId = Long.valueOf(userMapperInfo.get("connectUserId").toString());
 		
 		// 记录登录次数，哪个帐号登录的就记在哪个下面。
 		// 这里调用肯定是用renren登录的。
-		// 采取晚上
-		Map<String,Object> userInfo = userService.login(localUserId, mapUserId, OAuthConstants.RENREN);
+		// 采取晚上同步用户信息的方式
+		Map<String,Object> userInfo = userService.login(localUserId, connectUserId, OAuthConstants.RENREN);
 		// 在用户session中保存从第三方网站过来的最新数据，而不是从本地的数据库中获取这些数据，
 		// 避免用户已经在第三方网站修改了用户信息，但是drip没能及时更新的问题。
 		// session中存储的值一部分来自drip，一部分来自第三方网站

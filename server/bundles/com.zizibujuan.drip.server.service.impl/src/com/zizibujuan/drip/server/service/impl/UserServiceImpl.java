@@ -12,7 +12,6 @@ import com.zizibujuan.drip.server.dao.UserAttributesDao;
 import com.zizibujuan.drip.server.dao.UserAvatarDao;
 import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.service.ApplicationPropertyService;
-import com.zizibujuan.drip.server.service.OAuthUserMapService;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.util.OAuthConstants;
 
@@ -54,44 +53,50 @@ public class UserServiceImpl implements UserService {
 			return null;
 		}else{
 			String userId = userInfo.get("id").toString();
-			userAttributesDao.updateLoginState(Long.valueOf(userId));
+			userAttributesDao.updateLoginState(Long.valueOf(userId), true);
 			return userInfo;
 		}
+	}
+	
+	//TODO:需要将获取本地用户信息和获取第三方用户信息的接口统一。
+	@Override
+	public Map<String, Object> login(Long localUserId, Long connectUserId, int siteId) {
+		// 如果localUserId与mapUserId相等，则从drip_user_info中获取用户信息
+		// 如果不相等，则从drip_connect_user_info中获取
+		boolean isLocalUser = (siteId == OAuthConstants.ZIZIBUJUAN);
+		userAttributesDao.updateLoginState(connectUserId, isLocalUser);
+		
+		Map<String,Object> userInfo = null;
+		if(isLocalUser){ // 本网站注册用户
+			// 获取基本信息和统计信息
+			userInfo = userDao.getSimple(localUserId);
+			userInfo.put("siteId", siteId);
+			// 获取头像信息
+			Map<String,Object> avatarInfo = userAvatarDao.get(connectUserId, isLocalUser);
+			userInfo.putAll(avatarInfo);
+			return userInfo;
+		}else{
+			// 第三方网站注册用户
+			// 获取基本信息
+			userInfo = userDao.getSimple(localUserId);
+			userInfo.put("siteId", siteId); // 注明是使用人人帐号登录的
+			// 获取头像信息
+			Map<String,Object> avatarInfo = userAvatarDao.get(connectUserId, isLocalUser);
+			userInfo.putAll(avatarInfo);
+			
+			// 只获取统计信息，用户的其余信息实时来自第三方网站
+			userInfo = userDao.getUserStatistics(localUserId);
+			return userInfo;
+		}
+		
 	}
 	
 	// 获取基本信息
 	// 获取统计信息
 	// 获取头像信息
-	// 重新审视localUserId和mapUserId，这里的设计约定，一个localUserId对应多个mapUserId
-	// mapUserId是全局唯一的标识
-	// FIXME：也许应该使用mapUserId唯一定位和存储，而不是部分地方存储localUserid
-	@Override
-	public Map<String, Object> getPublicInfo(Long localUserId, Long mapUserId) {
-		// TODO：需要缓存
-		Map<String,Object> userInfo = null;
-		if(userDao.isLocalUser(mapUserId)){
-			userInfo = userDao.getPublicInfo(mapUserId);
-			userInfo.put("mapUserId", mapUserId);
-		}else{
-			// TODO:获取用户家乡所在地和用户性别代码。将用户家乡所在地缓存
-			// 从propertyService中获取城市名称，该方法要支持缓存。
-			userInfo = connectUserDao.getPublicInfo(mapUserId);
-			String cityCode = (String) userInfo.get("homeCityCode");
-			if(cityCode != null && !cityCode.isEmpty()){
-				userInfo.put("homeCity", applicationPropertyService.getCity(cityCode));
-			}
-			
-			userInfo.put("id", localUserId);
-			Map<String,Object> statistics = userDao.getUserStatistics(localUserId);
-			userInfo.putAll(statistics);
-		}
-		Map<String,Object> avatarInfo = userAvatarDao.get(mapUserId);
-		userInfo.putAll(avatarInfo);
-		return userInfo;
-	}
-	
 	@Override
 	public Map<String, Object> getPublicInfo(Long localUserId) {
+		// TODO：需要缓存
 		Map<String,Object> userInfo = null;
 		// 先从映射关系表中获取信息。
 		Map<String, Object> mapUserInfo = oAuthUserMapDao.getRefUserMapperInfo(localUserId);
@@ -119,42 +124,6 @@ public class UserServiceImpl implements UserService {
 		Map<String,Object> avatarInfo = userAvatarDao.get(connectUserId, isLocalUser);
 		userInfo.putAll(avatarInfo);
 		return userInfo;
-	}
-	
-	//TODO:需要将获取本地用户信息和获取第三方用户信息的接口统一。
-	@Override
-	public Map<String, Object> login(Long localUserId, Long mapUserId, int siteId) {
-		// 如果localUserId与mapUserId相等，则从drip_user_info中获取用户信息
-		// 如果不相等，则从drip_connect_user_info中获取
-		userAttributesDao.updateLoginState(mapUserId);
-		
-		Map<String,Object> userInfo = null;
-		if(siteId == OAuthConstants.ZIZIBUJUAN){ // 本网站注册用户
-			// 获取基本信息和统计信息
-			userInfo = userDao.getSimple(localUserId);
-			userInfo.put("site", siteId); // 注明是使用人人帐号登录的
-			userInfo.put("mapUserId", mapUserId);
-			// 获取头像信息
-			Map<String,Object> avatarInfo = userAvatarDao.get(mapUserId);
-			userInfo.putAll(avatarInfo);
-			return userInfo;
-		}else{
-			// 第三方网站注册用户
-			// 获取基本信息
-			userInfo = userDao.getSimple(localUserId);
-			userInfo.put("site", siteId); // 注明是使用人人帐号登录的
-			userInfo.put("mapUserId", mapUserId);
-			// 获取头像信息
-			Map<String,Object> avatarInfo = userAvatarDao.get(mapUserId);
-			userInfo.putAll(avatarInfo);
-			
-			// 只获取统计信息，用户的其余信息实时来自第三方网站
-			userInfo = userDao.getUserStatistics(localUserId);
-			// 在session中使用id表示本地用户标识
-			userInfo.put("id", localUserId);
-			return userInfo;
-		}
-		
 	}
 	
 	// FIXME：调整导入用户逻辑，如果是使用第三方帐号第一次登录，则拷贝一份给第三方用户。

@@ -4,12 +4,29 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 
+import com.zizibujuan.drip.server.util.OAuthConstants;
+
 /**
  * 用户关联表 数据访问接口
  * @author jzw
  * @since 0.0.1
  */
 public interface OAuthUserMapDao {
+	
+
+	/**
+	 * 从帐号关联表中获取用户名
+	 * @param siteId 授权站点标识 {@link OAuthConstants}
+	 * @param userId 指定网站的用户标识
+	 * @return 本网站用户与第三方网站用户映射信息
+	 * <pre>
+	 * map结构：
+	 * 		mapUserId：关联用户标识
+	 * 		localUserId：本地用户标识
+	 * 		connectUserId：本网站为第三方网站用户生成的代理主键
+	 * </pre>
+	 */
+	Map<String,Object> getUserMapperInfo(int siteId, String userId);
 	
 	/**
 	 * 获取本地用户引用，一个本地用户会关联多个第三方网站或者本地网站用户，但是只有一个标明了引用该用户的信息，作为本地用户的基本信息。

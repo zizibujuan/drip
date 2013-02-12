@@ -28,6 +28,7 @@ define(["dojo/_base/declare",
 			var userInfo = this.data;
 			var localUserId = userInfo.id;
 			// FIXME:与MiniCard.js中的代码有重复的部分
+			// TODO:删除mapUserId
 			var userLinkSubfix = userInfo.id+"?mapUserId="+userInfo.mapUserId;
 			var displayName = userInfo.displayName || "";
 			var userActionLink = "/actions/"+ userLinkSubfix
