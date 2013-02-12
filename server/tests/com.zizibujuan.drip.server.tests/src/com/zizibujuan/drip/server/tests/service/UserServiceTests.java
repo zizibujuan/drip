@@ -1,6 +1,10 @@
 package com.zizibujuan.drip.server.tests.service;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -13,6 +17,7 @@ import org.junit.Test;
 import com.zizibujuan.drip.server.dao.mysql.DaoHolder;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.servlet.ServiceHolder;
+import com.zizibujuan.drip.server.servlet.authentication.Oauth2Helper;
 import com.zizibujuan.drip.server.util.OAuthConstants;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 
@@ -39,7 +44,7 @@ public class UserServiceTests {
 	 *  DELETE FROM DRIP_USER_AVATAR;
 	 */
 	/**
-	 * 导入到两个地方
+	 * TODO:没有测试和实现用户教育和工作经历
 	 */
 	@Test
 	public void testImportUser(){
@@ -52,7 +57,11 @@ public class UserServiceTests {
 		String userId = "X1234567890";
 		String nickName = "xman_nickName";
 		String loginName = "xman_loginName";
-		
+		String sex = "1";
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(2013, 1, 1);
+		Date birthDay = calendar.getTime();
+		String homeCityCode = "156130100";
 		
 		try{
 			Map<String, Object> userInfo = new HashMap<String, Object>();
@@ -60,6 +69,17 @@ public class UserServiceTests {
 			userInfo.put("userId", userId);
 			userInfo.put("loginName", loginName);
 			userInfo.put("nickName", nickName);
+			userInfo.put("sex", sex);
+			userInfo.put("birthDay", birthDay);
+			userInfo.put("homeCityCode", homeCityCode);
+			
+			// 头像
+			List<Map<String,Object>> avatarList = new ArrayList<Map<String,Object>>();
+			Oauth2Helper.addUserImage(avatarList,"tinyUrl","http://a",50,50);
+			Oauth2Helper.addUserImage(avatarList,"headUrl","http://b",100,100);
+			Oauth2Helper.addUserImage(avatarList,"mainUrl","http://c",200,200);
+			userInfo.put("avatar", avatarList);
+			
 			
 			// 确认一下数据都已经插入到各自的表中。
 			Map<String,Object> mapUserInfo = userService.importUser(userInfo);
@@ -69,12 +89,57 @@ public class UserServiceTests {
 			Assert.assertEquals(localUserId.longValue(), NumberUtils.toLong(result.get("id").toString()));
 			Assert.assertEquals(siteId, NumberUtils.toInt(result.get("siteId").toString()));
 			Assert.assertEquals(nickName, result.get("nickName").toString());
+			Assert.assertEquals(sex, result.get("sex").toString());
 			
+			Assert.assertEquals(homeCityCode, result.get("homeCityCode").toString());
+			@SuppressWarnings("unchecked")
+			Map<String, Object> homeCity = (Map<String, Object>) result.get("homeCity");
+			Assert.assertEquals("中国", homeCity.get("country").toString());
+			Assert.assertEquals("河北省", homeCity.get("province").toString());
+			Assert.assertEquals("石家庄", homeCity.get("city").toString());
+			
+			// 对比头像信息
+			Assert.assertEquals("http://a", result.get("smallImageUrl").toString());
+			Assert.assertEquals("http://b", result.get("largeImageUrl").toString());
+			Assert.assertEquals("http://c", result.get("largerImageUrl").toString());
+			
+			// 统计信息
+			Assert.assertEquals(0, Integer.valueOf(result.get("fanCount").toString()).intValue());
+			Assert.assertEquals(0, Integer.valueOf(result.get("followCount").toString()).intValue());
+			Assert.assertEquals(0, Integer.valueOf(result.get("exerDraftCount").toString()).intValue());
+			Assert.assertEquals(0, Integer.valueOf(result.get("exerPublishCount").toString()).intValue());
+			Assert.assertEquals(0, Integer.valueOf(result.get("answerCount").toString()).intValue());
 		}finally{
 			this.reset(userId, localUserId, connectUserId);
 		}
 		
 	}
+	/**
+	 * 导入第三网站的用户信息
+	 * @param userInfo 用户详细信息
+	 * <pre>
+	 * map结构
+	 * 		loginName:登录名
+	 * 		nickName:昵称
+	 * 		sex:性别代码
+	 * 		homeCityCode:家乡所在城市编码
+	 * 		homeCity:家乡所在城市名称
+	 * 		siteId：第三方网站标识 {@link OAuthConstants}
+	 * 					如果是使用第三方网站的用户登录，则是第三方网站用户标识；如果是用本网站用户登录，则是本网站用户标识
+	 * 		authUserId: 第三方网站的用户标识
+	 * 		avatar：用户头像列表
+	 * 			urlName:头像名称
+	 * 			url：头像链接
+	 * 			width：头像宽度
+	 * 			height：头像高度
+	 * </pre>
+	 * @return 该网站的用户标识
+	 * <pre>
+	 *  返回map的结构
+	 * 		LOCAL_USER_ID: 本网站用户标识
+	 * 		MAP_USER_ID: 映射标识
+	 * </pre>
+	 */
 	
 	/**
 	 * 删除用户信息
@@ -107,33 +172,7 @@ public class UserServiceTests {
 		DatabaseUtil.update(dataSource, sql, connectUserId, false);
 	}
 
-	/**
-	 * 导入第三网站的用户信息
-	 * @param userInfo 用户详细信息
-	 * <pre>
-	 * map结构
-	 * 		loginName:登录名
-	 * 		nickName:昵称
-	 * 		sex:性别代码
-	 * 		headUrl:头像链接
-	 * 		homeCityCode:家乡所在城市编码
-	 * 		homeCity:家乡所在城市名称
-	 * 		siteId：第三方网站标识 {@link OAuthConstants}
-	 * 					如果是使用第三方网站的用户登录，则是第三方网站用户标识；如果是用本网站用户登录，则是本网站用户标识
-	 * 		authUserId: 第三方网站的用户标识
-	 * 		avatar：用户头像列表
-	 * 			urlName:头像名称
-	 * 			url：头像链接
-	 * 			width：头像宽度
-	 * 			height：头像高度
-	 * </pre>
-	 * @return 该网站的用户标识
-	 * <pre>
-	 *  返回map的结构
-	 * 		LOCAL_USER_ID: 本网站用户标识
-	 * 		MAP_USER_ID: 映射标识
-	 * </pre>
-	 */
+	
 	
 	
 	 /**

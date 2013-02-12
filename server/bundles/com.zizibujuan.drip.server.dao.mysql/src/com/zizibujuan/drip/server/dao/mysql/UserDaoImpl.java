@@ -201,7 +201,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			// 但是为了可以顺利迁移，最好存储connectUserId
 			userRelationDao.watch(con, connectUserId, connectUserId);
 			if(avatarList != null && avatarList.size()>0){
-				userAvatarDao.add(con, connectUserId, avatarList);
+				userAvatarDao.add(con, connectUserId, avatarList, false);
 			}
 			con.commit();
 		}catch(SQLException e){

@@ -5,6 +5,8 @@
 
 delete from DRIP_CODE_CITY;
 
+-- 国家
+insert into DRIP_CODE_CITY (DBID,CODE,VAL,CREATE_TIME) VALUES (1000, '156000000', '中国', now());
 
 -- 省
 insert into DRIP_CODE_CITY (DBID,CODE,VAL,CREATE_TIME) VALUES (1011, '156110000', '北京市', now());

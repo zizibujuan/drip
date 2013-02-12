@@ -105,6 +105,10 @@ public class UserServiceImpl implements UserService {
 			// TODO:获取用户家乡所在地和用户性别代码。将用户家乡所在地缓存
 			// 从propertyService中获取城市名称，该方法要支持缓存。
 			userInfo = connectUserDao.getPublicInfo(connectUserId);
+			String cityCode = (String) userInfo.get("homeCityCode");
+			if(cityCode != null && !cityCode.isEmpty()){
+				userInfo.put("homeCity", applicationPropertyService.getCity(cityCode));
+			}
 			// 这个统计数据是所有关联用户和本网站用户的数据之和。
 			Map<String,Object> statistics = userDao.getUserStatistics(localUserId);
 			userInfo.putAll(statistics);

@@ -91,7 +91,7 @@ public interface UserService {
 	 * 		nickName:昵称
 	 * 		realName:真实姓名
 	 * 		sex:性别代码
-	 * 		headUrl:头像链接
+	 * 		birthDay:生日 java.util.Date
 	 * 		homeCityCode:家乡所在城市编码
 	 * 		homeCity:家乡所在城市名称
 	 * 		siteId：第三方网站标识 {@link OAuthConstants}
@@ -134,8 +134,8 @@ public interface UserService {
 	 * <pre>
 	 * 	map结构为：
 	 * 		id: 本地用户标识，即localUserId
-	 * 		mapUserId：用户映射标识
-	 * 		displayName: 显示名
+	 * 		connectUserId：本网站为第三方用户生成的代理主键
+	 * 		nickName: 显示名
 	 * 		fanCount：粉丝数
 	 * 		followCount: 关注人数
 	 * 		exerDraftCount： 习题草稿数
@@ -153,7 +153,7 @@ public interface UserService {
 	 * 			province：省
 	 * 			city：市
 	 * 			county：县
-	 * 		fromSite:网站标识
+	 * 		siteId:网站标识
 	 * </pre>
 	 */
 	Map<String, Object> getPublicInfo(Long localUserId, Long mapUserId);

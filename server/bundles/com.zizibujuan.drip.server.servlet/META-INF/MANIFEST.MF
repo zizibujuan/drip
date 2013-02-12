@@ -25,7 +25,8 @@ Import-Package: com.zizibujuan.drip.server.service,
 Bundle-ActivationPolicy: lazy
 Require-Bundle: javax.servlet;bundle-version="3.0.0"
 Service-Component: OSGI-INF/*.xml
-Export-Package: com.zizibujuan.drip.server.servlet
+Export-Package: com.zizibujuan.drip.server.servlet,
+ com.zizibujuan.drip.server.servlet.authentication
 Bundle-ClassPath: .,
  lib/commons-fileupload-1.2.2.jar,
  lib/renren/json-simple-1.1.1.jar,

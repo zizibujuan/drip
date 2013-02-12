@@ -132,8 +132,8 @@ public class RenrenHelper {
 		String name = (String)renrenUser.get("name");
 		int sex = Integer.valueOf(renrenUser.get("sex").toString());
 		String birthday = (String)renrenUser.get("birthday");
-		String headurl = (String) renrenUser.get("headurl");
 		JSONObject homeTownLocation = (JSONObject) renrenUser.get("hometown_location");
+		// TODO:导入教育和工作经历
 		JSONArray workHistory = (JSONArray) renrenUser.get("work_history");
 		JSONArray universityHistory = (JSONArray) renrenUser.get("university_history");
 		
@@ -148,7 +148,6 @@ public class RenrenHelper {
 		renrenUserInfo.put("loginName", name);
 		renrenUserInfo.put("sex", getLocalSexCodeByRenren(sex)); //表示性别，值1表示男性；值0表示女性
 		renrenUserInfo.put("birthDay", convertBirthdayOfRenren(birthday));
-		renrenUserInfo.put("headUrl", headurl);
 		renrenUserInfo.put("homeCityCode", getLocalCityCodeByRenren(country, province, city));
 		
 		String homeCity = (country==null?"":country+" ")+province+ " " +city;
@@ -162,10 +161,11 @@ public class RenrenHelper {
 		// 用户头像列表
 		String tinyurl = (String)renrenUser.get("tinyurl");
 		String mainurl = (String)renrenUser.get("mainurl");
+		String headurl = (String) renrenUser.get("headurl");
 		List<Map<String,Object>> avatarList = new ArrayList<Map<String,Object>>();
-		addUserImage(avatarList,"tinyUrl",tinyurl,50,50);
-		addUserImage(avatarList,"headUrl",headurl,100,100);
-		addUserImage(avatarList,"mainUrl",mainurl,200,200);
+		Oauth2Helper.addUserImage(avatarList,"tinyUrl",tinyurl,50,50);
+		Oauth2Helper.addUserImage(avatarList,"headUrl",headurl,100,100);
+		Oauth2Helper.addUserImage(avatarList,"mainUrl",mainurl,200,200);
 		renrenUserInfo.put("avatar", avatarList);
 		
 		return renrenUserInfo;
@@ -234,22 +234,9 @@ public class RenrenHelper {
 		if(sex == 1){
 			return "1";
 		}else if(sex == 0){
-			return "0";
+			return "2";
 		}
 		logger.error("没有为“"+sex+"”找到对应的编码");
 		return null;
-	}
-	
-	private static void addUserImage(List<Map<String, Object>> avatarList,
-			String urlName,
-			String url,
-			int width,
-			int height) {
-		Map<String,Object> tinyUrlMap = new HashMap<String, Object>();
-		tinyUrlMap.put("urlName", urlName);
-		tinyUrlMap.put("url", url);
-		tinyUrlMap.put("width", width);
-		tinyUrlMap.put("height", height);
-		avatarList.add(tinyUrlMap);
 	}
 }

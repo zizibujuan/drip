@@ -13,15 +13,16 @@ import java.util.Map;
  * @since 0.0.1
  */
 public interface UserAvatarDao {
-
+	 
 	/**
 	 * 存储用户头像列表。
 	 * @param con 数据库链接
-	 * @param mapUserId drip用户与第三方网站用户映射的标识
+	 * @param userId 本网站用户标识/本网站为第三方网站用户生成的代理主键
 	 * @param avatarList 头像列表
+	 * @param isLocalUser 是否为在本网站注册的用户,<code>true</code>表示是；<code>false</code>表示否
 	 * @throws SQLException 
 	 */
-	void add(Connection con, Long mapUserId, List<Map<String, Object>> avatarList) throws SQLException;
+	void add(Connection con, Long userId, List<Map<String, Object>> avatarList, boolean isLocalUser) throws SQLException;
 
 	/**
 	 * 获取用户头像信息

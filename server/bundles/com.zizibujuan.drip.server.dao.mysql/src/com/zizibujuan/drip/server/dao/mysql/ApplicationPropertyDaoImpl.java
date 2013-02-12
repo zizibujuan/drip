@@ -64,7 +64,7 @@ public class ApplicationPropertyDaoImpl extends AbstractDao implements
 		List<String> levels = cr.parse(cityCode);
 		int size = levels.size();
 		for(int i = 0; i < size; i++){
-			String value = DatabaseUtil.queryForString(getDataSource(), SQL_GET_CITY_VAL_BY_CODE, levels.get(0));
+			String value = DatabaseUtil.queryForString(getDataSource(), SQL_GET_CITY_VAL_BY_CODE, levels.get(i));
 			result.put(key[i], value);
 		}
 		return result;
