@@ -23,7 +23,7 @@ public interface OAuthUserMapService {
 	 * 		connectUserId：本网站为第三方网站用户生成的代理主键
 	 * </pre>
 	 */
-	Map<String,Object> getUserMapperInfo(int authSiteId, String oauthUserId);
+	Map<String,Object> getUserMapperInfo(int siteId, String userId);
 	
 	/**
 	 * 从帐号关联表中获取用户名

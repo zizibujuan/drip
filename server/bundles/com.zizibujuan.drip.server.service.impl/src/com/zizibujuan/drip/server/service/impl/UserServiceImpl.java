@@ -101,8 +101,11 @@ public class UserServiceImpl implements UserService {
 		// 先从映射关系表中获取信息。
 		Map<String, Object> mapUserInfo = oAuthUserMapDao.getRefUserMapperInfo(localUserId);
 		Long connectUserId = Long.valueOf(mapUserInfo.get("connectUserId").toString());
+		int siteId = Integer.valueOf(mapUserInfo.get("siteId").toString());
+		
 		boolean isLocalUser = true;
-		if(connectUserId == localUserId){
+		// 不能通过判断connectUserId == localUserId来证明是不是本地用户，万一出现巧合，两个主键一致呢。
+		if(siteId == OAuthConstants.ZIZIBUJUAN){
 			// 是在本网站注册的用户
 			throw new UnsupportedOperationException();
 			//userInfo = userDao.getPublicInfo(localUserId);

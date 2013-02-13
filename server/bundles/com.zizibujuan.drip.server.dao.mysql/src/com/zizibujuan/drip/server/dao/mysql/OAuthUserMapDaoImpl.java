@@ -17,12 +17,11 @@ public class OAuthUserMapDaoImpl extends AbstractDao implements OAuthUserMapDao 
 	private static final String SQL_GET_MAP_USER_INFO= "SELECT a.DBID \"mapUserId\"," +
 			"a.LOCAL_USER_ID \"localUserId\", " +
 			"a.CONNECT_USER_ID \"connectUserId\" " +
-			"FROM DRIP_OAUTH_USER_MAP a, DRIP_CONNECT_USER_INFO b" +
+			"FROM DRIP_OAUTH_USER_MAP a, DRIP_CONNECT_USER_INFO b " +
 			"WHERE " +
 			"b.SITE_ID=? AND " +
 			"b.USER_ID=? AND " +
 			"a.CONNECT_USER_ID = b.DBID";
-			
 	@Override
 	public Map<String, Object> getUserMapperInfo(int authSiteId, String authUserId) {
 		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_MAP_USER_INFO, authSiteId, authUserId);
@@ -44,13 +43,18 @@ public class OAuthUserMapDaoImpl extends AbstractDao implements OAuthUserMapDao 
 		return DatabaseUtil.queryForLong(getDataSource(), SQL_GET_LOCAL_USER_ID_BY_MAP_USER_ID, mapUserId);
 	}
 	
-	private static final String SQL_GET_REF_USER_INFO = "SELECT DBID \"mapUserId\"," +
-			"LOCAL_USER_ID \"localUserId\", " +
-			"CONNECT_USER_ID \"connectUserId\" " +
-			"FROM DRIP_OAUTH_USER_MAP " +
-			"WHERE LOCAL_USER_ID=? AND REF_USER_INFO=?";
+	private static final String SQL_GET_REF_USER_INFO = "SELECT a.DBID \"mapUserId\"," +
+			"a.LOCAL_USER_ID \"localUserId\"," +
+			"a.CONNECT_USER_ID \"connectUserId\"," +
+			"b.SITE_ID \"siteId\" " +
+			"FROM DRIP_OAUTH_USER_MAP a, DRIP_CONNECT_USER_INFO b " +
+			"WHERE " +
+			"a.LOCAL_USER_ID=? AND " +
+			"a.REF_USER_INFO=? AND " +
+			"a.CONNECT_USER_ID = b.DBID";
 	@Override
 	public Map<String, Object> getRefUserMapperInfo(Long localUserId) {
 		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_REF_USER_INFO, localUserId, true);
 	}
+	
 }

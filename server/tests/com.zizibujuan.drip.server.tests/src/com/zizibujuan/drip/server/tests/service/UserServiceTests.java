@@ -1,32 +1,18 @@
 package com.zizibujuan.drip.server.tests.service;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import javax.sql.DataSource;
 
 import junit.framework.Assert;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.junit.Test;
 
-import com.zizibujuan.drip.server.dao.mysql.DaoHolder;
-import com.zizibujuan.drip.server.service.UserService;
-import com.zizibujuan.drip.server.servlet.ServiceHolder;
-import com.zizibujuan.drip.server.servlet.authentication.Oauth2Helper;
-import com.zizibujuan.drip.server.util.OAuthConstants;
-import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
-
 /**
  * 用户服务测试用例
  * @author jzw
  * @since 0.0.1
  */
-public class UserServiceTests {
+public class UserServiceTests extends AbstractUserTests{
 
 	// FIXME：导入后发现缺少信息，则提示补充。
 	/**
@@ -48,41 +34,8 @@ public class UserServiceTests {
 	 */
 	@Test
 	public void testImportUser(){
-		UserService userService = ServiceHolder.getDefault().getUserService();
-		
-		Long localUserId = null;
-		Long connectUserId = null;
-		
-		int siteId = OAuthConstants.RENREN;
-		String userId = "X1234567890";
-		String nickName = "xman_nickName";
-		String loginName = "xman_loginName";
-		String sex = "1";
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(2013, 1, 1);
-		Date birthDay = calendar.getTime();
-		String homeCityCode = "156130100";
-		
 		try{
-			Map<String, Object> userInfo = new HashMap<String, Object>();
-			userInfo.put("siteId", siteId);
-			userInfo.put("userId", userId);
-			userInfo.put("loginName", loginName);
-			userInfo.put("nickName", nickName);
-			userInfo.put("sex", sex);
-			userInfo.put("birthDay", birthDay);
-			userInfo.put("homeCityCode", homeCityCode);
-			
-			// 头像
-			List<Map<String,Object>> avatarList = new ArrayList<Map<String,Object>>();
-			Oauth2Helper.addUserImage(avatarList,"tinyUrl","http://a",50,50);
-			Oauth2Helper.addUserImage(avatarList,"headUrl","http://b",100,100);
-			Oauth2Helper.addUserImage(avatarList,"mainUrl","http://c",200,200);
-			userInfo.put("avatar", avatarList);
-			
-			
-			// 确认一下数据都已经插入到各自的表中。
-			Map<String,Object> mapUserInfo = userService.importUser(userInfo);
+			Map<String, Object> mapUserInfo = importUser();
 			localUserId = Long.valueOf(mapUserInfo.get("localUserId").toString());
 			connectUserId = Long.valueOf(mapUserInfo.get("connectUserId").toString());
 			Map<String,Object> result = userService.getPublicInfo(localUserId);
@@ -111,7 +64,7 @@ public class UserServiceTests {
 			Assert.assertEquals(0, Integer.valueOf(result.get("exerPublishCount").toString()).intValue());
 			Assert.assertEquals(0, Integer.valueOf(result.get("answerCount").toString()).intValue());
 		}finally{
-			this.reset(userId, localUserId, connectUserId);
+			super.reset();
 		}
 		
 	}
@@ -141,41 +94,7 @@ public class UserServiceTests {
 	 * 		MAP_USER_ID: 映射标识
 	 * </pre>
 	 */
-	
-	/**
-	 * 删除用户信息
-	 * @param userId 第三方网站的用户标识
-	 */
-	private void reset(String oauthUserId, Long localUserId, Long connectUserId){
-		DataSource dataSource = DaoHolder.getDefault().getDataSourceService().getDataSource();
-		
-		// 删除关联信息标识
-		String sql = "DELETE FROM DRIP_OAUTH_USER_MAP WHERE LOCAL_USER_ID=? AND CONNECT_USER_ID = ?";
-		DatabaseUtil.update(dataSource, sql, localUserId, connectUserId);
-		
-		// 删除存储的第三方网站用户信息
-		sql = "DELETE FROM DRIP_CONNECT_USER_INFO WHERE USER_ID = ?";
-		DatabaseUtil.update(dataSource, sql, oauthUserId);
-		
-		// 删除本网站用户信息
-		sql = "DELETE FROM DRIP_USER_INFO WHERE DBID = ?";
-		DatabaseUtil.update(dataSource, sql, localUserId);
-		
-		sql = "DELETE FROM DRIP_USER_ATTRIBUTES WHERE USER_ID = ? AND IS_LOCAL_USER = ?";
-		DatabaseUtil.update(dataSource, sql, connectUserId, false);
-		
-		// 取消关注自己
-		sql = "DELETE FROM DRIP_USER_RELATION WHERE USER_ID = ? AND WATCH_USER_ID = ?";
-		DatabaseUtil.update(dataSource, sql, connectUserId, connectUserId);
-		
-		// 删除用户头像
-		sql = "DELETE FROM DRIP_USER_AVATAR WHERE USER_ID = ? AND IS_LOCAL_USER = ?";
-		DatabaseUtil.update(dataSource, sql, connectUserId, false);
-	}
 
-	
-	
-	
 	 /**
 	 * 获取用户基本信息，是用户可以对外公开的信息，剔除掉了用户的隐私信息。
 	 * 因为用户信息存储在多个表中，这里将一些基本的可公开的用户信息组合在一起。<br/>
@@ -221,41 +140,9 @@ public class UserServiceTests {
 	 */
 	@Test
 	public void testLogin_Oauth(){
-		UserService userService = ServiceHolder.getDefault().getUserService();
-		
-		Long localUserId = null;
-		Long connectUserId = null;
-		
-		int siteId = OAuthConstants.RENREN;
-		String userId = "X1234567890";
-		String nickName = "xman_nickName";
-		String loginName = "xman_loginName";
-		String sex = "1";
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(2013, 1, 1);
-		Date birthDay = calendar.getTime();
-		String homeCityCode = "156130100";
 		
 		try{
-			Map<String, Object> userInfo = new HashMap<String, Object>();
-			userInfo.put("siteId", siteId);
-			userInfo.put("userId", userId);
-			userInfo.put("loginName", loginName);
-			userInfo.put("nickName", nickName);
-			userInfo.put("sex", sex);
-			userInfo.put("birthDay", birthDay);
-			userInfo.put("homeCityCode", homeCityCode);
-			
-			// 头像
-			List<Map<String,Object>> avatarList = new ArrayList<Map<String,Object>>();
-			Oauth2Helper.addUserImage(avatarList,"tinyUrl","http://a",50,50);
-			Oauth2Helper.addUserImage(avatarList,"headUrl","http://b",100,100);
-			Oauth2Helper.addUserImage(avatarList,"mainUrl","http://c",200,200);
-			userInfo.put("avatar", avatarList);
-			
-			
-			// 确认一下数据都已经插入到各自的表中。
-			Map<String,Object> mapUserInfo = userService.importUser(userInfo);
+			Map<String, Object> mapUserInfo = importUser();
 			localUserId = Long.valueOf(mapUserInfo.get("localUserId").toString());
 			connectUserId = Long.valueOf(mapUserInfo.get("connectUserId").toString());
 			
@@ -309,7 +196,7 @@ public class UserServiceTests {
 			Assert.assertEquals(0, Integer.valueOf(result.get("answerCount").toString()).intValue());
 			
 		}finally{
-			this.reset(userId, localUserId, connectUserId);
+			super.reset();
 		}
 	}
 }

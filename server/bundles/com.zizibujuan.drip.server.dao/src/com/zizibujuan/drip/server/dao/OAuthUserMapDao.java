@@ -37,6 +37,7 @@ public interface OAuthUserMapDao {
 	 * 		mapUserId：关联用户标识
 	 * 		localUserId：本地用户标识
 	 * 		connectUserId：本网站为第三方网站用户生成的代理主键
+	 * 		siteId: 网站标识
 	 * </pre>
 	 */
 	Map<String, Object> getRefUserMapperInfo(Long localUserId);
