@@ -88,23 +88,24 @@ public class RenrenHelper {
 		//调用人人网API获得用户信息
 		RenrenApiClient apiClient = new RenrenApiClient(accessToken, true);
 		int rrUid = apiClient.getUserService().getLoggedInUser();
-		String fields = "name,sex,birthday,tinyurl,headurl,mainurl,hometown_location,work_history,university_history";
-		JSONArray userInfoArray = apiClient.getUserService().getInfo(String.valueOf(rrUid), fields);
-		logger.info("fields:"+userInfoArray.toJSONString());
 		
-		if(userInfoArray == null || userInfoArray.size() == 0){
-			logger.error("从人人网获取与access token相关联的用户信息失败");
-			throw new Oauth2Exception("从人人网获取与access token相关联的用户信息失败");
-		}
-		
-		JSONObject currentUser = (JSONObject) userInfoArray.get(0);
-		//判断帐号关联表里有没有现成的关联
 		Map<String,Object> userMapperInfo = oAuthUserMapService.getUserMapperInfo(OAuthConstants.RENREN, rrUid);
-		
+		//判断帐号关联表里有没有现成的关联
 		if(userMapperInfo.isEmpty()){
+			String fields = "name,sex,birthday,tinyurl,headurl,mainurl,hometown_location,work_history,university_history";
+			JSONArray userInfoArray = apiClient.getUserService().getInfo(String.valueOf(rrUid), fields);
+			logger.info("fields:" + userInfoArray.toJSONString());
+			
+			if(userInfoArray == null || userInfoArray.size() == 0){
+				logger.error("从人人网获取与access token相关联的用户信息失败");
+				throw new Oauth2Exception("从人人网获取与access token相关联的用户信息失败");
+			}
+			
+			JSONObject currentUser = (JSONObject) userInfoArray.get(0);
 			Map<String, Object> renrenUserInfo = renrenUserToDripUser(currentUser);
 			userMapperInfo = userService.importUser(renrenUserInfo);
 		}
+		
 		Long localUserId = Long.valueOf(userMapperInfo.get("localUserId").toString());
 		Long connectUserId = Long.valueOf(userMapperInfo.get("connectUserId").toString());
 		
