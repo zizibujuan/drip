@@ -43,8 +43,8 @@ require(["dojo/ready",
 		// 在顶部用户信息区域显示
 		var topProfileImage = dom.byId("topProfileImage");
 		topProfileImage.src = userInfo.tinyUrl;
-		topProfileImage.alt = userInfo.displayName;
-		dom.byId("topUserName").innerHTML = userInfo.displayName;
+		topProfileImage.alt = userInfo.nickName;
+		dom.byId("topUserName").innerHTML = userInfo.nickName;
 	});
 	
 	ready(function(){
