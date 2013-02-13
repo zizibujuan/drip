@@ -31,6 +31,7 @@ define("drip/MiniCard", ["dojo/_base/declare",
 			this.inherited(arguments);
 		},
 		
+		// TODO:删除mapUserId
 		update: function(localUserId, mapUserId){
 			// summary:
 			//		更新用户信息

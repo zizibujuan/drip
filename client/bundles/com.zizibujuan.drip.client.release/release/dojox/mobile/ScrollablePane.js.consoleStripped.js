@@ -1,7 +1,7 @@
 define("dojox/mobile/ScrollablePane", [
 	"dojo/_base/array",
 	"dojo/_base/declare",
-	"dojo/_base/sniff",
+	"dojo/sniff",
 	"dojo/_base/window",
 	"dojo/dom",
 	"dojo/dom-construct",

@@ -233,8 +233,8 @@ define("drip/Activity", ["dojo/_base/declare",
 			
 			0 && console.log("activity node data:",this.data);
 			var localUserId = this.data.localUserId;
+			// TODO:删除mapUserId
 			var mapUserId = this.data.mapUserId;
-			debugger;
 			// 为头像和用户名绑定mouseover事件
 			on(this.userLinkNode,"mouseover", lang.hitch(this, function(e){
 				this.miniCard.show(e.target, localUserId, mapUserId);

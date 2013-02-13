@@ -155,7 +155,7 @@ define("dojox/mobile/scrollable", [
 				// Flag for using webkit transition on transform, instead of animation + keyframes.
 				// (keyframes create a slight delay before the slide animation...)
 				if(!this._useTopLeft){
-					this._useTransformTransition = this.scrollType ? this.scrollType === 3 : has("iphone") >= 6;
+					this._useTransformTransition = this.scrollType ? this.scrollType === 3 : has("ios") >= 6;
 				}
 				if(!this._useTopLeft){
 					if(this._useTransformTransition){
@@ -253,8 +253,7 @@ define("dojox/mobile/scrollable", [
 			//		will be the new height.
 
 			// moved from init() to support dynamically added fixed bars
-			this._appFooterHeight = (this.fixedFooterHeight && !this.isLocalFooter) ?
-				this.fixedFooterHeight : 0;
+			this._appFooterHeight = (this._fixedAppFooter) ? this._fixedAppFooter.offsetHeight : 0;
 			if(this.isLocalHeader){
 				this.containerNode.style.marginTop = this.fixedHeaderHeight + "px";
 			}
