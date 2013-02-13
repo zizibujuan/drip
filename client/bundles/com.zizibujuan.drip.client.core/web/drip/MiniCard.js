@@ -42,7 +42,7 @@ define(["dojo/_base/declare",
 				
 				console.log("userInfo:", userInfo);
 				var userLinkSubfix = userInfo.id+"?mapUserId="+userInfo.mapUserId;
-				var displayName = userInfo.displayName || "";
+				var displayName = userInfo.nickName || "";
 				var userActionLink = "/actions/"+ userLinkSubfix
 				
 				this.userImgLinkNode.href =  userActionLink;

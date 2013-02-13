@@ -304,7 +304,7 @@ define(["dojo/_base/declare",
 			var data = this.data;
 			console.log("单条活动记录：",data);
 			
-			var userName = data.userInfo.displayName;
+			var userName = data.userInfo.nickName;
 			this.userInfo.innerHTML = userName;
 			this.action.innerHTML = classCode.ActionTypeMap[data.actionType];
 			this.time.innerHTML = prettyDate.pretty(data.createTime);

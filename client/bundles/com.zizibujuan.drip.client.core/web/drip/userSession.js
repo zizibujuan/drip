@@ -43,9 +43,9 @@ define(["dojo/dom",
 			var aImg = domConstruct.create("a",{href:href},profileDiv);
 			// 系统中给出一个默认的头像
 			if(!user.headUrl)user.headUrl = "";
-			var imgUser = domConstruct.create("img",{alt:user.displayName,src:user.headUrl,width:"80px",height:"80px"},aImg);
+			var imgUser = domConstruct.create("img",{alt:user.nickName,src:user.headUrl,width:"80px",height:"80px"},aImg);
 			
-			var aLabel = domConstruct.create("a",{href:href,alt:user.displayName,innerHTML:user.displayName},profileDiv);
+			var aLabel = domConstruct.create("a",{href:href,alt:user.nickName,innerHTML:user.nickName},profileDiv);
 			
 			// 粉丝数
 			var aFanCount = domConstruct.create("a",{href:"#"}, profileDiv);
