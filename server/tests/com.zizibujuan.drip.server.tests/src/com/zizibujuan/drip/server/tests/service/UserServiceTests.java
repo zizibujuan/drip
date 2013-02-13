@@ -33,7 +33,7 @@ public class UserServiceTests extends AbstractUserTests{
 	 * TODO:没有测试和实现用户教育和工作经历
 	 */
 	@Test
-	public void testImportUser(){
+	public void testGetPublicInfo(){
 		try{
 			Map<String, Object> mapUserInfo = importUser();
 			localUserId = Long.valueOf(mapUserInfo.get("localUserId").toString());

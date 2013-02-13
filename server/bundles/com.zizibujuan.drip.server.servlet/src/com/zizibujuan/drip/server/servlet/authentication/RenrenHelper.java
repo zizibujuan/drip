@@ -156,8 +156,8 @@ public class RenrenHelper {
 			homeCity = null;
 		}
 		renrenUserInfo.put("homeCity", homeCity);
-		renrenUserInfo.put("authSiteId", OAuthConstants.RENREN);
-		renrenUserInfo.put("authUserId", rrUid);
+		renrenUserInfo.put("siteId", OAuthConstants.RENREN);
+		renrenUserInfo.put("userId", rrUid);
 		
 		// 用户头像列表
 		String tinyurl = (String)renrenUser.get("tinyurl");
