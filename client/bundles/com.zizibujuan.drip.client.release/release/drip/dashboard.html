@@ -41,9 +41,10 @@ require(["dojo/ready",
 		console.log("登录用户信息:", userInfo);
 		// 在右侧用户信息区域显示
 		var profileImg = dom.byId("profileImage");
-		profileImg.alt = userInfo.displayName;
+		var displayName = userInfo.nickName;
+		profileImg.alt = displayName;
 		profileImg.src = userInfo.largeImageUrl;
-		dom.byId("userName").innerHTML = userInfo.displayName;
+		dom.byId("userName").innerHTML = displayName;
 		dom.byId("follow_count").innerHTML = userInfo.followCount;
 		dom.byId("fan_count").innerHTML = userInfo.fanCount;
 		// 在页面顶级tab中显示
@@ -52,12 +53,13 @@ require(["dojo/ready",
 		// 在顶部用户信息区域显示
 		var topProfileImage = dom.byId("topProfileImage");
 		topProfileImage.src = userInfo.smallImageUrl;
-		topProfileImage.alt = userInfo.displayName;
-		dom.byId("topUserName").innerHTML = userInfo.displayName;
+		topProfileImage.alt = displayName;
+		dom.byId("topUserName").innerHTML = displayName;
 		
 		
 		// 在关注和粉丝的链接上加上登录者的用户标识
-		dom.byId("following_link").href = "/following/" + userInfo.id;//切记：出现在rest链接中的，只能是本地用户标识，而不是第三方网站或映射用户标识
+		// 切记：出现在rest链接中的，只能是本地用户标识，而不是第三方网站或映射用户标识
+		dom.byId("following_link").href = "/following/" + userInfo.id;
 		dom.byId("follower_link").href = "/follower/" + userInfo.id;
 	});
 	
