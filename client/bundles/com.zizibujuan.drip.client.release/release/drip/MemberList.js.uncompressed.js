@@ -32,7 +32,7 @@ define("drip/MemberList", ["dojo/_base/declare",
 			// FIXME:与MiniCard.js中的代码有重复的部分
 			// TODO:删除mapUserId
 			var userLinkSubfix = userInfo.id+"?mapUserId="+userInfo.mapUserId;
-			var displayName = userInfo.displayName || "";
+			var displayName = userInfo.nickName || "";
 			var userActionLink = "/actions/"+ userLinkSubfix
 			
 			this.userImgLinkNode.href =  userActionLink;

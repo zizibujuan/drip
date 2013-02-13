@@ -63,11 +63,11 @@ define("drip/Header", ["dojo/_base/declare",
 			// 显示用户头像，用户名和退出链接
 			userSession.getLoggedUserInfo().then(lang.hitch(this,function(userInfo){
 				this.userNode.href="#"; //TODO：进入用户自己的活动列表
-				this.userImageNode.alt = userInfo.displayName;
+				this.userImageNode.alt = userInfo.nickName;
 				if(userInfo.tinyUrl){
 					this.userImageNode.src = userInfo.tinyUrl;
 				}
-				this.userNameNode.innerHTML = userInfo.displayName;
+				this.userNameNode.innerHTML = userInfo.nickName;
 				
 		        on(this.logoutNode, "click", function(e){
 		        	userSession.logout();
