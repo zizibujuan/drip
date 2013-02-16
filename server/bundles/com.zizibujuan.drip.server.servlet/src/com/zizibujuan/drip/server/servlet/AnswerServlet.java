@@ -54,7 +54,7 @@ public class AnswerServlet extends BaseServlet {
 		if(pathInfo == null || pathInfo.equals("/")){
 			Map<String,Object> data = RequestUtil.fromJsonObject(req);
 			Long localUserId = UserSession.getLocalUserId(req);
-			Long mapUserId = UserSession.getMappedUserId(req);
+			Long mapUserId = UserSession.getConnectUserId(req);
 			answerService.save(localUserId,mapUserId, data);
 			return;
 		}

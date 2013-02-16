@@ -62,10 +62,10 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			// 添加习题
 			Object oUserId = exerciseInfo.get("userId");
 			Object oExerType = exerciseInfo.get("exerType");
-			String exerType = oExerType.toString();
-			Long mapUserId = Long.valueOf(exerciseInfo.get("MAP_USER_ID").toString());
+			String exerType = oExerType!=null?oExerType.toString():null;
+			Long mapUserId = Long.valueOf(exerciseInfo.get("connectUserId").toString());
 			// localUserId
-			Long userId = Long.valueOf(oUserId.toString());
+			Long localUserId = Long.valueOf(oUserId.toString());
 			
 			exerId = this.addExercise(con, exerciseInfo);
 			// 如果存在选项，则添加习题选项
@@ -80,9 +80,9 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			
 			// 习题添加成功后，在用户的“创建的习题数”上加1
 			// 同时修改后端和session中缓存的该记录
-			userDao.increaseExerciseCount(con, userId);
+			userDao.increaseExerciseCount(con, localUserId);
 			// 在活动表中插入一条记录
-			addActivity(con, userId, mapUserId, exerId,ActionType.SAVE_EXERCISE);
+			addActivity(con, localUserId, mapUserId, exerId,ActionType.SAVE_EXERCISE);
 			
 			// 如果存在答案，则添加答案
 			Object oAnswer = exerciseInfo.get("answer");
@@ -104,7 +104,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 						}
 					}
 					
-					answerDao.save(con, userId, mapUserId, answerInfo);
+					answerDao.save(con, localUserId, mapUserId, answerInfo);
 				}
 			}
 			

@@ -14,7 +14,7 @@ public abstract class UserSession {
 	
 	private static final String SESSION_KEY = "drip-user";
 	public static final String KEY_LOCAL_USER_ID = "id";
-	public static final String KEY_MAPPED_USER_ID = "mapped_user_id";
+	public static final String KEY_CONNECT_USER_ID = "connectUserId";
 	
 	/**
 	 * 获取本网站的用户标识，我们的用户有来自第三方网站的，有在本网站注册的。
@@ -33,14 +33,14 @@ public abstract class UserSession {
 	/**
 	 * 获取第三方网站用户与本网站用户关联的关联标识。注意在网站的所有活动中不使用第三方网站标识，而是使用这个关联标识。
 	 * @param req
-	 * @return 第三方网站用户与本网站用户关联的关联标识，如果没有取到，返回null
+	 * @return 获取本网站为第三方网站用户统一生成的用户标识；如果没有取到，返回null
 	 */
-	public static Long getMappedUserId(HttpServletRequest req){
+	public static Long getConnectUserId(HttpServletRequest req){
 		Map<String,Object> userInfo = getUser(req);
 		if(userInfo == null){
 			return null;
 		}
-		return Long.valueOf(userInfo.get(KEY_MAPPED_USER_ID).toString());
+		return Long.valueOf(userInfo.get(KEY_CONNECT_USER_ID).toString());
 	}
 	
 	/**

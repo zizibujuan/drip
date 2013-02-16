@@ -202,7 +202,7 @@ public class LoginServlet extends BaseServlet {
 					// 如果登录成功，则跳转到用户专有首页
 					String zzbjUserId = existUserInfo.get("id").toString(); 
 					Map<String,Object> userMapperInfo = oAuthUserMapService.getUserMapperInfo(OAuthConstants.ZIZIBUJUAN, zzbjUserId);
-					existUserInfo.put(UserSession.KEY_MAPPED_USER_ID, userMapperInfo.get("MAP_USER_ID"));
+					existUserInfo.put(UserSession.KEY_CONNECT_USER_ID, userMapperInfo.get("connectUserId"));
 					UserSession.setUser(req, existUserInfo);
 					// 返回到客户端，然后客户端跳转到首页
 					Map<String,Object> result = new HashMap<String, Object>();

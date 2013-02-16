@@ -40,7 +40,7 @@ public class LoginCommand{
 		Map<String,Object> existUserInfo = userService.login(email, password);
 		if(existUserInfo != null){
 			// 如果登录成功，则跳转到用户专有首页
-			existUserInfo.put(UserSession.KEY_MAPPED_USER_ID, existUserInfo.get("id"));
+			existUserInfo.put(UserSession.KEY_CONNECT_USER_ID, existUserInfo.get("id"));
 			UserSession.setUser(req, existUserInfo);
 			// 返回到客户端，然后客户端跳转到首页
 			Map<String,Object> result = new HashMap<String, Object>();
