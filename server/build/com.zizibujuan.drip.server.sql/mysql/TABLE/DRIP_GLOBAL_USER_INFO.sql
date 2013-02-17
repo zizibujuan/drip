@@ -8,15 +8,19 @@
 -- 将必要的信息存储在DRIP_USER_INFO和DRIP_OAUTH_USER_MAP中
 
 -- HOME_CITY是人人专用的临时字段，等把城市编码整理完后，全部用编码表示。
--- -----------------------------------------------------
--- Table `drip`.`DRIP_CONNECT_USER_INFO` 接入第三方网站的用户
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `drip`.`DRIP_CONNECT_USER_INFO`;
 
-CREATE  TABLE IF NOT EXISTS `drip`.`DRIP_CONNECT_USER_INFO` (
+-- FIXME:将本网站的用户信息也存储在这里，这样全局生成一个统一的用户标识。在解决用户关联的问题上有什么好处呢？
+-- -----------------------------------------------------
+-- Table `drip`.`DRIP_GLOBAL_USER_INFO` 包括本网站注册用户和第三方网站注册用户所有用户信息的表
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `drip`.`DRIP_GLOBAL_USER_INFO`;
+
+CREATE  TABLE IF NOT EXISTS `drip`.`DRIP_GLOBAL_USER_INFO` (
   `DBID` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键' ,
-  `SITE_ID` INT NOT NULL COMMENT '第三方网站标识' ,
-  `USER_ID` VARCHAR(56) NOT NULL COMMENT '第三方网站的用户标识,类型为:数字类型/字符串类型' ,
+  `SITE_ID` INT NOT NULL COMMENT '本网站或第三方网站标识' ,
+  `OPEN_ID` VARCHAR(56) NOT NULL COMMENT '作为第三方网站用户的唯一标识,类型为:数字类型/字符串类型，只有第三方网站用户填',
+  `LOCAL_USER_ID` INT NULL COMMENT '本网站用户标识，只有本网站用户才填',
+  `LOGIN_PWD` VARCHAR(45) NULL COMMENT '登录密码，加密。只有本网站用户才填',
   `LOGIN_NAME` VARCHAR(56) NOT NULL COMMENT '登录名,邮箱/手机号/昵称',
   `NICK_NAME` VARCHAR(56) NULL COMMENT '昵称',
   `EMAIL` VARCHAR(100) NULL COMMENT '邮箱',
@@ -36,7 +40,7 @@ CREATE  TABLE IF NOT EXISTS `drip`.`DRIP_CONNECT_USER_INFO` (
   
   `CREATE_TIME` DATETIME NULL COMMENT '创建时间',
   `UPDATE_TIME` DATETIME NULL COMMENT '更新时间',
-  `ACTIVITY` TINYINT(1) NULL DEFAULT 1 COMMENT '是否激活，默认激活',
+  `ACTIVITY` TINYINT(1) NULL DEFAULT 1 COMMENT '是否激活，默认激活。注意本网站用户如果没有设置密码就不激活',
   PRIMARY KEY (`DBID`))
 ENGINE = InnoDB
 COMMENT = '接入第三方网站的用户';
