@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.dao.ConnectUserDao;
 import com.zizibujuan.drip.server.dao.DigitalIdDao;
+import com.zizibujuan.drip.server.dao.LocalUserStatisticsDao;
 import com.zizibujuan.drip.server.dao.UserAttributesDao;
 import com.zizibujuan.drip.server.dao.UserAvatarDao;
 import com.zizibujuan.drip.server.dao.UserBindDao;
@@ -33,6 +34,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	private ConnectUserDao connectUserDao;
 	private UserAttributesDao userAttributesDao;
 	private DigitalIdDao digitalIdDao;
+	private LocalUserStatisticsDao localUserStatisticsDao;
 	
 	private static final String SQL_INSERT_USER = "INSERT INTO DRIP_USER_INFO " +
 			"(LOGIN_NAME," +
@@ -226,6 +228,8 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			if(avatarList != null && avatarList.size()>0){
 				userAvatarDao.add(con, connectGlobalUserId, avatarList);
 			}
+			// 为本网站用户添加初始的统计信息
+			localUserStatisticsDao.init(con, localGlobalUserId);
 			con.commit();
 		}catch(SQLException e){
 			DatabaseUtil.safeRollback(con);
@@ -340,4 +344,14 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		}
 	}
 	
+	public void setLocalUserStatisticsDao(LocalUserStatisticsDao localUserStatisticsDao) {
+		logger.info("注入localUserStatisticsDao");
+		this.localUserStatisticsDao = localUserStatisticsDao;
+	}
+	public void unsetLocalUserStatisticsDao(LocalUserStatisticsDao localUserStatisticsDao) {
+		if (this.localUserStatisticsDao == localUserStatisticsDao) {
+			logger.info("注销localUserStatisticsDao");
+			this.localUserStatisticsDao = null;
+		}
+	}
 }
