@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
+import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +68,7 @@ public class UserAttributesDaoImpl extends AbstractDao implements UserAttributes
 			pst = con.prepareStatement(SQL_INSERT_USER_ATTRIBUTES);
 			pst.setLong(1, connectUserId);
 			pst.setString(2, ApplicationPropertyKey.LOGIN_LAST_LOGIN_MILLIS);
-			pst.setNull(3, Types.VARCHAR);
+			pst.setString(3, String.valueOf(new Date().getTime()));
 			pst.addBatch();
 			
 			pst.setLong(1, connectUserId);

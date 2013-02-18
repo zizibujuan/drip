@@ -16,6 +16,7 @@ Import-Package: com.zizibujuan.dbaccess.mysql.service,
  com.zizibujuan.drip.server.util.json,
  org.apache.commons.lang3,
  org.apache.commons.lang3.math,
+ org.apache.commons.lang3.time,
  org.osgi.framework;version="1.3.0"
 Bundle-ClassPath: lib/httpunit.jar,
  lib/nekohtml-0.9.5.jar,

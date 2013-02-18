@@ -27,29 +27,30 @@ public abstract class AbstractUserTests {
 	
 	protected Long localGlobalUserId = null;
 	protected Long connectGlobalUserId = null;
+	protected Long digitalId = null;
 	
 	protected int siteId = OAuthConstants.RENREN;
-	protected String oauthUserId = "X1234567890";
+	protected String openId = "X1234567890";
 	protected String nickName = "xman_nickName";
 	protected String loginName = "xman_loginName";
 	protected String sex = "1";
 	protected String homeCityCode = "156130100";
-	protected Date birthDay = null;
+	protected Date birthday = null;
 	
 	public AbstractUserTests() {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(2013, 1, 1);
-		birthDay = calendar.getTime();
+		birthday = calendar.getTime();
 	}
 	
 	protected Map<String, Object> importUser() {
 		Map<String, Object> userInfo = new HashMap<String, Object>();
 		userInfo.put("siteId", siteId);
-		userInfo.put("openId", oauthUserId);
+		userInfo.put("openId", openId);
 		userInfo.put("loginName", loginName);
 		userInfo.put("nickName", nickName);
 		userInfo.put("sex", sex);
-		userInfo.put("birthDay", birthDay);
+		userInfo.put("birthday", birthday);
 		userInfo.put("homeCityCode", homeCityCode);
 		
 		// 头像
@@ -64,6 +65,7 @@ public abstract class AbstractUserTests {
 		Map<String,Object> result = userService.importUser(userInfo);
 		localGlobalUserId = Long.valueOf(result.get("localUserId").toString());
 		connectGlobalUserId = Long.valueOf(result.get("connectUserId").toString());
+		digitalId = Long.valueOf(result.get("digitalId").toString());
 		return result;
 	}
 	
@@ -100,6 +102,10 @@ public abstract class AbstractUserTests {
 		// 删除为本网站用户生成的初始统计信息
 		sql = "DELETE FROM DRIP_LOCAL_USER_STATISTICS WHERE GLOBAL_USER_ID = ?";
 		DatabaseUtil.update(dataSource, sql, localGlobalUserId);
+		
+		// 将被使用的数字帐号置为未使用
+		sql = "UPDATE DRIP_USER_NUMBER SET USE_TOKEN = ?, APPLY_TIME = ?  WHERE NUM = ?";
+		DatabaseUtil.update(dataSource, sql,null,null, digitalId);
 	}
 	
 }

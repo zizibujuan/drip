@@ -90,7 +90,7 @@ public interface UserService {
 	 * 		nickName:昵称
 	 * 		realName:真实姓名
 	 * 		sex:性别代码
-	 * 		birthDay:生日 java.util.Date
+	 * 		birthday:生日 java.util.Date
 	 * 		homeCityCode:家乡所在城市编码
 	 * 		homeCity:家乡所在城市名称
 	 * 		siteId：第三方网站标识 {@link OAuthConstants}
@@ -107,6 +107,7 @@ public interface UserService {
 	 *  返回map的结构
 	 * 		localUserId: 本网站用户标识
 	 * 		connectUserId: 本网站为第三方网站用户统一生成的用户标识
+	 *      digitalId: 本网站产生的数字帐号
 	 * </pre>
 	 */
 	Map<String,Object> importUser(Map<String, Object> userInfo);

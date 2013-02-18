@@ -166,6 +166,7 @@ public interface UserDao {
 	 *  返回map的结构
 	 * 		localUserId: 本网站用户标识
 	 * 		connectUserId: 本网站为第三方网站用户统一生成的用户标识
+	 * 		digitalId: 本网站产生的数字帐号
 	 * </pre>
 	 */
 	Map<String, Object> importUser(Map<String, Object> userInfo);

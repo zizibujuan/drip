@@ -203,6 +203,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		Map<String,Object> result = new HashMap<String, Object>();
 		Long localGlobalUserId = null;
 		Long connectGlobalUserId = null;
+		Long digitalId = null;
 		
 		Connection con = null;
 		
@@ -213,7 +214,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			con.setAutoCommit(false);
 			// 存储本网站生成的用户信息
 			// 本网站产生的数字帐号
-			Long digitalId = digitalIdDao.random(con);
+			digitalId = digitalIdDao.random(con);
 			localGlobalUserId = this.addLocalUser(con,digitalId);
 			// 存储第三方网站的用户信息,connectGlobalUserId是本网站为第三方网站用户产生的代理主键
 			connectGlobalUserId = connectUserDao.add(con, userInfo);
@@ -243,6 +244,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		
 		result.put("localUserId", localGlobalUserId);
 		result.put("connectUserId", connectGlobalUserId);
+		result.put("digitalId", digitalId);
 		return result;
 	}
 	

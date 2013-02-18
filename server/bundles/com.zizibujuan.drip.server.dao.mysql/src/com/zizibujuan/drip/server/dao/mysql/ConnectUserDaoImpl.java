@@ -38,12 +38,13 @@ public class ConnectUserDaoImpl extends AbstractDao implements ConnectUserDao {
 			"MOBILE," +
 			"REAL_NAME," +
 			"SEX," +
+			"BIRTHDAY,"+
 			"HOME_CITY_CODE," +
 			"HOME_CITY," +
 			"INTRODUCE," +
 			"CREATE_TIME) " +
 			"VALUES " +
-			"(?,?,?,?,?,?,?,?,?,?,?,now())";
+			"(?,?,?,?,?,?,?,?,?,?,?,?,now())";
 
 	@Override
 	public Long add(Connection con, Map<String, Object> connectUserInfo) throws SQLException {
@@ -58,6 +59,7 @@ public class ConnectUserDaoImpl extends AbstractDao implements ConnectUserDao {
 		Object mobile = connectUserInfo.get("mobile");
 		
 		Object sex = connectUserInfo.get("sex");
+		Object birthDay = connectUserInfo.get("birthday");
 		Object homeCityCode = connectUserInfo.get("homeCityCode");
 		Object homeCity = connectUserInfo.get("homeCity");
 		Object introduce = connectUserInfo.get("introduce");
@@ -71,6 +73,7 @@ public class ConnectUserDaoImpl extends AbstractDao implements ConnectUserDao {
 				mobile,
 				realName,
 				sex,
+				birthDay,
 				homeCityCode,
 				homeCity,
 				introduce);

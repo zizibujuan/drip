@@ -148,7 +148,7 @@ public class RenrenHelper {
 		renrenUserInfo.put("nickName", name);
 		renrenUserInfo.put("loginName", name);
 		renrenUserInfo.put("sex", getLocalSexCodeByRenren(sex)); //表示性别，值1表示男性；值0表示女性
-		renrenUserInfo.put("birthDay", convertBirthdayOfRenren(birthday));
+		renrenUserInfo.put("birthday", convertBirthdayOfRenren(birthday));
 		renrenUserInfo.put("homeCityCode", getLocalCityCodeByRenren(country, province, city));
 		
 		String homeCity = (country==null?"":country+" ")+province+ " " +city;
