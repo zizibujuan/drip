@@ -95,7 +95,7 @@ public interface UserService {
 	 * 		homeCity:家乡所在城市名称
 	 * 		siteId：第三方网站标识 {@link OAuthConstants}
 	 * 					如果是使用第三方网站的用户登录，则是第三方网站用户标识；如果是用本网站用户登录，则是本网站用户标识
-	 * 		userId: 第三方网站的用户标识
+	 * 		openId: 第三方网站的用户标识
 	 * 		avatar：用户头像列表
 	 * 			urlName:头像名称
 	 * 			url：头像链接

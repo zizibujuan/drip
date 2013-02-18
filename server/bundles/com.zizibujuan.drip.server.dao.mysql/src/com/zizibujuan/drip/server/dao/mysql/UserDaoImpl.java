@@ -213,7 +213,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			con.setAutoCommit(false);
 			// 存储本网站生成的用户信息
 			// 本网站产生的数字帐号
-			int digitalId = digitalIdDao.random(con);
+			Long digitalId = digitalIdDao.random(con);
 			localGlobalUserId = this.addLocalUser(con,digitalId);
 			// 存储第三方网站的用户信息,connectGlobalUserId是本网站为第三方网站用户产生的代理主键
 			connectGlobalUserId = connectUserDao.add(con, userInfo);
@@ -254,7 +254,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			"CREATE_TIME) " +
 			"VALUES " +
 			"(?,?,?,now())";
-	private Long addLocalUser(Connection con, int digitalId) throws SQLException{
+	private Long addLocalUser(Connection con, Long digitalId) throws SQLException{
 		return DatabaseUtil.insert(con, SQL_INSERT_BASE_LOCAL_USER,
 				digitalId,
 				OAuthConstants.ZIZIBUJUAN,
@@ -341,6 +341,17 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		if (this.userAttributesDao == userAttributesDao) {
 			logger.info("注销userAttributesDao");
 			this.userAttributesDao = null;
+		}
+	}
+	
+	public void setDigitalIdDao(DigitalIdDao digitalIdDao) {
+		logger.info("注入digitalIdDao");
+		this.digitalIdDao = digitalIdDao;
+	}
+	public void unsetDigitalIdDao(DigitalIdDao digitalIdDao) {
+		if (this.digitalIdDao == digitalIdDao) {
+			logger.info("注销digitalIdDao");
+			this.digitalIdDao = null;
 		}
 	}
 	

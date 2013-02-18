@@ -19,7 +19,7 @@ CREATE  TABLE IF NOT EXISTS `drip`.`DRIP_GLOBAL_USER_INFO` (
   `DBID` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键' ,
   `SITE_ID` INT NOT NULL COMMENT '本网站或第三方网站标识' ,
   `OPEN_ID` VARCHAR(56) NULL COMMENT '作为第三方网站用户的唯一标识,类型为:数字类型/字符串类型，只有第三方网站用户填',
-  `DIGITAL_ID` INT NULL COMMENT '孜孜不倦数字帐号，只有本网站用户才填',
+  `DIGITAL_ID` BIGINT UNSIGNED NULL COMMENT '孜孜不倦数字帐号，只有本网站用户才填',
   `LOGIN_PWD` VARCHAR(45) NULL COMMENT '登录密码，加密。只有本网站用户才填',
   `LOGIN_NAME` VARCHAR(56) NULL COMMENT '登录名,邮箱/手机号/昵称',
   `NICK_NAME` VARCHAR(56) NULL COMMENT '昵称',

@@ -45,7 +45,7 @@ public abstract class AbstractUserTests {
 	protected Map<String, Object> importUser() {
 		Map<String, Object> userInfo = new HashMap<String, Object>();
 		userInfo.put("siteId", siteId);
-		userInfo.put("userId", oauthUserId);
+		userInfo.put("openId", oauthUserId);
 		userInfo.put("loginName", loginName);
 		userInfo.put("nickName", nickName);
 		userInfo.put("sex", sex);
@@ -71,7 +71,7 @@ public abstract class AbstractUserTests {
 	 * 删除用户信息
 	 * @param userId 第三方网站的用户标识
 	 */
-	protected void reset(){
+	protected void deleteTestUser(){
 		DataSource dataSource = DaoHolder.getDefault().getDataSourceService().getDataSource();
 		
 		// 删除关联信息标识
@@ -96,6 +96,10 @@ public abstract class AbstractUserTests {
 		// 删除用户头像
 		sql = "DELETE FROM DRIP_USER_AVATAR WHERE GLOBAL_USER_ID = ?";
 		DatabaseUtil.update(dataSource, sql, connectGlobalUserId);
+		
+		// 删除为本网站用户生成的初始统计信息
+		sql = "DELETE FROM DRIP_LOCAL_USER_STATISTICS WHERE GLOBAL_USER_ID = ?";
+		DatabaseUtil.update(dataSource, sql, localGlobalUserId);
 	}
 	
 }

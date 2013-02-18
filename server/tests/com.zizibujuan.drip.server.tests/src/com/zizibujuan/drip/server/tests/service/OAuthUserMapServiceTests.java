@@ -28,7 +28,7 @@ public class OAuthUserMapServiceTests extends AbstractUserTests{
 			userMapperInfo = oAuthUserMapService.getUserMapperInfo(siteId, oauthUserId);
 			Assert.assertFalse(userMapperInfo.isEmpty());
 		}finally{
-			super.reset();
+			super.deleteTestUser();
 		}
 	}
 }

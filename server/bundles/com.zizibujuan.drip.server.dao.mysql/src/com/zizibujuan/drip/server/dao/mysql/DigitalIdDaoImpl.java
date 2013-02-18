@@ -1,6 +1,8 @@
 package com.zizibujuan.drip.server.dao.mysql;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.zizibujuan.drip.server.dao.DigitalIdDao;
@@ -22,12 +24,19 @@ public class DigitalIdDaoImpl extends AbstractDao implements DigitalIdDao {
 	
 	private static final String SQL_GET_NUM = "SELECT NUM FROM DRIP_USER_NUMBER WHERE USE_TOKEN=?";
 	@Override
-	public int random(Connection con) throws SQLException {
+	public Long random(Connection con) throws SQLException {
 		String uuid = IdGenerator.uuid();
 		DatabaseUtil.update(con, SQL_UPDATE_RANDOM_ROW, uuid);
-		int result = DatabaseUtil.queryForInt(getDataSource(), SQL_GET_NUM, uuid);
-		if(result == 0)
-			throw new SQLException("随机产生的用户数字帐号不能为0");
+		//int result = DatabaseUtil.queryForInt(getDataSource(), SQL_GET_NUM, uuid);
+		Long result = null;
+		PreparedStatement pst = con.prepareStatement(SQL_GET_NUM);
+		pst.setString(1, uuid);
+		ResultSet rst = pst.executeQuery();
+		if(rst.next()){
+			result = rst.getLong(1);
+		}
+		if(result == null || result == 0l)
+			throw new SQLException("随机产生的用户数字帐号失败");
 		return result;
 	}
 

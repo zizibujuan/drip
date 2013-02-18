@@ -157,7 +157,7 @@ public class RenrenHelper {
 		}
 		renrenUserInfo.put("homeCity", homeCity);
 		renrenUserInfo.put("siteId", OAuthConstants.RENREN);
-		renrenUserInfo.put("userId", rrUid);
+		renrenUserInfo.put("openId", rrUid);
 		
 		// 用户头像列表
 		String tinyurl = (String)renrenUser.get("tinyurl");

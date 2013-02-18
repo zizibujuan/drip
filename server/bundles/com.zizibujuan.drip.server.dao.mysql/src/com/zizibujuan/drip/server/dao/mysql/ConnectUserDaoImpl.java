@@ -9,7 +9,7 @@ import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 
 /**
  * 通过第三方网站提供的connect功能，接入的用户。 数据访问实现类
- * 
+ * TODO: 删除这个类，与UserInfoDao类合并
  * @author jzw
  * @since 0.0.1
  */
@@ -29,11 +29,11 @@ public class ConnectUserDaoImpl extends AbstractDao implements ConnectUserDao {
 		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_CONNECT_USER_PUBLIC, connectUserId);
 	}
 
-	private static final String SQL_INSERT_CONNECT_USER = "INSERT INTO DRIP_CONNECT_USER_INFO " +
+	private static final String SQL_INSERT_CONNECT_USER = "INSERT INTO DRIP_GLOBAL_USER_INFO " +
 			"(LOGIN_NAME," +
 			"NICK_NAME," +
 			"SITE_ID," +
-			"OPEN_ID" +
+			"OPEN_ID," +
 			"EMAIL," +
 			"MOBILE," +
 			"REAL_NAME," +

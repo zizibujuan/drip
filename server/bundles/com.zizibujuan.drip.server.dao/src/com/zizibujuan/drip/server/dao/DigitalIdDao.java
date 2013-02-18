@@ -16,6 +16,6 @@ public interface DigitalIdDao {
 	 * @return 数字帐号
 	 * @throws SQLException 
 	 */
-	int random(Connection con) throws SQLException;
+	Long random(Connection con) throws SQLException;
 
 }
