@@ -10,9 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.dao.ConnectUserDao;
-import com.zizibujuan.drip.server.dao.OAuthUserMapDao;
+import com.zizibujuan.drip.server.dao.DigitalIdDao;
 import com.zizibujuan.drip.server.dao.UserAttributesDao;
 import com.zizibujuan.drip.server.dao.UserAvatarDao;
+import com.zizibujuan.drip.server.dao.UserBindDao;
 import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.dao.UserRelationDao;
 import com.zizibujuan.drip.server.exception.dao.DataAccessException;
@@ -27,10 +28,11 @@ import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 public class UserDaoImpl extends AbstractDao implements UserDao {
 	private static final Logger logger = LoggerFactory.getLogger(UserDaoImpl.class);
 	private UserRelationDao userRelationDao;
-	private OAuthUserMapDao oAuthUserMapDao;
+	private UserBindDao userBindDao;
 	private UserAvatarDao userAvatarDao;
 	private ConnectUserDao connectUserDao;
 	private UserAttributesDao userAttributesDao;
+	private DigitalIdDao digitalIdDao;
 	
 	private static final String SQL_INSERT_USER = "INSERT INTO DRIP_USER_INFO " +
 			"(LOGIN_NAME," +
@@ -68,9 +70,9 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 					userInfo.get("realName"));
 			// 在关联表中添加一条记录，自己关联自己,本地用户也需要添加一个关联关系
 			// 不需要添加一个字段来标识是不是本地用户，只要两个用户标识相等，则必是本地用户，代码中根据这个逻辑判断。
-			Long mapUserId = oAuthUserMapDao.mapUser(con, userId, userId, true);
+			userBindDao.bind(con, userId, userId, true);
 			// 在用户属性表中初始化属性值
-			userAttributesDao.initUserState(con, mapUserId, true);
+			userAttributesDao.initUserState(con, userId);
 			// 添加完用户之后，需要在用户关系表中，添加一条用户关注用户自己的记录
 			userRelationDao.watch(con, userId, userId);
 			con.commit();
@@ -160,27 +162,45 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		return result != null;
 	}
 	
-	private static final String SQL_UPDATE_EXERCISE_COUNT = "UPDATE DRIP_USER_INFO SET " +
+	private static final String SQL_UPDATE_INCREASE_EXERCISE_COUNT = "UPDATE DRIP_USER_INFO SET " +
 			"EXER_PUBLISH_COUNT=EXER_PUBLISH_COUNT+1 " +
 			"where DBID=?";
 	@Override
 	public void increaseExerciseCount(Connection con, Long userId) throws SQLException {
-		DatabaseUtil.update(con, SQL_UPDATE_EXERCISE_COUNT, userId);
+		DatabaseUtil.update(con, SQL_UPDATE_INCREASE_EXERCISE_COUNT, userId);
 	}
 	
-	private static final String SQL_UPDATE_ANSWER_COUNT = "UPDATE DRIP_USER_INFO SET " +
+	private static final String SQL_UPDATE_INCREASE_ANSWER_COUNT = "UPDATE DRIP_USER_INFO SET " +
 			"ANSWER_COUNT=ANSWER_COUNT+1 " +
 			"where DBID=?";
 	@Override
 	public void increaseAnswerCount(Connection con, Long userId) throws SQLException {
-		DatabaseUtil.update(con, SQL_UPDATE_ANSWER_COUNT, userId);
+		DatabaseUtil.update(con, SQL_UPDATE_INCREASE_ANSWER_COUNT, userId);
+	}
+	
+	private static final String SQL_UPDATE_DECREASE_EXERCISE_COUNT = "UPDATE DRIP_USER_INFO SET " +
+			"EXER_PUBLISH_COUNT=EXER_PUBLISH_COUNT-1 " +
+			"where DBID=?";
+	@Override
+	public void decreaseExerciseCount(Connection con, Long userId)
+			throws SQLException {
+		DatabaseUtil.update(con, SQL_UPDATE_DECREASE_EXERCISE_COUNT, userId);
+	}
+	
+	private static final String SQL_UPDATE_DECREASE_ANSWER_COUNT = "UPDATE DRIP_USER_INFO SET " +
+			"ANSWER_COUNT=ANSWER_COUNT-1 " +
+			"where DBID=?";
+	@Override
+	public void decreaseAnswerCount(Connection con, Long userId)
+			throws SQLException {
+		DatabaseUtil.update(con, SQL_UPDATE_DECREASE_ANSWER_COUNT, userId);
 	}
 	
 	@Override
 	public Map<String,Object> importUser(Map<String, Object> userInfo) {
 		Map<String,Object> result = new HashMap<String, Object>();
-		Long localUserId = null;
-		Long connectUserId = null;
+		Long localGlobalUserId = null;
+		Long connectGlobalUserId = null;
 		
 		Connection con = null;
 		
@@ -189,20 +209,22 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		try{
 			con = getDataSource().getConnection();
 			con.setAutoCommit(false);
-			// 在本地用户表中建立一个只有标识的记录
-			localUserId = this.addLocalUserId(con);
-			// 在第三方用户表中存储用户信息,connectUserId是本网站为第三方网站用户产生的代理主键
-			connectUserId = connectUserDao.add(con, userInfo);
+			// 存储本网站生成的用户信息
+			// 本网站产生的数字帐号
+			int digitalId = digitalIdDao.random(con);
+			localGlobalUserId = this.addLocalUser(con,digitalId);
+			// 存储第三方网站的用户信息,connectGlobalUserId是本网站为第三方网站用户产生的代理主键
+			connectGlobalUserId = connectUserDao.add(con, userInfo);
 			// 将本地用户与第三方用户关联起来
-			oAuthUserMapDao.mapUser(con,localUserId, connectUserId, true);
+			userBindDao.bind(con,localGlobalUserId, connectGlobalUserId, true);
 			
 			// 初始化用户属性表,导入的用户肯定都是第三方网站的用户。
-			userAttributesDao.initUserState(con, connectUserId, false);
+			userAttributesDao.initUserState(con, connectGlobalUserId);
 			// 自己关注自己，使用drip用户标识, 在关注的表中，也要加入connectUserId, 这样可以跟踪哪个网站的用户关注的比较多
 			// 但是为了可以顺利迁移，最好存储connectUserId
-			userRelationDao.watch(con, connectUserId, connectUserId);
+			userRelationDao.watch(con, connectGlobalUserId, connectGlobalUserId);
 			if(avatarList != null && avatarList.size()>0){
-				userAvatarDao.add(con, connectUserId, avatarList, false);
+				userAvatarDao.add(con, connectGlobalUserId, avatarList);
 			}
 			con.commit();
 		}catch(SQLException e){
@@ -215,15 +237,24 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			DatabaseUtil.closeConnection(con);
 		}
 		
-		result.put("localUserId", localUserId);
-		result.put("connectUserId", connectUserId);
+		result.put("localUserId", localGlobalUserId);
+		result.put("connectUserId", connectGlobalUserId);
 		return result;
 	}
 	
-	private static final String SQL_INSERT_USER_EMPTY = "INSERT INTO DRIP_USER_INFO " +
-			"(CREATE_TIME) VALUES (now())";
-	private Long addLocalUserId(Connection con) throws SQLException{
-		return DatabaseUtil.insert(con, SQL_INSERT_USER_EMPTY);
+	private static final String SQL_INSERT_BASE_LOCAL_USER = "INSERT INTO " +
+			"DRIP_GLOBAL_USER_INFO " +
+			"(DIGITAL_ID," +
+			"SITE_ID, " +
+			"ACTIVITY, " +
+			"CREATE_TIME) " +
+			"VALUES " +
+			"(?,?,?,now())";
+	private Long addLocalUser(Connection con, int digitalId) throws SQLException{
+		return DatabaseUtil.insert(con, SQL_INSERT_BASE_LOCAL_USER,
+				digitalId,
+				OAuthConstants.ZIZIBUJUAN,
+				false);
 	}
 	
 	@Override
@@ -246,7 +277,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_USER_STATISTICS, localUserId);
 	}
 	
-	private static final String SQL_GET_OAUTH_SITE_ID = "SELECT OAUTH_SITE_ID FROM DRIP_OAUTH_USER_MAP WHERE DBID=?";
+	private static final String SQL_GET_OAUTH_SITE_ID = "SELECT OAUTH_SITE_ID FROM DRIP_USER_BIND WHERE DBID=?";
 	// 这个方法就在这里实现，更直观些，虽然数据存储在映射表中
 	@Override
 	public boolean isLocalUser(Long mapUserId) {
@@ -265,14 +296,14 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		}
 	}
 	
-	public void setOAuthUserMapDao(OAuthUserMapDao oAuthUserMapDao) {
-		logger.info("注入oAuthUserMapDao");
-		this.oAuthUserMapDao = oAuthUserMapDao;
+	public void setUserBindDao(UserBindDao userBindDao) {
+		logger.info("注入userBindDao");
+		this.userBindDao = userBindDao;
 	}
-	public void unsetOAuthUserMapDao(OAuthUserMapDao oAuthUserMapDao) {
-		if (this.oAuthUserMapDao == oAuthUserMapDao) {
-			logger.info("注销oAuthUserMapDao");
-			this.oAuthUserMapDao = null;
+	public void unsetUserBindDao(UserBindDao userBindDao) {
+		if (this.userBindDao == userBindDao) {
+			logger.info("注销userBindDao");
+			this.userBindDao = null;
 		}
 	}
 	

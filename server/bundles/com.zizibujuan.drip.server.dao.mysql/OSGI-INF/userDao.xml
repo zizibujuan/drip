@@ -12,11 +12,11 @@
    		policy="dynamic"/>
    		
    	<reference 
-   		bind="setOAuthUserMapDao" 
-   		unbind="unsetOAuthUserMapDao" 
+   		bind="setUserBindDao" 
+   		unbind="unsetUserBindDao" 
    		cardinality="0..1" 
-   		interface="com.zizibujuan.drip.server.dao.OAuthUserMapDao" 
-   		name="oAuthUserMapDao" 
+   		interface="com.zizibujuan.drip.server.dao.UserBindDao" 
+   		name="userBindDao" 
    		policy="dynamic"/>
    		
    	<reference 

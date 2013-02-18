@@ -41,6 +41,8 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 	 * 新增习题。<br/>
 	 * <pre>
 	 * 习题的数据格式为：
+	 * 		localUserId: 本地用户标识
+	 * 		connectUserId: 本网站为第三方网站用户产生的用户标识
 	 * 		exerType: 题型
 	 * 		exerCategory: 习题所属科目中的分类
 	 * 		content： 习题内容
@@ -60,7 +62,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			con = getDataSource().getConnection();
 			con.setAutoCommit(false);
 			// 添加习题
-			Object oUserId = exerciseInfo.get("userId");
+			Object oUserId = exerciseInfo.get("localUserId");
 			Object oExerType = exerciseInfo.get("exerType");
 			String exerType = oExerType!=null?oExerType.toString():null;
 			Long mapUserId = Long.valueOf(exerciseInfo.get("connectUserId").toString());
@@ -150,6 +152,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 	private List<Long> addOptions(Connection con, Long exerId, List<String> optionContents) throws SQLException{
 		List<Long> result = new ArrayList<Long>();
 		int len = optionContents.size();
+		
 		for(int i = 0; i < len; i++){
 			Long id = DatabaseUtil.insert(con, SQL_INSERT_EXER_OPTION, exerId, optionContents.get(i),(i+1));
 			result.add(id);

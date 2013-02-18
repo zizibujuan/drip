@@ -7,7 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.zizibujuan.drip.server.dao.OAuthUserMapDao;
+import com.zizibujuan.drip.server.dao.UserBindDao;
 import com.zizibujuan.drip.server.dao.UserRelationDao;
 import com.zizibujuan.drip.server.service.UserRelationService;
 import com.zizibujuan.drip.server.service.UserService;
@@ -21,7 +21,7 @@ import com.zizibujuan.drip.server.util.PageInfo;
 public class UserRelationServiceImpl implements UserRelationService {
 	private static final Logger logger = LoggerFactory.getLogger(UserRelationServiceImpl.class);
 	private UserRelationDao userRelationDao;
-	private OAuthUserMapDao oAuthUserMapDao;
+	private UserBindDao userBindDao;
 	private UserService userService;
 	
 	@Override
@@ -72,15 +72,15 @@ public class UserRelationServiceImpl implements UserRelationService {
 		}
 	}
 
-	public void setOAuthUserMapDao(OAuthUserMapDao oAuthUserMapDao) {
-		logger.info("注入oAuthUserMapDao");
-		this.oAuthUserMapDao = oAuthUserMapDao;
+	public void setUserBindDao(UserBindDao userBindDao) {
+		logger.info("注入userBindDao");
+		this.userBindDao = userBindDao;
 	}
 	
-	public void unsetOAuthUserMapDao(OAuthUserMapDao oAuthUserMapDao) {
-		if (this.oAuthUserMapDao == oAuthUserMapDao) {
-			logger.info("注销oAuthUserMapDao");
-			this.oAuthUserMapDao = null;
+	public void unsetUserBindDao(UserBindDao userBindDao) {
+		if (this.userBindDao == userBindDao) {
+			logger.info("注销userBindDao");
+			this.userBindDao = null;
 		}
 	}
 	

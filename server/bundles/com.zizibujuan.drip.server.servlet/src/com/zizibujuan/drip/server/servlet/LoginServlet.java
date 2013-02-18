@@ -20,7 +20,7 @@ import com.qq.connect.api.qzone.UserInfo;
 import com.qq.connect.javabeans.AccessToken;
 import com.qq.connect.javabeans.qzone.UserInfoBean;
 import com.qq.connect.oauth.Oauth;
-import com.zizibujuan.drip.server.service.OAuthUserMapService;
+import com.zizibujuan.drip.server.service.UserBindService;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.servlet.authentication.Oauth2Exception;
 import com.zizibujuan.drip.server.servlet.authentication.RenrenHelper;
@@ -41,7 +41,7 @@ public class LoginServlet extends BaseServlet {
 
 	private static final long serialVersionUID = 3186980773671995338L;
 	private UserService userService = null;
-	private OAuthUserMapService oAuthUserMapService = null;
+	private UserBindService oAuthUserMapService = null;
 	
 	public LoginServlet() {
 		userService = ServiceHolder.getDefault().getUserService();

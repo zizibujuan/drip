@@ -19,7 +19,7 @@ CREATE  TABLE IF NOT EXISTS `drip`.`DRIP_GLOBAL_USER_INFO` (
   `DBID` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键' ,
   `SITE_ID` INT NOT NULL COMMENT '本网站或第三方网站标识' ,
   `OPEN_ID` VARCHAR(56) NULL COMMENT '作为第三方网站用户的唯一标识,类型为:数字类型/字符串类型，只有第三方网站用户填',
-  `LOCAL_USER_ID` INT NULL COMMENT '本网站用户标识，只有本网站用户才填',
+  `DIGITAL_ID` INT NULL COMMENT '孜孜不倦数字帐号，只有本网站用户才填',
   `LOGIN_PWD` VARCHAR(45) NULL COMMENT '登录密码，加密。只有本网站用户才填',
   `LOGIN_NAME` VARCHAR(56) NULL COMMENT '登录名,邮箱/手机号/昵称',
   `NICK_NAME` VARCHAR(56) NULL COMMENT '昵称',
@@ -43,4 +43,4 @@ CREATE  TABLE IF NOT EXISTS `drip`.`DRIP_GLOBAL_USER_INFO` (
   `ACTIVITY` TINYINT(1) NULL DEFAULT 1 COMMENT '是否激活，默认激活。注意本网站用户如果没有设置密码就不激活',
   PRIMARY KEY (`DBID`))
 ENGINE = InnoDB
-COMMENT = '接入第三方网站的用户';
+COMMENT = '包括本网站注册用户和第三方网站注册用户所有用户信息的表';

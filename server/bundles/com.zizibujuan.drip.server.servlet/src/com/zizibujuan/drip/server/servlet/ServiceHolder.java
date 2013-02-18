@@ -8,7 +8,7 @@ import com.zizibujuan.drip.server.service.ActivityService;
 import com.zizibujuan.drip.server.service.AnswerService;
 import com.zizibujuan.drip.server.service.ApplicationPropertyService;
 import com.zizibujuan.drip.server.service.ExerciseService;
-import com.zizibujuan.drip.server.service.OAuthUserMapService;
+import com.zizibujuan.drip.server.service.UserBindService;
 import com.zizibujuan.drip.server.service.UserRelationService;
 import com.zizibujuan.drip.server.service.UserService;
 
@@ -143,20 +143,20 @@ public class ServiceHolder {
 		}
 	}
 
-	private OAuthUserMapService oAuthUserMapService;
+	private UserBindService oAuthUserMapService;
 
-	public void setOAuthUserMapService(OAuthUserMapService oAuthUserMapService) {
+	public void setOAuthUserMapService(UserBindService oAuthUserMapService) {
 		logger.info("注入oAuthUserMapService");
 		this.oAuthUserMapService = oAuthUserMapService;
 	}
 
-	public void unsetOAuthUserMapService(OAuthUserMapService oAuthUserMapService) {
+	public void unsetOAuthUserMapService(UserBindService oAuthUserMapService) {
 		logger.info("注销oAuthUserMapService");
 		if (this.oAuthUserMapService == oAuthUserMapService) {
 			this.oAuthUserMapService = null;
 		}
 	}
-	public OAuthUserMapService getOAuthUserMapService() {
+	public UserBindService getOAuthUserMapService() {
 		return oAuthUserMapService;
 	}
 

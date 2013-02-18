@@ -25,8 +25,8 @@ public abstract class AbstractUserTests {
 
 	protected UserService userService = ServiceHolder.getDefault().getUserService();
 	
-	protected Long localUserId = null;
-	protected Long connectUserId = null;
+	protected Long localGlobalUserId = null;
+	protected Long connectGlobalUserId = null;
 	
 	protected int siteId = OAuthConstants.RENREN;
 	protected String oauthUserId = "X1234567890";
@@ -40,37 +40,6 @@ public abstract class AbstractUserTests {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(2013, 1, 1);
 		birthDay = calendar.getTime();
-	}
-	
-	/**
-	 * 删除用户信息
-	 * @param userId 第三方网站的用户标识
-	 */
-	protected void reset(){
-		DataSource dataSource = DaoHolder.getDefault().getDataSourceService().getDataSource();
-		
-		// 删除关联信息标识
-		String sql = "DELETE FROM DRIP_OAUTH_USER_MAP WHERE LOCAL_USER_ID=? AND CONNECT_USER_ID = ?";
-		DatabaseUtil.update(dataSource, sql, localUserId, connectUserId);
-		
-		// 删除存储的第三方网站用户信息
-		sql = "DELETE FROM DRIP_CONNECT_USER_INFO WHERE USER_ID = ?";
-		DatabaseUtil.update(dataSource, sql, oauthUserId);
-		
-		// 删除本网站用户信息
-		sql = "DELETE FROM DRIP_USER_INFO WHERE DBID = ?";
-		DatabaseUtil.update(dataSource, sql, localUserId);
-		
-		sql = "DELETE FROM DRIP_USER_ATTRIBUTES WHERE USER_ID = ? AND IS_LOCAL_USER = ?";
-		DatabaseUtil.update(dataSource, sql, connectUserId, false);
-		
-		// 取消关注自己
-		sql = "DELETE FROM DRIP_USER_RELATION WHERE USER_ID = ? AND WATCH_USER_ID = ?";
-		DatabaseUtil.update(dataSource, sql, connectUserId, connectUserId);
-		
-		// 删除用户头像
-		sql = "DELETE FROM DRIP_USER_AVATAR WHERE USER_ID = ? AND IS_LOCAL_USER = ?";
-		DatabaseUtil.update(dataSource, sql, connectUserId, false);
 	}
 	
 	protected Map<String, Object> importUser() {
@@ -92,6 +61,41 @@ public abstract class AbstractUserTests {
 		
 		
 		// 确认一下数据都已经插入到各自的表中。
-		return userService.importUser(userInfo);
+		Map<String,Object> result = userService.importUser(userInfo);
+		localGlobalUserId = Long.valueOf(result.get("localUserId").toString());
+		connectGlobalUserId = Long.valueOf(result.get("connectUserId").toString());
+		return result;
 	}
+	
+	/**
+	 * 删除用户信息
+	 * @param userId 第三方网站的用户标识
+	 */
+	protected void reset(){
+		DataSource dataSource = DaoHolder.getDefault().getDataSourceService().getDataSource();
+		
+		// 删除关联信息标识
+		String sql = "DELETE FROM DRIP_USER_BIND WHERE LOCAL_USER_ID=? AND BIND_USER_ID = ?";
+		DatabaseUtil.update(dataSource, sql, localGlobalUserId, connectGlobalUserId);
+		
+		// 删除存储的第三方网站用户信息
+		sql = "DELETE FROM DRIP_GLOBAL_USER_INFO WHERE DBID = ?";
+		DatabaseUtil.update(dataSource, sql, connectGlobalUserId);
+		
+		// 删除本网站用户信息
+		sql = "DELETE FROM DRIP_GLOBAL_USER_INFO WHERE DBID = ?";
+		DatabaseUtil.update(dataSource, sql, localGlobalUserId);
+		
+		sql = "DELETE FROM DRIP_USER_ATTRIBUTES WHERE GLOBAL_USER_ID = ?";
+		DatabaseUtil.update(dataSource, sql, connectGlobalUserId);
+		
+		// 取消关注自己
+		sql = "DELETE FROM DRIP_USER_RELATION WHERE USER_ID = ? AND WATCH_USER_ID = ?";
+		DatabaseUtil.update(dataSource, sql, connectGlobalUserId, connectGlobalUserId);
+		
+		// 删除用户头像
+		sql = "DELETE FROM DRIP_USER_AVATAR WHERE GLOBAL_USER_ID = ?";
+		DatabaseUtil.update(dataSource, sql, connectGlobalUserId);
+	}
+	
 }

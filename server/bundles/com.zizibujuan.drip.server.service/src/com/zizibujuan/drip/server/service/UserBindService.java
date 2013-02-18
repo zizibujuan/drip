@@ -9,7 +9,7 @@ import com.zizibujuan.drip.server.util.OAuthConstants;
  * @author jzw
  * @since 0.0.1
  */
-public interface OAuthUserMapService {
+public interface UserBindService {
 
 	/**
 	 * 从帐号关联表中获取用户名

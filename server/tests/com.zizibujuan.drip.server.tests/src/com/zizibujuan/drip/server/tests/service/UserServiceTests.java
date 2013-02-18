@@ -22,7 +22,7 @@ public class UserServiceTests extends AbstractUserTests{
 	
 	/*
 	 * 暴力清除数据脚本
-	 * delete from DRIP_OAUTH_USER_MAP;
+	 * delete from DRIP_USER_BIND;
 	 *  delete from DRIP_USER_INFO;
 	 *	delete from DRIP_CONNECT_USER_INFO;
 	 *	delete from DRIP_USER_RELATION;
@@ -35,12 +35,11 @@ public class UserServiceTests extends AbstractUserTests{
 	@Test
 	public void testGetPublicInfo(){
 		try{
-			Map<String, Object> mapUserInfo = importUser();
-			localUserId = Long.valueOf(mapUserInfo.get("localUserId").toString());
-			connectUserId = Long.valueOf(mapUserInfo.get("connectUserId").toString());
-			Map<String,Object> result = userService.getPublicInfo(localUserId);
+			importUser();
 			
-			Assert.assertEquals(localUserId.longValue(), NumberUtils.toLong(result.get("id").toString()));
+			Map<String,Object> result = userService.getPublicInfo(localGlobalUserId);
+			
+			Assert.assertEquals(localGlobalUserId.longValue(), NumberUtils.toLong(result.get("id").toString()));
 			Assert.assertEquals(siteId, NumberUtils.toInt(result.get("siteId").toString()));
 			Assert.assertEquals(nickName, result.get("nickName").toString());
 			Assert.assertEquals(sex, result.get("sex").toString());
@@ -142,9 +141,7 @@ public class UserServiceTests extends AbstractUserTests{
 	public void testLogin_Oauth(){
 		
 		try{
-			Map<String, Object> mapUserInfo = importUser();
-			localUserId = Long.valueOf(mapUserInfo.get("localUserId").toString());
-			connectUserId = Long.valueOf(mapUserInfo.get("connectUserId").toString());
+			importUser();
 			
 			/**
 			 * 用户登录，主要是记录使用第三方网站进行登录。注意第三方用户的所有信息都是从本地获取，每天晚上定时从第三方同步用户信息。
@@ -174,9 +171,9 @@ public class UserServiceTests extends AbstractUserTests{
 			 * 		answerCount： 习题总数 = 习题草稿数+发布的习题数
 			 * </pre>
 			 */
-			Map<String,Object> result = userService.login(localUserId, connectUserId, siteId);
+			Map<String,Object> result = userService.login(localGlobalUserId, connectGlobalUserId, siteId);
 			
-			Assert.assertEquals(localUserId.longValue(), NumberUtils.toLong(result.get("id").toString()));
+			Assert.assertEquals(localGlobalUserId.longValue(), NumberUtils.toLong(result.get("id").toString()));
 			Assert.assertEquals(siteId, NumberUtils.toInt(result.get("siteId").toString()));
 			Assert.assertNull(result.get("email"));
 			Assert.assertNull(result.get("mobile"));

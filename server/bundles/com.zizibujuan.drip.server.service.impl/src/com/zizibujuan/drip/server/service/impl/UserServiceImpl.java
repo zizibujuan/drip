@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.dao.ConnectUserDao;
-import com.zizibujuan.drip.server.dao.OAuthUserMapDao;
+import com.zizibujuan.drip.server.dao.UserBindDao;
 import com.zizibujuan.drip.server.dao.UserAttributesDao;
 import com.zizibujuan.drip.server.dao.UserAvatarDao;
 import com.zizibujuan.drip.server.dao.UserDao;
@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 	private UserAvatarDao userAvatarDao;
 	private ConnectUserDao connectUserDao;
 	private ApplicationPropertyService applicationPropertyService;
-	private OAuthUserMapDao oAuthUserMapDao;
+	private UserBindDao userBindDao;
 	
 	// FIXME:学习如何加入salt，明白加入salt有哪些具体好处
 	@Override
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
 			return null;
 		}else{
 			String userId = userInfo.get("id").toString();
-			userAttributesDao.updateLoginState(Long.valueOf(userId), true);
+			userAttributesDao.updateLoginState(Long.valueOf(userId));
 			return userInfo;
 		}
 	}
@@ -64,8 +64,8 @@ public class UserServiceImpl implements UserService {
 		// 如果localUserId与mapUserId相等，则从drip_user_info中获取用户信息
 		// 如果不相等，则从drip_connect_user_info中获取
 		boolean isLocalUser = (siteId == OAuthConstants.ZIZIBUJUAN);
-		userAttributesDao.updateLoginState(connectUserId, isLocalUser);
-		
+		userAttributesDao.updateLoginState(connectUserId);
+		// FIXME：因为现在都统一了，所以删除这个判断
 		Map<String,Object> userInfo = null;
 		if(isLocalUser){ // 本网站注册用户
 			// 获取基本信息和统计信息
@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService {
 		// TODO：需要缓存
 		Map<String,Object> userInfo = null;
 		// 先从映射关系表中获取信息。
-		Map<String, Object> mapUserInfo = oAuthUserMapDao.getRefUserMapperInfo(localUserId);
+		Map<String, Object> mapUserInfo = userBindDao.getRefUserMapperInfo(localUserId);
 		Long connectUserId = Long.valueOf(mapUserInfo.get("connectUserId").toString());
 		int siteId = Integer.valueOf(mapUserInfo.get("siteId").toString());
 		
@@ -129,7 +129,6 @@ public class UserServiceImpl implements UserService {
 		return userInfo;
 	}
 	
-	// FIXME：调整导入用户逻辑，如果是使用第三方帐号第一次登录，则拷贝一份给第三方用户。
 	@Override
 	public Map<String,Object> importUser(Map<String, Object> userInfo) {
 		return userDao.importUser(userInfo);
@@ -210,15 +209,15 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 	
-	public void setOAuthUserMapDao(OAuthUserMapDao oAuthUserMapDao) {
-		logger.info("注入oAuthUserMapDao");
-		this.oAuthUserMapDao = oAuthUserMapDao;
+	public void setUserBindDao(UserBindDao userBindDao) {
+		logger.info("注入userBindDao");
+		this.userBindDao = userBindDao;
 	}
 
-	public void unsetOAuthUserMapDao(OAuthUserMapDao oAuthUserMapDao) {
-		if (this.oAuthUserMapDao == oAuthUserMapDao) {
-			logger.info("注销oAuthUserMapDao");
-			this.oAuthUserMapDao = null;
+	public void unsetUserBindDao(UserBindDao userBindDao) {
+		if (this.userBindDao == userBindDao) {
+			logger.info("注销userBindDao");
+			this.userBindDao = null;
 		}
 	}
 	

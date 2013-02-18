@@ -33,7 +33,7 @@ public class ConnectUserDaoImpl extends AbstractDao implements ConnectUserDao {
 			"(LOGIN_NAME," +
 			"NICK_NAME," +
 			"SITE_ID," +
-			"USER_ID," +
+			"OPEN_ID" +
 			"EMAIL," +
 			"MOBILE," +
 			"REAL_NAME," +
@@ -49,7 +49,7 @@ public class ConnectUserDaoImpl extends AbstractDao implements ConnectUserDao {
 	public Long add(Connection con, Map<String, Object> connectUserInfo) throws SQLException {
 		// TODO:继续添加更详细的用户信息。
 		Object siteId = connectUserInfo.get("siteId");
-		Object userId = connectUserInfo.get("userId");
+		Object userId = connectUserInfo.get("openId");
 		Object loginName = connectUserInfo.get("loginName");
 		Object nickName = connectUserInfo.get("nickName");
 		Object realName = connectUserInfo.get("realName");//FIXME:nickName与realName显示优先级的问题

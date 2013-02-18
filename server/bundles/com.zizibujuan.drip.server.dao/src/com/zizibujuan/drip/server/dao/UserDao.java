@@ -116,12 +116,28 @@ public interface UserDao {
 	void increaseExerciseCount(Connection con, Long userId) throws SQLException;
 	
 	/**
+	 * 添加一道习题后，在用户的添加习题数上减1
+	 * @param con 数据库链接
+	 * @param userId 用户标识
+	 * @throws SQLException 
+	 */
+	void decreaseExerciseCount(Connection con, Long userId) throws SQLException;
+	
+	/**
 	 * 用户回答了一套习题后，在用户回答的习题数上加1
 	 * @param con 数据库链接
 	 * @param userId 用户标识
 	 * @throws SQLException 
 	 */
 	void increaseAnswerCount(Connection con, Long userId) throws SQLException;
+	
+	/**
+	 * 用户回答了一套习题后，在用户回答的习题数上减1
+	 * @param con 数据库链接
+	 * @param userId 用户标识
+	 * @throws SQLException 
+	 */
+	void decreaseAnswerCount(Connection con, Long userId) throws SQLException;
 
 	/**
 	 * 导入第三网站的用户信息
@@ -148,8 +164,8 @@ public interface UserDao {
 	 * @return 该网站生成的用户标识
 	 * <pre>
 	 *  返回map的结构
-	 * 		LOCAL_USER_ID: 本网站用户标识
-	 * 		MAP_USER_ID: 映射标识
+	 * 		localUserId: 本网站用户标识
+	 * 		connectUserId: 本网站为第三方网站用户统一生成的用户标识
 	 * </pre>
 	 */
 	Map<String, Object> importUser(Map<String, Object> userInfo);

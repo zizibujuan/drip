@@ -4,6 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.zizibujuan.drip.server.tests.service.ActivityServiceTests;
 import com.zizibujuan.drip.server.tests.service.OAuthUserMapServiceTests;
 import com.zizibujuan.drip.server.tests.service.UserServiceTests;
 
@@ -15,7 +16,8 @@ import com.zizibujuan.drip.server.tests.service.UserServiceTests;
 @RunWith(Suite.class)
 @SuiteClasses({
 	UserServiceTests.class,
-	OAuthUserMapServiceTests.class
+//	OAuthUserMapServiceTests.class,
+//	ActivityServiceTests.class
 })
 public class AllServiceTests {
 

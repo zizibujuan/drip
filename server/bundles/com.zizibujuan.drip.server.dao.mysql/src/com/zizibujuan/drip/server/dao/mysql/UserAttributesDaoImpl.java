@@ -24,20 +24,19 @@ public class UserAttributesDaoImpl extends AbstractDao implements UserAttributes
 
 	private static final Logger logger = LoggerFactory.getLogger(UserAttributesDaoImpl.class);
 	
-	private static final String SQL_UPDATE_LAST_LOGIN_MILLIS = "UPDATE DRIP_USER_ATTRIBUTES SET ATTR_VALUE=UNIX_TIMESTAMP(now()) WHERE USER_ID= %s AND ATTR_NAME='%s' AND IS_LOCAL_USER=%s";
-	private static final String SQL_UPDATE_LOGIN_COUNT = "UPDATE DRIP_USER_ATTRIBUTES SET ATTR_VALUE=(cast(ATTR_VALUE as SIGNED)+1) WHERE USER_ID= %s AND ATTR_NAME='%s' AND IS_LOCAL_USER=%s";
+	private static final String SQL_UPDATE_LAST_LOGIN_MILLIS = "UPDATE DRIP_USER_ATTRIBUTES SET ATTR_VALUE=UNIX_TIMESTAMP(now()) WHERE GLOBAL_USER_ID= %s AND ATTR_NAME='%s'";
+	private static final String SQL_UPDATE_LOGIN_COUNT = "UPDATE DRIP_USER_ATTRIBUTES SET ATTR_VALUE=(cast(ATTR_VALUE as SIGNED)+1) WHERE GLOBAL_USER_ID= %s AND ATTR_NAME='%s'";
 	@Override
-	public void updateLoginState(Long userId, boolean isLocalUser) {
+	public void updateLoginState(Long userId) {
 		Connection con = null;
 		Statement pst = null;
 		try{
-			int localUser = isLocalUser?1:0;
 			con = getDataSource().getConnection();
 			con.setAutoCommit(false);
 			pst = con.createStatement();
-			String lastLogin = String.format(SQL_UPDATE_LAST_LOGIN_MILLIS,userId,ApplicationPropertyKey.LOGIN_LAST_LOGIN_MILLIS,localUser);
+			String lastLogin = String.format(SQL_UPDATE_LAST_LOGIN_MILLIS,userId,ApplicationPropertyKey.LOGIN_LAST_LOGIN_MILLIS);
 			pst.addBatch(lastLogin);
-			String loginCount = String.format(SQL_UPDATE_LOGIN_COUNT,userId,ApplicationPropertyKey.LOGIN_COUNT,localUser);
+			String loginCount = String.format(SQL_UPDATE_LOGIN_COUNT,userId,ApplicationPropertyKey.LOGIN_COUNT);
 			pst.addBatch(loginCount);
 			pst.executeBatch();
 			con.commit();
@@ -56,33 +55,30 @@ public class UserAttributesDaoImpl extends AbstractDao implements UserAttributes
 	}
 
 	private static final String SQL_INSERT_USER_ATTRIBUTES = "INSERT INTO DRIP_USER_ATTRIBUTES " +
-			"(USER_ID," +
-			"IS_LOCAL_USER," +
+			"(GLOBAL_USER_ID," +
 			"ATTR_NAME," +
 			"ATTR_VALUE)" +
-			"VALUES(?,?,?,?)";
+			"VALUES(?,?,?)";
 	// FIXME:需不需要做一个行列转换，变成一个专门存放用户统计信息或活动信息的表
+	// 这个userId是一个全局用户id，不是本地用户标识。
 	@Override
-	public void initUserState(Connection con, Long userId, boolean isLocalUser) throws SQLException {
+	public void initUserState(Connection con, Long connectUserId) throws SQLException {
 		PreparedStatement pst = null;
 		try{
 			pst = con.prepareStatement(SQL_INSERT_USER_ATTRIBUTES);
-			pst.setLong(1, userId);
-			pst.setBoolean(2, isLocalUser);
-			pst.setString(3, ApplicationPropertyKey.LOGIN_LAST_LOGIN_MILLIS);
-			pst.setNull(4, Types.VARCHAR);
+			pst.setLong(1, connectUserId);
+			pst.setString(2, ApplicationPropertyKey.LOGIN_LAST_LOGIN_MILLIS);
+			pst.setNull(3, Types.VARCHAR);
 			pst.addBatch();
 			
-			pst.setLong(1, userId);
-			pst.setBoolean(2, isLocalUser);
-			pst.setString(3, ApplicationPropertyKey.INVALID_PASSWORD_ATTEMPTS);
-			pst.setString(4, "0");
+			pst.setLong(1, connectUserId);
+			pst.setString(2, ApplicationPropertyKey.INVALID_PASSWORD_ATTEMPTS);
+			pst.setString(3, "0");
 			pst.addBatch();
 			
-			pst.setLong(1, userId);
-			pst.setBoolean(2, isLocalUser);
-			pst.setString(3, ApplicationPropertyKey.LOGIN_COUNT);
-			pst.setString(4, "0");
+			pst.setLong(1, connectUserId);
+			pst.setString(2, ApplicationPropertyKey.LOGIN_COUNT);
+			pst.setString(3, "0");
 			pst.addBatch();
 			
 			pst.executeBatch();

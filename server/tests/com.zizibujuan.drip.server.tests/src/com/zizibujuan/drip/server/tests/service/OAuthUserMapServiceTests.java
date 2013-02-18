@@ -6,7 +6,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import com.zizibujuan.drip.server.service.OAuthUserMapService;
+import com.zizibujuan.drip.server.service.UserBindService;
 import com.zizibujuan.drip.server.servlet.ServiceHolder;
 
 /**
@@ -19,7 +19,7 @@ public class OAuthUserMapServiceTests extends AbstractUserTests{
 	@Test
 	public void testGetMapUserInfo(){
 		try{
-			OAuthUserMapService oAuthUserMapService = ServiceHolder.getDefault().getOAuthUserMapService();
+			UserBindService oAuthUserMapService = ServiceHolder.getDefault().getOAuthUserMapService();
 			Map<String,Object> userMapperInfo = oAuthUserMapService.getUserMapperInfo(siteId, oauthUserId);
 			Assert.assertTrue(userMapperInfo.isEmpty());
 			

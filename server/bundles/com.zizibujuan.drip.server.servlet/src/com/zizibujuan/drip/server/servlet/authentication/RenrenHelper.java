@@ -23,7 +23,7 @@ import com.renren.api.client.RenrenApiClient;
 import com.renren.api.client.RenrenApiConfig;
 import com.renren.api.client.utils.HttpURLUtils;
 import com.zizibujuan.drip.server.service.ApplicationPropertyService;
-import com.zizibujuan.drip.server.service.OAuthUserMapService;
+import com.zizibujuan.drip.server.service.UserBindService;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.servlet.ServiceHolder;
 import com.zizibujuan.drip.server.util.OAuthConstants;
@@ -54,7 +54,7 @@ public class RenrenHelper {
 		
 		UserService userService = ServiceHolder.getDefault().getUserService();
 		ApplicationPropertyService applicationPropertyService = ServiceHolder.getDefault().getApplicationPropertyService();
-		OAuthUserMapService oAuthUserMapService = ServiceHolder.getDefault().getOAuthUserMapService();
+		UserBindService oAuthUserMapService = ServiceHolder.getDefault().getOAuthUserMapService();
 		
 		String redirectUri = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_REDIRECT_URL);
 		String renrenOAuthTokenEndPoint = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_OAUTH_TOKEN_END_POINT);

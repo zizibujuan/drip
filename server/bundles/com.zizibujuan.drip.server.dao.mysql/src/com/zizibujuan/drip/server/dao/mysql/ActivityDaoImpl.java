@@ -21,8 +21,17 @@ public class ActivityDaoImpl extends AbstractDao implements ActivityDao {
 	// 注意，关注的永远是drip用户，但是一个drip用户会关联多个第三方网站用户，
 	// 这里要查处所有第三方网站用户的活动列表。
 	// 真正用到的用户信息是，如果用户已经有drip信息，则用drip信息；否则使用第三方网站的用户信息
+	
+	// 需要确定的是，是否允许关注第三方网站用户。现在做的约定是允许。
+	// 该表中需要加一个标识，isLocalUser
+	
+	// 1.找到与登录本网站用户绑定的所有帐号，包括本网站用户
+	// 2.找到所有绑定帐号关注的用户列表
+	// 3.找到这些关注的用户的活动列表
+	// 4.按照活动时间倒排
+	// 5.分页
 	private static final String SQL_LIST_ACTIVITY_INDEX = "select " +
-				"a.WATCH_USER_ID \"localUserId\"," +// 所关注的人的标识，必须填的是本网站用户的标识
+				"a.WATCH_USER_ID \"watchUserId\"," +// 所关注的人的标识，必须填的是本网站用户的标识
 				"b.MAP_USER_ID \"mapUserId\"," +
 				"b.CRT_TM \"createTime\"," +
 				"b.CONTENT_ID \"contentId\"," +

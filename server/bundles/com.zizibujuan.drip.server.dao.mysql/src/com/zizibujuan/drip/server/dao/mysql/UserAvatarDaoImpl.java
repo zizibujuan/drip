@@ -26,31 +26,29 @@ public class UserAvatarDaoImpl extends AbstractDao implements UserAvatarDao {
 	private static final Logger logger = LoggerFactory.getLogger(UserAvatarDaoImpl.class);
 
 	private static final String SQL_INSERT_USER_AVATAR = "INSERT INTO DRIP_USER_AVATAR " +
-			"(USER_ID, " +
-			"IS_LOCAL_USER, " +
+			"(GLOBAL_USER_ID, " +
 			"URL_NAME, " +
 			"WIDTH, " +
 			"HEIGHT, " +
 			"URL, " +
 			"CREATE_TIME) " +
-			"VALUES (?,?,?,?,?,?,now())";
+			"VALUES (?,?,?,?,?,now())";
 	/**
 	 * 使用批量新增的方式插入
 	 * @throws SQLException 
 	 */
 	@Override
-	public void add(Connection con, final Long userId, final List<Map<String, Object>> avatarList, final boolean isLocalUser) throws SQLException {
+	public void add(Connection con, final Long userId, final List<Map<String, Object>> avatarList) throws SQLException {
 		DatabaseUtil.batchUpdate(con, SQL_INSERT_USER_AVATAR, new BatchPreparedStatementSetter() {
 			
 			@Override
 			public void setValues(PreparedStatement ps, int index) throws SQLException {
 				Map<String,Object> avatar = avatarList.get(index);
 				ps.setLong(1, userId);
-				ps.setBoolean(2, isLocalUser);
-				ps.setObject(3, avatar.get("urlName"));
-				ps.setObject(4, avatar.get("width"));
-				ps.setObject(5, avatar.get("height"));
-				ps.setObject(6, avatar.get("url"));
+				ps.setObject(2, avatar.get("urlName"));
+				ps.setObject(3, avatar.get("width"));
+				ps.setObject(4, avatar.get("height"));
+				ps.setObject(5, avatar.get("url"));
 			}
 			
 			@Override

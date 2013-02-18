@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" 
+	name="com.zizibujuan.drip.server.service.impl.userBindServiceImpl">
+   <implementation class="com.zizibujuan.drip.server.service.impl.UserBindServiceImpl"/>
+   <reference 
+   		bind="setUserBindDao" 
+   		unbind="unsetUserBindDao" 
+   		cardinality="0..1" 
+   		interface="com.zizibujuan.drip.server.dao.UserBindDao" 
+   		name="userBindDao" 
+   		policy="dynamic"/>
+   <service>
+      <provide interface="com.zizibujuan.drip.server.service.UserBindService"/>
+   </service>
+</scr:component>

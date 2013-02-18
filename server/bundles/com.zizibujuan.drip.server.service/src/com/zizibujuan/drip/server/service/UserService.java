@@ -105,8 +105,8 @@ public interface UserService {
 	 * @return 该网站的用户标识
 	 * <pre>
 	 *  返回map的结构
-	 * 		LOCAL_USER_ID: 本网站用户标识
-	 * 		MAP_USER_ID: 映射标识
+	 * 		localUserId: 本网站用户标识
+	 * 		connectUserId: 本网站为第三方网站用户统一生成的用户标识
 	 * </pre>
 	 */
 	Map<String,Object> importUser(Map<String, Object> userInfo);

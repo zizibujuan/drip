@@ -34,26 +34,25 @@ public interface ConnectUserDao {
 	/**
 	 * 将第三方网站的用户基本信息保存起来
 	 * @param con 数据库链接
-	 * @param connectUserInfo 用户基本信息
+	 * @param connectUserInfo 第三方网站的用户信息
 	 * <pre>
 	 * map结构
-	 * 		mapUserId:映射用户标识
-	 * 		loginName:登录名
-	 * 		nickName:昵称
-	 * 		sex:性别代码
-	 * 		headUrl:头像链接
-	 * 		homeCityCode:家乡所在城市编码
-	 * 		homeCity:家乡所在城市名称
-	 * 		siteId：第三方网站标识 {@link OAuthConstants}
-	 * 					如果是使用第三方网站的用户登录，则是第三方网站用户标识；如果是用本网站用户登录，则是本网站用户标识
-	 * 		userId: 第三方网站的用户标识
+	 * 		loginName: 登录名
+	 * 		nickName: 昵称
+	 * 		sex: 性别代码
+	 * 		headUrl: 头像链接
+	 * 		homeCityCode: 家乡所在城市编码
+	 * 		homeCity: 家乡所在城市名称
+	 * 		siteId: 网站标识 {@link OAuthConstants}
+	 * 				如果是使用第三方网站的用户登录，则是第三方网站用户标识；如果是用本网站用户登录，则是本网站用户标识
+	 * 		openId: 第三方网站的用户标识
 	 * 		avatar：用户头像列表
-	 * 			urlName:头像名称
+	 * 			urlName: 头像名称
 	 * 			url：头像链接
 	 * 			width：头像宽度
 	 * 			height：头像高度
 	 * </pre>
-	 * @return 在本网站产生的新的用户标识
+	 * @return 在本网站产生的新的用户标识,全局统一的用户标识
 	 * @throws SQLException 
 	 */
 	Long add(Connection con, Map<String,Object> connectUserInfo) throws SQLException;
