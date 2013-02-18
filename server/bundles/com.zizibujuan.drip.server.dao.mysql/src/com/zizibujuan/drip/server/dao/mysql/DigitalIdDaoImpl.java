@@ -27,6 +27,7 @@ public class DigitalIdDaoImpl extends AbstractDao implements DigitalIdDao {
 	public Long random(Connection con) throws SQLException {
 		String uuid = IdGenerator.uuid();
 		DatabaseUtil.update(con, SQL_UPDATE_RANDOM_ROW, uuid);
+		// 如果新建一个dataSource则查不到这个记录，必须使用保存的connection查，因为只能查同一事务中的数据。
 		//int result = DatabaseUtil.queryForInt(getDataSource(), SQL_GET_NUM, uuid);
 		Long result = null;
 		PreparedStatement pst = con.prepareStatement(SQL_GET_NUM);
