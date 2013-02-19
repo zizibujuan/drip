@@ -10,7 +10,6 @@ import junit.framework.Assert;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.zizibujuan.drip.server.dao.mysql.DaoHolder;
@@ -180,10 +179,11 @@ public class UserServiceTests extends AbstractUserTests{
 			
 			Map<String,Object> result = userService.getPublicInfo(localGlobalUserId);
 			
-			Assert.assertEquals(localGlobalUserId.longValue(), NumberUtils.toLong(result.get("id").toString()));
+			Assert.assertEquals(localGlobalUserId.longValue(), NumberUtils.toLong(result.get("localUserId").toString()));
 			Assert.assertEquals(siteId, NumberUtils.toInt(result.get("siteId").toString()));
 			Assert.assertEquals(nickName, result.get("nickName").toString());
 			Assert.assertEquals(sex, result.get("sex").toString());
+			Assert.assertEquals(loginName, result.get("loginName").toString());
 			
 			Assert.assertEquals(homeCityCode, result.get("homeCityCode").toString());
 			@SuppressWarnings("unchecked")
@@ -312,9 +312,9 @@ public class UserServiceTests extends AbstractUserTests{
 			 * 		answerCount： 习题总数 = 习题草稿数+发布的习题数
 			 * </pre>
 			 */
-			Map<String,Object> result = userService.login(localGlobalUserId, connectGlobalUserId, siteId);
+			Map<String,Object> result = userService.login(localGlobalUserId, connectGlobalUserId);
 			
-			Assert.assertEquals(localGlobalUserId.longValue(), NumberUtils.toLong(result.get("id").toString()));
+			Assert.assertEquals(localGlobalUserId.longValue(), NumberUtils.toLong(result.get("localUserId").toString()));
 			Assert.assertEquals(siteId, NumberUtils.toInt(result.get("siteId").toString()));
 			Assert.assertNull(result.get("email"));
 			Assert.assertNull(result.get("mobile"));

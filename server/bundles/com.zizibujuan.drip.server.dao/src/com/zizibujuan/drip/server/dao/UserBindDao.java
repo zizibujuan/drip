@@ -21,9 +21,8 @@ public interface UserBindDao {
 	 * @return 本网站用户与第三方网站用户映射信息
 	 * <pre>
 	 * map结构：
-	 * 		mapUserId：关联用户标识
-	 * 		localUserId：本地用户标识
-	 * 		connectUserId：本网站为第三方网站用户生成的代理主键
+	 * 		localUserId：本网站为本地用户生成的全局用户标识
+	 * 		connectUserId：本网站为第三方网站用户生成的全局用户标识
 	 * </pre>
 	 */
 	Map<String,Object> getUserMapperInfo(int siteId, String userId);

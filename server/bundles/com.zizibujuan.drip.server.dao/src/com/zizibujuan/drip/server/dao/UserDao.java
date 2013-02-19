@@ -32,26 +32,6 @@ public interface UserDao {
 	 * @return 如果系统中存在该用户信息则返回，否则返回空的map对象
 	 */
 	Map<String, Object> get(String email, String md5Password);
-
-	/**
-	 * 获取用户基本信息，主要往用户session中保存。其中包括了用户的邮箱，手机号等保密信息
-	 * @param userId 用户标识
-	 * @return 如果系统中存在该用户信息则返回，否则返回空的map对象。
-	 * <pre>
-	 * 	map结构为：
-	 * 		id: 用户标识
-	 * 		email: 邮箱
-	 * 		mobile：手机号
-	 * 		realName：真实姓名
-	 * 		nickName: 昵称
-	 * 		fanCount：粉丝数
-	 * 		followCount: 关注人数
-	 * 		exerDraftCount： 习题草稿数
-	 * 		exerPublishCount：发布的习题数
-	 * 		answerCount： 习题总数 = 习题草稿数+发布的习题数
-	 * </pre>
-	 */
-	Map<String, Object> getSimple(Long userId); //TODO:这个方法比getPublicInfo返回的信息多一些，方法名需要重构。
 	
 	/**
 	 * 获取用户基本信息，是用户可以对外公开的信息，剔除掉了用户的隐私信息

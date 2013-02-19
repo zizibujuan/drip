@@ -8,13 +8,12 @@ import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.dao.ConnectUserDao;
 import com.zizibujuan.drip.server.dao.LocalUserStatisticsDao;
-import com.zizibujuan.drip.server.dao.UserBindDao;
 import com.zizibujuan.drip.server.dao.UserAttributesDao;
 import com.zizibujuan.drip.server.dao.UserAvatarDao;
+import com.zizibujuan.drip.server.dao.UserBindDao;
 import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.service.ApplicationPropertyService;
 import com.zizibujuan.drip.server.service.UserService;
-import com.zizibujuan.drip.server.util.OAuthConstants;
 
 /**
  * 用户服务实现类
@@ -63,35 +62,23 @@ public class UserServiceImpl implements UserService {
 	
 	//TODO:需要将获取本地用户信息和获取第三方用户信息的接口统一。
 	@Override
-	public Map<String, Object> login(Long localUserId, Long connectUserId, int siteId) {
+	public Map<String, Object> login(Long localUserId, Long connectUserId) {
 		// 如果localUserId与mapUserId相等，则从drip_user_info中获取用户信息
 		// 如果不相等，则从drip_connect_user_info中获取
-		boolean isLocalUser = (siteId == OAuthConstants.ZIZIBUJUAN);
 		userAttributesDao.updateLoginState(connectUserId);
-		// FIXME：因为现在都统一了，所以删除这个判断
-		Map<String,Object> userInfo = null;
-		if(isLocalUser){ // 本网站注册用户
-			// 获取基本信息和统计信息
-			userInfo = userDao.getSimple(localUserId);
-			userInfo.put("siteId", siteId);
-			// 获取头像信息
-			Map<String,Object> avatarInfo = userAvatarDao.get(connectUserId);
-			userInfo.putAll(avatarInfo);
-			return userInfo;
-		}else{
-			// 第三方网站注册用户
-			// 获取基本信息
-			userInfo = connectUserDao.getPublicInfo(connectUserId);
-			// 获取头像信息
-			Map<String,Object> avatarInfo = userAvatarDao.get(connectUserId);
-			userInfo.putAll(avatarInfo);
-			
-			// 只获取统计信息，用户的其余信息实时来自第三方网站
-			Map<String,Object> StatisticsInfo = localUserStatisticsDao.getUserStatistics(localUserId);
-			userInfo.putAll(StatisticsInfo);
-			return userInfo;
-		}
 		
+		// 第三方网站注册用户
+		// 获取基本信息
+		Map<String,Object> userInfo = connectUserDao.getPublicInfo(connectUserId);
+		userInfo.put("localUserId", localUserId);
+		// 获取头像信息
+		Map<String,Object> avatarInfo = userAvatarDao.get(connectUserId);
+		userInfo.putAll(avatarInfo);
+		
+		// 只获取统计信息，用户的其余信息实时来自第三方网站
+		Map<String,Object> StatisticsInfo = localUserStatisticsDao.getUserStatistics(localUserId);
+		userInfo.putAll(StatisticsInfo);
+		return userInfo;
 	}
 	
 	// 获取基本信息
@@ -103,12 +90,17 @@ public class UserServiceImpl implements UserService {
 		Map<String,Object> userInfo = null;
 		// 先从映射关系表中获取信息。
 		Map<String, Object> mapUserInfo = userBindDao.getRefUserMapperInfo(localGlobalUserId);
+		if(mapUserInfo.isEmpty()){
+			return mapUserInfo;
+		}
+		
 		// 注意，该connectUserId是与本地用户引用用户信息的帐号，与参数中的connectGlobalUserId可能不是同一个帐号
 		Long connectUserId = Long.valueOf(mapUserInfo.get("connectUserId").toString());
 		
 		// TODO:获取用户家乡所在地和用户性别代码。将用户家乡所在地缓存
 		// 从propertyService中获取城市名称，该方法要支持缓存。
 		userInfo = connectUserDao.getPublicInfo(connectUserId);
+		userInfo.put("localUserId", localGlobalUserId);
 		String cityCode = (String) userInfo.get("homeCityCode");
 		if(cityCode != null && !cityCode.isEmpty()){
 			userInfo.put("homeCity", applicationPropertyService.getCity(cityCode));

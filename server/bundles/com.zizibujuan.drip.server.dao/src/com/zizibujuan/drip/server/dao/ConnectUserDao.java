@@ -24,6 +24,8 @@ public interface ConnectUserDao {
 	 * map结构：
 	 *		connectUserId：映射标识
 	 *		nickName：用户昵称
+	 *		loginName: 登录名
+	 *		digitalId: 为本网站用户分配的数字帐号
 	 *		homeCityCode：用户家乡所在城市编码
 	 *		sex：用户性别
 	 *		siteId：来自哪个网站的标识

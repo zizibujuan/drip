@@ -54,7 +54,7 @@ public class RenrenHelper {
 		
 		UserService userService = ServiceHolder.getDefault().getUserService();
 		ApplicationPropertyService applicationPropertyService = ServiceHolder.getDefault().getApplicationPropertyService();
-		UserBindService oAuthUserMapService = ServiceHolder.getDefault().getOAuthUserMapService();
+		UserBindService userBindService = ServiceHolder.getDefault().getOAuthUserMapService();
 		
 		String redirectUri = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_REDIRECT_URL);
 		String renrenOAuthTokenEndPoint = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_OAUTH_TOKEN_END_POINT);
@@ -89,7 +89,7 @@ public class RenrenHelper {
 		RenrenApiClient apiClient = new RenrenApiClient(accessToken, true);
 		int rrUid = apiClient.getUserService().getLoggedInUser();
 		
-		Map<String,Object> userMapperInfo = oAuthUserMapService.getUserMapperInfo(OAuthConstants.RENREN, rrUid);
+		Map<String,Object> userMapperInfo = userBindService.getUserMapperInfo(OAuthConstants.RENREN, rrUid);
 		//判断帐号关联表里有没有现成的关联
 		if(userMapperInfo.isEmpty()){
 			String fields = "name,sex,birthday,tinyurl,headurl,mainurl,hometown_location,work_history,university_history";
@@ -112,7 +112,7 @@ public class RenrenHelper {
 		// 记录登录次数，哪个帐号登录的就记在哪个下面。
 		// 这里调用肯定是用renren登录的。
 		// 采取晚上同步用户信息的方式
-		Map<String,Object> userInfo = userService.login(localUserId, connectUserId, OAuthConstants.RENREN);
+		Map<String,Object> userInfo = userService.login(localUserId, connectUserId);
 		// 在用户session中保存从第三方网站过来的最新数据，而不是从本地的数据库中获取这些数据，
 		// 避免用户已经在第三方网站修改了用户信息，但是drip没能及时更新的问题。
 		// session中存储的值一部分来自drip，一部分来自第三方网站

@@ -35,18 +35,18 @@ public interface UserService {
 	
 	/**
 	 * 用户登录，主要是记录使用第三方网站进行登录。注意每天晚上定时从第三方同步用户信息。
-	 * @param localUserId 本网站用户标识
-	 * @param connectUserId 本网站为第三方网站用户生成的用户标识
-	 * @param siteId 网站标识，参考 {@link OAuthConstants}
+	 * @param localUserId 为本网站用户生成的全局用户标识
+	 * @param connectUserId 本网站为第三方网站用户生成的全局用户标识
 	 * @return 如果系统中存在该用户信息则返回，否则返回空的map对象。
 	 * <pre>
 	 * 	map结构为：
-	 * 		id: 本地用户标识
+	 * 		localUserId: 本地用户标识
 	 * 		siteId：与哪个网站的用户关联
-	 *  这些信息，如果是本地用户从数据库中获取，如果是第三方用户，则从返回的记录中直接获取，不走后台
 	 * 		email: 邮箱
 	 * 		mobile：手机号
-	 * 		displayName: 显示名
+	 * 		nickName: 用户昵称
+	 * 		loginName: 登录名
+	 * 		digitalId: 为本网站用户分配的数字帐号
 	 * 这些字段是按照网站提供的图片尺寸大小从小到大排列的
 	 * 		smallImageUrl: 小头像
 	 * 		largeImageUrl: 
@@ -61,7 +61,7 @@ public interface UserService {
 	 * 		answerCount： 习题总数 = 习题草稿数+发布的习题数
 	 * </pre>
 	 */
-	Map<String, Object> login(Long localUserId, Long connectUserId, int siteId);
+	Map<String, Object> login(Long localUserId, Long connectUserId);
 
 	/**
 	 * 获取用户登录信息，返回到客户端的，所以不能包含用户隐私信息。
@@ -132,27 +132,30 @@ public interface UserService {
 	 * @return 可以公开的用户信息。如果系统中存在该用户信息则返回，否则返回空的map对象。
 	 * <pre>
 	 * 	map结构为：
-	 * 		id: 本地用户标识，即localUserId
+	 * 		localUserId: 本地用户标识，即localUserId
 	 * 		connectUserId：本网站为第三方用户生成的代理主键
-	 * 		nickName: 显示名
-	 * 		fanCount：粉丝数
-	 * 		followCount: 关注人数
-	 * 		exerDraftCount： 习题草稿数
-	 * 		exerPublishCount：发布的习题数
-	 * 		answerCount： 习题总数 = 习题草稿数+发布的习题数
-	 * 		smallImageUrl: 小头像
-	 * 		largeImageUrl: 
-	 * 		largerImageUrl:
-	 * 		xLargeImageUrl:
-	 * 
+	 * 		nickName: 用户昵称
+	 * 		loginName: 登录名
+	 * 		digitalId: 为本网站用户分配的数字帐号
 	 * 		sex: 性别代码
+	 * 		siteId:网站标识
 	 * 		homeCityCode:家乡所在地代码
 	 * 		homeCity：家乡所在地
 	 * 			country：国家
 	 * 			province：省
 	 * 			city：市
 	 * 			county：县
-	 * 		siteId:网站标识
+	 * 
+	 * 		fanCount：粉丝数
+	 * 		followCount: 关注人数
+	 * 		exerDraftCount： 习题草稿数
+	 * 		exerPublishCount：发布的习题数
+	 * 		answerCount： 习题总数 = 习题草稿数+发布的习题数
+	 * 
+	 * 		smallImageUrl: 小头像
+	 * 		largeImageUrl: 
+	 * 		largerImageUrl:
+	 * 		xLargeImageUrl:
 	 * </pre>
 	 */
 	Map<String, Object> getPublicInfo(Long localGlobalUserId);

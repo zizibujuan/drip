@@ -19,10 +19,12 @@ public class ConnectUserDaoImpl extends AbstractDao implements ConnectUserDao {
 	private static final String SQL_GET_CONNECT_USER_PUBLIC = "SELECT " +
 			"a.DBID \"connectUserId\"," +
 			"a.NICK_NAME \"nickName\"," +
+			"a.LOGIN_NAME \"loginName\"," +
+			"a.DIGITAL_ID \"digitalId\","+
 			"a.HOME_CITY_CODE \"homeCityCode\"," +
 			"a.SEX \"sex\"," +
 			"a.SITE_ID \"siteId\" " +
-			"FROM DRIP_CONNECT_USER_INFO a " +
+			"FROM DRIP_GLOBAL_USER_INFO a " +
 			"WHERE a.DBID=?";
 	@Override
 	public Map<String, Object> getPublicInfo(Long connectUserId) {

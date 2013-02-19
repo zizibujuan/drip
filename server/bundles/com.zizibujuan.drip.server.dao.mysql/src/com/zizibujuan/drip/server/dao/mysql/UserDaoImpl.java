@@ -115,12 +115,6 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_USER_FOR_SESSION_BY_PWD, email, md5Password);
 	}
 	
-	private static final String SQL_GET_USER_FOR_SESSION_BY_ID = SQL_GET_USER_FOR_SESSION + "WHERE DBID=?";
-	@Override
-	public Map<String, Object> getSimple(Long userId) {
-		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_USER_FOR_SESSION_BY_ID, userId);
-	}
-	
 	private static final String SQL_GET_USER_FOR_PUBLIC = "SELECT " +
 			"DBID \"id\"," +
 			"REAL_NAME \"displayName\"," +
