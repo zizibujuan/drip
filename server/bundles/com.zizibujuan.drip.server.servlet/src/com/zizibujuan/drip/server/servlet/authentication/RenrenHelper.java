@@ -54,7 +54,7 @@ public class RenrenHelper {
 		
 		UserService userService = ServiceHolder.getDefault().getUserService();
 		ApplicationPropertyService applicationPropertyService = ServiceHolder.getDefault().getApplicationPropertyService();
-		UserBindService userBindService = ServiceHolder.getDefault().getOAuthUserMapService();
+		UserBindService userBindService = ServiceHolder.getDefault().getUserBindService();
 		
 		String redirectUri = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_REDIRECT_URL);
 		String renrenOAuthTokenEndPoint = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_OAUTH_TOKEN_END_POINT);

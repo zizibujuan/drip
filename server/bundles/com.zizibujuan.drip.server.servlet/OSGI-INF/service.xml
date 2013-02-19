@@ -55,11 +55,11 @@
 		policy="dynamic" />
 		
 	<reference 
-		bind="setOAuthUserMapService" 
-		unbind="unsetOAuthUserMapService" 
+		bind="setUserBindService" 
+		unbind="unsetUserBindService" 
 		cardinality="0..1" 
-		interface="com.zizibujuan.drip.server.service.OAuthUserMapService" 
-		name="oAuthUserMapService" 
+		interface="com.zizibujuan.drip.server.service.UserBindService" 
+		name="userBindService" 
 		policy="dynamic" />
 
 	<reference 

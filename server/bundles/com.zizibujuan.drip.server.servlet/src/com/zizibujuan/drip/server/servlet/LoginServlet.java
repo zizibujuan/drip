@@ -45,7 +45,7 @@ public class LoginServlet extends BaseServlet {
 	
 	public LoginServlet() {
 		userService = ServiceHolder.getDefault().getUserService();
-		oAuthUserMapService = ServiceHolder.getDefault().getOAuthUserMapService();
+		oAuthUserMapService = ServiceHolder.getDefault().getUserBindService();
 	}
 
 	@Override

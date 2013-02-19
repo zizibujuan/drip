@@ -143,21 +143,21 @@ public class ServiceHolder {
 		}
 	}
 
-	private UserBindService oAuthUserMapService;
+	private UserBindService userBindService;
 
-	public void setOAuthUserMapService(UserBindService oAuthUserMapService) {
-		logger.info("注入oAuthUserMapService");
-		this.oAuthUserMapService = oAuthUserMapService;
+	public void setUserBindService(UserBindService userBindService) {
+		logger.info("注入userBindService");
+		this.userBindService = userBindService;
 	}
 
-	public void unsetOAuthUserMapService(UserBindService oAuthUserMapService) {
-		logger.info("注销oAuthUserMapService");
-		if (this.oAuthUserMapService == oAuthUserMapService) {
-			this.oAuthUserMapService = null;
+	public void unsetUserBindService(UserBindService userBindService) {
+		logger.info("注销userBindService");
+		if (this.userBindService == userBindService) {
+			this.userBindService = null;
 		}
 	}
-	public UserBindService getOAuthUserMapService() {
-		return oAuthUserMapService;
+	public UserBindService getUserBindService() {
+		return userBindService;
 	}
 
 	private UserRelationService userRelationService;

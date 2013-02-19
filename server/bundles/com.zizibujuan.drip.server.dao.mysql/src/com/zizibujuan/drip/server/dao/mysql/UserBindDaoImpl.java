@@ -15,7 +15,7 @@ import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 public class UserBindDaoImpl extends AbstractDao implements UserBindDao {
 
 	private static final String SQL_GET_MAP_USER_INFO= "SELECT a.BIND_USER_ID \"connectUserId\"," +
-			"a.LOCAL_USER_ID \"localUserId\", " +
+			"a.LOCAL_USER_ID \"localUserId\" " +
 			"FROM DRIP_USER_BIND a, DRIP_GLOBAL_USER_INFO b " +
 			"WHERE " +
 			"b.SITE_ID=? AND " +

@@ -14,18 +14,18 @@ import com.zizibujuan.drip.server.servlet.ServiceHolder;
  * @author jzw
  * @since 0.0.1
  */
-public class OAuthUserMapServiceTests extends AbstractUserTests{
+public class UserBindServiceTests extends AbstractUserTests{
 
 	@Test
 	public void testGetMapUserInfo(){
 		try{
-			UserBindService oAuthUserMapService = ServiceHolder.getDefault().getOAuthUserMapService();
-			Map<String,Object> userMapperInfo = oAuthUserMapService.getUserMapperInfo(siteId, oauthUserId);
+			UserBindService userBindService = ServiceHolder.getDefault().getUserBindService();
+			Map<String,Object> userMapperInfo = userBindService.getUserMapperInfo(siteId, openId);
 			Assert.assertTrue(userMapperInfo.isEmpty());
 			
 			importUser();
 			
-			userMapperInfo = oAuthUserMapService.getUserMapperInfo(siteId, oauthUserId);
+			userMapperInfo = userBindService.getUserMapperInfo(siteId, openId);
 			Assert.assertFalse(userMapperInfo.isEmpty());
 		}finally{
 			super.deleteTestUser();
