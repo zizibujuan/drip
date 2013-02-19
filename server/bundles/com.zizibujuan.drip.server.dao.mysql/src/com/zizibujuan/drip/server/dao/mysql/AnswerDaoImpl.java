@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.dao.ActivityDao;
 import com.zizibujuan.drip.server.dao.AnswerDao;
+import com.zizibujuan.drip.server.dao.LocalUserStatisticsDao;
 import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.exception.dao.DataAccessException;
 import com.zizibujuan.drip.server.util.ActionType;
@@ -27,6 +28,7 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 	private static final Logger logger = LoggerFactory.getLogger(AnswerDaoImpl.class);
 	private UserDao userDao;
 	private ActivityDao activityDao;
+	private LocalUserStatisticsDao localUserStatisticsDao;
 	
 	private static final String SQL_GET_ANSWER = "SELECT " +
 			"DBID \"id\"," +
@@ -89,12 +91,12 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 	}
 
 	@Override
-	public void save(Long localUserId, Long mapUserId, Map<String, Object> answerInfo) {
+	public void save(Long localGlobalUserId, Long connectGlobalUserId, Map<String, Object> answerInfo) {
 		Connection con = null;
 		try {
 			con = getDataSource().getConnection();
 			con.setAutoCommit(false);
-			this.save(con, localUserId, mapUserId, answerInfo);
+			this.save(con, localGlobalUserId, connectGlobalUserId, answerInfo);
 			con.commit();
 		} catch (SQLException e) {
 			DatabaseUtil.safeRollback(con);
@@ -110,10 +112,10 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 	private static final String SQL_INSERT_ANSWER = "INSERT INTO DRIP_ANSWER (EXER_ID,GUIDE,CRT_TM,CRT_USER_ID) VALUES (?,?,now(),?)";
 	private static final String SQL_INSERT_ANSWER_DETAIL = "INSERT INTO DRIP_ANSWER_DETAIL (ANSWER_ID,OPT_ID,CONTENT) VALUES (?,?,?)";
 	@Override
-	public void save(Connection con, Long userId, Long mapUserId, Map<String, Object> answerInfo) throws SQLException {
+	public void save(Connection con, Long localGlobalUserId, Long connectGlobalUserId, Map<String, Object> answerInfo) throws SQLException {
 		Object exerId = answerInfo.get("exerId");
 		Object guide = answerInfo.get("guide");
-		Long answerId = DatabaseUtil.insert(con, SQL_INSERT_ANSWER, exerId, guide, userId);
+		Long answerId = DatabaseUtil.insert(con, SQL_INSERT_ANSWER, exerId, guide, connectGlobalUserId);
 		
 		Object oDetail = answerInfo.get("detail");
 		if(oDetail != null){
@@ -128,19 +130,19 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 		
 		// 答案回答完成后，在用户的“已回答的习题数”上加1
 		// 同时修改后端和session中缓存的该记录
-		userDao.increaseAnswerCount(con, userId);
+		localUserStatisticsDao.increaseAnswerCount(con, localGlobalUserId);
 		// 在活动表中插入一条记录
-		activityDao.add(con, userId, mapUserId, answerId, ActionType.ANSWER_EXERCISE, true);
+		activityDao.add(con, connectGlobalUserId, answerId, ActionType.ANSWER_EXERCISE, true);
 		// 插入答案概述
 		
-				// 插入答案详情
-				
-				// 在活动列表中插入一条
-				
-				// 增加用户的回答次数
-				
-				// TODO：exerciseDao中的插入答案的方法要使用这里的接口。
-				// 保持接口一致。
+		// 插入答案详情
+		
+		// 在活动列表中插入一条
+		
+		// 增加用户的回答次数
+		
+		// TODO：exerciseDao中的插入答案的方法要使用这里的接口。
+		// 保持接口一致。
 	}
 
 
@@ -194,6 +196,18 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 		if (this.activityDao == activityDao) {
 			logger.info("注销ActivityDao");
 			this.activityDao = null;
+		}
+	}
+	
+	public void setLocalUserStatisticsDao(LocalUserStatisticsDao localUserStatisticsDao) {
+		logger.info("注入localUserStatisticsDao");
+		this.localUserStatisticsDao = localUserStatisticsDao;
+	}
+
+	public void unsetLocalUserStatisticsDao(LocalUserStatisticsDao localUserStatisticsDao) {
+		if (this.localUserStatisticsDao == localUserStatisticsDao) {
+			logger.info("注销localUserStatisticsDao");
+			this.localUserStatisticsDao = null;
 		}
 	}
 }

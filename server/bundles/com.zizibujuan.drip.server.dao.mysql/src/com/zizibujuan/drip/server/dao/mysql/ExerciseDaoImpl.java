@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.zizibujuan.drip.server.dao.ActivityDao;
 import com.zizibujuan.drip.server.dao.AnswerDao;
 import com.zizibujuan.drip.server.dao.ExerciseDao;
+import com.zizibujuan.drip.server.dao.LocalUserStatisticsDao;
 import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.exception.dao.DataAccessException;
 import com.zizibujuan.drip.server.util.ActionType;
@@ -29,6 +30,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 	private UserDao userDao;
 	private ActivityDao activityDao;
 	private AnswerDao answerDao;
+	private LocalUserStatisticsDao localUserStatisticsDao;
 	
 	private static final String SQL_LIST_EXERCISE = 
 			"SELECT DBID, CONTENT, CRT_TM, CRT_USER_ID FROM DRIP_EXERCISE ORDER BY CRT_TM DESC";
@@ -65,7 +67,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			Object oUserId = exerciseInfo.get("localUserId");
 			Object oExerType = exerciseInfo.get("exerType");
 			String exerType = oExerType!=null?oExerType.toString():null;
-			Long mapUserId = Long.valueOf(exerciseInfo.get("connectUserId").toString());
+			Long connectUserId = Long.valueOf(exerciseInfo.get("connectUserId").toString());
 			// localUserId
 			Long localUserId = Long.valueOf(oUserId.toString());
 			
@@ -82,9 +84,9 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			
 			// 习题添加成功后，在用户的“创建的习题数”上加1
 			// 同时修改后端和session中缓存的该记录
-			userDao.increaseExerciseCount(con, localUserId);
+			localUserStatisticsDao.increaseExerciseCount(con, localUserId);
 			// 在活动表中插入一条记录
-			addActivity(con, localUserId, mapUserId, exerId,ActionType.SAVE_EXERCISE);
+			addActivity(con, connectUserId, exerId,ActionType.SAVE_EXERCISE);
 			
 			// 如果存在答案，则添加答案
 			Object oAnswer = exerciseInfo.get("answer");
@@ -106,7 +108,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 						}
 					}
 					
-					answerDao.save(con, localUserId, mapUserId, answerInfo);
+					answerDao.save(con, localUserId, connectUserId, answerInfo);
 				}
 			}
 			
@@ -123,14 +125,13 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 		return exerId;
 	}
 
-	private void addActivity(Connection con,Long userId, Long mapUserId, Long contentId, String actionType) throws SQLException {
+	private void addActivity(Connection con,Long connectGlobalUserId, Long contentId, String actionType) throws SQLException {
 		// FIXME:是不是直接传各自的参数更好一些，而不是现在传入map对象，还需要两遍转换
 		Map<String,Object> activityInfo = new HashMap<String, Object>();
-		activityInfo.put("USER_ID", userId);
-		activityInfo.put("MAP_USER_ID", mapUserId);
-		activityInfo.put("ACTION_TYPE", actionType);
-		activityInfo.put("IS_IN_HOME", 1);
-		activityInfo.put("CONTENT_ID", contentId);
+		activityInfo.put("connectGlobalUserId", connectGlobalUserId);
+		activityInfo.put("actionType", actionType);
+		activityInfo.put("isInHome", 1);
+		activityInfo.put("contentId", contentId);
 		activityDao.add(con, activityInfo);
 	}
 	
@@ -141,7 +142,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 		Object oContent = exerciseInfo.get("content");
 		Object oExerType = exerciseInfo.get("exerType");
 		Object oExerCategory = exerciseInfo.get("exerCategory");
-		Object oUserId = exerciseInfo.get("userId");
+		Object oUserId = exerciseInfo.get("connectUserId");
 		return DatabaseUtil.insert(con,SQL_INSERT_EXERCISE, oContent, oExerType, oExerCategory, oUserId);
 	}
 	
@@ -237,4 +238,18 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			this.answerDao = null;
 		}
 	}
+	
+	public void setLocalUserStatisticsDao(LocalUserStatisticsDao localUserStatisticsDao) {
+		logger.info("注入localUserStatisticsDao");
+		this.localUserStatisticsDao = localUserStatisticsDao;
+	}
+
+	public void unsetLocalUserStatisticsDao(LocalUserStatisticsDao localUserStatisticsDao) {
+		if (this.localUserStatisticsDao == localUserStatisticsDao) {
+			logger.info("注销localUserStatisticsDao");
+			this.localUserStatisticsDao = null;
+		}
+	}
+	
+	
 }

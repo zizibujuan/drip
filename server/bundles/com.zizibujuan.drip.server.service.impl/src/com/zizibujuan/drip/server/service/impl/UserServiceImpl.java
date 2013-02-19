@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.dao.ConnectUserDao;
+import com.zizibujuan.drip.server.dao.LocalUserStatisticsDao;
 import com.zizibujuan.drip.server.dao.UserBindDao;
 import com.zizibujuan.drip.server.dao.UserAttributesDao;
 import com.zizibujuan.drip.server.dao.UserAvatarDao;
@@ -29,6 +30,8 @@ public class UserServiceImpl implements UserService {
 	private ConnectUserDao connectUserDao;
 	private ApplicationPropertyService applicationPropertyService;
 	private UserBindDao userBindDao;
+	private LocalUserStatisticsDao localUserStatisticsDao;
+
 	
 	// FIXME:学习如何加入salt，明白加入salt有哪些具体好处
 	@Override
@@ -72,7 +75,7 @@ public class UserServiceImpl implements UserService {
 			userInfo = userDao.getSimple(localUserId);
 			userInfo.put("siteId", siteId);
 			// 获取头像信息
-			Map<String,Object> avatarInfo = userAvatarDao.get(connectUserId, isLocalUser);
+			Map<String,Object> avatarInfo = userAvatarDao.get(connectUserId);
 			userInfo.putAll(avatarInfo);
 			return userInfo;
 		}else{
@@ -80,11 +83,11 @@ public class UserServiceImpl implements UserService {
 			// 获取基本信息
 			userInfo = connectUserDao.getPublicInfo(connectUserId);
 			// 获取头像信息
-			Map<String,Object> avatarInfo = userAvatarDao.get(connectUserId, isLocalUser);
+			Map<String,Object> avatarInfo = userAvatarDao.get(connectUserId);
 			userInfo.putAll(avatarInfo);
 			
 			// 只获取统计信息，用户的其余信息实时来自第三方网站
-			Map<String,Object> StatisticsInfo = userDao.getUserStatistics(localUserId);
+			Map<String,Object> StatisticsInfo = localUserStatisticsDao.getUserStatistics(localUserId);
 			userInfo.putAll(StatisticsInfo);
 			return userInfo;
 		}
@@ -95,36 +98,29 @@ public class UserServiceImpl implements UserService {
 	// 获取统计信息
 	// 获取头像信息
 	@Override
-	public Map<String, Object> getPublicInfo(Long localUserId) {
+	public Map<String, Object> getPublicInfo(Long localGlobalUserId) {
 		// TODO：需要缓存
 		Map<String,Object> userInfo = null;
 		// 先从映射关系表中获取信息。
-		Map<String, Object> mapUserInfo = userBindDao.getRefUserMapperInfo(localUserId);
+		Map<String, Object> mapUserInfo = userBindDao.getRefUserMapperInfo(localGlobalUserId);
+		// 注意，该connectUserId是与本地用户引用用户信息的帐号，与参数中的connectGlobalUserId可能不是同一个帐号
 		Long connectUserId = Long.valueOf(mapUserInfo.get("connectUserId").toString());
-		int siteId = Integer.valueOf(mapUserInfo.get("siteId").toString());
 		
-		boolean isLocalUser = true;
-		// 不能通过判断connectUserId == localUserId来证明是不是本地用户，万一出现巧合，两个主键一致呢。
-		if(siteId == OAuthConstants.ZIZIBUJUAN){
-			// 是在本网站注册的用户
-			throw new UnsupportedOperationException();
-			//userInfo = userDao.getPublicInfo(localUserId);
-		}else{
-			// TODO:获取用户家乡所在地和用户性别代码。将用户家乡所在地缓存
-			// 从propertyService中获取城市名称，该方法要支持缓存。
-			userInfo = connectUserDao.getPublicInfo(connectUserId);
-			String cityCode = (String) userInfo.get("homeCityCode");
-			if(cityCode != null && !cityCode.isEmpty()){
-				userInfo.put("homeCity", applicationPropertyService.getCity(cityCode));
-			}
-			// 这个统计数据是所有关联用户和本网站用户的数据之和。
-			Map<String,Object> statistics = userDao.getUserStatistics(localUserId);
-			userInfo.putAll(statistics);
-			isLocalUser = false;
+		// TODO:获取用户家乡所在地和用户性别代码。将用户家乡所在地缓存
+		// 从propertyService中获取城市名称，该方法要支持缓存。
+		userInfo = connectUserDao.getPublicInfo(connectUserId);
+		String cityCode = (String) userInfo.get("homeCityCode");
+		if(cityCode != null && !cityCode.isEmpty()){
+			userInfo.put("homeCity", applicationPropertyService.getCity(cityCode));
 		}
+		// 这个统计数据是所有关联用户和本网站用户的数据之和。
+		Map<String,Object> statistics = localUserStatisticsDao.getUserStatistics(localGlobalUserId);
+		userInfo.putAll(statistics);
+			
+		
 		
 		// 但是如何区分本网站注册用户和第三方网站用户
-		Map<String,Object> avatarInfo = userAvatarDao.get(connectUserId, isLocalUser);
+		Map<String,Object> avatarInfo = userAvatarDao.get(connectUserId);
 		userInfo.putAll(avatarInfo);
 		return userInfo;
 	}
@@ -221,5 +217,16 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 	
+	public void setLocalUserStatisticsDao(LocalUserStatisticsDao localUserStatisticsDao) {
+		logger.info("注入localUserStatisticsDao");
+		this.localUserStatisticsDao = localUserStatisticsDao;
+	}
 
+	public void unsetLocalUserStatisticsDao(LocalUserStatisticsDao localUserStatisticsDao) {
+		if (this.localUserStatisticsDao == localUserStatisticsDao) {
+			logger.info("注销localUserStatisticsDao");
+			this.localUserStatisticsDao = null;
+		}
+	}
+	
 }

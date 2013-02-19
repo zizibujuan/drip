@@ -128,8 +128,7 @@ public interface UserService {
 	 * </ul>
 	 * 
 	 * <p>在界面上可以直接通过mapUserId获取用户信息，无需id</p>
-	 * @param localUserId 本网站用户标识
-	 * @param localUserId 本地用户标识
+	 * @param localGlobalUserId 本网站为本网站用户产生的全局用户标识
 	 * @return 可以公开的用户信息。如果系统中存在该用户信息则返回，否则返回空的map对象。
 	 * <pre>
 	 * 	map结构为：
@@ -156,6 +155,6 @@ public interface UserService {
 	 * 		siteId:网站标识
 	 * </pre>
 	 */
-	Map<String, Object> getPublicInfo(Long localUserId);
+	Map<String, Object> getPublicInfo(Long localGlobalUserId);
 
 }

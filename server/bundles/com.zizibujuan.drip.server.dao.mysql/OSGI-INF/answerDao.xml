@@ -18,6 +18,14 @@
    		name="activityDao" 
    		policy="dynamic"/>
    		
+   <reference 
+   		bind="setLocalUserStatisticsDao" 
+   		unbind="unsetLocalUserStatisticsDao" 
+   		cardinality="0..1" 
+   		interface="com.zizibujuan.drip.server.dao.LocalUserStatisticsDao" 
+   		name="localUserStatisticsDao" 
+   		policy="dynamic"/>
+   		
    <service>
       <provide interface="com.zizibujuan.drip.server.dao.AnswerDao"/>
    </service>

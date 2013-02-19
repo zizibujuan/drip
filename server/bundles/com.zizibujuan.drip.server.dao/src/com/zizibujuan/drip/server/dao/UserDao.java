@@ -1,7 +1,5 @@
 package com.zizibujuan.drip.server.dao;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Map;
 
 import com.zizibujuan.drip.server.util.OAuthConstants;
@@ -108,38 +106,6 @@ public interface UserDao {
 	boolean emailIsExist(String email);
 	
 	/**
-	 * 添加一道习题后，在用户的添加习题数上加1
-	 * @param con 数据库链接
-	 * @param userId 用户标识
-	 * @throws SQLException 
-	 */
-	void increaseExerciseCount(Connection con, Long userId) throws SQLException;
-	
-	/**
-	 * 添加一道习题后，在用户的添加习题数上减1
-	 * @param con 数据库链接
-	 * @param userId 用户标识
-	 * @throws SQLException 
-	 */
-	void decreaseExerciseCount(Connection con, Long userId) throws SQLException;
-	
-	/**
-	 * 用户回答了一套习题后，在用户回答的习题数上加1
-	 * @param con 数据库链接
-	 * @param userId 用户标识
-	 * @throws SQLException 
-	 */
-	void increaseAnswerCount(Connection con, Long userId) throws SQLException;
-	
-	/**
-	 * 用户回答了一套习题后，在用户回答的习题数上减1
-	 * @param con 数据库链接
-	 * @param userId 用户标识
-	 * @throws SQLException 
-	 */
-	void decreaseAnswerCount(Connection con, Long userId) throws SQLException;
-
-	/**
 	 * 导入第三网站的用户信息
 	 * @param userInfo 用户详细信息
 	 * <pre>
@@ -170,13 +136,6 @@ public interface UserDao {
 	 * </pre>
 	 */
 	Map<String, Object> importUser(Map<String, Object> userInfo);
-
-	/**
-	 * 获取本地用户相关的统计数据，这些只是在客户端显示的统计项。
-	 * @param localUserId 本地用户标识
-	 * @return 返回基于用户的统计数据。
-	 */
-	Map<String, Object> getUserStatistics(Long localUserId);
 
 	/**
 	 * 判断这个映射标识对应的用户是不是本网站注册用户。将在0.0.2版本中删除

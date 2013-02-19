@@ -17,7 +17,7 @@ import com.zizibujuan.drip.server.tests.service.UserServiceTests;
 @SuiteClasses({
 	UserServiceTests.class,
 //	OAuthUserMapServiceTests.class,
-//	ActivityServiceTests.class
+	ActivityServiceTests.class
 })
 public class AllServiceTests {
 

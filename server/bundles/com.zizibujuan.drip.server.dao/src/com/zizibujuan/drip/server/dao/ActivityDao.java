@@ -22,8 +22,9 @@ public interface ActivityDao {
 	 * @return 活动列表的索引，并不包含活动内容详情。如果不存在，则返回空列表。
 	 * <pre>
 	 * map值：
-	 * 		localUserId：被关注的用户对应的本网站用户标识
-	 * 		mapUserId：本网站用户与第三方网站用户的映射标识
+	 * 		DBID：活动标识
+	 * 		connectGlobalUserId：本网站为关联的网站用户生成的全局用户标识
+	 * 		localGlobalUserId：本网站为本网站用户产生的全局用户标识
 	 * 		createTime：活动发生的时间
 	 * 		contentId：活动输出的内容标识
 	 * 		actionType：活动类型
@@ -36,10 +37,10 @@ public interface ActivityDao {
 	 * @param con 数据库链接
 	 * @param activityInfo 活动信息
 	 * <pre>
-	 * 		USER_ID: 用户标识
-	 * 		ACTION_TYPE: 操作类型，参考 {@link ActionType}
-	 * 		IS_IN_HOME: 是否在个人首页显示，boolean
-	 * 		CONTENT_ID: 内容标识
+	 * 		connectGlobalUserId: 用户标识
+	 * 		actionType: 操作类型，参考 {@link ActionType}
+	 * 		isInhome: 是否在个人首页显示，boolean
+	 * 		contentId: 内容标识
 	 * </pre>
 	 * @return 活动标识
 	 * @throws SQLException 
@@ -49,8 +50,7 @@ public interface ActivityDao {
 	/**
 	 * 添加一个新的活动
 	 * @param con 数据库链接
-	 * @param localUserId 本网站用户标识
-	 * @param mapUserId 映射用户标识
+	 * @param connectGlobalUserId 本网站为第三方网站用户生成的全局用户标识
 	 * @param contentId 活动内容标识
 	 * @param actionType 操作类型 参考 {@link ActionType}
 	 * @param showInHome 是否在个人首页中显示，true 显示; false 不显示
@@ -58,8 +58,7 @@ public interface ActivityDao {
 	 * @throws SQLException 
 	 */
 	Long add(Connection con, 
-			Long localUserId, 
-			Long mapUserId, 
+			Long connectGlobalUserId, 
 			Long contentId, 
 			String actionType, 
 			boolean showInHome) throws SQLException;

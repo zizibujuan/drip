@@ -164,39 +164,6 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		return result != null;
 	}
 	
-	private static final String SQL_UPDATE_INCREASE_EXERCISE_COUNT = "UPDATE DRIP_USER_INFO SET " +
-			"EXER_PUBLISH_COUNT=EXER_PUBLISH_COUNT+1 " +
-			"where DBID=?";
-	@Override
-	public void increaseExerciseCount(Connection con, Long userId) throws SQLException {
-		DatabaseUtil.update(con, SQL_UPDATE_INCREASE_EXERCISE_COUNT, userId);
-	}
-	
-	private static final String SQL_UPDATE_INCREASE_ANSWER_COUNT = "UPDATE DRIP_USER_INFO SET " +
-			"ANSWER_COUNT=ANSWER_COUNT+1 " +
-			"where DBID=?";
-	@Override
-	public void increaseAnswerCount(Connection con, Long userId) throws SQLException {
-		DatabaseUtil.update(con, SQL_UPDATE_INCREASE_ANSWER_COUNT, userId);
-	}
-	
-	private static final String SQL_UPDATE_DECREASE_EXERCISE_COUNT = "UPDATE DRIP_USER_INFO SET " +
-			"EXER_PUBLISH_COUNT=EXER_PUBLISH_COUNT-1 " +
-			"where DBID=?";
-	@Override
-	public void decreaseExerciseCount(Connection con, Long userId)
-			throws SQLException {
-		DatabaseUtil.update(con, SQL_UPDATE_DECREASE_EXERCISE_COUNT, userId);
-	}
-	
-	private static final String SQL_UPDATE_DECREASE_ANSWER_COUNT = "UPDATE DRIP_USER_INFO SET " +
-			"ANSWER_COUNT=ANSWER_COUNT-1 " +
-			"where DBID=?";
-	@Override
-	public void decreaseAnswerCount(Connection con, Long userId)
-			throws SQLException {
-		DatabaseUtil.update(con, SQL_UPDATE_DECREASE_ANSWER_COUNT, userId);
-	}
 	
 	@Override
 	public Map<String,Object> importUser(Map<String, Object> userInfo) {
@@ -267,20 +234,6 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	public Map<String, Object> getFull(Long userId) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-	
-	private static final String SQL_GET_USER_STATISTICS = "SELECT " +
-			"DBID \"id\"," +
-			"FAN_COUNT \"fanCount\","+
-			"FOLLOW_COUNT \"followCount\","+
-			"EXER_DRAFT_COUNT \"exerDraftCount\","+
-			"EXER_PUBLISH_COUNT \"exerPublishCount\", "+
-			"ANSWER_COUNT \"answerCount\", "+
-			"EXER_DRAFT_COUNT+EXER_PUBLISH_COUNT \"exerciseCount\" " +
-			"FROM DRIP_USER_INFO WHERE DBID=?";
-	@Override
-	public Map<String, Object> getUserStatistics(Long localUserId) {
-		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_USER_STATISTICS, localUserId);
 	}
 	
 	private static final String SQL_GET_OAUTH_SITE_ID = "SELECT OAUTH_SITE_ID FROM DRIP_USER_BIND WHERE DBID=?";

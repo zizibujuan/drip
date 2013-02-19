@@ -30,18 +30,25 @@ public class ActivityDaoImpl extends AbstractDao implements ActivityDao {
 	// 3.找到这些关注的用户的活动列表
 	// 4.按照活动时间倒排
 	// 5.分页
-	private static final String SQL_LIST_ACTIVITY_INDEX = "select " +
-				"a.WATCH_USER_ID \"watchUserId\"," +// 所关注的人的标识，必须填的是本网站用户的标识
-				"b.MAP_USER_ID \"mapUserId\"," +
-				"b.CRT_TM \"createTime\"," +
-				"b.CONTENT_ID \"contentId\"," +
-				"b.ACTION_TYPE \"actionType\"" +
+	private static final String SQL_LIST_ACTIVITY_INDEX = "SELECT " +
+			"DA.DBID," +
+			"DA.GLOBAL_USER_ID \"connectGlobalUserId\"," +
+			"UBD.LOCAL_USER_ID \"localGlobalUserId\"," +
+			"DA.CONTENT_ID \"contentId\"," +
+			"DA.ACTION_TYPE \"actionType\"," +
+			"DA.CRT_TM \"createTime\" " +
 			"FROM " +
-			"DRIP_USER_RELATION a, " +
-			"DRIP_ACTIVITY b " +
-			"where " +
-			"a.USER_ID = ? AND a.WATCH_USER_ID=b.LOCAL_USER_ID ORDER BY b.DBID DESC";
-
+			"DRIP_USER_BIND DUB, " +
+			"DRIP_USER_RELATION DUR, " +
+			"DRIP_ACTIVITY DA, " +
+			"DRIP_USER_BIND UBD " +
+			"WHERE " +
+			"DUR.WATCH_USER_ID=GLOBAL_USER_ID AND " +
+			"DUB.BIND_USER_ID = DUR.USER_ID AND " +
+			"DA.GLOBAL_USER_ID = UBD.BIND_USER_ID AND " +
+			"DUB.LOCAL_USER_ID=? " +
+			"ORDER BY DA.DBID DESC";
+	 
 	@Override
 	public List<Map<String, Object>> get(Long userId, PageInfo pageInfo) {
 		return DatabaseUtil.queryForList(getDataSource(),
@@ -49,31 +56,28 @@ public class ActivityDaoImpl extends AbstractDao implements ActivityDao {
 	}
 
 	private static final String SQL_INSERT_ACTIVITY = "INSERT INTO DRIP_ACTIVITY " +
-			"(LOCAL_USER_ID," +
-			"MAP_USER_ID," +
+			"(GLOBAL_USER_ID," +
 			"ACTION_TYPE," +
 			"IS_IN_HOME," +
 			"CONTENT_ID," +
 			"CRT_TM) " +
 			"VALUES " +
-			"(?,?,?,?,?,now())";
+			"(?,?,?,?,now())";
 	@Override
 	public Long add(Connection con, Map<String, Object> activityInfo) throws SQLException {
-		Object userId = activityInfo.get("USER_ID");
-		Object mapUserId = activityInfo.get("MAP_USER_ID");
-		Object actionType = activityInfo.get("ACTION_TYPE");
-		Object isInHome = activityInfo.get("IS_IN_HOME");
-		Object contentId = activityInfo.get("CONTENT_ID");
-		return DatabaseUtil.insert(con, SQL_INSERT_ACTIVITY, userId,mapUserId,actionType,isInHome,contentId);
+		Object connectGlobalUserId = activityInfo.get("connectGlobalUserId");
+		Object actionType = activityInfo.get("actionType");
+		Object isInHome = activityInfo.get("isInHome");
+		Object contentId = activityInfo.get("contentId");
+		return DatabaseUtil.insert(con, SQL_INSERT_ACTIVITY, connectGlobalUserId,actionType,isInHome,contentId);
 	}
 	@Override
 	public Long add(Connection con, 
-			Long localUserId, 
-			Long mapUserId, 
+			Long connectGlobalUserId, 
 			Long contentId,
 			String actionType, 
 			boolean showInHome) throws SQLException {
-		return DatabaseUtil.insert(con, SQL_INSERT_ACTIVITY, localUserId, mapUserId, actionType, showInHome, contentId);
+		return DatabaseUtil.insert(con, SQL_INSERT_ACTIVITY, connectGlobalUserId, actionType, showInHome, contentId);
 	}
 
 }

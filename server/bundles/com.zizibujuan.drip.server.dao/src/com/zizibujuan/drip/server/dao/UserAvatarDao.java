@@ -25,8 +25,7 @@ public interface UserAvatarDao {
 
 	/**
 	 * 获取用户头像信息
-	 * @param userId 本地用户标识，或本网站为第三方用户生成的代理主键
-	 * @param isLocalUser 是否本地用户，<code>true</code>代表是；<code>false</code>代表否
+	 * @param connectGlobalUserId 本网站为本地用户生成的全局用户标识
 	 * @return 用户头像信息，如果没有则返回空的map
 	 * <pre>
 	 *  map结构：
@@ -36,6 +35,6 @@ public interface UserAvatarDao {
  	 *		xLargeImageUrl:
 	 * </pre>
 	 */
-	Map<String, Object> get(Long userId, boolean isLocalUser);
+	Map<String, Object> get(Long connectGlobalUserId);
 
 }

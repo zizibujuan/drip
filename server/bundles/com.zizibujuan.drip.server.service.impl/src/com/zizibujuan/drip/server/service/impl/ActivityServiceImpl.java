@@ -38,9 +38,12 @@ public class ActivityServiceImpl implements ActivityService {
 		logger.info(list.toString());
 		for(Map<String,Object> each : list){
 			// 这些用户信息，都是被关注人的信息
-			Long localUserId = Long.valueOf(each.get("localUserId").toString());
-			// 这里既要考虑获取本地用户的信息，更要考虑获取第三方网站的用户信息。
-			Map<String,Object> userInfo = userService.getPublicInfo(localUserId);
+			Long localGlobalUserId = Long.valueOf(each.get("localGlobalUserId").toString());
+			
+			// 1.获取关联的用户标识connectGlobalUserId
+			// 2.获取第三方用户标识关联的本网站用户标识
+			// 3.获取本网站用户引用用户信息的用户标识
+			Map<String,Object> userInfo = userService.getPublicInfo(localGlobalUserId);
 			each.put("userInfo", userInfo);
 			
 			Long contentId = Long.valueOf(each.get("contentId").toString());

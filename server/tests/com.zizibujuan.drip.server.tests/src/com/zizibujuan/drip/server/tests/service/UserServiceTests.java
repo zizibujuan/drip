@@ -173,7 +173,6 @@ public class UserServiceTests extends AbstractUserTests{
 	/**
 	 * TODO:没有测试和实现用户教育和工作经历
 	 */
-	@Ignore
 	@Test
 	public void testGetPublicInfo(){
 		try{
@@ -279,7 +278,6 @@ public class UserServiceTests extends AbstractUserTests{
 	/**
 	 * 测试使用第三方网站用户登录
 	 */
-	@Ignore
 	@Test
 	public void testLogin_Oauth(){
 		
