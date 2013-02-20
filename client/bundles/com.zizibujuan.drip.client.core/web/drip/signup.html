@@ -20,10 +20,10 @@ require(["dojo/ready",
          "dojo/store/JsonRest",
          "dojo/request/xhr",
          "dijit/registry",
+         "dojo/parser",
          "dijit/form/Form",
          "dijit/form/ValidationTextBox",
          "dijit/form/Button",
-         "dojo/parser",
          "dojo/domReady!"],function(
         		 ready,
         		 JSON,
@@ -31,8 +31,9 @@ require(["dojo/ready",
         		 domForm,
         		 JsonRest,
         		 xhr,
-        		 registry){
-	
+        		 registry,
+        		 parser){
+	parser.parse();
 	ready(function(){
 		var btnSignup = registry.byId("btnSignup");
 		btnSignup.on("click", function(e){
