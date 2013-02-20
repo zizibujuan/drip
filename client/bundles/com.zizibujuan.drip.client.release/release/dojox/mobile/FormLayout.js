@@ -1,0 +1,2 @@
+//>>built
+define("dojox/mobile/FormLayout",["dojo/_base/declare","dojo/dom-class","./Container"],function(a,b,c){return a("dojox.mobile.FormLayout",c,{rightAlign:!1,baseClass:"mblFormLayout",buildRendering:function(){this.inherited(arguments);this.rightAlign&&b.add(this.domNode,"mblFormLayoutRightAlign")}})});

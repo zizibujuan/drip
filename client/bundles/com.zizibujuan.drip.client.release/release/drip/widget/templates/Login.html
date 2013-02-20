@@ -1,0 +1,32 @@
+<div style="width: 250px">
+<!-- form的宽度要在初始化时通过style设置, style="width: 250px"-->
+	<div data-dojo-attach-point="errorMsgNode" style="color: red;font-weight: bold;text-align: center;display: none;">
+		无效的用户名或密码
+	</div>
+	<div data-dojo-type="dijit/form/Form" data-dojo-attach-point="loginFormNode">
+		<div data-dojo-type="dijit/form/ValidationTextBox"
+		data-dojo-attach-point="txtLoginNode"
+		style="margin-bottom: 10px;display: block;padding: 8px;width:233px" 
+		data-dojo-props="'placeholder':'邮箱/手机号/用户名',
+		'required':true,
+		'name':'login',
+		'value':'c@c.com',
+		'missingMessage':'请输入登录名'"></div>
+		<div data-dojo-type="dijit/form/ValidationTextBox"
+		data-dojo-attach-point="txtPwdNode"
+		style="display: block;padding: 8px;width:233px" 
+		data-dojo-props="'type':'password',
+		'placeholder':'密码',
+		'required':true, 
+		'name':'password',
+		'value':'123qaz',
+		'missingMessage':'请输入密码'"></div>
+		<div style="padding-top: 3px; padding-bottom: 3px">
+			<div data-dojo-type="dijit/form/CheckBox" id="rememberMe"></div><label for="rememberMe">下次自动登录</label>
+			<span style="float: right"><a href="#">忘记密码？</a></span>
+		</div>
+		<div style="text-align: center;">
+			<div data-dojo-type="dijit/form/Button" style="font-size: 14px; margin-top: 10px;" data-dojo-attach-point="btnLoginNode">登录</div>
+		</div>
+	</div>
+</div>

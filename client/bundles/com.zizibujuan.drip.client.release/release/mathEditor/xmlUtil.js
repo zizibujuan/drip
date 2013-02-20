@@ -1,0 +1,3 @@
+//>>built
+define("mathEditor/xmlUtil",{createEmptyFrac:function(a){var b=a.createElement("mstyle");b.setAttribute("displaystyle","true");var c=a.createElement("mfrac"),d=a.createElement("mrow"),e=a.createElement("mrow"),f=this._getPlaceHolder(a),a=this._getPlaceHolder(a);b.appendChild(c);c.appendChild(d);c.appendChild(e);d.appendChild(f);e.appendChild(a);return{rootNode:b,focusNode:f}},_getPlaceHolder:function(a){a=a.createElement("mn");a.setAttribute("class","drip_placeholder_box");a.setAttribute("style",
+"border:1px dotted black; padding:1px;background-color: #cccccc;color: #cccccc;");a.textContent="8";return a}});
