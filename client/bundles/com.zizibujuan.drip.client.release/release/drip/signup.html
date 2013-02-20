@@ -20,10 +20,10 @@ require(["dojo/ready",
          "dojo/store/JsonRest",
          "dojo/request/xhr",
          "dijit/registry",
+         "dojo/parser",
          "dijit/form/Form",
          "dijit/form/ValidationTextBox",
          "dijit/form/Button",
-         "dojo/parser",
          "dojo/domReady!"],function(
         		 ready,
         		 JSON,
@@ -31,8 +31,9 @@ require(["dojo/ready",
         		 domForm,
         		 JsonRest,
         		 xhr,
-        		 registry){
-	
+        		 registry,
+        		 parser){
+	parser.parse();
 	ready(function(){
 		var btnSignup = registry.byId("btnSignup");
 		btnSignup.on("click", function(e){
@@ -84,7 +85,7 @@ require(["dojo/ready",
 		registry.byId("login").validator = function(value, constraints){
 			this.missingMessage = this.promptMessage = this.invalidMessage = "请输入正确的邮箱";
 			
-			var reg = "^(?:" + this._getPatternAttr(constraints) + ")"+(this.required?"":"?")+"$";
+			var reg = "^(?:" + this._computeRegexp(constraints) + ")"+(this.required?"":"?")+"$";
 			var clientIsValid = (new RegExp(reg)).test(value) &&
 			(!this.required || !this._isEmpty(value)) &&
 			(this._isEmpty(value) || this.parse(value, constraints) !== undefined);
