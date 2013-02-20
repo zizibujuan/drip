@@ -129,7 +129,7 @@ public class ActivityServiceTests extends AbstractUserTests{
 					"where GLOBAL_USER_ID=?";
 			DatabaseUtil.update(dataSource, sql, localGlobalUserId);
 			
-//			sql = "UPDATE DRIP_USER_INFO SET " +
+//			sql = "UPDATE DRIP_LOCAL_USER_STATISTICS SET " +
 //					"ANSWER_COUNT=ANSWER_COUNT-1 " +
 //					"where GLOBAL_USER_ID=?";
 //			DatabaseUtil.update(dataSource, sql, localGlobalUserId);

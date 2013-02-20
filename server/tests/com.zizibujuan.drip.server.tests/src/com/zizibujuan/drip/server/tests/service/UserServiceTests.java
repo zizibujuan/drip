@@ -163,8 +163,7 @@ public class UserServiceTests extends AbstractUserTests{
 	/*
 	 * 暴力清除数据脚本
 	 * delete from DRIP_USER_BIND;
-	 *  delete from DRIP_USER_INFO;
-	 *	delete from DRIP_CONNECT_USER_INFO;
+	 *  delete from DRIP_GLOBAL_USER_INFO;
 	 *	delete from DRIP_USER_RELATION;
 	 *  DELETE FROM DRIP_USER_ATTRIBUTES;
 	 *  DELETE FROM DRIP_USER_AVATAR;
@@ -179,6 +178,8 @@ public class UserServiceTests extends AbstractUserTests{
 			
 			Map<String,Object> result = userService.getPublicInfo(localGlobalUserId);
 			
+			// 这里查出的是第三方用户的信息，因此无法获得digitalId的值
+			Assert.assertNull(result.get("digitalId"));
 			Assert.assertEquals(localGlobalUserId.longValue(), NumberUtils.toLong(result.get("localUserId").toString()));
 			Assert.assertEquals(siteId, NumberUtils.toInt(result.get("siteId").toString()));
 			Assert.assertEquals(nickName, result.get("nickName").toString());

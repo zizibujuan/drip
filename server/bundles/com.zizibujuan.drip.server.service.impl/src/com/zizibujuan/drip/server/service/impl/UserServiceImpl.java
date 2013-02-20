@@ -63,8 +63,6 @@ public class UserServiceImpl implements UserService {
 	//TODO:需要将获取本地用户信息和获取第三方用户信息的接口统一。
 	@Override
 	public Map<String, Object> login(Long localUserId, Long connectUserId) {
-		// 如果localUserId与mapUserId相等，则从drip_user_info中获取用户信息
-		// 如果不相等，则从drip_connect_user_info中获取
 		userAttributesDao.updateLoginState(connectUserId);
 		
 		// 第三方网站注册用户

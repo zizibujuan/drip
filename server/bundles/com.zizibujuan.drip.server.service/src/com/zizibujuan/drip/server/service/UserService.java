@@ -136,7 +136,7 @@ public interface UserService {
 	 * 		connectUserId：本网站为第三方用户生成的代理主键
 	 * 		nickName: 用户昵称
 	 * 		loginName: 登录名
-	 * 		digitalId: 为本网站用户分配的数字帐号
+	 * 		digitalId: 为本网站用户分配的数字帐号,只有在本网站注册的用户，才会有值。
 	 * 		sex: 性别代码
 	 * 		siteId:网站标识
 	 * 		homeCityCode:家乡所在地代码

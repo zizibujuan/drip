@@ -30,29 +30,17 @@ public interface UserDao {
 	 * @param email 电子邮箱
 	 * @param md5Password 加密后的密码
 	 * @return 如果系统中存在该用户信息则返回，否则返回空的map对象
-	 */
-	Map<String, Object> get(String email, String md5Password);
-	
-	/**
-	 * 获取用户基本信息，是用户可以对外公开的信息，剔除掉了用户的隐私信息
-	 * @param userId 用户标识
-	 * @return 如果系统中存在该用户信息则返回，否则返回空的map对象。
 	 * <pre>
 	 * 	map结构为：
-	 * 		id: 用户标识
-	 * 		displayName: 显示名
-	 * 		fanCount：粉丝数
-	 * 		followCount: 关注人数
-	 * 		exerDraftCount： 习题草稿数
-	 * 		exerPublishCount：发布的习题数
-	 * 		answerCount： 习题总数 = 习题草稿数+发布的习题数
-	 * 		smallImageUrl: 小头像
-	 * 		largeImageUrl: 
-	 * 		largerImageUrl:
-	 * 		xLargeImageUrl:
+	 * 		id: 全局用户标识
+	 * 		loginName: 用户登录名
+	 * 		email: 用户常用邮箱
+	 * 		mobile: 用户手机号码
+	 * 		realName: 真实姓名
+	 * 		digitalId: 数字帐号
 	 * </pre>
 	 */
-	Map<String, Object> getPublicInfo(Long userId);
+	Map<String, Object> get(String email, String md5Password);
 	
 	/**
 	 * 获取用户的完整信息
@@ -60,13 +48,6 @@ public interface UserDao {
 	 * @return 用户的完整信息
 	 */
 	Map<String, Object> getFull(Long userId);
-
-	/**
-	 * 更新登录状态。已过期，将在0.0.2版本中删除，请使用 {@link UserAttributesDao#updateLoginState}
-	 * @param userId 用户标识
-	 */
-	@Deprecated
-	void updateLoginState(Long userId);
 
 	/**
 	 * 获取用户登录信息，返回到客户端的，所以不能包含用户隐私信息。

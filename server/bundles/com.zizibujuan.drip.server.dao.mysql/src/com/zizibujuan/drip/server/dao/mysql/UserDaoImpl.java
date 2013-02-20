@@ -36,7 +36,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	private DigitalIdDao digitalIdDao;
 	private LocalUserStatisticsDao localUserStatisticsDao;
 	
-	private static final String SQL_INSERT_USER = "INSERT INTO DRIP_USER_INFO " +
+	private static final String SQL_INSERT_USER = "INSERT INTO DRIP_GLOBAL_USER_INFO " +
 			"(LOGIN_NAME," +
 			"NICK_NAME," +
 			"EMAIL," +
@@ -94,7 +94,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	// 以下信息可以存在session中，但是有些信息不能显示在客户端，如email和mobile。
 	private static final String SQL_GET_USER_FOR_SESSION = "SELECT " +
 			"DBID \"id\"," +
-			//"LOGIN_NAME," +
+			"LOGIN_NAME \"loginName\"," +
 			"EMAIL \"email\"," +
 			//"LOGIN_PWD," + 登录密码，不在session中缓存
 			//支持三种大小的头像信息
@@ -102,42 +102,12 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			"REAL_NAME \"realName\"," +
 			"NICK_NAME \"nickName\"," +
 			//"CRT_TM \"createTime\" " +
-			"FAN_COUNT \"fanCount\","+
-			"FOLLOW_COUNT \"followCount\","+
-			"EXER_DRAFT_COUNT \"exerDraftCount\","+
-			"EXER_PUBLISH_COUNT \"exerPublishCount\", "+
-			"ANSWER_COUNT \"answerCount\", "+
-			"EXER_DRAFT_COUNT+EXER_PUBLISH_COUNT \"exerciseCount\" " +
-			"FROM DRIP_USER_INFO ";
+			"DIGITAL_ID \"digitialId\" " +
+			"FROM DRIP_GLOBAL_USER_INFO ";
 	private static final String SQL_GET_USER_FOR_SESSION_BY_PWD = SQL_GET_USER_FOR_SESSION + "WHERE EMAIL = ? AND LOGIN_PWD = ?";
 	@Override
 	public Map<String, Object> get(String email, String md5Password) {
 		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_USER_FOR_SESSION_BY_PWD, email, md5Password);
-	}
-	
-	private static final String SQL_GET_USER_FOR_PUBLIC = "SELECT " +
-			"DBID \"id\"," +
-			"REAL_NAME \"displayName\"," +
-			"FAN_COUNT \"fanCount\","+
-			"FOLLOW_COUNT \"followCount\","+
-			"EXER_DRAFT_COUNT \"exerDraftCount\","+
-			"EXER_PUBLISH_COUNT \"exerPublishCount\", "+
-			"ANSWER_COUNT \"answerCount\", "+
-			"EXER_DRAFT_COUNT+EXER_PUBLISH_COUNT \"exerciseCount\" " +
-			"FROM DRIP_USER_INFO WHERE DBID=?";
-	// FIXME:这些字段与下面的getUserStatics方法的字段大同小异，待重构
-	@Override
-	public Map<String, Object> getPublicInfo(Long userId) {
-		// TODO：添加用户头像, 该使用drip用户标识，还是第三方网站的用户标识，使用第三方更灵活
-		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_USER_FOR_PUBLIC, userId);
-	}
-	
-	private static final String SQL_UPDATE_USER = "UPDATE DRIP_USER_INFO " +
-			"SET LAST_LOGIN_TIME = now() " +
-			"WHERE DBID=?";
-	@Override
-	public void updateLoginState(Long userId) {
-		DatabaseUtil.update(getDataSource(), SQL_UPDATE_USER, userId);
 	}
 	
 	// 在插入记录时，如果nickName为空，则插入登录名
@@ -145,13 +115,13 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			"DBID \"userId\", " +
 			"REAL_NAME \"realName\", " +
 			"NICK_NAME \"nickName\" " +
-			"FROM DRIP_USER_INFO WHERE DBID=?";
+			"FROM DRIP_GLOBAL_USER_INFO WHERE DBID=?";
 	@Override
 	public Map<String, Object> getLoginInfo(Long userId) {
 		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_LOGIN, userId);
 	}
 	
-	private static final String SQL_EMAIL_EXIST = "select 1 from DRIP_USER_INFO where EMAIL = ? limit 1";
+	private static final String SQL_EMAIL_EXIST = "select 1 from DRIP_GLOBAL_USER_INFO where EMAIL = ? limit 1";
 	@Override
 	public boolean emailIsExist(String email) {
 		String result = DatabaseUtil.queryForString(getDataSource(), SQL_EMAIL_EXIST, email);
