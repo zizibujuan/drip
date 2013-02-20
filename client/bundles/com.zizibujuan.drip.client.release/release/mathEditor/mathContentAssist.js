@@ -1,3 +1,0 @@
-//>>built
-define("mathEditor/mathContentAssist",["dojo/_base/array"],function(a){return{keywords:[{input:"/",map:"&#xF7;",nodeName:"mo",freq:0,label:"\u9664\u53f7",iconClass:"drip_equation_icon drip_division"},{input:"/",map:"/",nodeName:"text",freq:0,label:"/",iconClass:""},{input:"/",map:"",nodeName:"mfrac",freq:0,label:"\u5206\u6570",iconClass:"drip_equation_icon drip_frac"},{input:"*",map:"&#xD7;",nodeName:"mo",freq:0,label:"\u4e58\u53f7",iconClass:"drip_equation_icon drip_multiplication"},{input:"*",map:"*",
-nodeName:"text",freq:0,label:"*",iconClass:""}],getProposals:function(b){return a.filter(this.keywords,function(a){return 0==a.input.indexOf(b)})}}});

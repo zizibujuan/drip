@@ -1,2 +1,0 @@
-//>>built
-define("dojox/charting/_bidiutils",{reverseMatrix:function(a,c,b){var d=-1,e=0,f=0,g=1,c=c.width+(b.l-b.r),b=0;if(a.matrix)d=-Math.abs(a.matrix.xx),g=a.matrix.yy,e=a.matrix.xy,f=a.matrix.yx,b=a.matrix.xy;a.setTransform({xx:d,xy:e,yx:f,yy:g,dx:c,dy:b})}});
