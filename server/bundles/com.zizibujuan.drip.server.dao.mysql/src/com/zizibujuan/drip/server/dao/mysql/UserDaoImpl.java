@@ -39,13 +39,15 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	private static final String SQL_INSERT_USER = "INSERT INTO DRIP_GLOBAL_USER_INFO " +
 			"(LOGIN_NAME," +
 			"NICK_NAME," +
+			"SITE_ID," +
+			"DIGITAL_ID," +
 			"EMAIL," +
 			"LOGIN_PWD," +
 			"MOBILE," +
 			"REAL_NAME," +
 			"CREATE_TIME) " +
 			"VALUES " +
-			"(?,?,?,?,?,?,now())";
+			"(?,?,?,?,?,?,?,?,now())";
 	
 	// TODO:在注册用户分支中添加用户注册功能
 	@Override
@@ -54,7 +56,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		try {
 			con = getDataSource().getConnection();
 			con.setAutoCommit(false);
-			
+			Long digitalId = digitalIdDao.random(con);
 			String email = userInfo.get("login").toString();
 			Object oNickName = userInfo.get("realName");
 			String nickName = "";
@@ -63,9 +65,12 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			}else{
 				nickName = oNickName.toString();
 			}
+			Object siteId = userInfo.get("siteId");
 			
 			Long userId = DatabaseUtil.insert(con, SQL_INSERT_USER, email,
 					nickName,
+					siteId,
+					digitalId,
 					email,
 					userInfo.get("md5Password"),
 					userInfo.get("mobile"),

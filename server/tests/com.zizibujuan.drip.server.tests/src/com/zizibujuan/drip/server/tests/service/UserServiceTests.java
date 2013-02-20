@@ -162,11 +162,13 @@ public class UserServiceTests extends AbstractUserTests{
 	
 	/*
 	 * 暴力清除数据脚本
-	 * delete from DRIP_USER_BIND;
-	 *  delete from DRIP_GLOBAL_USER_INFO;
-	 *	delete from DRIP_USER_RELATION;
-	 *  DELETE FROM DRIP_USER_ATTRIBUTES;
-	 *  DELETE FROM DRIP_USER_AVATAR;
+delete from DRIP_USER_BIND;
+delete from DRIP_GLOBAL_USER_INFO;
+delete from DRIP_USER_RELATION;
+DELETE FROM DRIP_USER_ATTRIBUTES;
+DELETE FROM DRIP_USER_AVATAR;
+DELETE FROM DRIP_USER_AVATAR;
+delete from DRIP_LOCAL_USER_STATISTICS;
 	 */
 	/**
 	 * TODO:没有测试和实现用户教育和工作经历

@@ -14,6 +14,7 @@ import org.apache.commons.validator.routines.RegexValidator;
 import com.zizibujuan.drip.server.service.UserRelationService;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.servlet.command.LoginCommand;
+import com.zizibujuan.drip.server.util.OAuthConstants;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
@@ -56,6 +57,7 @@ public class UserServlet extends BaseServlet {
 			// 先做服务器端检验
 			if(isValid(req, resp, userInfo)){
 				// 通过校验之后再保存
+				userInfo.put("siteId", OAuthConstants.ZIZIBUJUAN);
 				userService.add(userInfo);
 				// 登录
 				LoginCommand.handleCommand(req, resp, userService, userInfo);
