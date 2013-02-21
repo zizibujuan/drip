@@ -2,11 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link type="text/css" rel="stylesheet" href="/dijit/themes/claro/claro.css" />
-<link type="text/css" rel="stylesheet" href="/dojo/resources/dojo.css" />
-<link type="text/css" rel="stylesheet" href="/mathEditor/Editor.css" />
-<link type="text/css" rel="stylesheet" href="/drip/resources/main.css" />
-<link type="text/css" rel="stylesheet" href="/drip/resources/index.css" />
+<link type="text/css" rel="stylesheet" href="/drip/resources/app.css" />
 
 <title>我的首页 · 孜孜不倦</title>
 <script type="text/javascript" 
@@ -95,7 +91,7 @@ function sendRenrenRequest(){
 			"actiontext":"邀请好友一起学习",// 好友喊你来学习
 			"selector_mode":"1",//2,3
 			"app_msg":"孜孜不倦诚邀您与大家一起学习",
-			"send_btn_label":"真诚邀请"
+			"send_btn_label":"邀请"
 		},
 		//access_token	
 		onSuccess: function(a,b,c){
@@ -108,101 +104,6 @@ function sendRenrenRequest(){
 	Renren.ui(uiOptions);
 }
 </script>
-
-<style type="text/css">
-html,body {
-	height: 100%;
-}
-
-a{
-	text-decoration: none;
-}
-
-a.logo {
-	font-weight: bolder;
-	font-size: 32px;
-	color: white;
-	letter-spacing: 4px;
-}
-
-.nav {
-	
-}
-
-.nav ul li {
-	position: relative;
-	color: white;
-	font-size: 14px;
-	color: white;
-}
-
-.menu-item {
-	
-}
-
-.menu-item .title {
-	display: block;
-	padding: 8px 10px;
-	margin: 0 0 5px 0;
-	font-size: 14px;
-	border-radius: 3px;
-	text-decoration: none;
-	color: #777;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-
-.menu-focus .title{
-	font-weight:bold;
-	background-color: #EDEDED;
-}
-
-.menu-item .title:hover {
-	background-color: #EDEDED;
-}
-
-
-
-.op {
-	position: absolute;
-	color: #69768C;
-	right: 18px;
-	top: 0px;
-	padding-left: 0px;
-	text-decoration: none;
-	padding-top: 3px;
-}
-
-.op:VISITED{
-color:#69768C;
-}
-
-.op:HOVER{
-	text-decoration: underline;
-	background-color: white;
-	
-}
-
-
-.count {
-	display: inline-block;
-	margin: 0 0 0 5px;
-	padding: 0 8px 1px 8px;
-	height: auto;
-	font-family: Helvetica, arial, freesans, clean, sans-serif;
-	font-size: 10px;
-	line-height: 14px;
-	text-align: center;
-	vertical-align: text-top;
-	color: #777;
-	background: white;
-	border-top: 1px solid #CCC;
-	border-radius: 8px;
-}
-</style>
-
-
  
 </head>
 <body  class="claro">
