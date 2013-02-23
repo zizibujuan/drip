@@ -36,10 +36,10 @@ public class UserBindDaoImpl extends AbstractDao implements UserBindDao {
 		return DatabaseUtil.insert(con, SQL_INSERT_AUTH_USER_MAP, localUserId, connectUserId, refUserInfo);
 	}
 	
-	private static final String SQL_GET_LOCAL_USER_ID_BY_MAP_USER_ID = "SELECT LOCAL_USER_ID FROM DRIP_USER_BIND WHERE DBID=?";
+	private static final String SQL_GET_LOCAL_USER_ID_BY_CONNECT_USER_ID = "SELECT LOCAL_USER_ID FROM DRIP_USER_BIND WHERE BIND_USER_ID=?";
 	@Override
-	public Long getLocalUserId(Long mapUserId) {
-		return DatabaseUtil.queryForLong(getDataSource(), SQL_GET_LOCAL_USER_ID_BY_MAP_USER_ID, mapUserId);
+	public Long getLocalUserId(Long connectUserId) {
+		return DatabaseUtil.queryForLong(getDataSource(), SQL_GET_LOCAL_USER_ID_BY_CONNECT_USER_ID, connectUserId);
 	}
 	
 	private static final String SQL_GET_REF_USER_INFO = "SELECT " +

@@ -71,4 +71,40 @@ public class LocalUserStatisticsDaoImpl extends AbstractDao implements
 	public Map<String, Object> getUserStatistics(Long localGlobalUserId) {
 		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_USER_STATISTICS, localGlobalUserId);
 	}
+	
+	private static final String SQL_UPDATE_INCREASE_FOLLOWER_COUNT = "UPDATE DRIP_LOCAL_USER_STATISTICS SET " +
+			"FAN_COUNT=FAN_COUNT+1 " +
+			"where GLOBAL_USER_ID=?";
+	@Override
+	public void increaseFollowerCount(Connection con, Long localGlobalUserId)
+			throws SQLException {
+		DatabaseUtil.update(con, SQL_UPDATE_INCREASE_FOLLOWER_COUNT, localGlobalUserId);
+	}
+	
+	private static final String SQL_UPDATE_DECREASE_FOLLOWER_COUNT = "UPDATE DRIP_LOCAL_USER_STATISTICS SET " +
+			"FAN_COUNT=FAN_COUNT-1 " +
+			"where GLOBAL_USER_ID=?";
+	@Override
+	public void decreaseFollowerCount(Connection con, Long localGlobalUserId)
+			throws SQLException {
+		DatabaseUtil.update(con, SQL_UPDATE_DECREASE_FOLLOWER_COUNT, localGlobalUserId);
+	}
+	
+	private static final String SQL_UPDATE_INCREASE_FOLLOWING_COUNT = "UPDATE DRIP_LOCAL_USER_STATISTICS SET " +
+			"FOLLOW_COUNT=FOLLOW_COUNT+1 " +
+			"where GLOBAL_USER_ID=?";
+	@Override
+	public void increaseFollowingCount(Connection con, Long localGlobalUserId)
+			throws SQLException {
+		DatabaseUtil.update(con, SQL_UPDATE_INCREASE_FOLLOWING_COUNT, localGlobalUserId);
+	}
+	
+	private static final String SQL_UPDATE_DECREASE_FOLLOWING_COUNT = "UPDATE DRIP_LOCAL_USER_STATISTICS SET " +
+			"FOLLOW_COUNT=FOLLOW_COUNT-1 " +
+			"where GLOBAL_USER_ID=?";
+	@Override
+	public void decreaseFollowingCount(Connection con, Long localGlobalUserId)
+			throws SQLException {
+		DatabaseUtil.update(con, SQL_UPDATE_DECREASE_FOLLOWING_COUNT, localGlobalUserId);
+	}
 }

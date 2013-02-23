@@ -29,6 +29,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 		return userRelationDao.getRelationId(userId, watchUserId);
 	}
 	
+	// TODO:因为统计数据只用在本地用户上，所以可能需要做一个用户转换。
 	@Override
 	public void follow(Long userId, Long followUserId) {
 		// 判断用户是否已被关注，如果已被关注，则不再重复关注
@@ -37,6 +38,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 		}
 	}
 
+	// TODO:因为统计数据只用在本地用户上，所以可能需要做一个用户转换。
 	@Override
 	public void unFollow(Long userId, Long followUserId) {
 		userRelationDao.delete(userId, followUserId);

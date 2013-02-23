@@ -52,9 +52,9 @@ public interface UserBindDao {
 	
 	/**
 	 * 获取映射用户标识对应的本地用户标识
-	 * @param mapUserId 映射用户标识
+	 * @param connectUserId 本网站为第三方网站用户生成的全局用户标识
 	 * @return 本地用户标识
 	 */
-	Long getLocalUserId(Long mapUserId);
+	Long getLocalUserId(Long connectUserId);
 
 }

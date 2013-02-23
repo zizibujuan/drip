@@ -52,6 +52,40 @@ public interface LocalUserStatisticsDao {
 	void decreaseAnswerCount(Connection con, Long localGlobalUserId) throws SQLException;
 	
 	/**
+	 * 粉丝数加1
+	 * @param con 数据库链接
+	 * @param localGlobalUserId 为本地用户生成的全局用户标识
+	 * @throws SQLException 
+	 */
+	void increaseFollowerCount(Connection con, Long localGlobalUserId) throws SQLException;
+	
+	/**
+	 * 粉丝数减1
+	 * @param con 数据库链接
+	 * @param localGlobalUserId 为本地用户生成的全局用户标识
+	 * @throws SQLException 
+	 */
+	void decreaseFollowerCount(Connection con, Long localGlobalUserId) throws SQLException;
+	
+	/**
+	 * 关注的用户数加1
+	 * @param con 数据库链接
+	 * @param localGlobalUserId 为本地用户生成的全局用户标识
+	 * @throws SQLException 
+	 */
+	void increaseFollowingCount(Connection con, Long localGlobalUserId) throws SQLException;
+	
+	/**
+	 * 关注的用户数减1
+	 * @param con 数据库链接
+	 * @param localGlobalUserId 为本地用户生成的全局用户标识
+	 * @throws SQLException 
+	 */
+	void decreaseFollowingCount(Connection con, Long localGlobalUserId) throws SQLException;
+	
+	
+	
+	/**
 	 * 获取本地用户相关的统计数据，这些只是在客户端显示的统计项。
 	 * @param localGlobalUserId 为本地用户生成的全局用户标识
 	 * @return 返回基于本地用户的统计数据。

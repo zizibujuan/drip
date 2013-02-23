@@ -2,6 +2,23 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" 
 	name="com.zizibujuan.drip.server.dao.mysql.userRelationDaoImpl">
    <implementation class="com.zizibujuan.drip.server.dao.mysql.UserRelationDaoImpl"/>
+   
+   <reference 
+   		bind="setLocalUserStatisticsDao" 
+   		unbind="unsetLocalUserStatisticsDao" 
+   		cardinality="0..1" 
+   		interface="com.zizibujuan.drip.server.dao.LocalUserStatisticsDao" 
+   		name="localUserStatisticsDao" 
+   		policy="dynamic"/>
+
+   <reference 
+   		bind="setUserBindDao" 
+   		unbind="unsetUserBindDao" 
+   		cardinality="0..1" 
+   		interface="com.zizibujuan.drip.server.dao.UserBindDao" 
+   		name="userBindDao" 
+   		policy="dynamic"/>	   		
+   		
    <service>
       <provide interface="com.zizibujuan.drip.server.dao.UserRelationDao"/>
    </service>

@@ -5,6 +5,11 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.zizibujuan.drip.server.dao.LocalUserStatisticsDao;
+import com.zizibujuan.drip.server.dao.UserBindDao;
 import com.zizibujuan.drip.server.dao.UserRelationDao;
 import com.zizibujuan.drip.server.exception.dao.DataAccessException;
 import com.zizibujuan.drip.server.util.PageInfo;
@@ -17,6 +22,10 @@ import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
  * @since 0.0.1
  */
 public class UserRelationDaoImpl extends AbstractDao implements UserRelationDao {
+	private static final Logger logger = LoggerFactory.getLogger(UserRelationDaoImpl.class);
+	
+	private LocalUserStatisticsDao localUserStatisticsDao;
+	private UserBindDao userBindDao;
 
 	private static final String SQL_INSERT_USER_RELATION = "INSERT INTO " +
 			"DRIP_USER_RELATION " +
@@ -27,7 +36,6 @@ public class UserRelationDaoImpl extends AbstractDao implements UserRelationDao 
 	public void watch(Connection con, Long userId, Long watchUserId) throws SQLException {
 		DatabaseUtil.insert(con, SQL_INSERT_USER_RELATION, userId, watchUserId);
 	}
-
 	@Override
 	public void watch(Long userId, Long watchUserId) {
 		Connection con = null;
@@ -35,6 +43,9 @@ public class UserRelationDaoImpl extends AbstractDao implements UserRelationDao 
 			con = getDataSource().getConnection();
 			con.setAutoCommit(false);
 			this.watch(con, userId, watchUserId);
+			Long watchLocalUserId = userBindDao.getLocalUserId(watchUserId);
+			localUserStatisticsDao.increaseFollowingCount(con, userId);
+			localUserStatisticsDao.increaseFollowerCount(con, watchLocalUserId);
 			con.commit();
 		} catch (SQLException e) {
 			DatabaseUtil.safeRollback(con);
@@ -52,8 +63,23 @@ public class UserRelationDaoImpl extends AbstractDao implements UserRelationDao 
 
 	private static final String SQL_DELETE_RELATION = "DELETE DRIP_USER_RELATION WHERE  USER_ID=? AND WATCH_USER_ID=?";
 	@Override
-	public void delete(Long userId, Long followUserId) {
-		DatabaseUtil.update(getDataSource(), SQL_DELETE_RELATION, userId, followUserId);
+	public void delete(Long userId, Long watchUserId) {
+		Connection con = null;
+		try {
+			con = getDataSource().getConnection();
+			con.setAutoCommit(false);
+			DatabaseUtil.update(getDataSource(), SQL_DELETE_RELATION, userId, watchUserId);
+			Long watchLocalUserId = userBindDao.getLocalUserId(watchUserId);
+			localUserStatisticsDao.decreaseFollowingCount(con, userId);
+			localUserStatisticsDao.decreaseFollowerCount(con, watchLocalUserId);
+			con.commit();
+		} catch (SQLException e) {
+			DatabaseUtil.safeRollback(con);
+			throw new DataAccessException(e);
+		} finally {
+			DatabaseUtil.closeConnection(con);
+		}
+		
 	}
 
 	private static final String SQL_LIST_FOLLOWING = "SELECT WATCH_USER_ID \"following\" FROM DRIP_USER_RELATION WHERE USER_ID = ? ORDER BY CRT_TM";
@@ -70,4 +96,27 @@ public class UserRelationDaoImpl extends AbstractDao implements UserRelationDao 
 		return DatabaseUtil.queryForList(getDataSource(), SQL_LIST_FOLLOWERS, pageInfo, localUserId);
 	}
 
+	public void setLocalUserStatisticsDao(LocalUserStatisticsDao localUserStatisticsDao) {
+		logger.info("注入localUserStatisticsDao");
+		this.localUserStatisticsDao = localUserStatisticsDao;
+	}
+	
+	public void unsetLocalUserStatisticsDao(LocalUserStatisticsDao localUserStatisticsDao) {
+		if (this.localUserStatisticsDao == localUserStatisticsDao) {
+			logger.info("注销localUserStatisticsDao");
+			this.localUserStatisticsDao = null;
+		}
+	}
+	
+	public void setUserBindDao(UserBindDao userBindDao) {
+		logger.info("注入userBindDao");
+		this.userBindDao = userBindDao;
+	}
+	
+	public void unsetUserBindDao(UserBindDao userBindDao) {
+		if (this.userBindDao == userBindDao) {
+			logger.info("注销userBindDao");
+			this.userBindDao = null;
+		}
+	}
 }

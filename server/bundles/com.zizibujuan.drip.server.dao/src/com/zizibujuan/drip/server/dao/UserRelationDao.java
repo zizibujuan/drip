@@ -49,7 +49,7 @@ public interface UserRelationDao {
 	 * @param userId 发起关注的用户标识
 	 * @param followUserId 被关注用户标识
 	 */
-	void delete(Long userId, Long followUserId);
+	void delete(Long userId, Long watchUserId);
 
 	/**
 	 * 获取我关注的用户列表
