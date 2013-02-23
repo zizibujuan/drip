@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>关注我的人 · 孜孜不倦</title>
+<title>关系中心 · 孜孜不倦</title>
 <link type="text/css" rel="stylesheet" href="/drip/resources/app.css" />
 
 <script type="text/javascript" 
@@ -15,23 +15,18 @@
 <script type="text/javascript">
 require(["dojo/parser",
          "dojo/dom",
+         "dojo/dom-class",
+         "dojo/_base/window",
          "drip/user",
          "drip/MemberList",
          "dojo/domReady!"], function(
         		 parser,
         		 dom,
-        		 user){
-	// TODO:获取要查看用户信息的标识
-	// 第一个版本先从cookie中获取，后续编码改为在后台jsp或者其他模板语言中赋值
-	// 或者从链接中的参数中获取值
-	var splitPathName = window.location.pathname.split("/");
-	var action = splitPathName[1];
-	var userId = splitPathName[2];
-	//如果userId为null，则从session中获取
-	// 修改标题
-	// 选择tab
-	
-	// 这里不应该是获取登录用户信息，而是id标识的用户信息
+        		 domClass,
+        		 win,
+        		 user,
+        		 MemberList){
+	// 登录用户信息
 	user.getLoggedUserInfo().then(function(userInfo){
 		console.log("登录用户信息:", userInfo);
 		// 在右侧用户信息区域显示
@@ -41,9 +36,42 @@ require(["dojo/parser",
 		topProfileImage.src = userInfo.smallImageUrl || "/drip/resources/images/profile_50_50.gif";;
 		topProfileImage.alt = displayName;
 		dom.byId("topUserName").innerHTML = displayName;
+		dom.byId("top_user_link").href = "#";//TODO：跳转
 	});
 	
-	parser.parse(dom.byId('memberList'));
+	// TODO:获取要查看用户信息的标识
+	// 第一个版本先从cookie中获取，后续编码改为在后台jsp或者其他模板语言中赋值
+	// 或者从链接中的参数中获取值
+	var splitPathName = window.location.pathname.split("/");
+	var action = splitPathName[1];
+	var userId = splitPathName[2];
+	//如果userId为null，则从session中获取
+	// 修改标题
+	// 选择tab
+	var tabFollowers = dom.byId("tab_followers");
+	var tabFollowing = dom.byId("tab_following");
+	
+	var url = "";
+	var emptyHtml = "";
+	if(action == "following"){
+		win.doc.title = "我关注的人 · 孜孜不倦";
+		domClass.add(tabFollowing, "selected");
+		domClass.remove(tabFollowers, "selected");
+		url = "/following/"+userId;
+		emptyHtml = "还没有关注任何人";
+	}else if(action == "followers"){
+		win.doc.title = "关注我的人 · 孜孜不倦";
+		domClass.add(tabFollowers, "selected");
+		domClass.remove(tabFollowing, "selected");
+		url = "/followers/"+userId;
+		emptyHtml = "还没有粉丝";
+	}
+	tabFollowers.href = "/followers/"+userId;
+	tabFollowing.href = "/following/"+userId;
+	new MemberList({url:url,emptyHtml:emptyHtml},"memberList");
+	// 获取查询的用户信息
+	// 获取查询用户信息的粉丝或关注
+	
 });
 </script>
 
@@ -62,7 +90,7 @@ require(["dojo/parser",
 				</ul>
 				<ul class="drip_user_links">
 					<li>
-					<a href="#" class="drip_name">
+					<a href="#" id="top_user_link" class="drip_name">
 						<img width="20px" height="20px" id="topProfileImage">
 						<span id="topUserName"></span>
 					</a>
@@ -74,21 +102,24 @@ require(["dojo/parser",
 		</div>
 		<div class="container" style="padding-top: 60px;">
 			<div>
+				<!-- 用户信息 -->
+				<img>
+				<a href="#">用户信息</a>
+			</div>
+			<div>
 				<div class="drip_tab_nav">
 					<ul class="drip_tab_nav_tabs">
 						<li>
-							<a href="/followers/xxxx(用户标识)" class="drip_tab_nav_tab">关注 <span class="counter" id="followers_count">0</span></a>
+							<a href="#" id="tab_following" class="drip_tab_nav_tab">关注 <span class="counter" id="following_count">0</span></a>
 						</li>
 						<li>
-							<a href="/following/xxxx(用户标识)" class="selected drip_tab_nav_tab">粉丝 <span class="counter" id="following_count">0</span></a>
+							<a href="#" id="tab_followers" class="drip_tab_nav_tab">粉丝 <span class="counter" id="followers_count">0</span></a>
 						</li>
 					</ul>
 				</div>
-				<!-- 如何传递xxx的值 -->
-				<div class="drip_activity_list" style="padding-top:20px">
-					<div id="memberList" 
-					data-dojo-type="drip/MemberList" 
-					data-dojo-props="url:'/followers/xxxx',emptyHtml:'还没有粉丝'"
+				<!-- 使用专有样式-->
+				<div class="drip_member_list" style="padding-top:20px">
+					<div id="memberList"
 					style="padding-top: 10px;padding-left: 10px;padding-right:10px">加载中...</div>
 				</div>
 			</div>

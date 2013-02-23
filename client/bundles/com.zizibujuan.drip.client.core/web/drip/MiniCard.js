@@ -30,14 +30,14 @@ define(["dojo/_base/declare",
 		},
 		
 		// TODO:删除mapUserId
-		update: function(localUserId, mapUserId){
+		update: function(digitalId){
 			// summary:
 			//		更新用户信息
-			// userId:[String]
-			//		用户标识
+			// digitalId:[String]
+			//		用户数字帐号
 			
 			// 注意返回deferred对象
-			return xhr("/users/"+localUserId,{handleAs:"json",query:{mapUserId:mapUserId}}).then(lang.hitch(this,function(userInfo){
+			return xhr("/users/"+digitalId,{handleAs:"json"}).then(lang.hitch(this,function(userInfo){
 				// 设置用户名片
 				
 				console.log("userInfo:", userInfo);
@@ -156,9 +156,12 @@ define(["dojo/_base/declare",
 		
 		
 		
-		show: function(target, localUserId, mapUserId){
+		show: function(target, digitalId){
 			// summary:
 			//		显示迷你名片
+			// target: domNode
+			// digitalId: String
+			//		数字帐号
 			
 			// 在多个链接上切换时，要重新计时。
 			if(this._closePopup){
@@ -178,7 +181,7 @@ define(["dojo/_base/declare",
 			var miniCardBody = this.miniCardBody;
 			
 			dialog.containerNode.innerHTML = "正在加载中，请稍后...";
-			miniCardBody.update(localUserId,mapUserId).then(function(){
+			miniCardBody.update(digitalId).then(function(){
 				dialog.containerNode.innerHTML = "";
 				dialog.containerNode.appendChild(miniCardBody.domNode);
 			});

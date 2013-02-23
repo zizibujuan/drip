@@ -232,16 +232,27 @@ public class UserServlet extends BaseServlet {
 	}
 
 	/**
-	 * 获取能公开的用户信息
+	 * 根据用户的数字帐号获取可以公开的用户信息，如果没有传入数字帐号，则获取登录用户信息。
+	 * 只有登录用户才可以使用该服务。
 	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		traceRequest(req);
 		String pathInfo = req.getPathInfo();
-		if(pathInfo != null && !pathInfo.equals("/")){
-			Long localUserId = Long.valueOf(pathInfo.split("/")[1]);
-			Map<String,Object> userInfo = userService.getPublicInfo(localUserId);
+		Map<String,Object> userInfo = null;
+		if(pathInfo == null || pathInfo.equals("/")){
+			userInfo = UserSession.getUser(req);
+			ResponseUtil.toJSON(req, resp, userInfo);
+		}else if(pathInfo != null && !pathInfo.equals("/")){
+			// 获取数字帐号
+			Long digitalId = Long.valueOf(pathInfo.split("/")[1]);
+			// 根据数字帐号获取使用用户信息的用户帐号
+			
+			Long localUserId = 0l;
+			userInfo = userService.getPublicInfo(localUserId);
+			// 获取登录用户与该用户之间的关系,这里还缺少参数。因为一个帐号绑定多个网站帐号，或者只需要本帐号与用户的任一帐号关联即可。
+			// 以下代码只有获取关联关系时才用。
 			Long userRelationId = userRelationService.getRelationId(UserSession.getLocalUserId(req),localUserId);
 			if(userRelationId != null){
 				userInfo.put("userRelationId", userRelationId);

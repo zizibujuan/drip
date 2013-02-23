@@ -537,3 +537,8 @@ margin-left: 25px;
 	line-height: 18px;
 	width: 330px;
 }
+
+.drip_member_list{
+	border-top:1px solid #DDD;
+	min-height: 500px;
+}

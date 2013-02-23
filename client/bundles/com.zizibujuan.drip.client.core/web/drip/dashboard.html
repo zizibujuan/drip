@@ -51,6 +51,7 @@ require(["dojo/ready",
 		topProfileImage.src = userInfo.smallImageUrl || "/drip/resources/images/profile_50_50.gif";;
 		topProfileImage.alt = displayName;
 		dom.byId("topUserName").innerHTML = displayName;
+		dom.byId("top_user_link").href = "#";//TODO：跳转
 		
 		
 		// 在关注和粉丝的链接上加上登录者的用户标识
@@ -128,7 +129,7 @@ function sendRenrenRequest(){
 			</ul>
 			<ul class="drip_user_links">
 				<li>
-					<a href="#" class="drip_name">
+					<a href="#" id="top_user_link" class="drip_name">
 						<img width="20px" height="20px" id="topProfileImage">
 						<span id="topUserName"></span>
 					</a>

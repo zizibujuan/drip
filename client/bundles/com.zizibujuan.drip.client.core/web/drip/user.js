@@ -61,8 +61,22 @@ define(["dojo/dom",
 		xhr("/logout/",{method:"POST", handleAs:"json"}).then(function(data){
     		
     	},function(error){
-    		window.location = "/";
+    		window.location.href = "/";
     	});
+	};
+	
+	user.getSimpleUserInfo = function(digitalId/*用户的数字帐号*/){
+		// summary:
+		//		根据用户帐号获取用户信息
+		// digitalId: String
+		//		用户的数字帐号，如果为null，则默认获取登录用户的信息
+		
+		digitalId = digitalId || "";
+		return xhr("/users/"+digitalId,{handleAs:"json"}).then(function(data){
+			return data;
+		},function(error){
+			console.error(error);
+		});
 	};
 	
 	return user;

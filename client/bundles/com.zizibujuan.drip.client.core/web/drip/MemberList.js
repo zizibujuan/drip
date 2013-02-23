@@ -73,7 +73,7 @@ define(["dojo/_base/declare",
 		
 	});
 	
-	declare("drip.MemberList",[_WidgetBase,_TemplatedMixin],{
+	return declare("drip.MemberList",[_WidgetBase,_TemplatedMixin],{
 		
 		templateString: "<ul></ul>",
 		
@@ -83,7 +83,7 @@ define(["dojo/_base/declare",
 		
 		postCreate: function(){
 			this.inherited(arguments);
-			xhr.get(url,{handleAs:"json"}).then(lang.hitch(this, this._load));
+			xhr.get(this.url,{handleAs:"json"}).then(lang.hitch(this, this._load));
 		},
 		
 		_load: function(items){
