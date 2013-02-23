@@ -36,7 +36,8 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	private DigitalIdDao digitalIdDao;
 	private LocalUserStatisticsDao localUserStatisticsDao;
 	
-	private static final String SQL_INSERT_USER = "INSERT INTO DRIP_GLOBAL_USER_INFO " +
+	private static final String SQL_INSERT_USER = "INSERT INTO " +
+			"DRIP_GLOBAL_USER_INFO " +
 			"(LOGIN_NAME," +
 			"NICK_NAME," +
 			"SITE_ID," +
@@ -82,6 +83,8 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			userAttributesDao.initUserState(con, userId);
 			// 添加完用户之后，需要在用户关系表中，添加一条用户关注用户自己的记录
 			userRelationDao.watch(con, userId, userId);
+			// 为本网站用户添加初始的统计信息
+			localUserStatisticsDao.init(con, userId);
 			con.commit();
 			return userId;
 		} catch (SQLException e) {
@@ -107,7 +110,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			"REAL_NAME \"realName\"," +
 			"NICK_NAME \"nickName\"," +
 			//"CRT_TM \"createTime\" " +
-			"DIGITAL_ID \"digitialId\" " +
+			"DIGITAL_ID \"digitalId\" " +
 			"FROM DRIP_GLOBAL_USER_INFO ";
 	private static final String SQL_GET_USER_FOR_SESSION_BY_PWD = SQL_GET_USER_FOR_SESSION + "WHERE EMAIL = ? AND LOGIN_PWD = ?";
 	@Override

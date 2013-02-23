@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>我关注的人· 孜孜不倦</title>
+<title>关注我的人· 孜孜不倦</title>
 <!-- TODO：在一个单独的css文件中import这些css文件 -->
 <link type="text/css" rel="stylesheet" href="/dijit/themes/claro/claro.css" />
 <link type="text/css" rel="stylesheet" href="/dojo/resources/dojo.css" />
@@ -19,13 +19,30 @@
 		parseOnLoad:false,
 		isDebug:true" 
 	src="/dojo/dojo.js"></script>
+
+<script type="text/javascript">
+require(["dojo/parser",
+         "dojo/dom",
+         "drip.MemberList",
+         "dojo/domReady!"], function(
+        		 parser,
+        		 dom){
+	// TODO:获取要查看用户信息的标识
+	// 第一个版本先从cookie中获取，后续编码改为在后台jsp或者其他模板语言中赋值
+	// 或者从链接中的参数中获取值
+	var userId = window.location.pathname.split("/")[2];
+	
+	parser.parse(dom.byId('memberList'));
+});
+</script>
+
 </head>
 <body class="claro">
 	<div id="wrapper" class="drip_body">
 		<div class="drip_header drip_header_logged_in" style="position: fixed; width: 100%">
 			<div class="container clearfix">
 				<a href="/" class="drip_header_logo" style="height:25px;">
-					<img alt="孜孜不倦" style="height:25px;" src="/resources/images/home_logo.png">
+					<img alt="孜孜不倦" style="height:25px;" src="/drip/resources/images/home_logo.png">
 				</a>
 				<div class="divider-vertical"></div>
 				<ul class="drip_top_nav">
@@ -49,23 +66,19 @@
 				<div class="drip_tab_nav">
 					<ul class="drip_tab_nav_tabs">
 						<li>
-							<a href="/relation/followers/xxxx(用户标识)" class="selected drip_tab_nav_tab">关注 <span class="counter" id="followers_count">0</span></a>
+							<a href="/followers/xxxx(用户标识)" class="drip_tab_nav_tab">关注 <span class="counter" id="followers_count">0</span></a>
 						</li>
 						<li>
-							<a href="/relation/following/xxxx(用户标识)" class="drip_tab_nav_tab">粉丝 <span class="counter" id="following_count">0</span></a>
+							<a href="/following/xxxx(用户标识)" class="selected drip_tab_nav_tab">粉丝 <span class="counter" id="following_count">0</span></a>
 						</li>
 					</ul>
 				</div>
+				<!-- 如何传递xxx的值 -->
 				<div class="drip_activity_list" style="padding-top:20px">
-					<div data-dojo-type="Activity" style="padding-top: 10px;padding-left: 10px;padding-right:10px">加载中...</div>
-					<!-- 第一个版本，尽量简单，实现功能即可，因此只显示头像，昵称，姓名和加关注按钮即可。 -->
-					<ul>
-						<li>
-							<a><img/></a>
-							<span><a href="#标识">昵称</a><em>(姓名)</em></span>
-							<span><input type="button" value="关注/取消关注"/></span>
-						</li>
-					</ul>
+					<div id="memberList" 
+					data-dojo-type="drip/MemberList" 
+					data-dojo-props="url:'/followers/xxxx',emptyHtml:'还没有粉丝'"
+					style="padding-top: 10px;padding-left: 10px;padding-right:10px">加载中...</div>
 				</div>
 			</div>
 		</div>

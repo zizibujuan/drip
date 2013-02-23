@@ -54,8 +54,14 @@ public class UserServiceImpl implements UserService {
 		if(userInfo.isEmpty()){
 			return null;
 		}else{
-			String userId = userInfo.get("id").toString();
-			userAttributesDao.updateLoginState(Long.valueOf(userId));
+			Long userId = Long.valueOf(userInfo.get("id").toString());
+			userAttributesDao.updateLoginState(userId);
+			Map<String,Object> avatarInfo = userAvatarDao.get(userId);
+			userInfo.putAll(avatarInfo);
+			
+			// 只获取统计信息，用户的其余信息实时来自第三方网站
+			Map<String,Object> StatisticsInfo = localUserStatisticsDao.getUserStatistics(userId);
+			userInfo.putAll(StatisticsInfo);
 			return userInfo;
 		}
 	}

@@ -32,6 +32,14 @@ define(["dojo/_base/declare",
 		
 		url: "/login/form", // 默认值
 		
+		// redirectUrl: String
+		//		登录成功后跳转的页面
+		homeUrl:"/",
+		
+		// signupUrl: String
+		//		用户没有注册时，跳转到注册页面
+		signupUrl:"/drip/signup.html",
+		
 		postCreate: function(){
 			this.btnLoginNode.on("click",lang.hitch(this,this._confirmLogin));
 			
@@ -55,10 +63,17 @@ define(["dojo/_base/declare",
 			
 			if(loginForm.validate()){
 				var sessionInfo = domForm.toJson(loginForm.domNode);
-				xhr.post(this.url,{data:sessionInfo, handleAs:"json"}).then(function(response){
+				xhr.post(this.url,{data:sessionInfo, handleAs:"json"}).then(lang.hitch(this,function(response){
 					// 登录成功后，跳转到个人首页
-					window.location = "/";
-				}, function(error){
+					var status = response.status;
+					var redirectUrl = "/";
+					if(status == "1"){
+						redirectUrl = this.homeUrl;
+					}else{
+						redirectUrl = this.signupUrl;
+					}
+					window.location = redirectUrl;
+				}), function(error){
 					// 登录失败后，显示错误信息
 					this._showErrorMsg(true);
 				});

@@ -30,12 +30,13 @@ public class RestHtmlFilter implements Filter {
 	private static final String NEW_PATHINFO = "/new";
 	private static final String HTML = ".html";
 	
-	private Map<String,Object> actions;
+	private Map<String,String> actions;
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		 actions = new HashMap<String, Object>();
-		 
+		 actions = new HashMap<String, String>();
+		 actions.put("/following", "/drip/relation.html");
+		 actions.put("/followers", "/drip/relation.html");
 	}
 
 	/**
@@ -50,14 +51,26 @@ public class RestHtmlFilter implements Filter {
 			FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest httpRequest = (HttpServletRequest) req;
 		HttpServletResponse httpResponse = (HttpServletResponse) resp;
-//		System.out.println("ServletPath:'"+httpRequest.getServletPath()+"'");
-//		System.out.println("PathInfo:'"+httpRequest.getPathInfo()+"'");
-//		System.out.println("ContextPath:'"+httpRequest.getContextPath()+"'");
+
+		
+		// TODO:先从map中查找，找不到之后，走默认的规则。
+		
+		// 判断contextPath/ServletPath与第一个pathInfo是否一致。
 		
 		// 因为约定rest名与文件夹名相同，所以servletPath中存储的通常是servlet的别名。
-		String servletPath = httpRequest.getServletPath();
 		if(!RequestUtil.isAjax(httpRequest)){
+			String servletPath = httpRequest.getServletPath();
 			String pathInfo = httpRequest.getPathInfo();
+			System.out.println("ServletPath:'"+httpRequest.getServletPath()+"'");
+			System.out.println("PathInfo:'"+httpRequest.getPathInfo()+"'");
+			System.out.println("ContextPath:'"+httpRequest.getContextPath()+"'");
+			
+			if(actions.containsKey(servletPath)){
+				String path = actions.get(servletPath);
+				httpRequest.getRequestDispatcher(path).forward(httpRequest, httpResponse);
+				return;
+			}
+			
 			// servletPath可看作是资源名
 			if(isValidResource(servletPath)){
 				if(pathInfo == null || pathInfo.equals("/")){			
