@@ -2,16 +2,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>关注我的人· 孜孜不倦</title>
-<!-- TODO：在一个单独的css文件中import这些css文件 -->
-<link type="text/css" rel="stylesheet" href="/dijit/themes/claro/claro.css" />
-<link type="text/css" rel="stylesheet" href="/dojo/resources/dojo.css" />
-<link type="text/css" rel="stylesheet" href="/drip/resources/main.css" />
-
-<link type="text/css" rel="stylesheet" href="/mathEditor/Editor.css" />
-<link type="text/css" rel="stylesheet" href="/drip/resources/UploaderFileList.css" />
-
-<link type="text/css" rel="stylesheet" href="/drip/resources/index.css" />
+<title>关注我的人 · 孜孜不倦</title>
+<link type="text/css" rel="stylesheet" href="/drip/resources/app.css" />
 
 <script type="text/javascript" 
 	data-dojo-config="
@@ -23,14 +15,33 @@
 <script type="text/javascript">
 require(["dojo/parser",
          "dojo/dom",
-         "drip.MemberList",
+         "drip/user",
+         "drip/MemberList",
          "dojo/domReady!"], function(
         		 parser,
-        		 dom){
+        		 dom,
+        		 user){
 	// TODO:获取要查看用户信息的标识
 	// 第一个版本先从cookie中获取，后续编码改为在后台jsp或者其他模板语言中赋值
 	// 或者从链接中的参数中获取值
-	var userId = window.location.pathname.split("/")[2];
+	var splitPathName = window.location.pathname.split("/");
+	var action = splitPathName[1];
+	var userId = splitPathName[2];
+	//如果userId为null，则从session中获取
+	// 修改标题
+	// 选择tab
+	
+	// 这里不应该是获取登录用户信息，而是id标识的用户信息
+	user.getLoggedUserInfo().then(function(userInfo){
+		console.log("登录用户信息:", userInfo);
+		// 在右侧用户信息区域显示
+		var displayName = userInfo.nickName;
+		// 在顶部用户信息区域显示
+		var topProfileImage = dom.byId("topProfileImage");
+		topProfileImage.src = userInfo.smallImageUrl || "/drip/resources/images/profile_50_50.gif";;
+		topProfileImage.alt = displayName;
+		dom.byId("topUserName").innerHTML = displayName;
+	});
 	
 	parser.parse(dom.byId('memberList'));
 });

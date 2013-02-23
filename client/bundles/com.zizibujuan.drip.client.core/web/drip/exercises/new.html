@@ -20,7 +20,7 @@ require(["dojo/ready",
          "dojo/store/JsonRest",
          "dijit/registry",
          "drip/exercises/ExerciseForm",
-         "drip/userSession",
+         "drip/user",
          "dojo/parser",
          "dijit/form/Button",
          "dojo/domReady!"],function(
@@ -30,9 +30,9 @@ require(["dojo/ready",
         		 JsonRest,
         		 registry,
         		 ExerciseForm,
-        		 userSession){
-	on(dom.byId("logout"),"click",userSession.logout);
-	userSession.getLoggedUserInfo().then(function(userInfo){
+        		 user){
+	on(dom.byId("logout"),"click",user.logout);
+	user.getLoggedUserInfo().then(function(userInfo){
 		// 在顶部用户信息区域显示
 		var topProfileImage = dom.byId("topProfileImage");
 		topProfileImage.src = userInfo.tinyUrl;

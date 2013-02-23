@@ -8,7 +8,7 @@ define(["dojo/_base/declare",
         "dijit/TooltipDialog",
         "dijit/popup",
         "dojo/text!./templates/MiniCard.html",
-        "drip/userSession",
+        "drip/user",
         "drip/classCode"], function(
         		declare,
         		lang,
@@ -20,7 +20,7 @@ define(["dojo/_base/declare",
         		TooltipDialog,
         		popup,
         		miniCardTemplate,
-        		userSession,
+        		user,
         		classCode){
 	
 	var MiniCardBody = declare("drip.MiniCardBody",[_WidgetBase,_TemplatedMixin],{
@@ -88,7 +88,7 @@ define(["dojo/_base/declare",
 				domConstruct.empty(this.actionsNode);
 				
 				var localUserId = userInfo.id;
-				var loginMapUserId = userSession.getLoggedUserInfo()["mapped_user_id"];
+				var loginMapUserId = user.getLoggedUserInfo()["mapped_user_id"];
 				if(loginMapUserId == userInfo.mapUserId){
 					// 如果是显示登录用户的名片，则清除操作按钮
 					domConstruct.empty(this.actionsNode);

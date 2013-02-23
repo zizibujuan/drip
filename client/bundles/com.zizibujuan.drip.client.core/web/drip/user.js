@@ -7,11 +7,11 @@ define(["dojo/dom",
 	// summary:
 	//	获取当前登录用户信息,返回一个deffered对象，或者直接提供一个方法，用来在浏览器中显示用户信息。
 	
-	var userSession = {};
+	var user = {};
 	
 	var userInfo = null;
 	
-	userSession.getLoggedUserInfo = function(){
+	user.getLoggedUserInfo = function(){
 		// summary:
 		//		获取用户信息，返回一个deferred对象。
 		//		注意，该方法触发的越早越好。
@@ -29,7 +29,7 @@ define(["dojo/dom",
 		return userInfo;
 	};
 	
-	userSession.showProfile = function(){
+	user.showProfile = function(){
 		// summary:
 		//		显示用户信息。
 		//		在两个地方显示用户信息，一是在最顶部的工具栏中；二是在右侧的用户信息区域。
@@ -57,7 +57,7 @@ define(["dojo/dom",
 	};
 	
 	// 提供logout方法
-	userSession.logout = function(){
+	user.logout = function(){
 		xhr("/logout/",{method:"POST", handleAs:"json"}).then(function(data){
     		
     	},function(error){
@@ -65,5 +65,5 @@ define(["dojo/dom",
     	});
 	};
 	
-	return userSession;
+	return user;
 });
