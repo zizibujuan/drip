@@ -41,13 +41,6 @@ public interface UserDao {
 	 * </pre>
 	 */
 	Map<String, Object> get(String email, String md5Password);
-	
-	/**
-	 * 获取用户的完整信息
-	 * @param userId 用户标识
-	 * @return 用户的完整信息
-	 */
-	Map<String, Object> getFull(Long userId);
 
 	/**
 	 * 获取用户登录信息，返回到客户端的，所以不能包含用户隐私信息。
@@ -99,11 +92,10 @@ public interface UserDao {
 	Map<String, Object> importUser(Map<String, Object> userInfo);
 
 	/**
-	 * 判断这个映射标识对应的用户是不是本网站注册用户。将在0.0.2版本中删除
-	 * @param mapUserId 映射标识
-	 * @return 如果是本网站注册用户则返回<code>true</code>;否则返回<code>false</code>
+	 * 根据数字帐号获取本网站用户的全局用户标识
+	 * @param digitalId 数字帐号
+	 * @return 本网站用户的全局用户标识
 	 */
-	@Deprecated
-	boolean isLocalUser(Long mapUserId);
+	Long getLocalUserIdByDigitalId(Long digitalId);
 
 }

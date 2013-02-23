@@ -160,4 +160,23 @@ public interface UserService {
 	 */
 	Map<String, Object> getPublicInfo(Long localGlobalUserId);
 
+	/**
+	 * 获取简化的用户信息
+	 * @param digitalId 数字帐号
+	 * @return 简化的用户信息
+	 * <pre>
+	 *  map结构：
+	 *		digitalId: 数字帐号
+	 *      userId: 全局用户标识
+	 *      nickName: 昵称
+	 *      loginName: 登录名
+	 *      smallImageUrl: 小头像
+	 *      largeImageUrl: 
+	 * 		largerImageUrl:
+	 * 		xLargeImageUrl:
+	 * 
+	 * </pre>
+	 */
+	Map<String, Object> getSimpleInfo(Long digitalId);
+
 }

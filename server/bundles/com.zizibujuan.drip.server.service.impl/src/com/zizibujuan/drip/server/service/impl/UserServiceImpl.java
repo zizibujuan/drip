@@ -113,9 +113,23 @@ public class UserServiceImpl implements UserService {
 		Map<String,Object> statistics = localUserStatisticsDao.getUserStatistics(localGlobalUserId);
 		userInfo.putAll(statistics);
 			
+		Map<String,Object> avatarInfo = userAvatarDao.get(connectUserId);
+		userInfo.putAll(avatarInfo);
+		return userInfo;
+	}
+	
+	@Override
+	public Map<String, Object> getSimpleInfo(Long digitalId) {
+		Long localUserId = userDao.getLocalUserIdByDigitalId(digitalId);
 		
-		
-		// 但是如何区分本网站注册用户和第三方网站用户
+		Map<String, Object> mapUserInfo = userBindDao.getRefUserMapperInfo(localUserId);
+		if(mapUserInfo.isEmpty()){
+			return mapUserInfo;
+		}
+		// 注意，该connectUserId是与本地用户引用用户信息的帐号，与参数中的connectGlobalUserId可能不是同一个帐号
+		Long connectUserId = Long.valueOf(mapUserInfo.get("connectUserId").toString());
+		Map<String, Object>userInfo = connectUserDao.getPublicInfo(connectUserId);
+		userInfo.put("localUserId", localUserId);
 		Map<String,Object> avatarInfo = userAvatarDao.get(connectUserId);
 		userInfo.putAll(avatarInfo);
 		return userInfo;

@@ -72,7 +72,7 @@ define(["dojo/dom",
 		//		用户的数字帐号，如果为null，则默认获取登录用户的信息
 		
 		digitalId = digitalId || "";
-		return xhr("/users/"+digitalId,{handleAs:"json"}).then(function(data){
+		return xhr("/users/"+digitalId,{handleAs:"json", query:{type:"simple"}}).then(function(data){
 			return data;
 		},function(error){
 			console.error(error);

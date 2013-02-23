@@ -202,18 +202,10 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 				false);
 	}
 	
+	private static final String SQL_GET_LOCAL_USER_ID_BY_DIGITAL = "SELECT DBID FROM DRIP_GLOBAL_USER_INFO WHERE DIGITAL_ID=?";
 	@Override
-	public Map<String, Object> getFull(Long userId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	private static final String SQL_GET_OAUTH_SITE_ID = "SELECT OAUTH_SITE_ID FROM DRIP_USER_BIND WHERE DBID=?";
-	// 这个方法就在这里实现，更直观些，虽然数据存储在映射表中
-	@Override
-	public boolean isLocalUser(Long mapUserId) {
-		int siteId = DatabaseUtil.queryForInt(getDataSource(), SQL_GET_OAUTH_SITE_ID, mapUserId);
-		return siteId == OAuthConstants.ZIZIBUJUAN;
+	public Long getLocalUserIdByDigitalId(Long digitalId) {
+		return DatabaseUtil.queryForLong(getDataSource(), SQL_GET_LOCAL_USER_ID_BY_DIGITAL, digitalId);
 	}
 	
 	public void setUserRelationDao(UserRelationDao userRelationDao) {
@@ -292,4 +284,5 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			this.localUserStatisticsDao = null;
 		}
 	}
+	
 }

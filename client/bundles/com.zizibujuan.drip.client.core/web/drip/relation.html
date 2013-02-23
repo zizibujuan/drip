@@ -26,6 +26,13 @@ require(["dojo/parser",
         		 win,
         		 user,
         		 MemberList){
+	// TODO:获取要查看用户信息的标识
+	// 第一个版本先从cookie中获取，后续编码改为在后台jsp或者其他模板语言中赋值
+	// 或者从链接中的参数中获取值
+	var splitPathName = window.location.pathname.split("/");
+	var action = splitPathName[1];
+	var userId = splitPathName[2];
+	
 	// 登录用户信息
 	user.getLoggedUserInfo().then(function(userInfo){
 		console.log("登录用户信息:", userInfo);
@@ -33,18 +40,19 @@ require(["dojo/parser",
 		var displayName = userInfo.nickName;
 		// 在顶部用户信息区域显示
 		var topProfileImage = dom.byId("topProfileImage");
-		topProfileImage.src = userInfo.smallImageUrl || "/drip/resources/images/profile_50_50.gif";;
+		topProfileImage.src = userInfo.smallImageUrl || "/drip/resources/images/profile_50_50.gif";
 		topProfileImage.alt = displayName;
 		dom.byId("topUserName").innerHTML = displayName;
 		dom.byId("top_user_link").href = "#";//TODO：跳转
 	});
 	
-	// TODO:获取要查看用户信息的标识
-	// 第一个版本先从cookie中获取，后续编码改为在后台jsp或者其他模板语言中赋值
-	// 或者从链接中的参数中获取值
-	var splitPathName = window.location.pathname.split("/");
-	var action = splitPathName[1];
-	var userId = splitPathName[2];
+	user.getSimpleUserInfo(userId).then(function(userInfo){
+		console.log("simple user info:", userInfo);
+		dom.byId("headUserImg").src = userInfo.smallImageUrl || "/drip/resources/images/profile_50_50.gif";
+		var headUserLink = dom.byId("headUserLink");
+		headUserLink.innerHTML = userInfo.nickName || userInfo.loginName;
+		headUserLink.href = "/users/"+userInfo.digitalId;
+	});
 	//如果userId为null，则从session中获取
 	// 修改标题
 	// 选择tab
@@ -102,9 +110,16 @@ require(["dojo/parser",
 		</div>
 		<div class="container" style="padding-top: 60px;">
 			<div>
-				<!-- 用户信息 -->
-				<img>
-				<a href="#">用户信息</a>
+				<h1 style="line-height: 50px; font-weight: bold;font-size: 30px">
+					<!-- 用户信息 -->
+					<img id="headUserImg" width="50px" height="50px" style="padding:2px;vertical-align: middle;
+						position: relative;
+						top: -2px;
+						margin-right: 5px;
+						padding: 2px;
+						border: 1px solid #ddd;">
+					<a href="#" id="headUserLink" style="line-height:50px;color:#333333;"></a>
+				</h1>
 			</div>
 			<div>
 				<div class="drip_tab_nav">

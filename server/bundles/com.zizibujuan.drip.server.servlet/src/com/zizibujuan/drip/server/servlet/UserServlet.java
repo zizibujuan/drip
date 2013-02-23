@@ -245,18 +245,25 @@ public class UserServlet extends BaseServlet {
 			userInfo = UserSession.getUser(req);
 			ResponseUtil.toJSON(req, resp, userInfo);
 		}else if(pathInfo != null && !pathInfo.equals("/")){
-			// 获取数字帐号
+			String type = req.getParameter("type");
 			Long digitalId = Long.valueOf(pathInfo.split("/")[1]);
-			// 根据数字帐号获取使用用户信息的用户帐号
-			
-			Long localUserId = 0l;
-			userInfo = userService.getPublicInfo(localUserId);
-			// 获取登录用户与该用户之间的关系,这里还缺少参数。因为一个帐号绑定多个网站帐号，或者只需要本帐号与用户的任一帐号关联即可。
-			// 以下代码只有获取关联关系时才用。
-			Long userRelationId = userRelationService.getRelationId(UserSession.getLocalUserId(req),localUserId);
-			if(userRelationId != null){
-				userInfo.put("userRelationId", userRelationId);
+			if(type != null && type.equals("simple")){
+				userInfo = userService.getSimpleInfo(digitalId);
+			}else{
+				// 获取数字帐号
+				
+				// 根据数字帐号获取使用用户信息的用户帐号
+				
+				Long localUserId = 0l;
+				userInfo = userService.getPublicInfo(localUserId);
+				// 获取登录用户与该用户之间的关系,这里还缺少参数。因为一个帐号绑定多个网站帐号，或者只需要本帐号与用户的任一帐号关联即可。
+				// 以下代码只有获取关联关系时才用。
+				Long userRelationId = userRelationService.getRelationId(UserSession.getLocalUserId(req),localUserId);
+				if(userRelationId != null){
+					userInfo.put("userRelationId", userRelationId);
+				}
 			}
+			
 			ResponseUtil.toJSON(req, resp, userInfo);
 			return;
 		}
