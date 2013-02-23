@@ -80,8 +80,8 @@ public class UserServiceImpl implements UserService {
 		userInfo.putAll(avatarInfo);
 		
 		// 只获取统计信息，用户的其余信息实时来自第三方网站
-		Map<String,Object> StatisticsInfo = localUserStatisticsDao.getUserStatistics(localUserId);
-		userInfo.putAll(StatisticsInfo);
+		Map<String,Object> statistics = localUserStatisticsDao.getUserStatistics(localUserId);
+		userInfo.putAll(statistics);
 		return userInfo;
 	}
 	
@@ -132,6 +132,8 @@ public class UserServiceImpl implements UserService {
 		userInfo.put("localUserId", localUserId);
 		Map<String,Object> avatarInfo = userAvatarDao.get(connectUserId);
 		userInfo.putAll(avatarInfo);
+		Map<String,Object> statistics = localUserStatisticsDao.getUserStatistics(localUserId);
+		userInfo.putAll(statistics);
 		return userInfo;
 	}
 	

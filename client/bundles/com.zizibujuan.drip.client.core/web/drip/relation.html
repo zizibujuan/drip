@@ -52,6 +52,9 @@ require(["dojo/parser",
 		var headUserLink = dom.byId("headUserLink");
 		headUserLink.innerHTML = userInfo.nickName || userInfo.loginName;
 		headUserLink.href = "/users/"+userInfo.digitalId;
+		
+		dom.byId("following_count").innerHTML = userInfo.followCount;
+		dom.byId("followers_count").innerHTML = userInfo.fanCount;
 	});
 	//如果userId为null，则从session中获取
 	// 修改标题
@@ -125,10 +128,10 @@ require(["dojo/parser",
 				<div class="drip_tab_nav">
 					<ul class="drip_tab_nav_tabs">
 						<li>
-							<a href="#" id="tab_following" class="drip_tab_nav_tab">关注 <span class="counter" id="following_count">0</span></a>
+							<a href="#" id="tab_following" class="drip_tab_nav_tab">关注 <span class="counter" id="following_count"> </span></a>
 						</li>
 						<li>
-							<a href="#" id="tab_followers" class="drip_tab_nav_tab">粉丝 <span class="counter" id="followers_count">0</span></a>
+							<a href="#" id="tab_followers" class="drip_tab_nav_tab">粉丝 <span class="counter" id="followers_count"> </span></a>
 						</li>
 					</ul>
 				</div>
