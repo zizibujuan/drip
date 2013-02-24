@@ -6,6 +6,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.zizibujuan.drip.server.tests.service.ActivityServiceTests;
 import com.zizibujuan.drip.server.tests.service.UserBindServiceTests;
+import com.zizibujuan.drip.server.tests.service.UserRelationTests;
 import com.zizibujuan.drip.server.tests.service.UserServiceTests;
 
 /**
@@ -17,7 +18,8 @@ import com.zizibujuan.drip.server.tests.service.UserServiceTests;
 @SuiteClasses({
 	UserServiceTests.class,
 	UserBindServiceTests.class,
-	ActivityServiceTests.class
+	ActivityServiceTests.class,
+	UserRelationTests.class
 })
 public class AllServiceTests {
 

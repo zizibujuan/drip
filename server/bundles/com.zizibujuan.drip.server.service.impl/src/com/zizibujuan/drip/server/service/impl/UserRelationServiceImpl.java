@@ -31,16 +31,16 @@ public class UserRelationServiceImpl implements UserRelationService {
 	}
 	
 	@Override
-	public void follow(Long userId, Long followUserId) {
+	public void follow(Long connectUserId, Long followConnectUserId) {
 		// 判断用户是否已被关注，如果已被关注，则不再重复关注
-		if(userRelationDao.getRelationId(userId, followUserId) == null){
-			userRelationDao.watch(userId, followUserId);
+		if(userRelationDao.getRelationId(connectUserId, followConnectUserId) == null){
+			userRelationDao.watch(connectUserId, followConnectUserId);
 		}
 	}
 
 	@Override
-	public void unFollow(Long userId, Long followUserId) {
-		userRelationDao.delete(userId, followUserId);
+	public void unFollow(Long connectUserId, Long followUserId) {
+		userRelationDao.delete(connectUserId, followUserId);
 	}
 	
 	// TODO:获取直接把第三方的用户信息为本网站用户copy一份，查询的时候就没有那么绕了。

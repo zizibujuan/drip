@@ -19,6 +19,7 @@ public interface UserDao {
 	 * 		password: 登录密码(已加过密)
 	 * 		repassword: 确认密码
 	 * 		realName: 真实姓名
+	 *      siteId: 网站标识 {@link OAuthConstants}
 	 * </pre>
 	 * @param userInfo 用户信息
 	 * @return 新增用户的标识

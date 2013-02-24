@@ -13,14 +13,15 @@ public interface UserService {
 
 	/**
 	 * 新增用户。
+	 * @param userInfo 用户信息
 	 * <pre>
 	 * 用户信息的格式为:
 	 * 		login: 注册邮箱 之所以叫login，是因为也可能是手机号或用户名
 	 * 		password: 登录密码
 	 * 		repassword: 确认密码
 	 * 		realName: 真实姓名
+	 *		siteId: 网站标识 {@link OAuthConstants}
 	 * </pre>
-	 * @param userInfo 用户信息
 	 * @return 新增用户的标识
 	 */
 	Long add(Map<String,Object> userInfo);
