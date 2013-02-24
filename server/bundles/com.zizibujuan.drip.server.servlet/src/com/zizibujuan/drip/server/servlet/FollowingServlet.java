@@ -38,17 +38,11 @@ public class FollowingServlet extends BaseServlet {
 		traceRequest(req);
 		String pathInfo = req.getPathInfo();
 		if(pathInfo != null && !pathInfo.equals("/")){
-			
-			Long localUserId = null;
-			String[] infos = pathInfo.split("/");
-			if(infos.length == 3){
-				localUserId = Long.valueOf(infos[2]);
-			}else{
-				localUserId = UserSession.getLocalUserId(req);
-			}
-			
+			String[] splitPath = pathInfo.split("/");
+			Long digitalId = Long.valueOf(splitPath[1]);
+			Long loginDigitalId = UserSession.getDigitalId(req);
 			PageInfo pageInfo = getPageInfo(req);
-			List<Map<String, Object>> result = userRelationService.getFollowing(pageInfo, localUserId);
+			List<Map<String, Object>> result = userRelationService.getFollowing(pageInfo,loginDigitalId, digitalId);
 			ResponseUtil.toJSON(req, resp, pageInfo, result);
 			return;
 		}

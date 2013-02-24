@@ -542,3 +542,21 @@ margin-left: 25px;
 	border-top:1px solid #DDD;
 	min-height: 500px;
 }
+
+.members .user-following{
+	float: right;
+}
+
+.members li {
+	font-size: 14px;
+	line-height: 24px;
+	font-weight: bold;
+}
+
+.members li .avatar {
+	border: 1px solid #ddd;
+	padding: 1px;
+	background-color: #fff;
+	float: left;
+	margin-right: 10px;
+}

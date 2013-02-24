@@ -1,6 +1,7 @@
 package com.zizibujuan.drip.server.servlet;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.zizibujuan.drip.server.service.UserRelationService;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
+import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
 import com.zizibujuan.drip.server.util.servlet.UserSession;
 
 /**
@@ -33,7 +35,7 @@ public class FollowServlet extends BaseServlet {
 		String pathInfo = req.getPathInfo();
 		if(pathInfo != null && !pathInfo.equals("/")){
 			Long followUserId = Long.valueOf(pathInfo.split("/")[1]);
-			Long userId = UserSession.getLocalUserId(req);
+			Long userId = UserSession.getConnectUserId(req);
 			String op = req.getParameter("op");
 			if(op.equals("on")){
 				// 加关注
@@ -42,6 +44,7 @@ public class FollowServlet extends BaseServlet {
 				// 取消关注
 				userRelationService.unFollow(userId, followUserId);
 			}
+			ResponseUtil.toJSON(req, resp, new HashMap<String,Object>());
 			return;
 		}
 		super.doPost(req, resp);

@@ -31,6 +31,19 @@ public abstract class UserSession {
 	}
 	
 	/**
+	 * 获取为本网站用户分配的数字帐号
+	 * @param req
+	 * @return 数字帐号，如果没有取到，返回null
+	 */
+	public static Long getDigitalId(HttpServletRequest req){
+		Map<String,Object> userInfo = getUser(req);
+		if(userInfo == null){
+			return null;
+		}
+		return Long.valueOf(userInfo.get("digitalId").toString());
+	}
+	
+	/**
 	 * 获取第三方网站用户与本网站用户关联的关联标识。注意在网站的所有活动中不使用第三方网站标识，而是使用这个关联标识。
 	 * @param req
 	 * @return 获取本网站为第三方网站用户统一生成的用户标识；如果没有取到，返回null

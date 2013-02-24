@@ -14,15 +14,19 @@
 
 <script type="text/javascript">
 require(["dojo/parser",
+         "dojo/on",
          "dojo/dom",
          "dojo/dom-class",
+         "dojo/topic",
          "dojo/_base/window",
          "drip/user",
          "drip/MemberList",
          "dojo/domReady!"], function(
         		 parser,
+        		 on,
         		 dom,
         		 domClass,
+        		 topic,
         		 win,
         		 user,
         		 MemberList){
@@ -32,6 +36,8 @@ require(["dojo/parser",
 	var splitPathName = window.location.pathname.split("/");
 	var action = splitPathName[1];
 	var userId = splitPathName[2];
+	
+	on(dom.byId("logout"),"click",user.logout);
 	
 	// 登录用户信息
 	user.getLoggedUserInfo().then(function(userInfo){
@@ -45,7 +51,7 @@ require(["dojo/parser",
 		dom.byId("topUserName").innerHTML = displayName;
 		dom.byId("top_user_link").href = "#";//TODO：跳转
 	});
-	
+	var followingCount = dom.byId("following_count");
 	user.getSimpleUserInfo(userId).then(function(userInfo){
 		console.log("simple user info:", userInfo);
 		dom.byId("headUserImg").src = userInfo.smallImageUrl || "/drip/resources/images/profile_50_50.gif";
@@ -53,7 +59,7 @@ require(["dojo/parser",
 		headUserLink.innerHTML = userInfo.nickName || userInfo.loginName;
 		headUserLink.href = "/users/"+userInfo.digitalId;
 		
-		dom.byId("following_count").innerHTML = userInfo.followCount;
+		followingCount.innerHTML = userInfo.followCount;
 		dom.byId("followers_count").innerHTML = userInfo.fanCount;
 	});
 	//如果userId为null，则从session中获取
@@ -79,10 +85,13 @@ require(["dojo/parser",
 	}
 	tabFollowers.href = "/followers/"+userId;
 	tabFollowing.href = "/following/"+userId;
-	new MemberList({url:url,emptyHtml:emptyHtml},"memberList");
-	// 获取查询的用户信息
-	// 获取查询用户信息的粉丝或关注
+	var memberList = new MemberList({url:url,emptyHtml:emptyHtml,style:"width:500px"},"memberList");
 	
+	// TODO： 取消/加关注，关注自己的粉丝等操作，都要调整关注的统计值
+	topic.subscribe("memberList/updateFollowingCount", function(deltaNum){
+		var count = parseInt(followingCount.innerHTML);
+		followingCount.innerHTML = count + deltaNum;
+	},true);
 });
 </script>
 
@@ -128,10 +137,10 @@ require(["dojo/parser",
 				<div class="drip_tab_nav">
 					<ul class="drip_tab_nav_tabs">
 						<li>
-							<a href="#" id="tab_following" class="drip_tab_nav_tab">关注 <span class="counter" id="following_count"> </span></a>
+							<a href="#" id="tab_following" class="drip_tab_nav_tab">关注 <span class="counter" id="following_count">0</span></a>
 						</li>
 						<li>
-							<a href="#" id="tab_followers" class="drip_tab_nav_tab">粉丝 <span class="counter" id="followers_count"> </span></a>
+							<a href="#" id="tab_followers" class="drip_tab_nav_tab">粉丝 <span class="counter" id="followers_count">0</span></a>
 						</li>
 					</ul>
 				</div>

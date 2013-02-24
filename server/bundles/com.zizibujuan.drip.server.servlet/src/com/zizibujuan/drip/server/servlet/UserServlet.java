@@ -254,6 +254,8 @@ public class UserServlet extends BaseServlet {
 				
 				// 根据数字帐号获取使用用户信息的用户帐号
 				
+				// FIXME:xxxxxxxxx
+				
 				Long localUserId = 0l;
 				userInfo = userService.getPublicInfo(localUserId);
 				// 获取登录用户与该用户之间的关系,这里还缺少参数。因为一个帐号绑定多个网站帐号，或者只需要本帐号与用户的任一帐号关联即可。

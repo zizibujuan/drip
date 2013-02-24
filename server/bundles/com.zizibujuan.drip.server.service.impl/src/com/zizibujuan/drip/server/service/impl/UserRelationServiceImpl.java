@@ -12,6 +12,7 @@ import com.zizibujuan.drip.server.dao.UserRelationDao;
 import com.zizibujuan.drip.server.service.UserRelationService;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.util.PageInfo;
+import com.zizibujuan.drip.server.util.RelationType;
 
 /**
  * 用户关系实现类
@@ -29,7 +30,6 @@ public class UserRelationServiceImpl implements UserRelationService {
 		return userRelationDao.getRelationId(userId, watchUserId);
 	}
 	
-	// TODO:因为统计数据只用在本地用户上，所以可能需要做一个用户转换。
 	@Override
 	public void follow(Long userId, Long followUserId) {
 		// 判断用户是否已被关注，如果已被关注，则不再重复关注
@@ -38,28 +38,87 @@ public class UserRelationServiceImpl implements UserRelationService {
 		}
 	}
 
-	// TODO:因为统计数据只用在本地用户上，所以可能需要做一个用户转换。
 	@Override
 	public void unFollow(Long userId, Long followUserId) {
 		userRelationDao.delete(userId, followUserId);
 	}
 	
+	// TODO:获取直接把第三方的用户信息为本网站用户copy一份，查询的时候就没有那么绕了。
 	@Override
-	public List<Map<String, Object>> getFollowing(PageInfo pageInfo, Long localUserId) {
-		List<Map<String, Object>> userIds = userRelationDao.getFollowing(pageInfo, localUserId);
+	public List<Map<String, Object>> getFollowing(PageInfo pageInfo, Long loginDigitalId, Long digitalId) {
+		// 获取本地用户帐号所有关联的用户关注的人
+		// 然后获取每个用户的显示用户信息的帐号
+		// 获取用户详细信息。
+		List<Map<String, Object>> userIds = userRelationDao.getFollowing(pageInfo, digitalId);
 		List<Map<String, Object>> users = new ArrayList<Map<String,Object>>();
 		for(Map<String, Object> each : userIds){
-			Long _localUserId = Long.valueOf(each.get("following").toString());
-			// 获取用户详情。注意会有多个第三方网站用户与本地用户关联，需要设置一个获取用户详情的关联帐号。
+			Long followingConnectUserId = Long.valueOf(each.get("following").toString());
+			// 获取connectUserId关联的本地用户标识
+			Long followingLocalUserId = userBindDao.getLocalUserId(followingConnectUserId);
+			// 获取本地用户引用的第三方用户标识（使用该用户的详细信息在界面上显示）
+			Map<String,Object> userInfo = userService.getPublicInfo(followingLocalUserId);
+			String watched = null;
+			if(loginDigitalId.equals(digitalId)){
+				watched = RelationType.FOLLOWED;// 这里查的都是我关注的人，所以都为true
+			}else{
+				// 登录用户查看其他人关注的人
+				Long watchedDigitalId = Long.valueOf(userInfo.get("digitalId").toString());
+				if(loginDigitalId.equals(watchedDigitalId)){
+					watched = RelationType.SELF; //自我不显式关注
+				}else{
+					// 查看digitalId关注的人，我有没有关注
+					if(userRelationDao.isWatched(loginDigitalId, followingConnectUserId)){
+						watched = RelationType.FOLLOWED;
+					}else{
+						watched = RelationType.UNFOLLOWED;
+					}
+				}
+				
+			}
+			userInfo.put("watched", watched);// 这里查的都是我关注的人，所以都为true
 			
+			users.add(userInfo);
 		}
 		return users;
 	}
 
+	// TODO:添加测试用例
 	@Override
-	public List<Map<String, Object>> getFollowers(PageInfo pageInfo, Long localUserId) {
-		// TODO：添加根据用户标识，获取用户详细信息的方法
-		return userRelationDao.getFollowers(pageInfo, localUserId);
+	public List<Map<String, Object>> getFollowers(PageInfo pageInfo, Long loginDigitalId, Long digitalId) {
+		List<Map<String, Object>> userIds = userRelationDao.getFollowers(pageInfo, digitalId);
+		List<Map<String, Object>> users = new ArrayList<Map<String,Object>>();
+		for(Map<String, Object> each : userIds){
+			Long connectUserId = Long.valueOf(each.get("follower").toString());
+			// 获取connectUserId关联的本地用户标识
+			Long localUserId = userBindDao.getLocalUserId(connectUserId);
+			// 获取本地用户引用的第三方用户标识（使用该用户的详细信息在界面上显示）
+			Map<String,Object> userInfo = userService.getPublicInfo(localUserId);
+			String watched = "";
+			if(loginDigitalId.equals(digitalId)){
+				// 我查看我的粉丝
+				if(userRelationDao.isWatched(loginDigitalId, connectUserId)){
+					watched = RelationType.FOLLOWED;
+				}else{
+					watched = RelationType.UNFOLLOWED;
+				}
+			}else{
+				// 我查看别人的粉丝
+				Long watchedDigitalId = Long.valueOf(userInfo.get("digitalId").toString());
+				if(loginDigitalId.equals(watchedDigitalId)){
+					watched = RelationType.SELF; //自我不显式关注
+				}else{
+					if(userRelationDao.isWatched(loginDigitalId, connectUserId)){
+						watched = RelationType.FOLLOWED;
+					}else{
+						watched = RelationType.UNFOLLOWED;
+					}
+				}
+			}
+			
+			userInfo.put("watched", watched);
+			users.add(userInfo);
+		}
+		return users;
 	}
 
 	public void setUserRelationDao(UserRelationDao userRelationDao) {

@@ -4,6 +4,9 @@
 define(["dojo/_base/declare",
         "dojo/_base/lang",
         "dojo/_base/array",
+        "dojo/dom-construct",
+        "dojo/on",
+        "dojo/topic",
         "dojo/request/xhr",
         "dijit/_WidgetBase",
         "dijit/_TemplatedMixin",
@@ -11,6 +14,9 @@ define(["dojo/_base/declare",
 		declare,
 		lang,
 		array,
+		domConstruct,
+		on,
+		topic,
 		xhr,
 		_WidgetBase,
 		_TemplatedMixin,
@@ -26,32 +32,39 @@ define(["dojo/_base/declare",
 			this.inherited(arguments);
 			
 			var userInfo = this.data;
-			var localUserId = userInfo.id;
+			var localUserId = userInfo.localUserId;
 			// FIXME:与MiniCard.js中的代码有重复的部分
-			// TODO:删除mapUserId
-			var userLinkSubfix = userInfo.id+"?mapUserId="+userInfo.mapUserId;
-			var displayName = userInfo.nickName || "";
-			var userActionLink = "/actions/"+ userLinkSubfix
+			var displayName = userInfo.nickName || userInfo.loginName;
+			var userActionLink = "/users/"+userInfo.digitalId;
 			
 			this.userImgLinkNode.href =  userActionLink;
-			this.userImgNode.src = userInfo.largeImageUrl || "";
+			this.userImgNode.src = userInfo.smallImageUrl || "/drip/resources/images/profile_50_50.gif";
 			this.userImgNode.alt = displayName;
 			this.userNickNameLinkNode.innerHTML = displayName;
 			this.userNickNameLinkNode.href = userActionLink;
-			this.userRealNameNode = userInfo.realName;
-			
-			if(userInfo.userRelationId){
-				this._cancelWatch(localUserId);
+			if(userInfo.realName){
+				this.userRealNameNode.innerHTML = "("+userInfo.realName+")";
 			}else{
-				this._watch(localUserId);
+				this.userRealNameNode.innerHTML = "";
+			}
+			
+			// 如果我关注了别人，则打开别人的粉丝页面时，我不能关注自己，即不显示关注按钮
+			var connectUserId = userInfo.connectUserId;
+			if(userInfo.watched == "0"){
+				domConstruct.destroy(this.actionNode);
+			}else if(userInfo.watched  == "1"){
+				this._cancelWatch(connectUserId);
+			}else if(userInfo.watched == "2"){
+				this._watch(connectUserId);
 			}
 		},
 		
-		_cancelWatch: function(localUserId){
+		_cancelWatch: function(connectUserId){
 			this.actionNode.value = "取消关注";
 			on.once(this.actionNode, "click", lang.hitch(this,function(e){
-				xhr.put("/follow/"+localUserId,{handleAs:"json",query:{"op":"off"}},lang.hitch(this, function(response){
-					this._watch(localUserId);
+				xhr.put("/follow/"+connectUserId,{handleAs:"json",query:{"op":"off"}}).then(lang.hitch(this, function(response){
+					this._watch(connectUserId);
+					this.updateFollowingCount(-1);
 				}),lang.hitch(this, function(error){
 					
 				}));
@@ -59,15 +72,20 @@ define(["dojo/_base/declare",
 			
 		},
 		
-		_watch: function(localUserId){
+		_watch: function(connectUserId){
 			this.actionNode.value = "+ 关注";
 			on.once(this.actionNode, "click", lang.hitch(this, function(response){
-				xhr.put("/follow/"+localUserId,{handleAs:"json",query:{"op":"on"}},lang.hitch(this, function(response){
-					this._cancelWatch(localUserId);
+				xhr.put("/follow/"+connectUserId,{handleAs:"json",query:{"op":"on"}}).then(lang.hitch(this, function(response){
+					this._cancelWatch(connectUserId);
+					this.updateFollowingCount(1);
 				}),lang.hitch(this, function(error){
 					
 				}));
 			}));
+		},
+		
+		updateFollowingCount: function(deltaNum){
+			topic.publish("memberList/updateFollowingCount",deltaNum);
 		}
 		
 		
@@ -75,7 +93,7 @@ define(["dojo/_base/declare",
 	
 	return declare("drip.MemberList",[_WidgetBase,_TemplatedMixin],{
 		
-		templateString: "<ul></ul>",
+		templateString: "<ul class='members'></ul>",
 		
 		url: null,
 		
@@ -83,14 +101,15 @@ define(["dojo/_base/declare",
 		
 		postCreate: function(){
 			this.inherited(arguments);
-			xhr.get(this.url,{handleAs:"json"}).then(lang.hitch(this, this._load));
+			console.log("memberList#postCreate",this.url);
+			xhr.get(this.url,{handleAs:"json",preventCache:true}).then(lang.hitch(this, this._load));
 		},
 		
 		_load: function(items){
+			console.log("用户关系：",items);
 			if(items.length == 0){
 				 this.domNode.innerHTML = this.emptyHtml;
 			 }else{
-				 console.log("用户关系：",items);
 				 array.forEach(items, lang.hitch(this,function(item, index){
 					 var node = new MemberNode({
 						 data : item

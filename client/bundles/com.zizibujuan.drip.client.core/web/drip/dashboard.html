@@ -48,7 +48,7 @@ require(["dojo/ready",
 		dom.byId("my_exer_count").innerHTML = userInfo.exerciseCount;
 		// 在顶部用户信息区域显示
 		var topProfileImage = dom.byId("topProfileImage");
-		topProfileImage.src = userInfo.smallImageUrl || "/drip/resources/images/profile_50_50.gif";;
+		topProfileImage.src = userInfo.smallImageUrl || "/drip/resources/images/profile_50_50.gif";
 		topProfileImage.alt = displayName;
 		dom.byId("topUserName").innerHTML = displayName;
 		dom.byId("top_user_link").href = "#";//TODO：跳转

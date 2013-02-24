@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.zizibujuan.drip.server.util.PageInfo;
+import com.zizibujuan.drip.server.util.RelationType;
 
 /**
  * 用户关系服务接口
@@ -37,17 +38,27 @@ public interface UserRelationService {
 	/**
 	 * 获取我关注的用户列表
 	 * @param pageInfo 分页信息
-	 * @param localUserId 本地用户标识，注意不能使用映射的用户标识，这个标识是全网站唯一的，而localUserId会对应多个第三方用户标识
+	 * @param loginDigitalId 当前登录的用户数字帐号
+	 * @param digitalId 要查看用户的数字帐号
 	 * @return 关注的用户列表，如果没有则返回空的列表。
+	 * <pre>
+	 * map结构：
+	 * 		watched: 0 关注的用户与登录用户是同一个人； 1 已关注； 2 没有关注 {@link RelationType}
+	 * </pre>
 	 */
-	List<Map<String, Object>> getFollowing(PageInfo pageInfo, Long localUserId);
+	List<Map<String, Object>> getFollowing(PageInfo pageInfo, Long loginDigitalId, Long digitalId);
 
 	/**
-	 * 获取关注我的用户列表
+	 * 获取关注我的用户列表,即我的粉丝
 	 * @param pageInfo 分页信息
-	 * @param localUserId 本地用户标识，注意不能使用映射的用户标识，这个标识是全网站唯一的，而localUserId会对应多个第三方用户标识
+	 * @param loginDigitalId 当前登录的用户数字帐号
+	 * @param digitalId 要查看用户的数字帐号
 	 * @return 关注我的用户列表，如果没有则返回空的列表。
+	 * <pre>
+	 * map结构：
+	 * 		watched: 0 关注的用户与登录用户是同一个人； 1 已关注； 2 没有关注 {@link RelationType}
+	 * </pre>
 	 */
-	List<Map<String, Object>> getFollowers(PageInfo pageInfo, Long localUserId);
+	List<Map<String, Object>> getFollowers(PageInfo pageInfo, Long loginDigitalId, Long digitalId);
 
 }

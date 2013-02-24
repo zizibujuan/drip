@@ -30,6 +30,29 @@ public interface UserService {
 	 * @param email 邮箱地址 (未加密)
 	 * @param password 密码
 	 * @return 如果登录失败则返回null，否则返回用户信息
+	 * <pre>
+	 * 	map结构为：
+	 * 		localUserId: 本网站为本网站用户生成的全局用户标识
+	 * 		connectUserId: 本网站为第三方网站用户生成的全局用户标识
+	 * 		siteId：与哪个网站的用户关联
+	 * 		email: 邮箱
+	 * 		mobile：手机号
+	 * 		nickName: 用户昵称
+	 * 		loginName: 登录名
+	 * 		digitalId: 为本网站用户分配的数字帐号
+	 * 这些字段是按照网站提供的图片尺寸大小从小到大排列的
+	 * 		smallImageUrl: 小头像
+	 * 		largeImageUrl: 
+	 * 		largerImageUrl:
+	 * 		xLargeImageUrl:
+	 * 
+	 * 以下字段从本地用户信息中获取
+	 * 		fanCount：粉丝数
+	 * 		followCount: 关注人数
+	 * 		exerDraftCount： 习题草稿数
+	 * 		exerPublishCount：发布的习题数
+	 * 		answerCount： 习题总数 = 习题草稿数+发布的习题数
+	 * </pre>
 	 */
 	Map<String,Object> login(String email, String password);
 	
@@ -40,7 +63,8 @@ public interface UserService {
 	 * @return 如果系统中存在该用户信息则返回，否则返回空的map对象。
 	 * <pre>
 	 * 	map结构为：
-	 * 		localUserId: 本地用户标识
+	 * 		localUserId: 本网站为本网站用户生成的全局用户标识
+	 * 		connectUserId: 本网站为第三方网站用户生成的全局用户标识
 	 * 		siteId：与哪个网站的用户关联
 	 * 		email: 邮箱
 	 * 		mobile：手机号

@@ -59,7 +59,7 @@ public class LocalUserStatisticsDaoImpl extends AbstractDao implements
 	}
 	
 	private static final String SQL_GET_USER_STATISTICS = "SELECT " +
-			"DBID \"id\"," +
+			"DBID \"statisticId\"," +
 			"FAN_COUNT \"fanCount\","+
 			"FOLLOW_COUNT \"followCount\","+
 			"EXER_DRAFT_COUNT \"exerDraftCount\","+

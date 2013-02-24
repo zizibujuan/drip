@@ -61,7 +61,7 @@ public class UserRelationDaoImpl extends AbstractDao implements UserRelationDao 
 		return DatabaseUtil.queryForLong(getDataSource(), SQL_GET_RELATION_ID, userId, watchUserId);
 	}
 
-	private static final String SQL_DELETE_RELATION = "DELETE DRIP_USER_RELATION WHERE  USER_ID=? AND WATCH_USER_ID=?";
+	private static final String SQL_DELETE_RELATION = "DELETE FROM DRIP_USER_RELATION WHERE  USER_ID=? AND WATCH_USER_ID=?";
 	@Override
 	public void delete(Long userId, Long watchUserId) {
 		Connection con = null;
@@ -82,18 +82,56 @@ public class UserRelationDaoImpl extends AbstractDao implements UserRelationDao 
 		
 	}
 
-	private static final String SQL_LIST_FOLLOWING = "SELECT WATCH_USER_ID \"following\" FROM DRIP_USER_RELATION WHERE USER_ID = ? ORDER BY CRT_TM";
+	private static final String SQL_LIST_FOLLOWING = "SELECT " +
+			"DUR.WATCH_USER_ID \"following\" " +
+			"FROM " +
+			"DRIP_USER_RELATION DUR, " +
+			"DRIP_GLOBAL_USER_INFO DGUI, " +
+			"DRIP_USER_BIND DUB " +
+			"WHERE " +
+			"DGUI.DIGITAL_ID = ? AND " +
+			"DGUI.DBID = DUB.LOCAL_USER_ID AND " +
+			"DUB.BIND_USER_ID = DUR.USER_ID AND " +
+			"DUR.USER_ID != DUR.WATCH_USER_ID " +// 剔除掉用户的自我关注
+			"ORDER BY DUR.DBID DESC";
 	@Override
-	public List<Map<String, Object>> getFollowing(PageInfo pageInfo,
-			Long localUserId) {
-		return DatabaseUtil.queryForList(getDataSource(), SQL_LIST_FOLLOWING, pageInfo, localUserId);
+	public List<Map<String, Object>> getFollowing(PageInfo pageInfo, Long digitalId) {
+		return DatabaseUtil.queryForList(getDataSource(), SQL_LIST_FOLLOWING, pageInfo, digitalId);
 	}
 
-	private static final String SQL_LIST_FOLLOWERS = "SELECT USER_ID \"follower\" FROM DRIP_USER_RELATION WHERE WATCH_USER_ID = ? ORDER BY CRT_TM";
+	private static final String SQL_LIST_FOLLOWERS = "SELECT " +
+			"DUR.USER_ID \"follower\" " +
+			"FROM " +
+			"DRIP_USER_RELATION DUR, " +
+			"DRIP_GLOBAL_USER_INFO DGUI, " +
+			"DRIP_USER_BIND DUB " +
+			"WHERE " +
+			"DGUI.DIGITAL_ID = ? AND " +
+			"DGUI.DBID = DUB.LOCAL_USER_ID AND " +
+			"DUB.BIND_USER_ID = DUR.WATCH_USER_ID AND " +
+			"DUR.USER_ID != DUR.WATCH_USER_ID " +// 剔除掉用户的自我关注,因为这里存储的都是全局用户标识，所以不会出现两个网站都有id为1的重复情况出现
+			"ORDER BY DUR.DBID DESC";
 	@Override
-	public List<Map<String, Object>> getFollowers(PageInfo pageInfo,
-			Long localUserId) {
-		return DatabaseUtil.queryForList(getDataSource(), SQL_LIST_FOLLOWERS, pageInfo, localUserId);
+	public List<Map<String, Object>> getFollowers(PageInfo pageInfo, Long digitalId) {
+		return DatabaseUtil.queryForList(getDataSource(), SQL_LIST_FOLLOWERS, pageInfo, digitalId);
+	}
+	
+	private static final String SQL_GET_WATCHED = "SELECT " +
+			"DUR.WATCH_USER_ID \"following\" " +
+			"FROM " +
+			"DRIP_USER_RELATION DUR, " +
+			"DRIP_GLOBAL_USER_INFO DGUI, " +
+			"DRIP_USER_BIND DUB " +
+			"WHERE " +
+			"DGUI.DIGITAL_ID = ? AND DUR.WATCH_USER_ID=? AND " +
+			"DGUI.DBID = DUB.LOCAL_USER_ID AND " +
+			"DUB.BIND_USER_ID = DUR.USER_ID AND " +
+			"DUR.USER_ID != DUR.WATCH_USER_ID " +// 剔除掉用户的自我关注
+			"ORDER BY DUR.DBID DESC LIMIT 1";
+	@Override
+	public boolean isWatched(Long digitalId, Long followingConnectUserId) {
+		List<Map<String,Object>> result = DatabaseUtil.queryForList(getDataSource(), SQL_GET_WATCHED, digitalId,followingConnectUserId);
+		return result.size() > 0;
 	}
 
 	public void setLocalUserStatisticsDao(LocalUserStatisticsDao localUserStatisticsDao) {

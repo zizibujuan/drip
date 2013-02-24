@@ -54,24 +54,32 @@ public interface UserRelationDao {
 	/**
 	 * 获取我关注的用户列表
 	 * @param pageInfo 分页信息
-	 * @param localUserId 在本网站的用户标识
+	 * @param digitalId 为本网站用户生成的数字帐号
 	 * @return 关注的用户列表，如果没有则返回空的列表。
 	 * map结构：
-	 * 		following:我关注的用户标识，Long类型
+	 * 		following: 我关注的用户标识，Long类型
 	 * </pre>
 	 */
-	List<Map<String, Object>> getFollowing(PageInfo pageInfo, Long localUserId);
+	List<Map<String, Object>> getFollowing(PageInfo pageInfo, Long digitalId);
 
 	/**
 	 * 获取关注我的用户列表
 	 * @param pageInfo 分页信息
-	 * @param localUserId 在本网站的用户标识
+	 * @param digitalId 为本网站用户生成的数字帐号
 	 * @return 关注我的用户列表，如果没有则返回空的列表。
 	 * <pre>
 	 * map结构：
 	 * 		follower:关注我的用户标识，Long类型
 	 * </pre>
 	 */
-	List<Map<String, Object>> getFollowers(PageInfo pageInfo, Long localUserId);
+	List<Map<String, Object>> getFollowers(PageInfo pageInfo, Long digitalId);
+
+	/**
+	 * 判断digitalId有没有关注followingConnectUserId
+	 * @param digitalId 为本网站用户生成的数字帐号
+	 * @param followingConnectUserId 为第三方或本网站用户生成的全局用户标识
+	 * @return <code>true</code>表示已关注；<code>false</code>表示没有关注
+	 */
+	boolean isWatched(Long digitalId, Long followingConnectUserId);
 
 }

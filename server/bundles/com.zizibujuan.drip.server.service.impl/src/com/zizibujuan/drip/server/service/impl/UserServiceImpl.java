@@ -55,6 +55,7 @@ public class UserServiceImpl implements UserService {
 			return null;
 		}else{
 			Long userId = Long.valueOf(userInfo.get("id").toString());
+			userInfo.put("connectUserId", userId);
 			userAttributesDao.updateLoginState(userId);
 			Map<String,Object> avatarInfo = userAvatarDao.get(userId);
 			userInfo.putAll(avatarInfo);
