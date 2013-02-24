@@ -551,6 +551,8 @@ margin-left: 25px;
 	font-size: 14px;
 	line-height: 24px;
 	font-weight: bold;
+	padding: 5px 0px;
+	border-bottom: 1px solid #ddd;
 }
 
 .members li .avatar {
