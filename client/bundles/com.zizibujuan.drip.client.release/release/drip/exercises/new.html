@@ -2,15 +2,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link type="text/css" rel="stylesheet" href="/dijit/themes/claro/claro.css" />
-<link type="text/css" rel="stylesheet" href="/dojo/resources/dojo.css" />
-<link type="text/css" rel="stylesheet" href="/drip/resources/main.css" />
-
-<link type="text/css" rel="stylesheet" href="/mathEditor/Editor.css" />
-<link type="text/css" rel="stylesheet" href="/drip/resources/UploaderFileList.css" />
-
-<link type="text/css" rel="stylesheet" href="/drip/resources/index.css" />
-<title>新建习题 · 孜孜不倦(高等数学篇)</title>
+<link type="text/css" rel="stylesheet" href="/drip/resources/app.css" />
+<title>新建数学习题 · 孜孜不倦</title>
 <script type="text/javascript" 
 	data-dojo-config="
 		async:true,
@@ -27,7 +20,7 @@ require(["dojo/ready",
          "dojo/store/JsonRest",
          "dijit/registry",
          "drip/exercises/ExerciseForm",
-         "drip/userSession",
+         "drip/user",
          "dojo/parser",
          "dijit/form/Button",
          "dojo/domReady!"],function(
@@ -37,9 +30,9 @@ require(["dojo/ready",
         		 JsonRest,
         		 registry,
         		 ExerciseForm,
-        		 userSession){
-	on(dom.byId("logout"),"click",userSession.logout);
-	userSession.getLoggedUserInfo().then(function(userInfo){
+        		 user){
+	on(dom.byId("logout"),"click",user.logout);
+	user.getLoggedUserInfo().then(function(userInfo){
 		// 在顶部用户信息区域显示
 		var topProfileImage = dom.byId("topProfileImage");
 		topProfileImage.src = userInfo.tinyUrl;
