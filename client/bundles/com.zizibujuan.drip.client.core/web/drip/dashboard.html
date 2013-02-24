@@ -41,11 +41,7 @@ require(["dojo/ready",
 		profileImg.alt = displayName;
 		profileImg.src = userInfo.largeImageUrl || "/drip/resources/images/profile_180_180.gif";
 		dom.byId("userName").innerHTML = displayName;
-		dom.byId("follow_count").innerHTML = userInfo.followCount;
-		dom.byId("fan_count").innerHTML = userInfo.fanCount;
-		// 在页面顶级tab中显示
-		dom.byId("my_answer_count").innerHTML = userInfo.answerCount;
-		dom.byId("my_exer_count").innerHTML = userInfo.exerciseCount;
+		
 		// 在顶部用户信息区域显示
 		var topProfileImage = dom.byId("topProfileImage");
 		topProfileImage.src = userInfo.smallImageUrl || "/drip/resources/images/profile_50_50.gif";
@@ -53,11 +49,18 @@ require(["dojo/ready",
 		dom.byId("topUserName").innerHTML = displayName;
 		dom.byId("top_user_link").href = "#";//TODO：跳转
 		
-		
 		// 在关注和粉丝的链接上加上登录者的用户标识
 		// 切记：出现在rest链接中的，只能是本地用户标识，而不是第三方网站或映射用户标识
 		dom.byId("following_link").href = "/following/" + userInfo.digitalId;
 		dom.byId("follower_link").href = "/followers/" + userInfo.digitalId;
+	});
+	
+	user.getLoggedUserStatistics().then(function(statistics){
+		dom.byId("follow_count").innerHTML = statistics.followCount;
+		dom.byId("fan_count").innerHTML = statistics.fanCount;
+		// 在页面顶级tab中显示
+		dom.byId("my_answer_count").innerHTML = statistics.answerCount;
+		dom.byId("my_exer_count").innerHTML = statistics.exerciseCount;
 	});
 	
 	on(dom.byId("logout"),"click",user.logout);

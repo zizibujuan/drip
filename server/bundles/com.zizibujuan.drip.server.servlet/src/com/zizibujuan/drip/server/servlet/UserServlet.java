@@ -242,8 +242,15 @@ public class UserServlet extends BaseServlet {
 		String pathInfo = req.getPathInfo();
 		Map<String,Object> userInfo = null;
 		if(pathInfo == null || pathInfo.equals("/")){
-			userInfo = UserSession.getUser(req);
+			String type = req.getParameter("type");
+			if(type.endsWith("statistics")){
+				Long localUserId = UserSession.getLocalUserId(req);
+				userInfo = userService.getLocalUserStatistics(localUserId);
+			}else{
+				userInfo = UserSession.getUser(req);
+			}
 			ResponseUtil.toJSON(req, resp, userInfo);
+			return;
 		}else if(pathInfo != null && !pathInfo.equals("/")){
 			String type = req.getParameter("type");
 			Long digitalId = Long.valueOf(pathInfo.split("/")[1]);

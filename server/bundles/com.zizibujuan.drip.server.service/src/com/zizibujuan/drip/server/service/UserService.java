@@ -47,12 +47,6 @@ public interface UserService {
 	 * 		largerImageUrl:
 	 * 		xLargeImageUrl:
 	 * 
-	 * 以下字段从本地用户信息中获取
-	 * 		fanCount：粉丝数
-	 * 		followCount: 关注人数
-	 * 		exerDraftCount： 习题草稿数
-	 * 		exerPublishCount：发布的习题数
-	 * 		answerCount： 习题总数 = 习题草稿数+发布的习题数
 	 * </pre>
 	 */
 	Map<String,Object> login(String email, String password);
@@ -78,12 +72,6 @@ public interface UserService {
 	 * 		largerImageUrl:
 	 * 		xLargeImageUrl:
 	 * 
-	 * 以下字段从本地用户信息中获取
-	 * 		fanCount：粉丝数
-	 * 		followCount: 关注人数
-	 * 		exerDraftCount： 习题草稿数
-	 * 		exerPublishCount：发布的习题数
-	 * 		answerCount： 习题总数 = 习题草稿数+发布的习题数
 	 * </pre>
 	 */
 	Map<String, Object> login(Long localUserId, Long connectUserId);
@@ -203,5 +191,20 @@ public interface UserService {
 	 * </pre>
 	 */
 	Map<String, Object> getSimpleInfo(Long digitalId);
+
+	/**
+	 * 获取本地用户的统计信息
+	 * @param localUserId 为本地用户生成的全局用户标识
+	 * @return 本地用户的统计信息
+	 * <pre>
+	 * map结构：
+	 * 	 	fanCount：粉丝数
+	 * 		followCount: 关注人数
+	 * 		exerDraftCount： 习题草稿数
+	 * 		exerPublishCount：发布的习题数
+	 * 		answerCount： 习题总数 = 习题草稿数+发布的习题数
+	 * </pre>
+	 */
+	Map<String, Object> getLocalUserStatistics(Long localUserId);
 
 }

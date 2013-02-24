@@ -29,6 +29,13 @@ define(["dojo/dom",
 		return userInfo;
 	};
 	
+	user.getLoggedUserStatistics = function(){
+		return  xhr("/users/",{handleAs:"json",query:{type:"statistics"}}).then(function(data){
+			console.log("statistics:",data);
+			return data;
+		});
+	};
+	
 	user.showProfile = function(){
 		// summary:
 		//		显示用户信息。

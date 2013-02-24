@@ -31,7 +31,6 @@ public class UserServiceImpl implements UserService {
 	private UserBindDao userBindDao;
 	private LocalUserStatisticsDao localUserStatisticsDao;
 
-	
 	// FIXME:学习如何加入salt，明白加入salt有哪些具体好处
 	@Override
 	public Long add(Map<String, Object> userInfo) {
@@ -59,10 +58,7 @@ public class UserServiceImpl implements UserService {
 			userAttributesDao.updateLoginState(userId);
 			Map<String,Object> avatarInfo = userAvatarDao.get(userId);
 			userInfo.putAll(avatarInfo);
-			
-			// 只获取统计信息，用户的其余信息实时来自第三方网站
-			Map<String,Object> StatisticsInfo = localUserStatisticsDao.getUserStatistics(userId);
-			userInfo.putAll(StatisticsInfo);
+
 			return userInfo;
 		}
 	}
@@ -79,10 +75,7 @@ public class UserServiceImpl implements UserService {
 		// 获取头像信息
 		Map<String,Object> avatarInfo = userAvatarDao.get(connectUserId);
 		userInfo.putAll(avatarInfo);
-		
-		// 只获取统计信息，用户的其余信息实时来自第三方网站
-		Map<String,Object> statistics = localUserStatisticsDao.getUserStatistics(localUserId);
-		userInfo.putAll(statistics);
+
 		return userInfo;
 	}
 	
@@ -151,6 +144,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Map<String, Object> getLoginInfo(Long userId) {
 		return userDao.getLoginInfo(userId);
+	}
+	
+	@Override
+	public Map<String, Object> getLocalUserStatistics(Long localUserId) {
+		return localUserStatisticsDao.getUserStatistics(localUserId);
 	}
 
 	@Override
@@ -241,5 +239,4 @@ public class UserServiceImpl implements UserService {
 			this.localUserStatisticsDao = null;
 		}
 	}
-	
 }
