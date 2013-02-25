@@ -17,19 +17,23 @@
 <script type="text/javascript" src="drip/renren.js"></script>
 <script type="text/javascript">
 require(["dojo/ready",
+         "dojo/_base/event",
 		 "dojo/on",
          "dojo/dom",
-         "dojo/parser",
+         "dojo/dom-class",
          "dojo/request/xhr",
+         "dojo/store/JsonRest",
          "dijit/registry",
          "drip/user",
          "drip/Activity",
          "dojo/domReady!"],function(
         		 ready,
+        		 event,
         		 on,
         		 dom,
-        		 parser,
+        		 domClass,
         		 xhr,
+        		 JsonRest,
         		 registry,
         		 user){
 	// 加载左侧栏目中的数据，因为左侧没有用dijit部件，所无需放在ready方法中
@@ -65,7 +69,54 @@ require(["dojo/ready",
 	
 	on(dom.byId("logout"),"click",user.logout);
 	
-	parser.parse();
+	var store = new JsonRest({
+		 target:"/activities/"
+	 });
+	var activities = new Activity({store: store,loadingMessage:"加载中...", noDataMessage:"没有活动，快去录入新题目，或到题库中解答习题"});
+	activities.placeAt("activitiesContainer");
+	
+	var friends = dom.byId("friends");
+	var myAnswer = dom.byId("myAnswer");
+	var myExercise = dom.byId("myExercise");
+	
+	// 两个动作，一个是刷新，一个是切换。
+	// 都使用一个store，然后传入不同的条件刷新
+	on(friends, "click", function(e){
+		event.stop(e);
+		if(!domClass.contains(friends,"selected")){
+			domClass.add(friends,"selected");
+			// TODO:如何刷新tab上的统计数据呢？
+			// 或者在这个界面上有一个增加统计值的操作，就触发一个时间，从后台刷新一下，或者在前台更新一下
+			// 而不在切换时刷新。
+			activities.setQuery();
+		}else{
+			// 刷新
+			activities.setQuery();
+		}
+		domClass.remove(myAnswer, "selected");
+		domClass.remove(myExercise, "selected");
+		
+		
+	});
+	
+	on(myAnswer, "click", function(e){
+		event.stop(e);
+		if(!domClass.contains(myAnswer,"selected")){
+			domClass.add(myAnswer,"selected");
+		}
+		domClass.remove(friends, "selected");
+		domClass.remove(myExercise, "selected");
+	});
+	
+	on(myExercise, "click", function(e){
+		event.stop(e);
+		if(!domClass.contains(myExercise,"selected")){
+			domClass.add(myExercise,"selected");
+		}
+		domClass.remove(friends, "selected");
+		domClass.remove(myAnswer, "selected");
+	});
+	
 	
 	ready(function(){
 		/*
@@ -152,19 +203,19 @@ function sendRenrenRequest(){
 							<div class="drip_tab_nav">
 								<ul class="drip_tab_nav_tabs">
 									<li>
-										<a href="/" class="selected drip_tab_nav_tab">好友动态</a>
+										<a href="#" id="friends" class="selected drip_tab_nav_tab">好友动态</a>
 									</li>
 									<li>
-										<a href="#" class="drip_tab_nav_tab">我答的习题 <span class="counter" id="my_answer_count">0</span></a>
+										<a href="#" id="myAnswer" class="drip_tab_nav_tab">我答的习题 <span class="counter" id="my_answer_count">0</span></a>
 									</li>
 									<li>
-										<a href="#" class="drip_tab_nav_tab">我录的习题 <span class="counter" id="my_exer_count">0</span></a>
+										<a href="#" id="myExercise" class="drip_tab_nav_tab">我录的习题 <span class="counter" id="my_exer_count">0</span></a>
 									</li>
 									<!-- 添加一个我的作业 -->
 								</ul>
 							</div>
-							<div class="drip_activity_list" style="padding-top:20px">
-								<div data-dojo-type="Activity" style="padding-top: 10px;padding-left: 10px;padding-right:10px">加载中...</div>
+							<div id="activitiesContainer" class="drip_activity_list" style="padding-top:20px">
+								
 							</div>
 						</div>
 						<div class="drip_main_right">

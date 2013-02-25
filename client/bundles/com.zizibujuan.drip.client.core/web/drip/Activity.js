@@ -13,9 +13,9 @@ define(["dojo/_base/declare",
         "dijit/_WidgetBase",
         "dijit/_TemplatedMixin",
         "dijit/form/Button",
-        "dojo/store/JsonRest",
         "drip/classCode",
         "drip/prettyDate",
+        "drip/_StoreMixin",
         "mathEditor/Editor",
         "dojo/text!./templates/ActivityNode.html",
         "dojo/text!./templates/ActivityList.html",
@@ -34,9 +34,9 @@ define(["dojo/_base/declare",
         		_WidgetBase,
         		_TemplatedMixin,
         		Button,
-        		JsonRest,
         		classCode,
         		prettyDate,
+        		_StoreMixin,
         		Editor,
         		nodeTemplate,
         		listTemplate,
@@ -359,24 +359,20 @@ define(["dojo/_base/declare",
 		
 	});
 	
-	var Activity = declare("Activity",[_WidgetBase, _TemplatedMixin],{
+	var Activity = declare("Activity",[_WidgetBase, _TemplatedMixin, _StoreMixin],{
 		templateString: listTemplate,
-		 
-		// FIXME:对于只有查询功能的代码，是不是直接使用xhr更好呢.
-		 store:new JsonRest({
-			 target:"/activities/"
-		 }),
 		 
 		 // 如果没有习题，则显示没有习题，
 		 // 可扩展提示用户录入习题。
 		 postCreate : function(){
 			 this.inherited(arguments);
-			 this.store.query(/*TODO:加入分页信息*/).then(lang.hitch(this, this._load));
+			 domStyle.set(this.domNode,{"padding-top":"10px","padding-left": "10px","padding-right":"10px"});
+			 this.refresh();
 		 },
 		 
 		 _load : function(items){
 			 if(items.length == 0){
-				 this.domNode.innerHTML = "没有活动，快去录入新题目，或到题库中解答习题";
+				 this.domNode.innerHTML = this.noDataMessage;
 			 }else{
 				 console.log("个人首页的活动列表：",items);
 				 array.forEach(items, lang.hitch(this,function(item, index){
@@ -389,6 +385,13 @@ define(["dojo/_base/declare",
 				 prettyDate.setInterval(this.domNode, 1000*60);
 				 // 使用mathjax进行呈现
 				 MathJax.Hub.Queue(["Typeset",MathJax.Hub, this.domNode]);
+			 }
+		 },
+		 
+		 refresh: function(){
+			 this.domNode.innerHTML = this.loadingMessage;
+			 if(this.store){
+				 this.store.query(/*TODO:加入分页信息*/).then(lang.hitch(this, this._load));
 			 }
 		 }
 		 
