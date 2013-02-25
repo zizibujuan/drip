@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="lib/UserAgentUtils-1.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/struts2-json-plugin-2.3.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xwork-core-2.3.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-codec-1.7.jar"/>

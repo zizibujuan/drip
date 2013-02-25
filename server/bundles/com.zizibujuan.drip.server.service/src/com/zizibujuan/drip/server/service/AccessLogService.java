@@ -17,8 +17,18 @@ public interface AccessLogService {
 	 * @param userId 访问者用户标识，如果用户已登录，是用户标识；如果用户没有登录，则从cookie中获取用户标识
 	 * @param urlFrom 用户访问的前一个链接
 	 * @param urlAccess 用户当前访问的链接
+	 * @param browser 浏览器
+	 * @param browserVersion 浏览器版本号
+	 * @param os 操作系统
 	 */
-	void log(String ip, boolean anonymous, Long userId, String urlFrom, String urlAccess);
+	void log(String ip, 
+			boolean anonymous, 
+			Long userId, 
+			String urlFrom, 
+			String urlAccess, 
+			String browser, 
+			String browserVersion, 
+			String os);
 	
 	//void ansyLog(String ip, Long userId, String urlFrom, String urlAccess);
 	

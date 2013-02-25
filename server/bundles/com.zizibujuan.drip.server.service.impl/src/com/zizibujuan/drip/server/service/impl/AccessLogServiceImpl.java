@@ -16,9 +16,15 @@ public class AccessLogServiceImpl implements AccessLogService {
 	private AccessLogDao accessLogDao;
 	
 	@Override
-	public void log(String ip, boolean anonymous, Long userId, String urlFrom,
-			String urlAccess) {
-		accessLogDao.log(ip, anonymous, userId, urlFrom, urlAccess);
+	public void log(String ip, 
+			boolean anonymous, 
+			Long userId, 
+			String urlFrom,
+			String urlAccess,
+			String browser, 
+			String browserVersion, 
+			String os) {
+		accessLogDao.log(ip, anonymous, userId, urlFrom, urlAccess,browser,browserVersion,os);
 	}
 
 	

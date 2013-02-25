@@ -7,7 +7,13 @@ package com.zizibujuan.drip.server.dao;
  */
 public interface AccessLogDao {
 
-	void log(String ip, boolean anonymous, Long userId, String urlFrom,
-			String urlAccess);
+	void log(String ip, 
+			boolean anonymous, 
+			Long userId, 
+			String urlFrom,
+			String urlAccess,
+			String browser, 
+			String browserVersion, 
+			String os);
 
 }

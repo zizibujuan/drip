@@ -12,6 +12,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import nl.bitwalker.useragentutils.UserAgent;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,8 +54,6 @@ public class AccessLogFilter implements Filter {
 		
 		// TODO：提取常量
 		if(pathInfo != null && isValidPath(pathInfo)){
-
-			
 			// 获取访问者ip
 			String ip = httpServletRequest.getRemoteAddr();
 			// 获取用户标识
@@ -92,7 +92,13 @@ public class AccessLogFilter implements Filter {
 			
 			// FIXME: 到底需不需要引入实体类呢？
 			// FIXME: 是存入数据库好呢，还是存入文本文件好呢？
-			accessLogService.log(ip, anonymous, userId, urlFrom, urlAccess);
+			String userAgentString = httpServletRequest.getHeader("User-Agent");
+			logger.info("user agent string:" + userAgentString);
+			UserAgent userAgent = UserAgent.parseUserAgentString(userAgentString);
+			String browser = userAgent.getBrowser().getName();
+			String browserVersion = userAgent.getBrowserVersion().getVersion();
+			String os = userAgent.getOperatingSystem().getName();
+			accessLogService.log(ip, anonymous, userId, urlFrom, urlAccess,browser,browserVersion,os);
 		}
 				
 				
