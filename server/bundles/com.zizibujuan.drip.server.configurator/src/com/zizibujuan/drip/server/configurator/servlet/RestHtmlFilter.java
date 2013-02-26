@@ -37,6 +37,7 @@ public class RestHtmlFilter implements Filter {
 		 actions = new HashMap<String, String>();
 		 actions.put("/following", "/drip/relation.html");
 		 actions.put("/followers", "/drip/relation.html");
+		 actions.put("/users", "/drip/profile.html");
 	}
 
 	/**
