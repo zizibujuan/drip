@@ -87,11 +87,15 @@ require(["dojo/parser",
 	tabFollowing.href = "/following/"+userId;
 	var memberList = new MemberList({url:url,emptyHtml:emptyHtml,style:"width:500px"},"memberList");
 	
-	// TODO： 取消/加关注，关注自己的粉丝等操作，都要调整关注的统计值
-	topic.subscribe("memberList/updateFollowingCount", function(deltaNum){
-		var count = parseInt(followingCount.innerHTML);
-		followingCount.innerHTML = count + deltaNum;
-	},true);
+	user.getLoggedUserInfo().then(function(userInfo){
+		if(userInfo.digitalId == userId){
+			topic.subscribe("memberList/updateFollowingCount", function(deltaNum){
+				var count = parseInt(followingCount.innerHTML);
+				followingCount.innerHTML = count + deltaNum;	
+			},true);
+		}
+		
+	});
 });
 </script>
 

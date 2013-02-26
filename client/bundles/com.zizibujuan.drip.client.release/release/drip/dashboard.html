@@ -17,19 +17,23 @@
 <script type="text/javascript" src="drip/renren.js"></script>
 <script type="text/javascript">
 require(["dojo/ready",
+         "dojo/_base/event",
 		 "dojo/on",
          "dojo/dom",
-         "dojo/parser",
+         "dojo/dom-class",
          "dojo/request/xhr",
+         "dojo/store/JsonRest",
          "dijit/registry",
          "drip/user",
          "drip/Activity",
          "dojo/domReady!"],function(
         		 ready,
+        		 event,
         		 on,
         		 dom,
-        		 parser,
+        		 domClass,
         		 xhr,
+        		 JsonRest,
         		 registry,
         		 user){
 	// 加载左侧栏目中的数据，因为左侧没有用dijit部件，所无需放在ready方法中
@@ -41,11 +45,7 @@ require(["dojo/ready",
 		profileImg.alt = displayName;
 		profileImg.src = userInfo.largeImageUrl || "/drip/resources/images/profile_180_180.gif";
 		dom.byId("userName").innerHTML = displayName;
-		dom.byId("follow_count").innerHTML = userInfo.followCount;
-		dom.byId("fan_count").innerHTML = userInfo.fanCount;
-		// 在页面顶级tab中显示
-		dom.byId("my_answer_count").innerHTML = userInfo.answerCount;
-		dom.byId("my_exer_count").innerHTML = userInfo.exerciseCount;
+		
 		// 在顶部用户信息区域显示
 		var topProfileImage = dom.byId("topProfileImage");
 		topProfileImage.src = userInfo.smallImageUrl || "/drip/resources/images/profile_50_50.gif";
@@ -53,16 +53,93 @@ require(["dojo/ready",
 		dom.byId("topUserName").innerHTML = displayName;
 		dom.byId("top_user_link").href = "#";//TODO：跳转
 		
-		
 		// 在关注和粉丝的链接上加上登录者的用户标识
 		// 切记：出现在rest链接中的，只能是本地用户标识，而不是第三方网站或映射用户标识
 		dom.byId("following_link").href = "/following/" + userInfo.digitalId;
 		dom.byId("follower_link").href = "/followers/" + userInfo.digitalId;
 	});
 	
+	user.getLoggedUserStatistics().then(function(statistics){
+		dom.byId("follow_count").innerHTML = statistics.followCount;
+		dom.byId("fan_count").innerHTML = statistics.fanCount;
+		// 在页面顶级tab中显示
+		dom.byId("my_answer_count").innerHTML = statistics.answerCount;
+		dom.byId("my_exer_count").innerHTML = statistics.exerciseCount;
+	});
+	
 	on(dom.byId("logout"),"click",user.logout);
 	
-	parser.parse();
+	var store = new JsonRest({
+		 target:"/activities/"
+	 });
+	
+	var followingNoDataMessage = "没有活动，快去录入新题目，或到题库中解答习题";
+	var myAnswerNoDataMessage = "还没有回答问题，快到题库中解答习题";
+	var myExerciseNoDataMessage = "您还没有录入过习题，快去录入新题目";
+	
+	var activities = new Activity({
+		store: store,
+		query: {type:"following"},
+		loadingMessage:"加载中...", 
+		noDataMessage:followingNoDataMessage
+	});
+	activities.placeAt("activitiesContainer");
+	
+	var following = dom.byId("following");
+	var myAnswer = dom.byId("myAnswer");
+	var myExercise = dom.byId("myExercise");
+	
+	// 两个动作，一个是刷新，一个是切换。
+	// 都使用一个store，然后传入不同的条件刷新
+	on(following, "click", function(e){
+		event.stop(e);
+		if(!domClass.contains(following,"selected")){
+			domClass.add(following,"selected");
+			// TODO:如何刷新tab上的统计数据呢？
+			// 或者在这个界面上有一个增加统计值的操作，就触发一个时间，从后台刷新一下，或者在前台更新一下
+			// 而不在切换时刷新。
+			activities.noDataMessage = followingNoDataMessage;
+			activities.setQuery({type:"following"});
+		}else{
+			// 刷新
+			activities.setQuery();
+		}
+		domClass.remove(myAnswer, "selected");
+		domClass.remove(myExercise, "selected");
+		
+		
+	});
+	
+	on(myAnswer, "click", function(e){
+		event.stop(e);
+		if(!domClass.contains(myAnswer,"selected")){
+			domClass.add(myAnswer,"selected");
+			
+			activities.noDataMessage = myAnswerNoDataMessage;
+			activities.setQuery({type:"myAnswer"});
+		}else{
+			// 刷新
+			activities.setQuery();
+		}
+		domClass.remove(following, "selected");
+		domClass.remove(myExercise, "selected");
+	});
+	
+	on(myExercise, "click", function(e){
+		event.stop(e);
+		if(!domClass.contains(myExercise,"selected")){
+			domClass.add(myExercise,"selected");
+			
+			activities.noDataMessage = myExerciseNoDataMessage;
+			activities.setQuery({type:"myExercise"});
+		}else{
+			// 刷新
+			activities.setQuery();
+		}
+		domClass.remove(following, "selected");
+		domClass.remove(myAnswer, "selected");
+	});
+	
 	
 	ready(function(){
 		/*
@@ -149,19 +226,19 @@ function sendRenrenRequest(){
 							<div class="drip_tab_nav">
 								<ul class="drip_tab_nav_tabs">
 									<li>
-										<a href="/" class="selected drip_tab_nav_tab">好友动态</a>
+										<a href="#" id="following" class="selected drip_tab_nav_tab">好友动态</a>
 									</li>
 									<li>
-										<a href="#" class="drip_tab_nav_tab">我答的习题 <span class="counter" id="my_answer_count">0</span></a>
+										<a href="#" id="myAnswer" class="drip_tab_nav_tab">我答的习题 <span class="counter" id="my_answer_count">0</span></a>
 									</li>
 									<li>
-										<a href="#" class="drip_tab_nav_tab">我录的习题 <span class="counter" id="my_exer_count">0</span></a>
+										<a href="#" id="myExercise" class="drip_tab_nav_tab">我录的习题 <span class="counter" id="my_exer_count">0</span></a>
 									</li>
 									<!-- 添加一个我的作业 -->
 								</ul>
 							</div>
-							<div class="drip_activity_list" style="padding-top:20px">
-								<div data-dojo-type="Activity" style="padding-top: 10px;padding-left: 10px;padding-right:10px">加载中...</div>
+							<div id="activitiesContainer" class="drip_activity_list" style="padding-top:20px">
+								
 							</div>
 						</div>
 						<div class="drip_main_right">
