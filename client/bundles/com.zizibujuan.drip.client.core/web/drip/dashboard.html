@@ -72,23 +72,34 @@ require(["dojo/ready",
 	var store = new JsonRest({
 		 target:"/activities/"
 	 });
-	var activities = new Activity({store: store,loadingMessage:"加载中...", noDataMessage:"没有活动，快去录入新题目，或到题库中解答习题"});
+	
+	var followingNoDataMessage = "没有活动，快去录入新题目，或到题库中解答习题";
+	var myAnswerNoDataMessage = "还没有回答问题，快到题库中解答习题";
+	var myExerciseNoDataMessage = "您还没有录入过习题，快去录入新题目";
+	
+	var activities = new Activity({
+		store: store,
+		query: {type:"following"},
+		loadingMessage:"加载中...", 
+		noDataMessage:followingNoDataMessage
+	});
 	activities.placeAt("activitiesContainer");
 	
-	var friends = dom.byId("friends");
+	var following = dom.byId("following");
 	var myAnswer = dom.byId("myAnswer");
 	var myExercise = dom.byId("myExercise");
 	
 	// 两个动作，一个是刷新，一个是切换。
 	// 都使用一个store，然后传入不同的条件刷新
-	on(friends, "click", function(e){
+	on(following, "click", function(e){
 		event.stop(e);
-		if(!domClass.contains(friends,"selected")){
-			domClass.add(friends,"selected");
+		if(!domClass.contains(following,"selected")){
+			domClass.add(following,"selected");
 			// TODO:如何刷新tab上的统计数据呢？
 			// 或者在这个界面上有一个增加统计值的操作，就触发一个时间，从后台刷新一下，或者在前台更新一下
 			// 而不在切换时刷新。
-			activities.setQuery();
+			activities.noDataMessage = followingNoDataMessage;
+			activities.setQuery({type:"following"});
 		}else{
 			// 刷新
 			activities.setQuery();
@@ -103,8 +114,14 @@ require(["dojo/ready",
 		event.stop(e);
 		if(!domClass.contains(myAnswer,"selected")){
 			domClass.add(myAnswer,"selected");
+			
+			activities.noDataMessage = myAnswerNoDataMessage;
+			activities.setQuery({type:"myAnswer"});
+		}else{
+			// 刷新
+			activities.setQuery();
 		}
-		domClass.remove(friends, "selected");
+		domClass.remove(following, "selected");
 		domClass.remove(myExercise, "selected");
 	});
 	
@@ -112,8 +129,14 @@ require(["dojo/ready",
 		event.stop(e);
 		if(!domClass.contains(myExercise,"selected")){
 			domClass.add(myExercise,"selected");
+			
+			activities.noDataMessage = myExerciseNoDataMessage;
+			activities.setQuery({type:"myExercise"});
+		}else{
+			// 刷新
+			activities.setQuery();
 		}
-		domClass.remove(friends, "selected");
+		domClass.remove(following, "selected");
 		domClass.remove(myAnswer, "selected");
 	});
 	
@@ -203,7 +226,7 @@ function sendRenrenRequest(){
 							<div class="drip_tab_nav">
 								<ul class="drip_tab_nav_tabs">
 									<li>
-										<a href="#" id="friends" class="selected drip_tab_nav_tab">好友动态</a>
+										<a href="#" id="following" class="selected drip_tab_nav_tab">好友动态</a>
 									</li>
 									<li>
 										<a href="#" id="myAnswer" class="drip_tab_nav_tab">我答的习题 <span class="counter" id="my_answer_count">0</span></a>

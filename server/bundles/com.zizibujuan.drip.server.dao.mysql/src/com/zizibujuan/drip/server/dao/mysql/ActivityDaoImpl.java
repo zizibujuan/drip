@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.zizibujuan.drip.server.dao.ActivityDao;
+import com.zizibujuan.drip.server.util.ActionType;
 import com.zizibujuan.drip.server.util.PageInfo;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 
@@ -28,9 +29,10 @@ public class ActivityDaoImpl extends AbstractDao implements ActivityDao {
 	// 1.找到与登录本网站用户绑定的所有帐号，包括本网站用户
 	// 2.找到所有绑定帐号关注的用户列表
 	// 3.找到这些关注的用户的活动列表
-	// 4.按照活动时间倒排
-	// 5.分页
-	private static final String SQL_LIST_ACTIVITY_INDEX = "SELECT " +
+	// 4.找到每一个关联用户对应的本地用户
+	// 5.按照活动时间倒排
+	// 6.分页
+	private static final String SQL_LIST_ACTIVITY_FOLLOWING = "SELECT " +
 			"DA.DBID," +
 			"DA.GLOBAL_USER_ID \"connectGlobalUserId\"," +
 			"UBD.LOCAL_USER_ID \"localGlobalUserId\"," +
@@ -43,18 +45,44 @@ public class ActivityDaoImpl extends AbstractDao implements ActivityDao {
 			"DRIP_ACTIVITY DA, " +
 			"DRIP_USER_BIND UBD " +
 			"WHERE " +
-			"DUR.WATCH_USER_ID=GLOBAL_USER_ID AND " +
+			"DUB.LOCAL_USER_ID=? AND " +
 			"DUB.BIND_USER_ID = DUR.USER_ID AND " +
-			"DA.GLOBAL_USER_ID = UBD.BIND_USER_ID AND " +
-			"DUB.LOCAL_USER_ID=? " +
+			"DUR.WATCH_USER_ID= DA.GLOBAL_USER_ID AND " +
+			"DA.GLOBAL_USER_ID = UBD.BIND_USER_ID " + // 找到每一个关联用户对应的本地用户
 			"ORDER BY DA.DBID DESC";
-	 
 	@Override
-	public List<Map<String, Object>> get(Long userId, PageInfo pageInfo) {
+	public List<Map<String, Object>> getFollowing(PageInfo pageInfo, Long localUserId) {
 		return DatabaseUtil.queryForList(getDataSource(),
-				SQL_LIST_ACTIVITY_INDEX, pageInfo, userId);
+				SQL_LIST_ACTIVITY_FOLLOWING, pageInfo, localUserId);
 	}
 
+	private static final String SQL_LIST_MY_ACTIVITY_FILTER_BY_TYPE = "SELECT " +
+			"DA.DBID," +
+			"DA.GLOBAL_USER_ID \"connectGlobalUserId\"," +
+			"DUB.LOCAL_USER_ID \"localGlobalUserId\"," +
+			"DA.CONTENT_ID \"contentId\"," +
+			"DA.ACTION_TYPE \"actionType\"," +
+			"DA.CRT_TM \"createTime\" " +
+			"FROM " +
+			"DRIP_USER_BIND DUB, " +
+			"DRIP_ACTIVITY DA " +
+			"WHERE " +
+			"DUB.LOCAL_USER_ID=? AND " +
+			"DUB.BIND_USER_ID = DA.GLOBAL_USER_ID AND " +
+			"DA.ACTION_TYPE = ? " +
+			"ORDER BY DA.DBID DESC";
+	@Override
+	public List<Map<String, Object>> getMyAnswers(PageInfo pageInfo, Long localUserId) {
+		return DatabaseUtil.queryForList(getDataSource(),
+				SQL_LIST_MY_ACTIVITY_FILTER_BY_TYPE, pageInfo, localUserId, ActionType.ANSWER_EXERCISE);
+	}
+
+	@Override
+	public List<Map<String, Object>> getMyExercises(PageInfo pageInfo, Long localUserId) {
+		return DatabaseUtil.queryForList(getDataSource(),
+				SQL_LIST_MY_ACTIVITY_FILTER_BY_TYPE, pageInfo, localUserId, ActionType.ANSWER_EXERCISE);
+	}
+	
 	private static final String SQL_INSERT_ACTIVITY = "INSERT INTO DRIP_ACTIVITY " +
 			"(GLOBAL_USER_ID," +
 			"ACTION_TYPE," +
@@ -71,6 +99,7 @@ public class ActivityDaoImpl extends AbstractDao implements ActivityDao {
 		Object contentId = activityInfo.get("contentId");
 		return DatabaseUtil.insert(con, SQL_INSERT_ACTIVITY, connectGlobalUserId,actionType,isInHome,contentId);
 	}
+	
 	@Override
 	public Long add(Connection con, 
 			Long connectGlobalUserId, 

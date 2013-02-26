@@ -13,15 +13,16 @@ import com.zizibujuan.drip.server.util.PageInfo;
 public interface ActivityService {
 
 	/**
-	 * 获取用户的所有活动列表，如果有多个第三方帐号与本地帐号关联，则获取所有帐号的活动
-	 * @param localUserId 本地用户标识，即drip用户
+	 * 获取关注用户的所有活动列表，如果有多个第三方帐号与本地帐号关联，则获取所有帐号的活动。
+	 * 
 	 * @param pageInfo 分页信息
+	 * @param localUserId 本网站为本地用户生成的全局用户标识
 	 * @return 活动列表，如果没有则返回空列表
 	 * <pre>
 	 *  map结构为：
 	 *  以下为活动列表中的信息
 	 *		localUserId：被关注的用户对应的本网站用户标识
-	 *		mapUserId：本网站用户与第三方网站用户的映射标识
+	 *		connectUserId：本网站用户与第三方网站用户的映射标识
 	 *		createTime：活动发生的时间
 	 *		contentId：活动输出的内容标识
 	 *		actionType：活动类型
@@ -75,6 +76,30 @@ public interface ActivityService {
 	 *				content: 所填答案内容
 	 * </pre>
 	 */
-	List<Map<String, Object>> get(Long localUserId, PageInfo pageInfo);
+	List<Map<String, Object>> getFollowing(PageInfo pageInfo, Long localUserId);
+
+	/**
+	 * 获取我回答的习题列表
+	 * @param pageInfo 分页信息
+	 * @param localUserId 为本网站用户生成的全局用户标识
+	 * @return 我回答的习题列表，按照时间顺序倒排
+	 * <pre>
+	 * map结构：
+	 * 		
+	 * </pre>
+	 */
+	List<Map<String, Object>> getMyAnswers(PageInfo pageInfo, Long localUserId);
+
+	/**
+	 * 获取我录入的习题列表
+	 * @param pageInfo 分页信息
+	 * @param localUserId 为本网站用户生成的全局用户标识
+	 * @return 我录入的习题列表，按照时间顺序倒排
+	 * <pre>
+	 * map结构：
+	 * 		
+	 * </pre>
+	 */
+	List<Map<String, Object>> getMyExercises(PageInfo pageInfo, Long localUserId);
 
 }

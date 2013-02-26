@@ -40,13 +40,25 @@ public class DashboardServlet extends BaseServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		traceRequest(req);
 		String pathInfo = req.getPathInfo();
 		if(pathInfo == null || pathInfo.equals("/")){
 			Long userId = UserSession.getLocalUserId(req);
-			PageInfo pageInfo = null;
-			List<Map<String,Object>> result = activityService.get(userId,pageInfo);
-			ResponseUtil.toJSON(req, resp, result);
-			return;
+			PageInfo pageInfo = getPageInfo(req);
+			String type = req.getParameter("type");
+			if(type.equals("following")){
+				List<Map<String,Object>> result = activityService.getFollowing(pageInfo, userId);
+				ResponseUtil.toJSON(req, resp, result);
+				return;
+			}else if(type.equals("myAnswer")){
+				List<Map<String,Object>> result = activityService.getMyAnswers(pageInfo, userId);
+				ResponseUtil.toJSON(req, resp, result);
+				return;
+			}else if(type.equals("myExercise")){
+				List<Map<String,Object>> result = activityService.getMyExercises(pageInfo, userId);
+				ResponseUtil.toJSON(req, resp, result);
+				return;
+			}
 		}
 		super.doGet(req, resp);
 	}

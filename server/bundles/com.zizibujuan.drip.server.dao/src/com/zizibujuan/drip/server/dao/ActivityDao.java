@@ -17,8 +17,10 @@ public interface ActivityDao {
 
 	/**
 	 * 获取userId所关注用户的活动列表的索引信息
-	 * @param localUserId 本地用户标识
+	 * 
 	 * @param pageInfo 分页信息
+	 * @param localUserId 本地用户标识
+	 * 
 	 * @return 活动列表的索引，并不包含活动内容详情。如果不存在，则返回空列表。
 	 * <pre>
 	 * map值：
@@ -30,7 +32,7 @@ public interface ActivityDao {
 	 * 		actionType：活动类型
 	 * </pre>
 	 */
-	List<Map<String, Object>> get(Long localUserId, PageInfo pageInfo);
+	List<Map<String, Object>> getFollowing(PageInfo pageInfo, Long localUserId);
 	
 	/**
 	 * 添加一个新的活动
@@ -62,4 +64,8 @@ public interface ActivityDao {
 			Long contentId, 
 			String actionType, 
 			boolean showInHome) throws SQLException;
+
+	List<Map<String, Object>> getMyAnswers(PageInfo pageInfo, Long localUserId);
+
+	List<Map<String, Object>> getMyExercises(PageInfo pageInfo, Long localUserId);
 }

@@ -391,7 +391,7 @@ define(["dojo/_base/declare",
 		 refresh: function(){
 			 this.domNode.innerHTML = this.loadingMessage;
 			 if(this.store){
-				 this.store.query(/*TODO:加入分页信息*/).then(lang.hitch(this, this._load));
+				 this.store.query(this.query/*TODO:加入分页信息*/).then(lang.hitch(this, this._load));
 			 }
 		 }
 		 

@@ -28,9 +28,9 @@ public class ActivityServiceImpl implements ActivityService {
 	private UserService userService;
 	
 	@Override
-	public List<Map<String, Object>> get(Long userId, PageInfo pageInfo) {
+	public List<Map<String, Object>> getFollowing(PageInfo pageInfo, Long localUserId) {
 		// 获取关注用户的活动列表
-		List<Map<String,Object>> list = activityDao.get(userId, pageInfo);
+		List<Map<String,Object>> list = activityDao.getFollowing(pageInfo,localUserId);
 		// TODO:然后循环着获取每个活动的详情,如果缓存中已存在，则从缓存中获取。
 		// 用户的详细信息也从缓存中获取
 		// 注意，新增的习题和答案，都要缓存起来。
@@ -60,6 +60,50 @@ public class ActivityServiceImpl implements ActivityService {
 				each.put("answer", answer);
 			}
 			
+		}
+		return list;
+	}
+	
+	@Override
+	public List<Map<String, Object>> getMyAnswers(PageInfo pageInfo, Long localUserId) {
+		List<Map<String, Object>> list = activityDao.getMyAnswers(pageInfo, localUserId);
+		for(Map<String,Object> each : list){
+			// 这些用户信息，都是被关注人的信息
+			Long localGlobalUserId = Long.valueOf(each.get("localGlobalUserId").toString());
+			
+			// 1.获取关联的用户标识connectGlobalUserId
+			// 2.获取第三方用户标识关联的本网站用户标识
+			// 3.获取本网站用户引用用户信息的用户标识
+			Map<String,Object> userInfo = userService.getPublicInfo(localGlobalUserId);
+			each.put("userInfo", userInfo);
+			
+			Long contentId = Long.valueOf(each.get("contentId").toString());
+		
+			Map<String,Object> answer = getAnswer(contentId);
+			Long exerciseId = Long.valueOf(answer.get("exerciseId").toString());
+			Map<String,Object> exercise = getExercise(exerciseId);
+			each.put("exercise", exercise);
+			each.put("answer", answer);
+		}
+		return list;
+	}
+
+	@Override
+	public List<Map<String, Object>> getMyExercises(PageInfo pageInfo, Long localUserId) {
+		List<Map<String, Object>> list = activityDao.getMyExercises(pageInfo, localUserId);
+		for(Map<String,Object> each : list){
+			// 这些用户信息，都是被关注人的信息
+			Long localGlobalUserId = Long.valueOf(each.get("localGlobalUserId").toString());
+			
+			// 1.获取关联的用户标识connectGlobalUserId
+			// 2.获取第三方用户标识关联的本网站用户标识
+			// 3.获取本网站用户引用用户信息的用户标识
+			Map<String,Object> userInfo = userService.getPublicInfo(localGlobalUserId);
+			each.put("userInfo", userInfo);
+			
+			Long contentId = Long.valueOf(each.get("contentId").toString());
+			Map<String,Object> exercise = getExercise(contentId);
+			each.put("exercise", exercise);
 		}
 		return list;
 	}
@@ -123,4 +167,6 @@ public class ActivityServiceImpl implements ActivityService {
 			this.userService = null;
 		}
 	}
+
+	
 }

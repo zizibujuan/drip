@@ -34,7 +34,7 @@ public class ActivityServiceTests extends AbstractUserTests{
 			ExerciseService exerciseService = ServiceHolder.getDefault().getExerciseService();
 			
 			importUser();
-			List<Map<String,Object>> activities = activityService.get(localGlobalUserId, null);
+			List<Map<String,Object>> activities = activityService.getFollowing(null, localGlobalUserId);
 			Assert.assertTrue(activities.isEmpty());
 			
 			/**
@@ -62,11 +62,14 @@ public class ActivityServiceTests extends AbstractUserTests{
 			options.add(opContent2);
 			exerciseInfo.put("options", options);
 			exerciseId = exerciseService.add(exerciseInfo);
-			activities = activityService.get(localGlobalUserId, null);
+			
+			activities = activityService.getFollowing(null, localGlobalUserId);
 			Assert.assertEquals(1, activities.size());
+			
 			Map<String,Object> firstActivity = activities.get(0);
 			Assert.assertNotNull(firstActivity.get("createTime"));
-			// FIXME：这两个用户信息与userInfo中的用户信息重复吗？
+			// 问：这两个用户信息与userInfo中的用户信息重复吗？
+			// 答：貌似重复了。因为这两个信息都是登录用户的信息，而不是每个发起动作的人的信息。
 			Assert.assertEquals(localGlobalUserId, Long.valueOf(firstActivity.get("localGlobalUserId").toString()));
 			Assert.assertEquals(connectGlobalUserId, Long.valueOf(firstActivity.get("connectGlobalUserId").toString()));
 			Assert.assertEquals(ActionType.SAVE_EXERCISE, firstActivity.get("actionType").toString());
