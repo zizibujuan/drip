@@ -2,3 +2,246 @@
 * 放置所有页面都通用的样式
 */
 
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, 
+address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, 
+tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, 
+table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, 
+embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, 
+summary, time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+html, body{
+	height: 100%;
+	min-width: 960px;
+}
+
+body{
+	color: #333;
+	background-color:white;
+}
+
+body, button, input, select, textarea{
+	font-family: tahoma, arial, 宋体;
+	font-size: 12px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: normal;
+	line-height: 1.5;
+}
+
+a {
+	color: #00a300;
+	text-decoration: none;
+}
+
+/************************上面是dom元素的样式***********************/
+
+.left{
+	float: left;
+}
+
+.right{
+	float: right;
+}
+
+
+/*解决将div设置float样式后，父容器的高度收缩的问题。应用在父容器上。*/
+.clearfix:after{
+	display: block;
+	height: 0px;
+	visibility: hidden;
+	clear: both;
+	content: ".";
+}
+
+.container{
+	margin: 0 auto;
+	width: 920px;
+}
+
+/*父容器*/
+#wrapper{
+	min-height: 100%;
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0;
+	margin-bottom: -268px;
+}
+
+
+/*页面顶部的样式*/
+.drip_header{
+	background-color:white;
+	border-bottom: 1px solid #e5e5e5;
+}
+
+/*垂直分割栏*/
+.divider-vertical {
+	float: left;
+	width: 1px;
+	height: 40px;
+	margin: 0 10px;
+	background-color: #E5E5E5;
+	border-right: 1px solid white;
+}
+
+/***用户登录时，页面顶部的样式----开始****/
+.drip_header_logged_in{
+	background-color: #F3F3F3;
+	background-image: -moz-linear-gradient(#F9F9F9, #F3F3F3);
+	background-image: -webkit-linear-gradient(#F9F9F9, #F3F3F3);
+	background-image: linear-gradient(#F9F9F9, #F3F3F3);
+	background-repeat: repeat-x;
+	z-index: 1000;
+}
+
+.drip_header_logged_in .drip_top_nav{
+	font-size:14px;
+	margin-top: 7px;
+}
+
+.drip_header_logged_in .logout{
+	margin: 10px 5px 10px;
+	padding: 0px 2px 0px 2px;
+}
+
+.drip_header_logged_in .drip_header_logo{
+	/*font-size: 24px;
+	font-weight:bold;
+	color: #00a300;
+	letter-spacing: 4px;
+	float:left;
+	padding-top: 8px;
+	*/
+	position:relative;
+	float: left;
+	padding-bottom: 6px;
+	padding-top: 8px;
+}
+/***用户登录时，页面顶部的样式----结束****/
+
+
+
+
+/*头部导航区------开始*/
+.drip_top_nav{
+	float: left;
+	list-style-type: none;
+	list-style-image: none;
+}
+
+.drip_top_nav .current{
+	color: #00a300;
+	font-size: 16px;
+}
+
+.drip_top_nav li{
+	float: left;
+}
+
+.drip_top_nav a{
+	color: #333333;
+	padding: 5px;
+	margin-left: 15px;
+	display: block;
+}
+/*头部导航区------结束*/
+
+/*顶部用户操作区域-----开始*/
+.drip_user_links {
+	float: right;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.drip_user_links li {
+	float: left;
+	margin-left: 10px;
+}
+
+.drip_user_links a {
+	display: block;
+	padding: 12px 5px 10px;
+	color: #333;
+	line-height: 16px;
+}
+
+.drip_user_links .drip_name img {
+	float: left;
+	margin: -2px 5px 0 0;
+	border-radius: 3px;
+}
+
+.drip_user_links .drip_name span {
+	font-weight: bold;
+	white-space: nowrap;
+}
+
+.drip_user_links .drip_new_exercise{
+	font-weight: bold;
+}
+/*顶部用户操作区域-----结束*/
+
+/******tab样式------开始********/
+.drip_tab_nav {
+	margin: 10px 0;
+	border-bottom: 1px solid #ddd;
+	height: 35px;
+}
+
+.drip_tab_nav .counter {
+	position: relative;
+	top: -1px;
+	margin: 0 0 0 5px;
+	padding: 1px 5px 2px 5px;
+	font-size: 10px;
+	font-weight: bold;
+	color: #666;
+	background: #E5E5E5;
+	border-radius: 10px;
+}
+
+.drip_tab_nav_tabs{
+	
+}
+
+.drip_tab_nav_tab {
+	display: inline-block;
+	margin-bottom: -1px;
+	padding: 8px 12px;
+	border: 1px solid transparent;
+	border-bottom: 0;
+	font-size: 14px;
+	color: #666;
+	text-decoration: none;
+}
+
+.drip_tab_nav_tab.selected {
+	border-color: #DDD;
+	border-radius: 3px 3px 0 0;
+	background-color: white;
+	color: #333;
+	font-weight: bold;
+}
+
+.drip_tab_nav .drip_tab_nav_tabs{
+	display: inline-block;
+}
+
+.drip_tab_nav .drip_tab_nav_tabs > li{
+	display: inline-block;
+	line-height: 1.4
+}
+
+.drip_tab_nav_right {
+	position: relative;
+	display: block;
+	float: right;
+}
+
+/******tab样式------结束********/

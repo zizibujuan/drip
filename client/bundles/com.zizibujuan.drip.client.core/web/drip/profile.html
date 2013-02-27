@@ -74,36 +74,46 @@ require([ "dojo/dom",
 		
 		<div  class="container" style="padding-top: 60px;">
 			<div>
-				<div>
-					<div>
+				<div class="profile_side left">
+					<div class="drip_avatar">
 						<span>
-							<a><img /></a>
+							<a><img src="/drip/resources/images/profile_180_180.gif" height="200px" width="200px"/></a>
 						</span>
 						<h1><span>显示名</span></h1>
-						<div>
-							用户的一些基本信息和自我介绍等，所在地，性别。网址等。
+						<div class="drip_user_details">
+							<div>
+								<span class="male">男</span> <span>北京 海淀</span>
+							</div>
+							<div>(在读)当前所在学校/单位</div>
+							<div><span class="drip_join_date">2012年10月10日</span><span class="drip_join_label">加入</span></div>
 						</div>
 					</div>
-					<ul>
+					<ul class="drip_user_stats">
 						<li><a><strong>0</strong><span>粉丝</span></a></li>
 						<li><a><strong>0</strong><span>关注</span></a></li>
 						<li><a><strong>0</strong><span>已答习题</span></a></li>
 						<li><a><strong>0</strong><span>已录习题</span></a></li>
 					</ul>
 				</div>
-				<div>
+				<div class="activity_side right">
 					<div class="drip_tab_nav">
 						<ul class="drip_tab_nav_tabs">
 							<!-- 
 							<li>
-								<a href="#" id="tab_following" class="drip_tab_nav_tab">贡献</a>
+								<a href="#"  class="drip_tab_nav_tab">贡献</a>
 							</li>
 							 -->
 							<li>
-								<a href="#" id="tab_following" class="drip_tab_nav_tab selected">我的活动</a>
+								<a href="#"  class="drip_tab_nav_tab selected">我的活动</a>
+							</li>
+							<li>
+								<a href="#"  class="drip_tab_nav_tab">我答的习题</a>
+							</li>
+							<li>
+								<a href="#"  class="drip_tab_nav_tab">我录的习题</a>
 							</li>
 						</ul>
-						<div class="tabnav-right">
+						<div class="drip_tab_nav_right">
 							<a href="#">编辑个人资料</a>
 						</div>
 					</div>
