@@ -32,6 +32,7 @@
       <plugin id="com.google.gson"/>
       <plugin id="com.zizibujuan.dbaccess.mysql"/>
       <plugin id="com.zizibujuan.drip.client.release"/>
+      <plugin id="com.zizibujuan.drip.doc"/>
       <plugin id="com.zizibujuan.drip.server.configurator"/>
       <plugin id="com.zizibujuan.drip.server.dao"/>
       <plugin id="com.zizibujuan.drip.server.dao.mysql"/>
@@ -81,6 +82,7 @@
       <plugin id="com.google.gson" autoStart="true" startLevel="0" />
       <plugin id="com.zizibujuan.dbaccess.mysql" autoStart="true" startLevel="0" />
       <plugin id="com.zizibujuan.drip.client.release" autoStart="true" startLevel="0" />
+      <plugin id="com.zizibujuan.drip.doc" autoStart="false" startLevel="0" />
       <plugin id="com.zizibujuan.drip.server.configurator" autoStart="true" startLevel="0" />
       <plugin id="com.zizibujuan.drip.server.dao" autoStart="true" startLevel="0" />
       <plugin id="com.zizibujuan.drip.server.dao.mysql" autoStart="true" startLevel="0" />
