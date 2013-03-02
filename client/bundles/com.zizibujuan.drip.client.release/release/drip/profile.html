@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title> 孜孜不倦 · 一起交流学习心得，共同优化教育资源。</title>
+<!-- <link type="text/css" rel="stylesheet" href="/drip/resources/app.css" /> -->
+<!-- TODO：使用import合并样式 -->
+<link type="text/css" rel="stylesheet" href="/drip/resources/common.css" />
+<link type="text/css" rel="stylesheet" href="/drip/resources/profile.css" />
+
+<script type="text/javascript" 
+	data-dojo-config="
+		async:true,
+		parseOnLoad:false,
+		isDebug:true" 
+	src="/dojo/dojo.js"></script>
+<script type="text/javascript">
+
+var splitPathName = window.location.pathname.split("/");
+var action = splitPathName[1];
+var userId = splitPathName[2];
+
+require([ "dojo/dom",
+          "dojo/on",
+          "drip/user",
+          "dojo/domReady!"], function(
+        		  dom,
+        		  on,
+        		  user){
+	
+	on(dom.byId("logout"),"click",user.logout);
+	// 登录用户信息
+	user.getLoggedUserInfo().then(function(userInfo){
+		console.log("登录用户信息:", userInfo);
+		// 在右侧用户信息区域显示
+		var displayName = userInfo.nickName;
+		// 在顶部用户信息区域显示
+		var topProfileImage = dom.byId("topProfileImage");
+		topProfileImage.src = userInfo.smallImageUrl || "/drip/resources/images/profile_50_50.gif";
+		topProfileImage.alt = displayName;
+		dom.byId("topUserName").innerHTML = displayName;
+		dom.byId("top_user_link").href = "/users/" + userInfo.digitalId;
+	});
+	
+});
+
+</script>
+
+</head>
+<body class="claro">
+	<div id="wrapper" class="drip_body">
+		<div class="drip_header drip_header_logged_in" style="position: fixed; width: 100%">
+			<div class="container clearfix">
+				<a href="/" class="drip_header_logo" style="height:25px;">
+					<img alt="孜孜不倦" style="height:25px;" src="/drip/resources/images/home_logo.png">
+				</a>
+				<div class="divider-vertical"></div>
+				<ul class="drip_top_nav">
+					<li><a href="/">首页</a></li>
+					<li><a href="/exercises">题库</a></li>
+				</ul>
+				<ul class="drip_user_links">
+					<li>
+					<a href="#" id="top_user_link" class="drip_name">
+						<img width="20px" height="20px" id="topProfileImage">
+						<span id="topUserName"></span>
+					</a>
+					</li>
+					<li><a href="/exercises/new" title="录入新习题" class="drip_new_exercise">+习题</a></li>
+					<li><input type="button" title="退出" id="logout" value="退出" class="logout"></input></li>
+				</ul>
+			</div>
+		</div>
+		
+		<div  class="container" style="padding-top: 60px;">
+			<div>
+				<div class="profile_side left">
+					<div class="drip_avatar">
+						<span>
+							<a><img src="/drip/resources/images/profile_180_180.gif" height="200px" width="200px"/></a>
+						</span>
+						<h1><span>显示名</span></h1>
+						<div class="drip_user_details">
+							<div>
+								<span class="male">男</span> <span>北京 海淀</span>
+							</div>
+							<div>(在读)当前所在学校/单位</div>
+							<div><span class="drip_join_date">2012年10月10日</span><span class="drip_join_label">加入</span></div>
+						</div>
+					</div>
+					<ul class="drip_user_stats">
+						<li><a><strong>0</strong><span>粉丝</span></a></li>
+						<li><a><strong>0</strong><span>关注</span></a></li>
+						<li><a><strong>0</strong><span>已答习题</span></a></li>
+						<li><a><strong>0</strong><span>已录习题</span></a></li>
+					</ul>
+				</div>
+				<div class="activity_side right">
+					<div class="drip_tab_nav">
+						<ul class="drip_tab_nav_tabs">
+							<!-- 
+							<li>
+								<a href="#"  class="drip_tab_nav_tab">贡献</a>
+							</li>
+							 -->
+							<li>
+								<a href="#"  class="drip_tab_nav_tab selected">我的活动</a>
+							</li>
+							<li>
+								<a href="#"  class="drip_tab_nav_tab">我答的习题</a>
+							</li>
+							<li>
+								<a href="#"  class="drip_tab_nav_tab">我录的习题</a>
+							</li>
+						</ul>
+						<div class="drip_tab_nav_right">
+							<a href="#">编辑个人资料</a>
+						</div>
+					</div>
+					<div>
+						活动内容
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+</body>
+</html>
