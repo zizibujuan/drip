@@ -39,7 +39,7 @@ require(["dojo/parser",
 	
 	on(dom.byId("logout"),"click",user.logout);
 	
-	// 登录用户信息
+	// 登录用户信息,几乎每个登录页面都有这段代码
 	user.getLoggedUserInfo().then(function(userInfo){
 		console.log("登录用户信息:", userInfo);
 		// 在右侧用户信息区域显示
@@ -49,7 +49,7 @@ require(["dojo/parser",
 		topProfileImage.src = userInfo.smallImageUrl || "/drip/resources/images/profile_50_50.gif";
 		topProfileImage.alt = displayName;
 		dom.byId("topUserName").innerHTML = displayName;
-		dom.byId("top_user_link").href = "#";//TODO：跳转
+		dom.byId("top_user_link").href = "/users/" + userInfo.digitalId;
 	});
 	var followingCount = dom.byId("following_count");
 	user.getSimpleUserInfo(userId).then(function(userInfo){

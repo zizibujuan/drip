@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <link type="text/css" rel="stylesheet" href="/drip/resources/app.css" />
 
-<title>我的首页 · 孜孜不倦</title>
+<title>我的首页 孜孜不倦 · 一起交流学习心得，共同优化教育资源。</title>
 <script type="text/javascript" 
 	data-dojo-config="
 		async:true,
@@ -51,7 +51,7 @@ require(["dojo/ready",
 		topProfileImage.src = userInfo.smallImageUrl || "/drip/resources/images/profile_50_50.gif";
 		topProfileImage.alt = displayName;
 		dom.byId("topUserName").innerHTML = displayName;
-		dom.byId("top_user_link").href = "#";//TODO：跳转
+		dom.byId("largeImageLink").href = dom.byId("top_user_link").href = "/users/" + userInfo.digitalId;
 		
 		// 在关注和粉丝的链接上加上登录者的用户标识
 		// 切记：出现在rest链接中的，只能是本地用户标识，而不是第三方网站或映射用户标识
@@ -246,7 +246,7 @@ function sendRenrenRequest(){
 								<div class="profile" style="margin-top: 10px;">
 							 		<div class="clearfix">
 							 			<div style="float:left">
-							 				<a href="#">
+							 				<a id="largeImageLink" href="#">
 							 					<img id="profileImage" width="80px" height="80px">
 							 				</a>
 							 			</div>
