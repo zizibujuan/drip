@@ -11,3 +11,12 @@
 下标 | _
 平方根 | sqrt
 根号 | root
+N次方 | 
+() | (
+{} | {
+[] | [
+|| | |
+sin | sin
+con | cos
+tan | tan
+cot | cot
