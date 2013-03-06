@@ -1,0 +1,2 @@
+//>>built
+define("dojo/cldr/nls/pt-pt/japanese",{"dateFormat-short":"d/M/y G","dateFormat-medium":"dd/MM/yyyy G","dateFormatItem-yQQQ":"QQQQ 'de' y G","dateFormatItem-yQQQQ":"QQQQ 'de' y G","dateFormat-full":"EEEE, d 'de' MMMM 'de' y G"});

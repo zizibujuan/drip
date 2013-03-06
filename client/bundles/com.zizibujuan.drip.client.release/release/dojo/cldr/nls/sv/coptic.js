@@ -1,0 +1,3 @@
+//>>built
+define("dojo/cldr/nls/sv/coptic",{"months-format-abbr":"tout,b\u00e2b\u00e2,h\u00e2tour,kiahk,toubah,amsh\u00eer,barmah\u00e2t,barmoudah,bashans,ba\u2019ounah,ab\u00eeb,misra,al-nasi".split(","),"months-format-wide":"tout,b\u00e2b\u00e2,h\u00e2tour,kiahk,toubah,amsh\u00eer,barmah\u00e2t,barmoudah,bashans,ba\u2019ounah,ab\u00eeb,misra,al-nasi".split(","),"months-standAlone-abbr":"tout,b\u00e2b\u00e2,h\u00e2tour,kiahk,toubah,amsh\u00eer,barmah\u00e2t,barmoudah,bashans,ba\u2019ounah,ab\u00eeb,misra,al-nasi".split(","),
+"months-standAlone-wide":"tout,b\u00e2b\u00e2,h\u00e2tour,kiahk,toubah,amsh\u00eer,barmah\u00e2t,barmoudah,bashans,ba\u2019ounah,ab\u00eeb,misra,al-nasi".split(",")});
