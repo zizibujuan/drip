@@ -1,2 +1,3 @@
 //>>built
-define("mathEditor/string",[],function(){var a={};a.splitData=function(c){for(var i=c.length,e=[],b=0,f=!1,d="",a=0,h=0;h<i;h++){var g=c.charAt(h);"&"==g?(a=0,f=!0,d=g):f&&";"==g?(0==a?(e[b]=d,b++,e[b]=g):(d+=g,e[b]=d),b++,f=!1,d=""):f?(d+=g,a++):(e[b]=c.charAt(h),b++)}return e};a.insertAtOffset=function(c,a,e,b){var f=c.length;if(0>a||f<a)return c;b=c.substring(0,a-(b||0));c=c.substring(a);return b+e+c};return a});
+define("mathEditor/string",[],function(){var b={};b.splitData=function(c){for(var i=c.length,d=[],a=0,h=!1,e="",b=0,f=0;f<i;f++){var g=c.charAt(f);"="==g&&"="==c.charAt(f+1)?(d[a]="==",a++,f++):"!"==g&&"="==c.charAt(f+1)?(d[a]="!=",a++,f++):"&"==g?(b=0,h=!0,e=g):h&&";"==g?(0==b?(d[a]=e,a++,d[a]=g):(e+=g,d[a]=e),a++,h=!1,e=""):h?(e+=g,b++):(d[a]=c.charAt(f),a++)}return d};b.insertAtOffset=function(c,b,d,a){var h=c.length;if(0>b||h<b)return c;a=c.substring(0,b-(a||0));c=c.substring(b);return a+d+c};
+return b});
