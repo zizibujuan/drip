@@ -198,6 +198,12 @@ margin-bottom: -268px;
 	font-size: 12px;
 }
 
+.drip_note_invite_label{
+	color:#999;
+	margin-top: 7px;
+	font-size: 14px;
+}
+
 .drip_heading{
 	font-weight: normal;
 	font-size: 45px;
