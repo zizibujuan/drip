@@ -43,12 +43,6 @@ There are three areas of styling for the Menu:
 .claro .dijitMenu {
 	background-color:@menu-background-color;
 	border: 1px solid @popup-border-color;
-
-	/* so adjoining borders of MenuBar/ComboBox and Menu overlap, avoiding double border */
-	margin: -1px 0;
-}
-.dj_ie6 .claro .dijitMenu {
-	margin: 0;	/* above -1px makes top/bottom borders disappear on IE6 */
 }
 
 .claro .dijitMenuItem {
@@ -124,6 +118,7 @@ There are three areas of styling for the Menu:
 	background-image: url(@image-arrow-sprite);
 	background-position: -14px 0;
 	margin-right:3px;
+	margin-bottom: 4px;
 }
 .claro .dijitMenuItemDisabled .dijitMenuItemIconCell {
 	opacity:1;
@@ -138,21 +133,26 @@ There are three areas of styling for the Menu:
 	margin-bottom:1px;
 }
 /* the checked menu item */
-.claro .dijitCheckedMenuItemIconChar {
-	display: none;
-}
-.claro .dijitCheckedMenuItemIcon {
+.claro .dijitCheckedMenuItem .dijitMenuItemIcon,
+.claro .dijitRadioMenuItem .dijitMenuItemIcon {
 	background-image: url(@image-form-checkbox-and-radios);
 	background-repeat:no-repeat;
-	background-position: -15px 50%;
+	background-position: -15px 50%;	/* unchecked checkbox */
 	width:15px;
 	height:16px;
 }
-.dj_ie6 .claro .dijitCheckedMenuItemIcon {
+.dj_ie6 .claro .dijitCheckedMenuItem .dijitMenuItemIcon,
+.dj_ie6 .claro .dijitRadioMenuItem .dijitMenuItemIcon {
 	background-image: url(@image-form-checkbox-and-radios-ie6);
 }
 .claro .dijitCheckedMenuItemChecked .dijitCheckedMenuItemIcon {
-	background-position: 0 50%;
+	background-position: 0 50%;	/* checked checkbox */
+}
+.claro .dijitRadioMenuItem .dijitMenuItemIcon {
+  background-position: -105px 50%;	/* unfilled circle */
+}
+.claro .dijitRadioMenuItemChecked .dijitMenuItemIcon {
+  background-position: -90px 50%;	/* filled circle */
 }
 
 /*ComboBox Menu*/

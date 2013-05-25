@@ -141,7 +141,7 @@ var profile = {
 			         'mathEditor/mathContentAssist',
 			         'mathEditor/Model',
 			         'mathEditor/string',
-			         'mathEditor/View',
+			         'mathEditor/MathJaxView',
 			         'mathEditor/xmlUtil',
 			         'mathEditor/layer/Cursor']
 		}

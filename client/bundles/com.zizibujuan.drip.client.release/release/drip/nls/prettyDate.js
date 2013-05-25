@@ -1,2 +1,3 @@
 //>>built
 define("drip/nls/prettyDate",{root:{now:"\u521a\u521a",minute:"1\u5206\u949f\u524d",minutes:"${num}\u5206\u949f\u524d",hour:"1\u5c0f\u65f6\u524d",hours:"${num}\u5c0f\u65f6\u524d",yesterday:"\u6628\u5929",days:"${num}\u5929\u524d",weeks:"${num}\u661f\u671f\u524d",month:"1\u4e2a\u6708\u524d",months:"${num}\u4e2a\u6708\u524d",year:"1\u5e74\u524d",years:"${num}\u5e74\u524d"},zh:!0});
+//@ sourceMappingURL=prettyDate.js.map

@@ -1,2 +1,3 @@
 //>>built
 define("drip/_StoreMixin",["dojo/_base/declare"],function(a){return a("drip._StoreMixin",null,{store:null,query:null,queryOptions:null,noDataMessage:"",loadingMessage:"",constructor:function(){this.query={};this.queryOptions={}},setStore:function(b,c,a){this.store=b;this.setQuery(c,a)},setQuery:function(b,a){this.query=void 0!==b?b:this.query;this.queryOptions=a||this.queryOptions;this.refresh()}})});
+//@ sourceMappingURL=_StoreMixin.js.map

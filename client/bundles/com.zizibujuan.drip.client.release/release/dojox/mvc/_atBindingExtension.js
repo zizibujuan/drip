@@ -1,3 +1,3 @@
 //>>built
-define("dojox/mvc/_atBindingExtension",["dojo/aspect","dojo/_base/lang","dijit/_WidgetBase","./_atBindingMixin","dijit/registry"],function(a,d,b,e){d.extend(b,e.prototype);a.before(b.prototype,"postscript",function(b,a){this._dbpostscript(b,a)});a.before(b.prototype,"startup",function(){this._startAtWatchHandles()});a.before(b.prototype,"destroy",function(){this._stopAtWatchHandles()});a.around(b.prototype,"set",function(b){return function(a,c){return a==e.prototype.dataBindAttr?this._setBind(c):
-"dojox.mvc.at"==(c||{}).atsignature?this._setAtWatchHandle(a,c):b.apply(this,d._toArray(arguments))}})});
+define("dojox/mvc/_atBindingExtension",["dojo/_base/config","dojo/has","dijit/_WidgetBase","./atBindingExtension"],function(b,a,c,d){a.add("mvc-extension-per-widget",(b.mvc||{}).extensionPerWidget);a("mvc-extension-per-widget")||d(c.prototype)});
+//@ sourceMappingURL=_atBindingExtension.js.map

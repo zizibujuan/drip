@@ -1,2 +1,3 @@
 //>>built
 define("drip/classCode",{ExerciseType:{SINGLE_OPTION:"01",MULTI_OPTION:"02",FILL:"03",JUDGE:"04",CALCULATION:"05",ESSAY_QUESTION:"06"},ActionTypeMap:{"0001":"\u65b0\u5efa\u4e60\u9898","0002":"\u56de\u7b54\u4e60\u9898","0021":"\u4fee\u6b63\u4e60\u9898","0022":"\u4fee\u6b63\u7b54\u6848"},sex:{1:"\u7537",2:"\u5973"},site:{1:"\u5b5c\u5b5c\u4e0d\u5026",101:"\u4eba\u4eba\u7f51"}});
+//@ sourceMappingURL=classCode.js.map
