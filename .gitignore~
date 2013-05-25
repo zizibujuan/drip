@@ -6,4 +6,3 @@ server/doc/com.zizibujuan.drip.wiki
 
 *.consoleStripped.js
 *.uncompressed.js
-*.js.map
