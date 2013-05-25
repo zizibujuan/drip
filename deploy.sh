@@ -17,21 +17,21 @@
 projectName=baosuzhai
 
 #drip仓库所在的路径
-codeDir=/home/git/$projectName
+codeDir=/mnt/git/$projectName
 
 #maven仓库所在的路径
 mavenDir=/root/.m2/repository/com/zizibujuan/drip/com.zizibujuan.drip.product/0.0.1-SNAPSHOT/
 
 
 #部署的文件夹
-serverHome=/home/server/
+serverHome=/mnt/server/
 
 #product压缩文件
 zipFile=com.zizibujuan.drip.product-0.0.1-SNAPSHOT-linux.gtk.x86_64.zip
 
 #TODO：备份zip文件
 #$mavenDir$zipFile
-cp $mavenDir$zipFile /home/backup/
+cp $mavenDir$zipFile /mnt/backup/
 
 #跳转到drip仓库所在的文件夹
 pushd $codeDir
