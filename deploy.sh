@@ -14,7 +14,7 @@
 
 #server
 #项目名称
-projectName=baosuzhai
+projectName=com.zizibujuan.drip
 
 #drip仓库所在的路径
 codeDir=/mnt/git/$projectName
