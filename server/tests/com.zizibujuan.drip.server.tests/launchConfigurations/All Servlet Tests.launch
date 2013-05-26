@@ -17,7 +17,7 @@
 <booleanAttribute key="default_auto_start" value="true"/>
 <stringAttribute key="featureDefaultLocation" value="external"/>
 <stringAttribute key="featurePluginResolution" value="workspace"/>
-<booleanAttribute key="includeOptional" value="true"/>
+<booleanAttribute key="includeOptional" value="false"/>
 <stringAttribute key="location" value="${workspace_loc}/../junit-workspace"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
 <listEntry value="/com.zizibujuan.drip.server.tests/src/com/zizibujuan/drip/server/tests/AllServletTests.java"/>
@@ -38,8 +38,8 @@
 <stringAttribute key="product" value="com.zizibujuan.drip.product"/>
 <booleanAttribute key="run_in_ui_thread" value="true"/>
 <setAttribute key="selected_features"/>
-<stringAttribute key="selected_target_plugins" value="ch.qos.logback.classic@default:default,ch.qos.logback.core@default:default,ch.qos.logback.slf4j@default:false,com.google.gson@default:default,javax.servlet@default:default,org.eclipse.core.contenttype@default:default,org.eclipse.core.jobs@default:default,org.eclipse.core.runtime@default:true,org.eclipse.equinox.app@default:default,org.eclipse.equinox.common@2:true,org.eclipse.equinox.ds@1:true,org.eclipse.equinox.preferences@default:default,org.eclipse.equinox.registry@default:default,org.eclipse.equinox.util@default:default,org.eclipse.osgi@-1:true,org.hamcrest.core@default:default,org.junit@default:default,org.mozilla.javascript@default:default,org.slf4j.api@default:default,osgi.enterprise@default:default"/>
-<stringAttribute key="selected_workspace_plugins" value="com.zizibujuan.dbaccess.mysql@default:default,com.zizibujuan.drip.server.dao.mysql@default:default,com.zizibujuan.drip.server.dao@default:default,com.zizibujuan.drip.server.exception@default:default,com.zizibujuan.drip.server.logback.config@default:false,com.zizibujuan.drip.server.service.impl@default:default,com.zizibujuan.drip.server.service@default:default,com.zizibujuan.drip.server.servlet@default:default,com.zizibujuan.drip.server.tests@default:default,com.zizibujuan.drip.server.util@default:default,com.zizibujuan.jdbc.mysql@default:default"/>
+<stringAttribute key="selected_target_plugins" value="ch.qos.logback.classic@default:default,ch.qos.logback.core@default:default,ch.qos.logback.slf4j@default:false,com.fasterxml.jackson.core.jackson-annotations@default:default,com.fasterxml.jackson.core.jackson-core@default:default,com.fasterxml.jackson.core.jackson-databind@default:default,com.google.gson@default:default,javax.servlet@default:default,org.eclipse.core.contenttype@default:default,org.eclipse.core.jobs@default:default,org.eclipse.core.runtime@default:true,org.eclipse.equinox.app@default:default,org.eclipse.equinox.common@2:true,org.eclipse.equinox.ds@1:true,org.eclipse.equinox.preferences@default:default,org.eclipse.equinox.registry@default:default,org.eclipse.equinox.util@default:default,org.eclipse.osgi@-1:true,org.hamcrest.core@default:default,org.junit@default:default,org.mozilla.javascript@default:default,org.slf4j.api@default:default,osgi.enterprise@default:default"/>
+<stringAttribute key="selected_workspace_plugins" value="com.zizibujuan.dbaccess.mysql@default:default,com.zizibujuan.drip.server.dao.mysql@default:default,com.zizibujuan.drip.server.dao@default:default,com.zizibujuan.drip.server.exception@default:default,com.zizibujuan.drip.server.logback.config@default:false,com.zizibujuan.drip.server.service.impl@default:default,com.zizibujuan.drip.server.service@default:default,com.zizibujuan.drip.server.servlet@default:default,com.zizibujuan.drip.server.tests@default:default,com.zizibujuan.drip.server.util@default:default,com.zizibujuan.jdbc.mysql@default:default,com.zizibujuan.server.oauth2.sinaWeibo@default:default"/>
 <booleanAttribute key="show_selected_only" value="false"/>
 <stringAttribute key="templateConfig" value="${target_home}/configuration/config.ini"/>
 <booleanAttribute key="tracing" value="false"/>

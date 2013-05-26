@@ -330,11 +330,12 @@ delete from DRIP_LOCAL_USER_STATISTICS;
 			Assert.assertEquals("http://c", result.get("largerImageUrl").toString());
 			
 			// 统计信息
-			Assert.assertEquals(0, Integer.valueOf(result.get("fanCount").toString()).intValue());
-			Assert.assertEquals(0, Integer.valueOf(result.get("followCount").toString()).intValue());
-			Assert.assertEquals(0, Integer.valueOf(result.get("exerDraftCount").toString()).intValue());
-			Assert.assertEquals(0, Integer.valueOf(result.get("exerPublishCount").toString()).intValue());
-			Assert.assertEquals(0, Integer.valueOf(result.get("answerCount").toString()).intValue());
+			// 最新版本的方法中没有返回用户统计信息
+//			Assert.assertEquals(0, Integer.valueOf(result.get("fanCount").toString()).intValue());
+//			Assert.assertEquals(0, Integer.valueOf(result.get("followCount").toString()).intValue());
+//			Assert.assertEquals(0, Integer.valueOf(result.get("exerDraftCount").toString()).intValue());
+//			Assert.assertEquals(0, Integer.valueOf(result.get("exerPublishCount").toString()).intValue());
+//			Assert.assertEquals(0, Integer.valueOf(result.get("answerCount").toString()).intValue());
 			
 		}finally{
 			super.deleteTestUser();

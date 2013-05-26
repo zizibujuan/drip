@@ -53,6 +53,8 @@ public interface UserService {
 	
 	/**
 	 * 用户登录，主要是记录使用第三方网站进行登录。注意每天晚上定时从第三方同步用户信息。
+	 * 这个方法获取用户的静态信息，即变化不是很频繁的信息，主要是用来在session中保存。
+	 * 因此不会返回用户统计信息。
 	 * @param localUserId 为本网站用户生成的全局用户标识
 	 * @param connectUserId 本网站为第三方网站用户生成的全局用户标识
 	 * @return 如果系统中存在该用户信息则返回，否则返回空的map对象。
@@ -73,6 +75,7 @@ public interface UserService {
 	 * 		xLargeImageUrl:
 	 * 
 	 * </pre>
+	 * 
 	 */
 	Map<String, Object> login(Long localUserId, Long connectUserId);
 
