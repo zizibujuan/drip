@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
 public abstract class UserSession {
 	
 	private static final String SESSION_KEY = "drip-user";
-	public static final String KEY_LOCAL_USER_ID = "id";
+	public static final String KEY_LOCAL_USER_ID = "localUserId";
 	public static final String KEY_CONNECT_USER_ID = "connectUserId";
 	
 	/**

@@ -38,6 +38,12 @@ public class AccessLogFilter implements Filter {
 	private static final String COKIE_NAME = "zzbjusercookieid";
 	
 	@Override
+	public void init(FilterConfig arg0) throws ServletException {
+		accessLogService = ServiceHolder.getDefault().getAccessLogService();
+		applicationPropertyService = ServiceHolder.getDefault().getApplicationPropertyService();
+	}
+	
+	@Override
 	public void destroy() {
 		accessLogService = null;
 		applicationPropertyService = null;
@@ -118,12 +124,6 @@ public class AccessLogFilter implements Filter {
 		return pathInfo.endsWith(WebConstants.PRIVATE_WELCOME_FILE_NAME)
 				|| pathInfo.endsWith(WebConstants.PUBLIC_WELCOME_FILE_NAME)
 				|| pathInfo.indexOf(".") == -1;
-	}
-
-	@Override
-	public void init(FilterConfig arg0) throws ServletException {
-		accessLogService = ServiceHolder.getDefault().getAccessLogService();
-		applicationPropertyService = ServiceHolder.getDefault().getApplicationPropertyService();
 	}
 
 }
