@@ -15,6 +15,7 @@ CREATE  TABLE IF NOT EXISTS `drip`.`DRIP_ACCESS_LOG` (
   `BROWSER_VERSION` VARCHAR(25) NULL COMMENT '用户使用的浏览器版本号',
   `OS` VARCHAR(25) NULL COMMENT '用户使用的操作系统',
   `OS_VERSION` VARCHAR(25) NULL COMMENT '用户使用的操作系统版本号',
+  `AGENT_STRING` VARCHAR(1024) NULL '浏览器传递过来的供应商字符串，浏览器和操作系统信息都是从这里分析出来的，有些不包含这些信息的，就将整个字符串记录下来',
   `ACCESS_TIME` DATETIME NULL COMMENT '访问时间',
   `LEAVE_TIME` DATETIME NULL COMMENT '离开时间',
   PRIMARY KEY (`DBID`))
