@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <link type="text/css" rel="stylesheet" href="/drip/resources/app.css" />
-
+<link type="text/css" rel="stylesheet" href="/drip/resources/font-awesome/css/font-awesome.min.css" />
 <title>我的首页 孜孜不倦 · 一起交流学习心得，共同优化教育资源。</title>
 <script type="text/javascript" 
 	data-dojo-config="
@@ -211,8 +211,10 @@ function sendRenrenRequest(){
 						<span id="topUserName"></span>
 					</a>
 				</li>
-				<li><a href="/exercises/new" title="录入新习题" class="drip_new_exercise">+习题</a></li>
-				<li><input type="button" title="退出" id="logout" value="退出" class="logout"></input></li>
+				<li><a href="/exercises/new" title="录入新习题" class="minibutton primary"><i class="icon-edit"></i>录入习题</a></li>
+				<li><input type="button" title="退出" id="logout" value="退出" class="logout"></input>
+				</li>
+				<li><a class="minibutton" href="#"><i class="icon-signout"></i>退出</a></li>
 			</ul>
 		</div>
 	</div>
@@ -253,7 +255,6 @@ function sendRenrenRequest(){
 							 			<div style="padding-left: 10px; padding-top: 5px;float:left">
 							 				<a style="font-size: 14px; font-weight: bold;text-decoration: none;color: #333" id="userName"></a>
 							 				<div>
-							 					
 							 				</div>
 							 			</div>
 							 		</div>
