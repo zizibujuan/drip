@@ -54,7 +54,7 @@ public interface ConnectUserDao {
 	 * 			width：头像宽度
 	 * 			height：头像高度
 	 * </pre>
-	 * @return 在本网站产生的新的用户标识,全局统一的用户标识
+	 * @return 在本网站产生的新的用户标识,全局统一的用户标识, connectUserId
 	 * @throws SQLException 
 	 */
 	Long add(Connection con, Map<String,Object> connectUserInfo) throws SQLException;

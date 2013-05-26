@@ -47,7 +47,7 @@ public class ConnectUserDaoImpl extends AbstractDao implements ConnectUserDao {
 			"CREATE_TIME) " +
 			"VALUES " +
 			"(?,?,?,?,?,?,?,?,?,?,?,?,now())";
-
+	// FIXME:该方法是不是与UserDao中的insert方法重了？
 	@Override
 	public Long add(Connection con, Map<String, Object> connectUserInfo) throws SQLException {
 		// TODO:继续添加更详细的用户信息。

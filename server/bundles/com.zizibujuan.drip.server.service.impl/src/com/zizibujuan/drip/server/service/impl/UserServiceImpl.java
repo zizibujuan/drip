@@ -55,6 +55,7 @@ public class UserServiceImpl implements UserService {
 		}else{
 			Long userId = Long.valueOf(userInfo.get("id").toString());
 			userInfo.put("connectUserId", userId);
+			userInfo.put("localUserId", userId);// 在本网站创建的用户localUserId与connectUserId相同
 			userAttributesDao.updateLoginState(userId);
 			Map<String,Object> avatarInfo = userAvatarDao.get(userId);
 			userInfo.putAll(avatarInfo);
