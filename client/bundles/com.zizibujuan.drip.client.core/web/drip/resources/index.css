@@ -180,7 +180,7 @@ margin-bottom: -268px;
 
 .drip_welcome_area{
 	border-bottom:  1px solid #e5e5e5;
-	padding-top:50px;
+	padding-top:60px;
 	padding-bottom: 40px;
 	margin-bottom:60px;
 	
@@ -216,7 +216,7 @@ margin-bottom: -268px;
 }
 
 .drip_heading .drip_heading_indent{
-	text-indent: 2em;
+	/*text-indent: 2em;*/
 }
 
 .drip_subheading{
