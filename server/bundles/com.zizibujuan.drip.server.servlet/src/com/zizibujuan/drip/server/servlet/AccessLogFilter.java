@@ -12,8 +12,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import nl.bitwalker.useragentutils.UserAgent;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +19,10 @@ import com.zizibujuan.drip.server.service.AccessLogService;
 import com.zizibujuan.drip.server.service.ApplicationPropertyService;
 import com.zizibujuan.drip.server.util.WebConstants;
 import com.zizibujuan.drip.server.util.servlet.UserSession;
+
+import eu.bitwalker.useragentutils.Browser;
+import eu.bitwalker.useragentutils.OperatingSystem;
+import eu.bitwalker.useragentutils.UserAgent;
 
 /**
  * 用户访问日志过滤器
@@ -60,8 +62,6 @@ public class AccessLogFilter implements Filter {
 		
 		// TODO：提取常量
 		if(pathInfo != null && isValidPath(pathInfo)){
-			// 获取访问者ip
-			String ip = httpServletRequest.getRemoteAddr();
 			// 获取用户标识
 			//		如果用户没有登录，则从cookie中获取
 			//		如果用户登录，则从session中获取
@@ -89,6 +89,9 @@ public class AccessLogFilter implements Filter {
 				}
 			}
 			
+			// 获取访问者ip
+			String ip = httpServletRequest.getRemoteAddr();
+						
 			// 获取用户访问的上一个页面
 			String urlFrom = httpServletRequest.getHeader("Referer");
 			logger.info("上一个访问的页面是：" + urlFrom);
@@ -101,10 +104,20 @@ public class AccessLogFilter implements Filter {
 			String userAgentString = httpServletRequest.getHeader("User-Agent");
 			logger.info("user agent string:" + userAgentString);
 			UserAgent userAgent = UserAgent.parseUserAgentString(userAgentString);
-			String browser = userAgent.getBrowser().getName();
-			String browserVersion = userAgent.getBrowserVersion().getVersion();
-			String os = userAgent.getOperatingSystem().getName();
-			accessLogService.log(ip, anonymous, userId, urlFrom, urlAccess,browser,browserVersion,os);
+			Browser browser = userAgent.getBrowser();
+			String browserString = null;
+			String browserVersion = null;
+			if(browser != Browser.UNKNOWN){
+				browserString = browser.getName();
+				browserVersion = userAgent.getBrowserVersion().getVersion();
+			}
+			
+			String osString = null;
+			OperatingSystem os = userAgent.getOperatingSystem();
+			if(os != OperatingSystem.UNKNOWN){
+				osString = os.getName();
+			}
+			accessLogService.log(ip, anonymous, userId, urlFrom, urlAccess,browserString,browserVersion,osString, userAgentString);
 		}
 				
 				

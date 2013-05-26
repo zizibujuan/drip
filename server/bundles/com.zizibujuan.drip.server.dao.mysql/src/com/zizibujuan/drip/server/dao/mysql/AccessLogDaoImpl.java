@@ -11,9 +11,9 @@ import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 public class AccessLogDaoImpl extends AbstractDao implements AccessLogDao {
 
 	private static final String SQL_INSERT_ACCESS_LOG = "INSERT INTO DRIP_ACCESS_LOG " +
-			"(IP, USER_ID, ANONYMOUS, URL_FROM, URL_ACCESS,BROWSER,BROWSER_VERSION,OS, ACCESS_TIME, LEAVE_TIME) " +
+			"(IP, USER_ID, ANONYMOUS, URL_FROM, URL_ACCESS,BROWSER,BROWSER_VERSION,OS, ACCESS_TIME, LEAVE_TIME, AGENT_STRING) " +
 			"VALUES " +
-			"(?,?,?,?,?,?,?,?,now(),null)";
+			"(?,?,?,?,?,?,?,?,now(),null,?)";
 	@Override
 	public void log(String ip, 
 			boolean anonymous, 
@@ -22,9 +22,10 @@ public class AccessLogDaoImpl extends AbstractDao implements AccessLogDao {
 			String urlAccess,
 			String browser, 
 			String browserVersion, 
-			String os) {
+			String os,
+			String userAgentString) {
 		int anony = anonymous?1:0;
-		DatabaseUtil.insert(getDataSource(),SQL_INSERT_ACCESS_LOG,ip,userId, anony, urlFrom, urlAccess,browser,browserVersion,os);
+		DatabaseUtil.insert(getDataSource(),SQL_INSERT_ACCESS_LOG,ip,userId, anony, urlFrom, urlAccess,browser,browserVersion,os,userAgentString);
 	}
 
 }

@@ -14,6 +14,7 @@ public interface AccessLogDao {
 			String urlAccess,
 			String browser, 
 			String browserVersion, 
-			String os);
+			String os,
+			String userAgentString);
 
 }

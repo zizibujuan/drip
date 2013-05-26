@@ -23,8 +23,9 @@ public class AccessLogServiceImpl implements AccessLogService {
 			String urlAccess,
 			String browser, 
 			String browserVersion, 
-			String os) {
-		accessLogDao.log(ip, anonymous, userId, urlFrom, urlAccess,browser,browserVersion,os);
+			String os,
+			String userAgentString) {
+		accessLogDao.log(ip, anonymous, userId, urlFrom, urlAccess,browser,browserVersion,os,userAgentString);
 	}
 
 	
