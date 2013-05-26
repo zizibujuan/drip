@@ -67,6 +67,8 @@ define(["dojo/_base/declare",
 			var actionContainer = domConstruct.create("div",{"class":"drip_form_actions"},this.domNode);
 			var btnNewExercise = this.btnNewExercise = domConstruct.create("input",{type:"button",value:"保存"},actionContainer);
 			on(btnNewExercise,"click",lang.hitch(this, this.doSave));
+			
+			var btnSave = this.btnSave = domConstruct.place("<a class=\"minibutton\"><i class=\"icon-save icon-large\"></i> 保存</a>", actionContainer);
 		},
 		
 		doSave: function(e){
@@ -298,8 +300,8 @@ define(["dojo/_base/declare",
 			
 			// 创建新建行按钮
 			var addContainer = domConstruct.place('<div></div>', container);
-			
-			var aAdd = domConstruct.place('<a href="#"><img src="'+this._imagePath+'add_20.png"/></a>', addContainer);
+			// TODO：添加选项时，让这个按钮不要移动。
+			var aAdd = domConstruct.place('<a href="#"><i class=\"icon-plus\"></i> 添加选项</a>', addContainer);
 			on(aAdd, "click", lang.hitch(this, function(e){
 				this._createOption(table, this.optionLength++, type);
 				event.stop(e);
@@ -325,9 +327,9 @@ define(["dojo/_base/declare",
 			// TODO:添加一个属性，设置行数，而不是直接设置行高。
 			var editor = this._createEditor(td3,25,550);
 			var td4 = domConstruct.place('<td></td>', tr);
-			var aDel = domConstruct.place('<a href="#"><img alt="删除" src="'+this._imagePath+'delete.png"></a>', td4);
-			var aDown = domConstruct.place('<a href="#"><img alt="下移" src="'+this._imagePath+'arrow_down.gif"></a>', td4);
-			var aUp = domConstruct.place('<a href="#"><img alt="上移" src="'+this._imagePath+'arrow_up.gif"></a>', td4);
+			var aDel = domConstruct.place('<a href="#" class=\"iconbutton\" title=\"删除\"><i class=\"icon-trash\"></i></a>', td4);
+			var aDown = domConstruct.place('<a href="#" class=\"iconbutton\" title=\"下移\"><i class=\"icon-arrow-down\"></i></a>', td4);
+			var aUp = domConstruct.place('<a href="#" class=\"iconbutton\" title=\"上移\"><i class=\"icon-arrow-up\"></i></a>', td4);
 			
 			on(aDel, "click", lang.hitch(this, function(e){
 				this.optionLength--;

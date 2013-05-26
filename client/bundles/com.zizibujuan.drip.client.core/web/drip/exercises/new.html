@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <link type="text/css" rel="stylesheet" href="/drip/resources/app.css" />
+<link type="text/css" rel="stylesheet" href="/drip/resources/font-awesome/css/font-awesome.css" />
 <title>新建数学习题 · 孜孜不倦</title>
 <script type="text/javascript" 
 	data-dojo-config="
@@ -38,6 +39,13 @@ require(["dojo/ready",
 		topProfileImage.src = userInfo.tinyUrl;
 		topProfileImage.alt = userInfo.nickName;
 		dom.byId("topUserName").innerHTML = userInfo.nickName;
+		
+		// 在顶部用户信息区域显示
+		var displayName = userInfo.nickName;
+		var topProfileImage = dom.byId("topProfileImage");
+		topProfileImage.src = userInfo.smallImageUrl || "/drip/resources/images/profile_50_50.gif";
+		topProfileImage.alt = displayName;
+		dom.byId("topUserName").innerHTML = displayName;
 	});
 	
 	ready(function(){
@@ -67,8 +75,9 @@ require(["dojo/ready",
 						<span id="topUserName"></span>
 					</a>
 					</li>
-					<li><a href="/exercises/new" title="录入新习题" class="minibutton primary">录入习题</a></li>
+					<li><a href="/exercises/new" title="录入新习题" class="minibutton primary"><i class="icon-edit"></i> 录入习题</a></li>
 					<li><input type="button" title="退出" id="logout" value="退出" class="logout"></input></li>
+					<li><a class="minibutton" href="#"><i class="icon-signout"></i> 退出</a></li>
 				</ul>
 			</div>
 		</div>

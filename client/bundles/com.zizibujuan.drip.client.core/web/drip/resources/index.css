@@ -36,7 +36,8 @@ h1{
 }
 
 a{
-	color:#00a300;
+	/*color:#00a300;*/
+	color: #333333;
 	text-decoration: none;
 }
 
@@ -258,6 +259,11 @@ margin-bottom: -268px;
 .drip_user_links .drip_name span {
 	font-weight: bold;
 	white-space: nowrap;
+}
+
+/*小图标，没有按钮样式*/
+.iconbutton{
+	margin-left:5px;
 }
 
 /*统一定义页面上按钮的样式*/
