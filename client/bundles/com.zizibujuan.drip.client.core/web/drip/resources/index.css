@@ -13,7 +13,8 @@ body{
 	clear: both;
 	cursor:default;
 	line-height: 1.4;
-	font-family: Helvetica, arial, freesans, clean, sans-serif;
+	font-size: 13px;
+	font-family: arial, freesans, clean, sans-serif,Helvetica;
 }
 
 a, div{
@@ -139,6 +140,7 @@ margin-bottom: -268px;
 
 .drip_top_nav{
 	float: left;
+	margin-left:20px;
 	list-style-type: none;
 	list-style-image: none;
 }
@@ -157,9 +159,11 @@ margin-bottom: -268px;
 	padding: 5px;
 	margin-left: 15px;
 	display: block;
+	font-weight: bold;
 }
 
 .drip_header_logged_out .drip_top_nav{
+	font-size:14px;
 	margin-top: 10px;
 }
 
@@ -206,18 +210,14 @@ margin-bottom: -268px;
 }
 
 .drip_heading{
-	font-weight: normal;
+	font-weight: bold;
 	font-size: 45px;
+	letter-spacing: 3px
 }
 
 .drip_heading p{
 	padding: 0px;
 	margin: 0px;
-	margin-bottom: 10px;
-}
-
-.drip_heading .drip_heading_indent{
-	/*text-indent: 2em;*/
 }
 
 .drip_subheading{
