@@ -68,7 +68,7 @@ define(["dojo/_base/declare",
 			var btnNewExercise = this.btnNewExercise = domConstruct.create("input",{type:"button",value:"保存"},actionContainer);
 			on(btnNewExercise,"click",lang.hitch(this, this.doSave));
 			
-			var btnSave = this.btnSave = domConstruct.place("<a class=\"minibutton\"><i class=\"icon-save icon-large\"></i> 保存</a>", actionContainer);
+			var btnSave = this.btnSave = domConstruct.place("<button class=\"minibutton\"><i class=\"icon-save icon-large\"></i> 保存</button>", actionContainer);
 		},
 		
 		doSave: function(e){

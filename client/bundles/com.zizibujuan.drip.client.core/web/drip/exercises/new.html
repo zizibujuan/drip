@@ -35,12 +35,6 @@ require(["dojo/ready",
 	on(dom.byId("logout"),"click",user.logout);
 	user.getLoggedUserInfo().then(function(userInfo){
 		// 在顶部用户信息区域显示
-		var topProfileImage = dom.byId("topProfileImage");
-		topProfileImage.src = userInfo.tinyUrl;
-		topProfileImage.alt = userInfo.nickName;
-		dom.byId("topUserName").innerHTML = userInfo.nickName;
-		
-		// 在顶部用户信息区域显示
 		var displayName = userInfo.nickName;
 		var topProfileImage = dom.byId("topProfileImage");
 		topProfileImage.src = userInfo.smallImageUrl || "/drip/resources/images/profile_50_50.gif";
@@ -76,8 +70,7 @@ require(["dojo/ready",
 					</a>
 					</li>
 					<li><a href="/exercises/new" title="录入新习题" class="minibutton primary"><i class="icon-edit"></i> 录入习题</a></li>
-					<li><input type="button" title="退出" id="logout" value="退出" class="logout"></input></li>
-					<li><a class="minibutton" href="#"><i class="icon-signout"></i> 退出</a></li>
+					<li><button class="minibutton" id="logout"><i class="icon-signout"></i> 退出</button></li>
 				</ul>
 			</div>
 		</div>
