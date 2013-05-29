@@ -648,6 +648,11 @@ margin-left: 25px;
 	margin-right: 10px;
 }
 
+.radio-group li label{
+	min-width:100px;
+	display: inline-block;
+}
+
 .form{
 	margin-top: 15px;
 }

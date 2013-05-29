@@ -74,7 +74,8 @@ ul.tabs li a .counter {
 
 .drip-title{
 	font-weight: bold;
-	font-size: 15x;
+	font-size: 13x;
+	margin-bottom: 6px;
 }
 
 .drip-exercise-option{
