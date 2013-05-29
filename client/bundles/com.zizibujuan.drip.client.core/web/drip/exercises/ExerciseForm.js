@@ -159,12 +159,18 @@ define(["dojo/_base/declare",
 		},
 		
 		_createEditor: function(parentNode, rowCount, width){
-			var parms = {};
+			// summary:
+			//		创建数学编辑器
+			// parentNode: dom node
+			// rowCount: int
+			// width: int
+			var params = {};
 			var height = rowCount*15;//lineHeight=15
 			// TODO:在mathEditor中增加rows参数，但是不增加columns参数，而是依然使用width参数，
 			// 因为输入数学公式之后，列数是无法确定的。
-			parms.style = "height:"+height+"px; width:"+width+"px";
-			var editor = new Editor(parms);
+			params.style = "width:"+width+"px";
+			params.rows = rowCount;
+			var editor = new Editor(params);
 			editor.placeAt(parentNode);
 			return editor;
 		},
