@@ -2,3 +2,7 @@
 @import url('../../drip/resources/index.css');
 @import url('../../drip/resources/UploaderFileList.css');
 @import url('../../mathEditor/resources/editor.css');
+
+@import url("../../dijit/themes/dijit.css");
+@import url('../../dijit/themes/claro/form/Common.css');
+@import url('../../dijit/themes/claro/form/Button.css');

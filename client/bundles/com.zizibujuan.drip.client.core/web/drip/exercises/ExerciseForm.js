@@ -54,28 +54,189 @@ define(["dojo/_base/declare",
 		
 		_optionName:"exercise-option",
 		
-		_imagePath:"/drip/resources/images/",
-		
 		postCreate: function(){
 			this.inherited(arguments);
-			this._createExerciseTypeBar();
-			// 默认选中
+			
+			// 左右分栏
+			
+//			<div style="width: 660px; float: left;" id="leftForm">
+//			</div>
+//			<div style="float: right; width:240px">
+//				<!-- 提供系统标签，也允许用户自定义标签，放在各自的tab中 -->
+//				<h3>选择科目</h3>
+//				<div>高等数学</div>
+//				<div>
+//					树状结构展示更详细的分类。
+//				</div>
+//			</div>
+			
+//			<div style="float: right; width:240px">
+//				<!-- 提供系统标签，也允许用户自定义标签，放在各自的tab中 -->
+//				<h3>选择科目</h3>
+//				<div>高等数学</div>
+//				<div>
+//					树状结构展示更详细的分类。
+//				</div>
+//			</div>
+			var leftDiv = this.leftDiv = domConstruct.place('<div style="width: 660px; float: left;"></div>', this.domNode);
+			var rightDiv = this.rightDiv = domConstruct.place('<div style="width: 240px; float: right;"></div>', this.domNode);
+			
+			// 创建题型
+			this._createQuestionTypeOptions();
+			
+			// 随着题型而变化的form对象为答案可选项，分为单选和多选。
+			// 而内容、图片和习题解析是每个题型都有的。
+			
+			// 题型默认选中问答题
 			this._createSingleSelectForm();
 			//this._createEssayQuestionForm();
 			
-			// 创建保存按钮
-			var actionContainer = domConstruct.create("div",{"class":"drip_form_actions"},this.domNode);
-			var btnNewExercise = this.btnNewExercise = domConstruct.create("input",{type:"button",value:"保存"},actionContainer);
-			on(btnNewExercise,"click",lang.hitch(this, this.doSave));
+			// 在右侧创建图片上传功能
 			
+			// 创建习题内容输入框
+			this._createContentInput();
+			
+			// 根据题型决定是否显示可选项
+			
+			// 创建习题解析输入框
+			this._createGuideInput();
+			
+			// 创建科目course
+			// 科目默认不选择（optional，甚至可以录完习题内容之后再设置，
+			// 因为这个页面的第一功能是录入习题，而科目是用来设置习题的类别关系）。
+			this._createCourseOptions();
+			// 创建保存按钮
+			var actionContainer = domConstruct.create("div",{"class":"drip_form_actions"},this.leftDiv);
 			var btnSave = this.btnSave = domConstruct.place("<button class=\"minibutton\"><i class=\"icon-save icon-large\"></i> 保存</button>", actionContainer);
+			on(btnSave,"click",lang.hitch(this, this.doSave));
+		},
+		
+		/*
+		<ul class="radio-group">
+			<li><input type="radio" name="course" id="higherMath"/><label for="higherMath">高等数学</label></li>
+			<li><input type="radio" name="course" id="linearAlgebra"/><label for="linearAlgebra">线性代数</label></li>
+			<li><input type="radio" name="course" id="probability"/><label for="probability">概率论与数理统计</label></li>
+		</ul>
+		 */
+		_createCourseOptions: function(){
+			var row = domConstruct.create("div", {"class":"form clearfix"}, this.leftDiv);
+			
+			domConstruct.place('<div class="drip-title">科目</div>', row);
+			var name = "course";
+			var cources = [{id:"higherMath", label:"高等数学"},
+			               {id:"linearAlgebra", label:"线性代数"},
+			               {id:"probability", label:"概率论与数理统计"}];
+			var ul = domConstruct.place("<ul class=\"radio-group\"></ul>", row);
+			for(var i = 0; i < cources.length; i++){
+				var cource = cources[i];
+				var li = domConstruct.create("li", null, ul);
+				var input = domConstruct.create("input", {type:"radio", name:name, id: cource.id}, li);
+				var label = domConstruct.create("label", {"for":cource.id, innerHTML: cource.label}, li);
+			}
+		},
+		
+		_createContentInput: function(){
+			// summary:
+			//		创建习题内容输入框
+			
+			this._createMathInput("习题内容", 10);
+		},
+		
+		_createGuideInput: function(){
+			// summary:
+			//		创建习题解析输入框
+			
+			this._createMathInput("习题解析", 5);
+		},
+		
+		_createMathInput: function(label, rowCount){
+			// summary:
+			//		创建包含label的支持输入数学公式的输入框
+			
+			var guidePane = domConstruct.create("div", {"class":"form"}, this.leftDiv);
+			domConstruct.place('<div class="drip-title">'+label+'</div>', guidePane);
+			this.editorGuide = this._createEditor(guidePane, rowCount);
+		},
+		
+		_createEditor: function(parentNode, rowCount, width){
+			var parms = {};
+			var height = rowCount*15;//lineHeight=15
+			// TODO:在mathEditor中增加rows参数，但是不增加columns参数，而是依然使用width参数，
+			// 因为输入数学公式之后，列数是无法确定的。
+			parms.style = "height:"+height+"px; width:"+width+"px";
+			var editor = new Editor(parms);
+			editor.placeAt(parentNode);
+			return editor;
+		},
+		
+		/*
+		 <ul class="radio-group">
+			<li><input type="radio" name="questionType" id="essayQuestion"/><label for="essayQuestion">问答题</label></li>
+			<li><input type="radio" name="questionType" id="single"/><label for="single">单项选择题</label></li>
+			<li><input type="radio" name="questionType" id="multiple"/><label for="multiple">多项选择题</label></li>
+			<!-- 填空题
+			<li><input type="radio" name="questionType" id="fill"><label for="fill">填空题</label></li>
+			 -->
+		</ul>
+		 */
+		_createQuestionTypeOptions: function(){
+			var row = domConstruct.create("div", {"class":"form clearfix"}, this.leftDiv);
+			
+			domConstruct.place('<div class="drip-title">题型</div>', row);
+			var name = "questionType";
+			var cources = [{id: "essayQuestion", label: "问答题", selected: true},
+			               {id:"single", label:"单项选择题", selected: false},
+			               {id:"multiple", label:"多项选择题", selected: false}/*,
+			               {id:"fill", label:"填空题"}*/];
+			var ul = domConstruct.place("<ul class=\"radio-group\"></ul>", row);
+			for(var i = 0; i < cources.length; i++){
+				var cource = cources[i];
+				var li = domConstruct.create("li", null, ul);
+				var input = domConstruct.create("input", {type:"radio", name:name, id: cource.id, checked: cource.selected}, li);
+				var label = domConstruct.create("label", {"for":cource.id, innerHTML: cource.label}, li);
+			}
+		},
+		/*
+		 * // 绑定事件
+			var singleEl = dom.byId("single");
+			this._toggleSelection(singleEl);
+			on(singleEl,"click",lang.hitch(this, this._showSingleSelectForm));
+			on(dom.byId("multiple"),"click",lang.hitch(this, this._showMultipleSelectForm));
+			on(dom.byId("fill"),"click",lang.hitch(this, this._showFillForm));
+			on(dom.byId("essayQuestion"),"click",lang.hitch(this, this._showEssayQuestionForm));
+			
+			
+
+		
+		 
+		 */
+		_createImageInput: function(){
+			// summary:
+			//		创建图片上传输入框与图片编辑器。
+			
+			var imagePane = domConstruct.create("div", {"class":"form"}, this.rightDiv);
+			var title = domConstruct.place('<div class="drip-title" style="margin-bottom: 5px;"></div>', imagePane);
+			
+			var u = new dojox.form.Uploader({
+			    label: "上传图片",
+			    multiple: true,
+			    type:"file",
+			    uploadOnSelect: true,
+			    url: "/uploads/exerciseImage"
+			});
+			u.placeAt(title);
+			u.startup();
+			
+			var list = new drip.widget.form.uploader.FileList({uploader:u});
+			list.placeAt(title);
+			//list.startup();
 		},
 		
 		doSave: function(e){
 			// 保存之前要先校验
 			
 			// 失效保存按钮，防止重复提交
-			domAttr.set(this.btnNewExercise,"disabled", true);
+			domAttr.set(this.btnSave,"disabled", true);
 			
 			var data = this.data;
 			data.content = this.editorExerContent.get("value");
@@ -107,10 +268,10 @@ define(["dojo/_base/declare",
 			xhr("/exercises/",{method:"POST", data:JSON.stringify(data)}).then(lang.hitch(this,function(response){
 				// 保存成功，在界面上清除用户输入数据，使处于新增状态。在页面给出保存成功的提示，在按钮旁边显示。
 				this._reset();
-				domAttr.set(this.btnNewExercise,"disabled", false);
+				domAttr.set(this.btnSave,"disabled", false);
 			}),lang.hitch(this, function(error){
 				// 保存失败，不清除用户输入数据，并给出详尽的错误提示
-				domAttr.set(this.btnNewExercise,"disabled", false);
+				domAttr.set(this.btnSave,"disabled", false);
 			}));
 		},
 		
@@ -143,16 +304,6 @@ define(["dojo/_base/declare",
 					
 			
 		 */
-		
-		_createExerciseTypeBar: function(){
-			// 绑定事件
-			var singleEl = dom.byId("single");
-			this._toggleSelection(singleEl);
-			on(singleEl,"click",lang.hitch(this, this._showSingleSelectForm));
-			on(dom.byId("multiple"),"click",lang.hitch(this, this._showMultipleSelectForm));
-			on(dom.byId("fill"),"click",lang.hitch(this, this._showFillForm));
-			on(dom.byId("essayQuestion"),"click",lang.hitch(this, this._showEssayQuestionForm));
-		},
 		
 		_toggleSelection: function(target){
 			if(this._selectedExerTypeElement){
@@ -242,51 +393,12 @@ define(["dojo/_base/declare",
 			}
 		},
 		
-		_createContentInput: function(){
-			// summary:
-			//		创建习题内容输入框
-			
-			var contentPane = domConstruct.create("div", null, this.domNode);
-			domConstruct.place('<div class="drip-title">内容</div>', contentPane);
-			this.editorExerContent = this._createEditor(contentPane,150);
-		},
-		
-		_createEditor: function(parentNode, height, width){
-			var parms = {};
-			parms.style = "height:"+height+"px; width:"+width+"px";
-			var editor = new Editor(parms);
-			editor.placeAt(parentNode);
-			return editor;
-		},
-		
-		_createImageInput: function(){
-			// summary:
-			//		创建图片上传输入框与图片编辑器。
-			
-			var imagePane = domConstruct.create("div", null, this.domNode);
-			var title = domConstruct.place('<div class="drip-title" style="margin-bottom: 5px;"></div>', imagePane);
-			
-			var u = new dojox.form.Uploader({
-			    label: "附图",
-			    multiple: true,
-			    type:"file",
-			    uploadOnSelect: true,
-			    url: "/uploads/exerciseImage"
-			});
-			u.placeAt(title);
-			u.startup();
-			
-			var list = new drip.widget.form.uploader.FileList({uploader:u});
-			list.placeAt(title);
-			//list.startup();
-		},
-		
 		_createOptionPane: function(type){
 			// summary:
 			//		创建习题选项面板
 			
 			// 在最外围添加一个div容器
-			var optionPane = this.optionPane = domConstruct.create("div", null, this.domNode);
+			var optionPane = this.optionPane = domConstruct.create("div", null, this.leftDiv);
 			domConstruct.place('<div class="drip-title">选项和答案</div>', optionPane);
 			var container = domConstruct.place('<div></div>', optionPane);
 			
@@ -379,15 +491,6 @@ define(["dojo/_base/declare",
 				domAttr.set(labelEl,"for",id);
 				labelEl.innerHTML = label;
 			});
-		},
-		
-		_createGuideInput: function(){
-			// summary:
-			//		创建习题解析输入框
-			
-			var guidePane = domConstruct.create("div", null, this.domNode);
-			domConstruct.place('<div class="drip-title">习题解析</div>', guidePane);
-			this.editorGuide = this._createEditor(guidePane, 100);
 		},
 		
 		_destroyForm: function(){

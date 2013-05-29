@@ -44,12 +44,28 @@ require(["dojo/ready",
 	
 	ready(function(){
 		var exerciseForm = new ExerciseForm();
-		exerciseForm.placeAt("leftForm");
+		exerciseForm.placeAt("formContainer");
 	});
 	
 });
 </script>
 </head>
+
+<!-- TODO：进入界面时，让第一个输入框获取焦点；把问答题放在最前面， 附图可放在右边，科目先支持三大类：高等数学、线性代数、概率论与数理统计。
+排列顺序可为：
+科目    
+题型    附图
+内容	   编辑器使用帮助
+选型
+解析
+答案
+
+
+题型不要跨的太宽。与科目一样都做成单选。
+
+尽量不要滚动条，一页正好显示下。
+ -->
+
 <body class="claro">
 	<div id="wrapper" class="drip_body">
 		<div class="drip_header drip_header_logged_in" style="position: fixed; width: 100%">
@@ -57,10 +73,12 @@ require(["dojo/ready",
 				<a href="/" class="drip_header_logo" style="height:25px;">
 					<img alt="孜孜不倦" style="height:25px;" src="/drip/resources/images/home_logo.png">
 				</a>
+				<span class="drip_version">测试版</span>
 				<div class="divider-vertical"></div>
 				<ul class="drip_top_nav">
 					<li><a href="/">首页</a></li>
 					<li><a href="/exercises">题库</a></li>
+					<li><a href="/help">帮助</a></li>
 				</ul>
 				<ul class="drip_user_links">
 					<li>
@@ -69,7 +87,7 @@ require(["dojo/ready",
 						<span id="topUserName"></span>
 					</a>
 					</li>
-					<li><a href="/exercises/new" title="录入新习题" class="minibutton primary"><i class="icon-edit"></i> 录入习题</a></li>
+					<li><a href="/exercises/new" title="录入新习题" class="minibutton primary selected"><i class="icon-edit"></i> 录入习题</a></li>
 					<li><button class="minibutton" id="logout"><i class="icon-signout"></i> 退出</button></li>
 				</ul>
 			</div>
@@ -80,37 +98,8 @@ require(["dojo/ready",
 		</div>
 		 -->
 		<div id="main" class="container" style="padding-top: 60px;">
-			<label style="font-size: 18px; font-weight: bold">录入新习题</label>
-			<ul class="tabs">
-				<li>
-					<a href="#" class="selected" id="single">单项选择题</a>
-				</li>
-				<li>
-					<a href="#" id="multiple">多项选择题</a>
-				</li>
-				<!-- 暂时不实现 -->
-				<li style="display: none">
-					<a href="#" id="fill">填空题</a>
-				</li>
-				<li>
-					<a href="#" id="essayQuestion">问答题</a>
-				</li>
-			</ul>
+			<!-- <label style="font-size: 18px; font-weight: bold">录入新习题</label> -->
 			<div style="margin-top: 10px;" id="formContainer">
-				<div style="width: 660px; float: left;" id="leftForm">
-				
-				</div>
-				
-				
-				<div style="float: right; width:240px">
-					<!-- 提供系统标签，也允许用户自定义标签，放在各自的tab中 -->
-					<h3>选择科目</h3>
-					<div>高等数学</div>
-					<div>
-						树状结构展示更详细的分类。
-					</div>
-				</div>
-				
 			</div>
 		</div>
 	</div>
