@@ -168,7 +168,7 @@ define(["dojo/_base/declare",
 			var height = rowCount*15;//lineHeight=15
 			// TODO:在mathEditor中增加rows参数，但是不增加columns参数，而是依然使用width参数，
 			// 因为输入数学公式之后，列数是无法确定的。
-			params.style = "width:"+width+"px";
+			params.width = width;
 			params.rows = rowCount;
 			var editor = new Editor(params);
 			editor.placeAt(parentNode);
