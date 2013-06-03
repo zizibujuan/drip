@@ -165,7 +165,6 @@ define(["dojo/_base/declare",
 			// rowCount: int
 			// width: int
 			var params = {};
-			var height = rowCount*15;//lineHeight=15
 			// TODO:在mathEditor中增加rows参数，但是不增加columns参数，而是依然使用width参数，
 			// 因为输入数学公式之后，列数是无法确定的。
 			params.width = width;
@@ -443,7 +442,7 @@ define(["dojo/_base/declare",
 			var label = domConstruct.place('<label>'+optionLabel.charAt(index)+'</label>', td2);
 			var td3 = domConstruct.place('<td></td>', tr);
 			// TODO:添加一个属性，设置行数，而不是直接设置行高。
-			var editor = this._createEditor(td3,25,550);
+			var editor = this._createEditor(td3,2,550);
 			var td4 = domConstruct.place('<td></td>', tr);
 			var aDel = domConstruct.place('<a href="#" class=\"iconbutton\" title=\"删除\"><i class=\"icon-trash\"></i></a>', td4);
 			var aDown = domConstruct.place('<a href="#" class=\"iconbutton\" title=\"下移\"><i class=\"icon-arrow-down\"></i></a>', td4);
