@@ -1,8 +1,0 @@
-bin/
-target/
-
-# 忽略wiki
-server/doc/com.zizibujuan.drip.wiki
-
-*.consoleStripped.js
-*.uncompressed.js
