@@ -181,10 +181,9 @@ define(["dojo/_base/declare",
 			//		创建习题内容输入框。
 			//		只创建一次。
 			
-			if(this._contentInput)return;
-			
-			this.contentPane = this._createMathInput("习题内容", 10);
-			this._contentInput = true;
+			if(this.exerContentEditor)return;
+			var editor = this.exerContentEditor = this._createMathInput("习题内容", 10);
+			this.contentPane = editor.domNode.parentNode;
 		},
 		
 		/*
@@ -198,7 +197,7 @@ define(["dojo/_base/declare",
 			// summary:
 			//		创建课程选项
 			//		只创建一次，为的是保留之前的输入内容
-			if(this._courseOptions)return;
+			if(this.coursePane)return;
 			var row = domConstruct.create("div", {"class":"form clearfix"}, this.leftDiv);
 			
 			domConstruct.place('<div class="drip-title">科目</div>', row);
@@ -213,27 +212,24 @@ define(["dojo/_base/declare",
 				var input = domConstruct.create("input", {type:"radio", name:name, id: cource.id}, li);
 				var label = domConstruct.create("label", {"for":cource.id, innerHTML: cource.label}, li);
 			}
-			
-			this._courseOptions = true;
+			this.coursePane = row;
 		},
 		
 		_createGuideInput: function(){
 			// summary:
 			//		创建习题解析输入框
 			//		只创建一次，为的是保留之前的内容
-			if(this._guideInput)return;
-			this._createMathInput("习题解析", 5);
-			this._guideInput = true;
+			if(this.guideEditor)return;
+			this.guideEditor = this._createMathInput("习题解析", 5);
 		},
 		
 		_createMathInput: function(label, rowCount){
 			// summary:
 			//		创建包含label的支持输入数学公式的输入框
 			
-			var guidePane = domConstruct.create("div", {"class":"form"}, this.leftDiv);
-			domConstruct.place('<div class="drip-title">'+label+'</div>', guidePane);
-			this.editorGuide = this._createEditor(guidePane, rowCount);
-			return guidePane;
+			var pane = domConstruct.create("div", {"class":"form"}, this.leftDiv);
+			domConstruct.place('<div class="drip-title">'+label+'</div>', pane);
+			return this._createEditor(pane, rowCount);
 		},
 		
 		_createEditor: function(parentNode, rowCount, width){
@@ -320,25 +316,29 @@ define(["dojo/_base/declare",
 		
 		_getFormData: function(){
 			var data = this.data;
-			data.content = this.editorExerContent.get("value");
+			data.content = this.exerContentEditor.get("value");
 			
-			data.options = [];
-			registry.findWidgets(this.tblOption).forEach(function(widget, index){
-				console.log(widget, index, widget.get("value"));
-				data.options.push(widget.get("value"));
-			});
-			
-			var answer = {};
-			var answerDetail = [];
-			query("[name="+this._optionName+"]:checked", this.tblOption).forEach(function(inputEl, index){
-				console.log(inputEl, index);
-				answerDetail.push({seq: inputEl.value});
-			});
-			
-			if(answerDetail.length > 0){
-				answer.detail = answerDetail;
+			if(this.tblOption){
+				data.options = [];
+				registry.findWidgets(this.tblOption).forEach(function(widget, index){
+					console.log(widget, index, widget.get("value"));
+					data.options.push(widget.get("value"));
+				});
 			}
-			var guide = this.editorGuide.get("value");
+			var answer = {};
+			if(this.tblOption){
+				var answerDetail = [];
+				query("[name="+this._optionName+"]:checked", this.tblOption).forEach(function(inputEl, index){
+					console.log(inputEl, index);
+					answerDetail.push({seq: inputEl.value});
+				});
+				
+				if(answerDetail.length > 0){
+					answer.detail = answerDetail;
+				}
+			}
+			
+			var guide = this.guideEditor.get("value");
 			if(guide!= null && guide.length > 0){
 				answer.guide = guide;
 			}
@@ -370,8 +370,8 @@ define(["dojo/_base/declare",
 		
 		_reset: function(){
 			this.data = {};
-			this.editorExerContent.set("value","");
-			this.editorGuide.set("value","");
+			this.exerContentEditor.set("value","");
+			this.guideEditor.set("value","");
 			query("[name="+this._optionName+"]:checked", this.tblOption).forEach(function(inputEl, index){
 				domAttr.set(inputEl,"checked", false);
 			});
