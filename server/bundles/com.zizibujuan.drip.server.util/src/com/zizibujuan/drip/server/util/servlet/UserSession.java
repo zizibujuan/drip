@@ -78,20 +78,6 @@ public abstract class UserSession {
 		httpSession.setAttribute(SESSION_KEY, userInfo);
 	}
 
-	public static void increaseExerciseCount(HttpServletRequest req) {
-		Map<String,Object> userInfo = getUser(req);
-		int exerciseCount = Integer.valueOf(userInfo.get("exerPublishCount").toString());
-		exerciseCount++;
-		userInfo.put("exerPublishCount", exerciseCount);
-	}
-
-	public static void increaseAnswerCount(HttpServletRequest req) {
-		Map<String,Object> userInfo = getUser(req);
-		int answerCount = Integer.valueOf(userInfo.get("answerCount").toString());
-		answerCount++;
-		userInfo.put("answerCount", answerCount);
-	}
-
 	public static boolean isLogged(HttpServletRequest req) {
 		return getUser(req) != null;
 	}

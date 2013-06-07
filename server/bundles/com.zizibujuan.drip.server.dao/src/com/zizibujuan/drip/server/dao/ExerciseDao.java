@@ -24,6 +24,8 @@ public interface ExerciseDao {
 	 * 新增习题。<br/>
 	 * <pre>
 	 * 习题的数据格式为：
+	 * 		localUserId: 本网站用户标识
+	 * 		connectUserId: 本网站为第三方网站用户生成的全局唯一标识
 	 * 		exerType: 题型
 	 * 		exerCategory: 习题所属科目中的分类
 	 * 		content： 习题内容
