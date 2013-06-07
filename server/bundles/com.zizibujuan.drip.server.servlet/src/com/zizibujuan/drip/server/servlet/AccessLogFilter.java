@@ -62,6 +62,13 @@ public class AccessLogFilter implements Filter {
 		
 		// TODO：提取常量
 		if(pathInfo != null && isValidPath(pathInfo)){
+			String userAgentString = httpServletRequest.getHeader("User-Agent");
+			if(userAgentString.contains("aliyun")){
+				// 包含aliyun字样的不计入访问日志
+				filterChain.doFilter(servletRequest, servletResponse);
+				return;
+			}
+				
 			// 获取用户标识
 			//		如果用户没有登录，则从cookie中获取
 			//		如果用户登录，则从session中获取
@@ -101,7 +108,6 @@ public class AccessLogFilter implements Filter {
 			
 			// FIXME: 到底需不需要引入实体类呢？
 			// FIXME: 是存入数据库好呢，还是存入文本文件好呢？
-			String userAgentString = httpServletRequest.getHeader("User-Agent");
 			logger.info("user agent string:" + userAgentString);
 			UserAgent userAgent = UserAgent.parseUserAgentString(userAgentString);
 			Browser browser = userAgent.getBrowser();
