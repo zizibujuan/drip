@@ -5,8 +5,11 @@
 <title> 孜孜不倦 · 一起交流学习心得，共同优化教育资源。</title>
 <!-- <link type="text/css" rel="stylesheet" href="/drip/resources/app.css" /> -->
 <!-- TODO：使用import合并样式 -->
+
 <link type="text/css" rel="stylesheet" href="/drip/resources/common.css" />
 <link type="text/css" rel="stylesheet" href="/drip/resources/profile.css" />
+<link type="text/css" rel="stylesheet" href="/drip/resources/app.css" />
+<link type="text/css" rel="stylesheet" href="/drip/resources/font-awesome/css/font-awesome.css" />
 
 <script type="text/javascript" 
 	data-dojo-config="
@@ -58,6 +61,7 @@ require([ "dojo/dom",
 				<ul class="drip_top_nav">
 					<li><a href="/">首页</a></li>
 					<li><a href="/exercises">题库</a></li>
+					<li><a href="/help">帮助</a></li>
 				</ul>
 				<ul class="drip_user_links">
 					<li>
@@ -66,8 +70,8 @@ require([ "dojo/dom",
 						<span id="topUserName"></span>
 					</a>
 					</li>
-					<li><a href="/exercises/new" title="录入新习题" class="minibutton primary">录入习题</a></li>
-					<li><input type="button" title="退出" id="logout" value="退出" class="logout"></input></li>
+					<li><a href="/exercises/new" title="录入新习题" class="minibutton primary"><i class="icon-edit"></i> 录入习题</a></li>
+					<li><button class="minibutton" id="logout"><i class="icon-signout"></i> 退出</button></li>
 				</ul>
 			</div>
 		</div>

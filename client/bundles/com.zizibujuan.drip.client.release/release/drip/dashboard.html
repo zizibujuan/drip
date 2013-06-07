@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <link type="text/css" rel="stylesheet" href="/drip/resources/app.css" />
-<link type="text/css" rel="stylesheet" href="/drip/resources/font-awesome/css/font-awesome.min.css" />
+<link type="text/css" rel="stylesheet" href="/drip/resources/font-awesome/css/font-awesome.css" />
 <title>我的首页 孜孜不倦 · 一起交流学习心得，共同优化教育资源。</title>
 <script type="text/javascript" 
 	data-dojo-config="
@@ -80,7 +80,8 @@ require(["dojo/ready",
 	var activities = new Activity({
 		store: store,
 		query: {type:"following"},
-		loadingMessage:"加载中...", 
+		// <i class="icon-spinner icon-spin icon-large"></i>
+		loadingMessage:"<i class=\"icon-refresh icon-spin icon-large\"></i>  加载中...", 
 		noDataMessage:followingNoDataMessage
 	});
 	activities.placeAt("activitiesContainer");
@@ -203,6 +204,7 @@ function sendRenrenRequest(){
 			<ul class="drip_top_nav">
 				<li><a href="/" class="current">首页</a></li>
 				<li><a href="/exercises">题库</a></li>
+				<li><a href="/help">帮助</a></li>
 			</ul>
 			<ul class="drip_user_links">
 				<li>
@@ -211,10 +213,8 @@ function sendRenrenRequest(){
 						<span id="topUserName"></span>
 					</a>
 				</li>
-				<li><a href="/exercises/new" title="录入新习题" class="minibutton primary"><i class="icon-edit"></i>录入习题</a></li>
-				<li><input type="button" title="退出" id="logout" value="退出" class="logout"></input>
-				</li>
-				<li><a class="minibutton" href="#"><i class="icon-signout"></i>退出</a></li>
+				<li><a href="/exercises/new" title="录入新习题" class="minibutton primary"><i class="icon-edit"></i> 录入习题</a></li>
+				<li><button class="minibutton" id="logout"><i class="icon-signout"></i> 退出</button></li>
 			</ul>
 		</div>
 	</div>
@@ -276,9 +276,7 @@ function sendRenrenRequest(){
 							 		</div>
 								 </div>
 							 	<div style="margin-top: 20px;">
-							 		<input value="邀请人人好友一起学习" style="width:100%; color:#00a300; padding-top: 8px; padding-bottom: 8px;
-							 		margin-top:10px; font-weight:bold;
-							 		font-size: 17px;cursor: pointer;" type="button" onclick="sendRenrenRequest();"></input>
+							 		<button class="minibutton" onclick="sendRenrenRequest();"><i class="icon-bullhorn icon-large"></i> 邀请人人好友一起学习</button>
 							 	</div>
 							</div>
 						</div>

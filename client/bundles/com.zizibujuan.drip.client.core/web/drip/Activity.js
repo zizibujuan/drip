@@ -136,7 +136,7 @@ define(["dojo/_base/declare",
 				var btnContainer = domConstruct.create("div",{style:"width:98%;margin-top:5px;text-align:right"},doAnswerPane);
 				// TODO:i18n
 				var aCancel = domConstruct.create("a",{"class":"drip_op_cancel",innerHTML:"取消",href:"#"},btnContainer);
-				var btnSave = domConstruct.create("input",{type:"button",value:"保存"},btnContainer);
+				var btnSave = domConstruct.place("<button class=\"minibutton\"><i class=\"icon-save\"></i> 保存</button>",btnContainer);
 				//var btnCancel = new Button({"label":"取消",style:"float:right"});
 				//btnCancel.placeAt(btnContainer);
 				on(btnSave, "click", lang.hitch(this,function(e){

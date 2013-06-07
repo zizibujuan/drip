@@ -45,11 +45,15 @@ define(["dojo/_base/declare",
 				var userActionLink = "/actions/"+ userLinkSubfix
 				
 				this.userImgLinkNode.href =  userActionLink;
-				this.userImgNode.src = userInfo.largeImageUrl || "";
+				this.userImgNode.src = userInfo.largeImageUrl || "/drip/resources/images/profile_180_180.gif";
 				this.userImgNode.alt = displayName;
 				this.userNameLinkNode.innerHTML = displayName;
 				this.userNameLinkNode.href = userActionLink;
-				this.userSexNode.innerHTML = classCode.sex[userInfo.sex || ""];
+				if(userInfo.sex == null){
+					this.userSexNode.innerHTML = "";
+				}else{
+					this.userSexNode.innerHTML = classCode.sex[userInfo.sex];
+				}
 				
 				if(userInfo.homeCity){
 					this.userAddrNode.innerHTML = userInfo.homeCity.province + " " + userInfo.homeCity.city;
@@ -58,14 +62,19 @@ define(["dojo/_base/declare",
 				}
 				
 				
-				this.followNode.innerHTML = userInfo.followCount || 0;
 				this.followNode.href = "/follows/"+userLinkSubfix;
+				// 在后面查找text节点，如果没有则添加
+				this._appendCount(this.followNode, userInfo.followCount||0);
 				
-				this.fanNode.innerHTML = userInfo.fanCount || 0;
 				this.fanNode.href = "/fans/"+userLinkSubfix;
+				this._appendCount(this.fanNode, userInfo.fanCount||0);
 				
-				this.answerNode.innerHTML = userInfo.answerCount || 0;
+				// FIXME：链接冲突。
+				this.exerciseNode.href = "/exercises/"+userLinkSubfix;
+				this._appendCount(this.exerciseNode, userInfo.exerCount||0);
+				
 				this.answerNode.href = "/answers/"+userLinkSubfix;
+				this._appendCount(this.answerNode, userInfo.answerCount||0);
 				
 				this.introNode.innerHTML = userInfo.introduce || "";
 				
@@ -100,6 +109,16 @@ define(["dojo/_base/declare",
 				}
 				
 			}));
+		},
+		
+		_appendCount: function(previous, count){
+			var next = previous.nextSibling;
+			if(next == null){
+				next = document.createTextNode(count);
+				previous.parentNode.appendChild(next);
+			}else{
+				next.textContent = count;
+			}
 		},
 		
 		_createWatchButton: function(container,localUserId){
@@ -179,7 +198,7 @@ define(["dojo/_base/declare",
 			
 			var miniCardBody = this.miniCardBody;
 			
-			dialog.containerNode.innerHTML = "正在加载中，请稍后...";
+			dialog.containerNode.innerHTML = "<i class=\"icon-refresh icon-spin\"></i>  加载中...";
 			miniCardBody.update(digitalId).then(function(){
 				dialog.containerNode.innerHTML = "";
 				dialog.containerNode.appendChild(miniCardBody.domNode);
