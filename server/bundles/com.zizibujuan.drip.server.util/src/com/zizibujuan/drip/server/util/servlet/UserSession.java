@@ -74,7 +74,7 @@ public abstract class UserSession {
 	
 	public static void setUser(HttpServletRequest req, Object userInfo) {
 		HttpSession httpSession = req.getSession();
-		httpSession.setMaxInactiveInterval(60*30); // 秒
+		httpSession.setMaxInactiveInterval(60*30); // 单位为秒，30分钟
 		httpSession.setAttribute(SESSION_KEY, userInfo);
 	}
 
