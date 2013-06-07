@@ -227,17 +227,14 @@ define(["dojo/_base/declare",
 				// 隐藏解答区域
 				this._showAnswerArea(false);
 			}));
-			
 			console.log("activity node data:",this.data);
-			var localUserId = this.data.localUserId;
-			// TODO:删除mapUserId
-			var mapUserId = this.data.mapUserId;
+			var digitalId = this.data.userInfo.digitalId;
 			// 为头像和用户名绑定mouseover事件
 			on(this.userLinkNode,"mouseover", lang.hitch(this, function(e){
-				this.miniCard.show(e.target, localUserId, mapUserId);
+				this.miniCard.show(e.target, digitalId);
 			}));
 			on(this.userInfo,"mouseover", lang.hitch(this, function(e){
-				this.miniCard.show(e.target, localUserId, mapUserId);
+				this.miniCard.show(e.target, digitalId);
 			}));
 			
 			// TODO：如果鼠标往弹出面板的方向移动，则不要关闭弹出面板，如何实现呢？
@@ -314,7 +311,7 @@ define(["dojo/_base/declare",
 			// 用户头像
 			// TODO:每天晚上到人人上同步一下用户信息
 			//this.userLinkNode.href = "/users/"+data.userId;
-			this.userImageNode.src = data.userInfo.smallImageUrl;
+			this.userImageNode.src = data.userInfo.smallImageUrl || "/drip/resources/images/profile_50_50.gif";
 		},
 		
 		_createExercise: function(exerciseInfo){
@@ -375,6 +372,7 @@ define(["dojo/_base/declare",
 				 this.domNode.innerHTML = this.noDataMessage;
 			 }else{
 				 console.log("个人首页的活动列表：",items);
+				 this.domNode.innerHTML = "";
 				 array.forEach(items, lang.hitch(this,function(item, index){
 					 var node = new ActivityNode({
 						 data : item

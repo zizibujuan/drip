@@ -29,7 +29,6 @@ define(["dojo/_base/declare",
 			this.inherited(arguments);
 		},
 		
-		// TODO:删除mapUserId
 		update: function(digitalId){
 			// summary:
 			//		更新用户信息
@@ -39,7 +38,7 @@ define(["dojo/_base/declare",
 			// 注意返回deferred对象
 			return xhr("/users/"+digitalId,{handleAs:"json"}).then(lang.hitch(this,function(userInfo){
 				// 设置用户名片
-				
+				debugger;
 				console.log("userInfo:", userInfo);
 				var userLinkSubfix = userInfo.id+"?mapUserId="+userInfo.mapUserId;
 				var displayName = userInfo.nickName || "";

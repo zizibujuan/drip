@@ -244,6 +244,7 @@ public class UserServlet extends BaseServlet {
 		if(pathInfo == null || pathInfo.equals("/")){
 			String type = req.getParameter("type");
 			if(type.endsWith("statistics")){
+				// 获取用户信息，其中包含该用户的所有统计信息
 				Long localUserId = UserSession.getLocalUserId(req);
 				userInfo = userService.getLocalUserStatistics(localUserId);
 			}else{
@@ -257,17 +258,12 @@ public class UserServlet extends BaseServlet {
 			if(type != null && type.equals("simple")){
 				userInfo = userService.getSimpleInfo(digitalId);
 			}else{
-				// 获取数字帐号
-				
 				// 根据数字帐号获取使用用户信息的用户帐号
-				
-				// FIXME:xxxxxxxxx
-				
-				Long localUserId = 0l;
-				userInfo = userService.getPublicInfo(localUserId);
+				userInfo = userService.getSimpleInfo(digitalId);
+				Long watchedLocalUserId = Long.valueOf(userInfo.get("localUserId").toString());
 				// 获取登录用户与该用户之间的关系,这里还缺少参数。因为一个帐号绑定多个网站帐号，或者只需要本帐号与用户的任一帐号关联即可。
 				// 以下代码只有获取关联关系时才用。
-				Long userRelationId = userRelationService.getRelationId(UserSession.getLocalUserId(req),localUserId);
+				Long userRelationId = userRelationService.getRelationId(UserSession.getLocalUserId(req),watchedLocalUserId);
 				if(userRelationId != null){
 					userInfo.put("userRelationId", userRelationId);
 				}

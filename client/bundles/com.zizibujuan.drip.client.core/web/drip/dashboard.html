@@ -80,7 +80,8 @@ require(["dojo/ready",
 	var activities = new Activity({
 		store: store,
 		query: {type:"following"},
-		loadingMessage:"加载中...", 
+		// <i class="icon-spinner icon-spin icon-large"></i>
+		loadingMessage:"<i class=\"icon-refresh icon-spin icon-large\"></i>  加载中...", 
 		noDataMessage:followingNoDataMessage
 	});
 	activities.placeAt("activitiesContainer");
@@ -275,11 +276,7 @@ function sendRenrenRequest(){
 							 		</div>
 								 </div>
 							 	<div style="margin-top: 20px;">
-							 		<input value="邀请人人好友一起学习" style="width:100%; color:#00a300; padding-top: 8px; padding-bottom: 8px;
-							 		margin-top:10px; font-weight:bold;
-							 		font-size: 17px;cursor: pointer;" type="button" onclick="sendRenrenRequest();"></input>
-							 		
-							 		<a class="minibutton" href="#"><i class="icon-bullhorn icon-large"></i> 邀请人人好友一起学习</a>
+							 		<button class="minibutton" onclick="sendRenrenRequest();"><i class="icon-bullhorn icon-large"></i> 邀请人人好友一起学习</button>
 							 	</div>
 							</div>
 						</div>
