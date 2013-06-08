@@ -25,8 +25,10 @@ rm -rf "$DISTDIR/drip"
 rm -rf "$DISTDIR/mathEditor"
 echo " Done"
 
-#cp $BASEDIR/com.zizibujuan.drip.client.core/web/index.html $DISTDIR/index.html
+#cp $BASEDIR/com.zizibujuan.drip.client.core/web/drip/index.html $DISTDIR/index.html
 cp $BASEDIR/com.zizibujuan.drip.client.core/web/favicon.ico $DISTDIR/favicon.ico
+cp $BASEDIR/com.zizibujuan.drip.client.core/web/baidu_verify_3Em7IPlFxO.html $DISTDIR/baidu_verify_3Em7IPlFxO.html
+cp $BASEDIR/com.zizibujuan.drip.client.core/web/google4361b96ddcf23ebc.html $DISTDIR/google4361b96ddcf23ebc.html
 
 cd "$TOOLSDIR"
 

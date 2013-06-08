@@ -129,7 +129,7 @@ define(["dojo/_base/declare",
 				var doAnswerPane = this.doAnswerPane = domConstruct.create("div",null, this.exerciseNode, "after");
 				var guideDiv = domConstruct.create("div",{"class":"guide"}, doAnswerPane);
 				var guideLabel = domConstruct.create("div",{innerHTML:"习题解析"},guideDiv);
-				var editor = new Editor({style:"height:50px;width:98%"});
+				var editor = new Editor({rows:5, width:500});
 				editor.placeAt(guideDiv);
 				
 				// FIXME：当div中有float元素时，怎么让div的高度根据其中元素的高度自适应

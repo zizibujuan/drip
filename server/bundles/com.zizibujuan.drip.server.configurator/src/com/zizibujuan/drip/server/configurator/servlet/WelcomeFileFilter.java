@@ -28,8 +28,11 @@ public class WelcomeFileFilter implements Filter {
 			FilterChain chain) throws IOException, ServletException {
 		final HttpServletRequest httpRequest = (HttpServletRequest) request;
 		final HttpServletResponse httpResponse = (HttpServletResponse)response;
-		final String requestPath = httpRequest.getServletPath() + (httpRequest.getPathInfo() == null ? "" : httpRequest.getPathInfo()); //$NON-NLS-1$
+		String requestPath = httpRequest.getServletPath() + (httpRequest.getPathInfo() == null ? "" : httpRequest.getPathInfo()); //$NON-NLS-1$
 		
+		if(requestPath.equals("/index.html")){
+			requestPath = "/";
+		}
 		// 判断是否访问首页地址
 		if (requestPath.equals("/")) { //$NON-NLS-1$
 			String fileName = "";
