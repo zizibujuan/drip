@@ -601,6 +601,10 @@ margin-left: 25px;
 	float:left;
 }
 
+.userData a{
+	color: #4183C4;
+}
+
 .minicard_body .intro{
 	margin: 0 20px 8px;
 	line-height: 18px;

@@ -17,6 +17,7 @@ define(["dojo/_base/declare",
         "drip/prettyDate",
         "drip/_StoreMixin",
         "mathEditor/Editor",
+        "mathEditor/dataUtil",
         "dojo/text!./templates/ActivityNode.html",
         "dojo/text!./templates/ActivityList.html",
         "drip/MiniCard"], function(
@@ -38,6 +39,7 @@ define(["dojo/_base/declare",
         		prettyDate,
         		_StoreMixin,
         		Editor,
+        		dataUtil,
         		nodeTemplate,
         		listTemplate,
         		MiniCard){
@@ -84,9 +86,10 @@ define(["dojo/_base/declare",
 				var guide = answerInfo.guide;
 				if(guide && guide != ""){
 					// 添加习题解析，只读的
+					var guideHtml = dataUtil.xmlStringToHtml(guide);
 					var guideContainerDiv = this.guideContainerDiv = domConstruct.create("div",{"class":"guide"}, this.exerciseNode);
 					var guideLabel = domConstruct.create("div",{innerHTML:"习题解析"}, guideContainerDiv);
-					var guideContentDiv = domConstruct.create("div",{innerHTML:guide}, guideContainerDiv);
+					var guideContentDiv = domConstruct.create("div",{innerHTML:guideHtml}, guideContainerDiv);
 				}
 			}
 			
@@ -129,7 +132,7 @@ define(["dojo/_base/declare",
 				var doAnswerPane = this.doAnswerPane = domConstruct.create("div",null, this.exerciseNode, "after");
 				var guideDiv = domConstruct.create("div",{"class":"guide"}, doAnswerPane);
 				var guideLabel = domConstruct.create("div",{innerHTML:"习题解析"},guideDiv);
-				var editor = new Editor({rows:5, width:500});
+				var editor = new Editor({rows:5, width:650});
 				editor.placeAt(guideDiv);
 				
 				// FIXME：当div中有float元素时，怎么让div的高度根据其中元素的高度自适应
@@ -315,8 +318,9 @@ define(["dojo/_base/declare",
 		},
 		
 		_createExercise: function(exerciseInfo){
-			
-			var _contentDiv = domConstruct.create("div", {innerHTML:exerciseInfo.content.replace(/&amp;/g,"&"),"class":"content"},this.exerciseNode);
+			// TODO:需要将mathEditor中model的格式转换为html格式
+			var html = dataUtil.xmlStringToHtml(exerciseInfo.content);
+			var _contentDiv = domConstruct.create("div", {innerHTML: html, "class": "content"},this.exerciseNode);
 			
 			var options = exerciseInfo.options;
 			if(options && options.length > 0){
@@ -351,7 +355,8 @@ define(["dojo/_base/declare",
 			
 			domConstruct.place('<span style="padding-right:5px">'+optionLabel.charAt(index)+'</span>', label);
 			var divOptionContent = domConstruct.place("<span></span>",label);
-			divOptionContent.innerHTML = data.content;
+			var html = dataUtil.xmlStringToHtml(data.content);
+			divOptionContent.innerHTML = html;
 		}
 		
 	});
