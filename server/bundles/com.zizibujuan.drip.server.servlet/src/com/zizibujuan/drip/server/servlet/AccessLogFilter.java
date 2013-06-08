@@ -23,6 +23,7 @@ import com.zizibujuan.drip.server.util.servlet.UserSession;
 import eu.bitwalker.useragentutils.Browser;
 import eu.bitwalker.useragentutils.OperatingSystem;
 import eu.bitwalker.useragentutils.UserAgent;
+import eu.bitwalker.useragentutils.Version;
 
 /**
  * 用户访问日志过滤器
@@ -115,7 +116,10 @@ public class AccessLogFilter implements Filter {
 			String browserVersion = null;
 			if(browser != Browser.UNKNOWN){
 				browserString = browser.getName();
-				browserVersion = userAgent.getBrowserVersion().getVersion();
+				Version version = userAgent.getBrowserVersion();
+				if(version != null){
+					browserVersion = version.getVersion();
+				}
 			}
 			
 			String osString = null;
