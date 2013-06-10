@@ -64,7 +64,10 @@ public class AccessLogFilter implements Filter {
 		// TODO：提取常量
 		if(pathInfo != null && isValidPath(pathInfo)){
 			String userAgentString = httpServletRequest.getHeader("User-Agent");
-			if(userAgentString.contains("aliyun")){
+			if(userAgentString == null){
+				userAgentString = httpServletRequest.getHeader("user-agent");
+			}
+			if(userAgentString == null || userAgentString.contains("aliyun")){
 				// 包含aliyun字样的不计入访问日志
 				filterChain.doFilter(servletRequest, servletResponse);
 				return;
