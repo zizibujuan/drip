@@ -80,7 +80,7 @@ public class ActivityDaoImpl extends AbstractDao implements ActivityDao {
 	@Override
 	public List<Map<String, Object>> getMyExercises(PageInfo pageInfo, Long localUserId) {
 		return DatabaseUtil.queryForList(getDataSource(),
-				SQL_LIST_MY_ACTIVITY_FILTER_BY_TYPE, pageInfo, localUserId, ActionType.ANSWER_EXERCISE);
+				SQL_LIST_MY_ACTIVITY_FILTER_BY_TYPE, pageInfo, localUserId, ActionType.SAVE_EXERCISE);
 	}
 	
 	private static final String SQL_INSERT_ACTIVITY = "INSERT INTO DRIP_ACTIVITY " +
