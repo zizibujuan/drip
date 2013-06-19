@@ -12,7 +12,7 @@ define(["dojo/_base/lang",
         		date,
         		stamp,
         		prettyDateMessages){
-	'use strict';
+	
 	// summary:
 	//		将日期格式化为更友好的展示格式。
 
