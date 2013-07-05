@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: doc.client.core
+Bundle-SymbolicName: com.zizibujuan.doc.client.core
+Bundle-Version: 0.0.1.qualifier
+Bundle-Vendor: zizibujuan.com
