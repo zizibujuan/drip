@@ -1,0 +1,5 @@
+doc的servlet项目,
+
+doc专有的数据库访问放在专门的service和dao层中，
+通用的操作，如获取系统参数等从核心的service和dao层中获取
+
