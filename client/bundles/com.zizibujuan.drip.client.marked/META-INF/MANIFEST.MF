@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: drip.client.marked
+Bundle-SymbolicName: com.zizibujuan.drip.client.marked;singleton:=true
+Bundle-Version: 0.2.9.qualifier
+Bundle-Vendor: zizibujuan.com
