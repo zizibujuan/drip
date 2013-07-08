@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>新建页面 · 孜孜不倦</title>
+<link type="text/css" rel="stylesheet" href="/drip/resources/app.css" />
+<link type="text/css" rel="stylesheet" href="/drip/resources/font-awesome/css/font-awesome.css" />
+<script type="text/javascript" 
+	data-dojo-config="
+		async:true,
+		parseOnLoad:false,
+		isDebug:true" 
+	src="/dojo/dojo.js"></script>
+<script type="text/javascript">
+
+	require([ "doc/pages/PageForm", 
+	          "dojo/domReady!"], function(
+	        		  PageForm){
+		
+		var pageForm = new PageForm({}, "pageForm");
+		
+	});
+	
+</script>
+</head>
+<body class="claro">
+<div>
+
+	<div id="pageForm"></div>
+	
+</div>
+</body>
+</html>
