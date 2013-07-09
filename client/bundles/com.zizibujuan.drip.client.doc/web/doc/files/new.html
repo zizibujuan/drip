@@ -13,11 +13,11 @@
 	src="/dojo/dojo.js"></script>
 <script type="text/javascript">
 
-	require([ "doc/pages/PageForm", 
+	require([ "doc/pages/FileForm", 
 	          "dojo/domReady!"], function(
-	        		  PageForm){
+	        		  FileForm){
 		
-		new PageForm({}, "pageForm");
+		new FileForm({}, "files");
 		
 	});
 	
@@ -26,7 +26,9 @@
 <body class="claro">
 <div>
 
-	<div id="pageForm"></div>
+	<div id="files" class="new-file">
+	
+	</div>
 	
 </div>
 </body>

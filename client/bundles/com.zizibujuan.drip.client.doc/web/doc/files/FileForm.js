@@ -3,7 +3,7 @@ define([ "dojo/_base/declare",
          "dijit/_WidgetBase",
          "dijit/_TemplatedMixin",
          "dijit/_WidgetsInTemplateMixin",
-         "dojo/text!doc/templates/PageForm.html",
+         "dojo/text!doc/templates/FileForm.html",
          "dijit/form/ValidationTextBox",
          "dijit/form/SimpleTextarea",
          "drip/widget/form/AceEditor"
@@ -13,11 +13,11 @@ define([ "dojo/_base/declare",
         		 _WidgetBase,
         		 _TemplatedMixin,
         		 _WidgetsInTemplateMixin,
-        		 PageFormTemplate) {
+        		 FileFormTemplate) {
 
-	return declare("doc.pages.PageForm", [_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin], {
+	return declare("doc.files.FileForm", [_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin], {
 		
-		templateString: PageFormTemplate,
+		templateString: FileFormTemplate,
 		
 		postCreate: function(){
 			this.inherited(arguments);
