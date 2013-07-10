@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: drip.server.doc
+Bundle-SymbolicName: com.zizibujuan.drip.server.doc.servlet
+Bundle-Version: 0.0.1.qualifier
+Bundle-Activator: com.zizibujuan.drip.server.doc.servlet.Activator
+Bundle-Vendor: zizibujuan.com
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: com.zizibujuan.drip.server.util.servlet,
+ javax.servlet;version="2.6.0",
+ javax.servlet.http;version="2.6.0",
+ org.osgi.framework;version="1.3.0"

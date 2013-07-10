@@ -1,4 +1,4 @@
-package com.zizibujuan.drip.server.doc;
+package com.zizibujuan.drip.server.doc.servlet;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
