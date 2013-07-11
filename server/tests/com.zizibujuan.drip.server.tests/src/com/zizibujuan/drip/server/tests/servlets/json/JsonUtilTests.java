@@ -7,6 +7,7 @@ import junit.framework.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.zizibujuan.drip.server.doc.model.NewFileForm;
 import com.zizibujuan.drip.server.util.json.GsonAdapter;
 import com.zizibujuan.drip.server.util.json.JacksonAdapter;
 import com.zizibujuan.drip.server.util.json.JsonUtil;
@@ -128,4 +129,14 @@ public class JsonUtilTests {
 		json = gsonAdapter.fromJsonObject(jsonString);
 		Assert.assertEquals(2, json.get("int"));
 	}
+	
+	@Test
+	public void testToJsonObject(){
+		JacksonAdapter jacksonAdapter = new JacksonAdapter();
+		String jsonString = "{\"fileInfo\":{\"name\":\"文件.md\", \"content\":\"aaaa\"}, \"commitInfo\":{}}";
+		NewFileForm newFileForm = jacksonAdapter.fromJsonObject(jsonString, NewFileForm.class);
+		Assert.assertEquals("文件.md", newFileForm.getFileInfo().getName());
+	}
+	
+	
 }

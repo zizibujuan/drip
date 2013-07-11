@@ -8,6 +8,7 @@ Bundle-Vendor: zizibujuan.com
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.zizibujuan.dbaccess.mysql.service,
  com.zizibujuan.drip.server.dao.mysql,
+ com.zizibujuan.drip.server.doc.model,
  com.zizibujuan.drip.server.service,
  com.zizibujuan.drip.server.servlet,
  com.zizibujuan.drip.server.servlet.authentication,
