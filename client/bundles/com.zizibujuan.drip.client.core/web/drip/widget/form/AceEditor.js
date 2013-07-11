@@ -17,14 +17,24 @@ define([ "dojo/_base/declare",
 		
 		theme: "ace/theme/textmate",
 		
+		value: "",
+		
 		postCreate: function(){
 			this.inherited(arguments);
 			// TODO：如果宽度不是百分比，则要加上单位px
 			domStyle.set(this.domNode, {width: this.width, height: this.height+"px"})
-			var editor = ace.edit(this.domNode);
+			var editor = this.editor = ace.edit(this.domNode);
 			editor.setTheme(this.theme);
 			editor.getSession().setMode(this.mode);
-		}
+		},
+		
+		_getValueAttr: function(){
+			return this.editor.getValue();
+	    },
+	    
+	    _setValueAttr: function(value){
+	    	this.editor.setValue(value);
+	    }
 	
 	});
 	

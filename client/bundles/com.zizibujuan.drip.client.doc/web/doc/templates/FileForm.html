@@ -4,7 +4,8 @@
 		<div class="breadcrumb">
 		<!-- 在这里根据路径生成 a/b 样式的结构 -->
 			<div data-dojo-type="dijit/form/ValidationTextBox"
-			data-dojo-props="placeholder:'输入文件名'"></div>
+				data-dojo-attach-point = "fileName"
+				data-dojo-props="placeholder:'输入文件名'"></div>
 			<p><a href="#">取消</a></p><!-- 跳转到项目列表页面 -->
 		</div>
 		<div class="file">
@@ -17,9 +18,7 @@
 				</div>
 			</div>
 			<div>
-				<!-- 隐藏一个文本域，commit提交时用 -->
-				<textarea rows="" cols=""></textarea>
-				<div data-dojo-type="drip/widget/form/AceEditor"></div>
+				<div data-dojo-type="drip/widget/form/AceEditor" data-dojo-attach-point="content"></div>
 			</div>
 			
 		</div>
@@ -27,18 +26,20 @@
 		<div class="new-commit">
 			<div>
 				<div>提交概述（必输）</div>
-				<div data-dojo-type="dijit/form/ValidationTextBox"
-			data-dojo-props="placeholder:'新建文件'"></div>
+				<div data-dojo-type = "dijit/form/ValidationTextBox"
+					data-dojo-attach-point = "commitSummary"
+					data-dojo-props = "placeholder:'新建文件'"></div>
 			
 				<div>详细描述</div>
-				<div data-dojo-type="dijit/form/SimpleTextarea" 
-					data-dojo-props="rows:2,cols:50"></div>	
+				<div data-dojo-type = "dijit/form/SimpleTextarea"
+					data-dojo-attach-point = "extendDesc"
+					data-dojo-props = "rows:2,cols:50"></div>	
 			</div>
 			
 			<div>
 			<!-- 跳转到项目列表页面 -->
 				<a href="#" class="minibutton">取消</a>
-				<button type="submit" class="minibutton primary" id="submit-file">提交新文件</button>	
+				<button data-dojo-attach-point="submitFile" type="submit" class="minibutton primary">提交新文件</button>	
 			</div>
 		</div>
 		
