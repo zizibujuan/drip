@@ -27,10 +27,15 @@ public abstract class RequestUtil {
 		String jsonString = getJsonString(req);
 		return JsonUtil.fromJsonArray(jsonString);
 	}
+	
+	public static <T> T fromJsonObject(HttpServletRequest req, Class<T> clazz) throws IOException {
+		String jsonString = getJsonString(req);
+		return JsonUtil.fromJsonObject(jsonString, clazz);
+	}
 
 	private static String getJsonString(HttpServletRequest req) throws IOException {
 		StringWriter sw = new StringWriter();
-		IOUtils.copy(req.getInputStream(), sw,"UTF-8");
+		IOUtils.copy(req.getInputStream(), sw, "UTF-8");
 		return sw.toString();
 	}
 

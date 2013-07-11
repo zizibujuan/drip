@@ -1,5 +1,6 @@
 package com.zizibujuan.drip.server.util.json;
 
+import java.io.InputStream;
 import java.io.Reader;
 import java.util.List;
 import java.util.Map;
@@ -48,13 +49,24 @@ public class StrutsJsonAdapter implements Json {
 	}
 
 	@Override
-	public String toJson(Object src) {
+	public <T> T fromJsonObject(String jsonString, Class<T> clazz) {
+		return (T) deserialize(jsonString);
+	}
+
+	@Override
+	public <T> String toJson(T bean) {
 		try {
-			return JSONUtil.serialize(src);
+			return JSONUtil.serialize(bean);
 		} catch (JSONException e) {
 			e.printStackTrace();
 			throw new JSONAccessException(e);
 		}
+	}
+
+	@Override
+	public <T> T fromJsonObject(InputStream io, Class<T> clazz) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

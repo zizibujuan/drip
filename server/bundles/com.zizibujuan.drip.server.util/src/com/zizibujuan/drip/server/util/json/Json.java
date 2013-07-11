@@ -1,5 +1,6 @@
 package com.zizibujuan.drip.server.util.json;
 
+import java.io.InputStream;
 import java.io.Reader;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,11 @@ public interface Json {
 	
 	List<Map<String, Object>> fromJsonArray(Reader reader);
 	
-	String toJson(Object src);
+	
+	<T> T fromJsonObject(String jsonString, Class<T> clazz);
+	
+	<T> String toJson(T bean);
+
+	<T> T fromJsonObject(InputStream io, Class<T> clazz);
 	
 }

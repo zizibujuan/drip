@@ -1,14 +1,8 @@
 package com.zizibujuan.drip.server.util.json;
 
-import java.io.IOException;
 import java.io.Reader;
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
-
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zizibujuan.drip.server.exception.json.JSONAccessException;
 
 /**
  * json工具类，这里对json实现做一个封装，如果需要换json实现，修改这个类。
@@ -21,7 +15,8 @@ public abstract class JsonUtil {
 	private static Json json;
 	static{
 		//json = new GsonAdapter();
-		json = new StrutsJsonAdapter();
+		//json = new StrutsJsonAdapter();
+		json = new JacksonAdapter();
 	}
 	
 	public static Map<String,Object> fromJsonObject(String jsonString){
@@ -32,6 +27,10 @@ public abstract class JsonUtil {
 		return json.fromJsonObject(reader);
 	}
 	
+	public static <T> T fromJsonObject(String jsonString, Class<T> clazz){
+		return json.fromJsonObject(jsonString, clazz);
+	}
+	
 	public static List<Map<String, Object>> fromJsonArray(String jsonString){
 		return json.fromJsonArray(jsonString);
 	}
@@ -40,8 +39,8 @@ public abstract class JsonUtil {
 		return json.fromJsonArray(reader);
 	}
 	
-	public static String toJson(Object src){
-		return json.toJson(src);
+	public static <T> String toJson(T bean){
+		return json.toJson(bean);
 	}
 	/*
 	public static String toJson(Object src, Type typeOfSrc){

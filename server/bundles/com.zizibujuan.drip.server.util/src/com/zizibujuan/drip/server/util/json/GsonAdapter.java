@@ -1,5 +1,6 @@
 package com.zizibujuan.drip.server.util.json;
 
+import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
@@ -88,8 +89,19 @@ public class GsonAdapter implements Json {
 	}
 
 	@Override
-	public String toJson(Object src) {
-		return json.toJson(src);
+	public <T> T fromJsonObject(String jsonString, Class<T> clazz) {
+		return json.fromJson(jsonString, clazz);
+	}
+
+	@Override
+	public <T> String toJson(T bean) {
+		return json.toJson(bean);
+	}
+
+	@Override
+	public <T> T fromJsonObject(InputStream io, Class<T> clazz) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

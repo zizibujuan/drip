@@ -1,10 +1,14 @@
 package com.zizibujuan.drip.server.util.json;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zizibujuan.drip.server.exception.json.JSONAccessException;
@@ -85,11 +89,61 @@ public class JacksonAdapter implements Json {
 		}
 	}
 
+	@Override
+	public <T> T fromJsonObject(String jsonString, Class<T> clazz) {
+		T t = null;
+		try {
+			t = objectMapper.readValue(jsonString, clazz);
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+			throw new JSONAccessException(e);
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+			throw new JSONAccessException(e);
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new JSONAccessException(e);
+		}
+		return t;
+	}
+	
+	@Override
+	public <T> T fromJsonObject(InputStream io, Class<T> clazz) {
+		T t = null;
+		try {
+			t = objectMapper.readValue(io, clazz);
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+			throw new JSONAccessException(e);
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+			throw new JSONAccessException(e);
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new JSONAccessException(e);
+		}
+		return t;
+	}
+
 
 	@Override
-	public String toJson(Object src) {
-		// TODO Auto-generated method stub
-		return null;
+	public <T> String toJson(T bean) {
+		StringWriter sw = new StringWriter();
+		try {
+			objectMapper.writeValue(sw, bean);
+			return sw.toString();
+		} catch (JsonGenerationException e) {
+			e.printStackTrace();
+			throw new JSONAccessException(e);
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+			throw new JSONAccessException(e);
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new JSONAccessException(e);
+		}
 	}
+	
+	
 
 }
