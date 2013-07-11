@@ -6,7 +6,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.zizibujuan.drip.server.doc.model.NewFileForm;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
+import com.zizibujuan.drip.server.util.servlet.RequestUtil;
 
 public class FileServlet extends BaseServlet {
 
@@ -19,7 +21,7 @@ public class FileServlet extends BaseServlet {
 		
 		String pathInfo = req.getPathInfo();
 		if(pathInfo == null || pathInfo.equals("/")){
-			
+			RequestUtil.fromJsonObject(req, NewFileForm.class);
 			return;
 		}
 		

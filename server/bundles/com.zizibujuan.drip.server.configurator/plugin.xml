@@ -79,6 +79,13 @@
       		alias="/userImages"
       		class="com.zizibujuan.drip.server.servlet.ImageServlet">
       </servlet>
+      
+      <!-- 文档 -->
+      <servlet 
+      		alias="/files"
+      		class="com.zizibujuan.drip.server.doc.servlet.FileServlet">
+      </servlet>
+      
     </extension>
 <!--
 	<extension
