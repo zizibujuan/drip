@@ -1,4 +1,5 @@
 define([ "dojo/_base/declare",
+         "dojo/_base/lang",
          "dojo/on",
          "dojo/request/xhr",
          "dojo/dom-construct",
@@ -11,6 +12,7 @@ define([ "dojo/_base/declare",
          "drip/widget/form/AceEditor"
          ], function(
         		 declare,
+        		 lang,
         		 on,
         		 xhr,
         		 domConstruct,
@@ -27,7 +29,7 @@ define([ "dojo/_base/declare",
 			this.inherited(arguments);
 			
 			// 绑定事件
-			this.own(on(this.submitFile, "click", function(e){
+			this.own(on(this.submitFile, "click", lang.hitch(this,function(e){
 				var fileInfo = {
 					name: this.fileName.get("value"),
 					content: this.content.get("value")
@@ -41,9 +43,9 @@ define([ "dojo/_base/declare",
 					window.location.href = "/"; // TODO：跳转到项目列表页面
 				}, function(error){
 					// TODO:如果保存失败，则给出提示
-					console.error(error);
+					console.error("创建文件失败", error);
 				});
-			}));
+			})));
 		}
 		
 	});
