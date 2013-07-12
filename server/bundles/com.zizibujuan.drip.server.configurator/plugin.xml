@@ -80,17 +80,6 @@
       		class="com.zizibujuan.drip.server.servlet.ImageServlet">
       </servlet>
       
-      <!-- 项目 -->
-      <servlet 
-      		alias="/projects"
-      		class="com.zizibujuan.drip.server.doc.servlet.ProjectServlet">
-      </servlet>
-      <!-- 文档 -->
-      <servlet 
-      		alias="/files"
-      		class="com.zizibujuan.drip.server.doc.servlet.FileServlet">
-      </servlet>
-      
     </extension>
 <!--
 	<extension

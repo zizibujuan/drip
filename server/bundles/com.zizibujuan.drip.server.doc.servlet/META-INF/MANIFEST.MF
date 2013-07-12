@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: drip.server.doc
-Bundle-SymbolicName: com.zizibujuan.drip.server.doc.servlet
+Bundle-SymbolicName: com.zizibujuan.drip.server.doc.servlet;singleton:=true
 Bundle-Version: 0.0.1.qualifier
 Bundle-Activator: com.zizibujuan.drip.server.doc.servlet.Activator
 Bundle-Vendor: zizibujuan.com
