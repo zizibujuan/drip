@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>新建项目 · 孜孜不倦</title>
+<link type="text/css" rel="stylesheet" href="/drip/resources/app.css" />
+<link type="text/css" rel="stylesheet" href="/drip/resources/font-awesome/css/font-awesome.css" />
+<script type="text/javascript" 
+	data-dojo-config="
+		async:true,
+		parseOnLoad:false,
+		isDebug:true" 
+	src="/dojo/dojo.js"></script>
+<script type="text/javascript">
+
+	require([ "doc/files/ProjectForm", 
+	          "dojo/domReady!"], function(
+	        		  ProjectForm){
+		
+		new ProjectForm({}, "projects");
+		
+	});
+	
+</script>
+</head>
+<body class="claro">
+<div>
+
+	<div id="projects" class="new-project">
+	
+	</div>
+	
+</div>
+</body>
+</html>

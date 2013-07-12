@@ -10,10 +10,18 @@ import com.zizibujuan.drip.server.doc.model.NewFileForm;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
 
+/**
+ * 文件管理
+ * @author jzw
+ * @since 0.0.1
+ */
 public class FileServlet extends BaseServlet {
 
 	private static final long serialVersionUID = 3134000969079271759L;
 
+	/**
+	 * 新建文件
+	 */
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -21,7 +29,9 @@ public class FileServlet extends BaseServlet {
 		
 		String pathInfo = req.getPathInfo();
 		if(pathInfo == null || pathInfo.equals("/")){
-			RequestUtil.fromJsonObject(req, NewFileForm.class);
+			NewFileForm newFileForm = RequestUtil.fromJsonObject(req, NewFileForm.class);
+			// TODO：往git仓库中写
+			// 1. 获取git仓库
 			return;
 		}
 		

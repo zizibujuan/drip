@@ -1,0 +1,47 @@
+define([ "dojo/_base/declare",
+         "dojo/on",
+         "dojo/request/xhr",
+         "dojo/dom-construct",
+         "dijit/_WidgetBase",
+         "dijit/_TemplatedMixin",
+         "dijit/_WidgetsInTemplateMixin",
+         "dojo/text!doc/templates/ProjectForm.html",
+         "dijit/form/ValidationTextBox",
+         "dijit/form/SimpleTextarea",
+         "drip/widget/form/AceEditor"
+         ], function(
+        		 declare,
+        		 on,
+        		 xhr,
+        		 domConstruct,
+        		 _WidgetBase,
+        		 _TemplatedMixin,
+        		 _WidgetsInTemplateMixin,
+        		 ProjectFormTemplate) {
+
+	return declare("doc.projects.ProjectForm", [_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin], {
+		
+		templateString: ProjectFormTemplate,
+		
+		postCreate: function(){
+			this.inherited(arguments);
+			
+			// 绑定事件
+			this.own(on(this.submitFile, "click", function(e){
+				var projectInfo = {
+					name: this.projectName.get("value"),
+					label: this.projectLabel.get("value"),
+					description: this.peojectDesc.get("value")
+				};
+				xhr.post("/projects/",{data:projectInfo}).then(function(data){
+					window.location.href = "/"; // TODO：跳转到项目列表页面
+				}, function(error){
+					// TODO:如果保存失败，则给出提示
+					console.error(error);
+				});
+			}));
+		}
+		
+	});
+	
+});
