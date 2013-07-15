@@ -1,11 +1,14 @@
 package com.zizibujuan.drip.server.dao.mysql;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
 import com.zizibujuan.drip.server.dao.UserBindDao;
+import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
+import com.zizibujuan.drip.server.util.dao.RowMapper;
 
 /**
  * 用户帐号绑定 数据访问实现类
@@ -53,6 +56,18 @@ public class UserBindDaoImpl extends AbstractDao implements UserBindDao {
 	@Override
 	public Map<String, Object> getRefUserMapperInfo(Long localUserId) {
 		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_REF_USER_INFO, localUserId, true);
+	}
+	
+	private static final String SQL_GET_REF_USER_ID = "SELECT " +
+			"a.BIND_USER_ID \"connectUserId\" " +
+			"FROM " +
+			"DRIP_USER_BIND a " +
+			"WHERE " +
+			"a.LOCAL_USER_ID=? AND " +
+			"a.REF_USER_INFO=?";
+	@Override
+	public Long getRefUserId(Long localUserId) {
+		return DatabaseUtil.queryForLong(getDataSource(), SQL_GET_REF_USER_ID, localUserId, true);
 	}
 	
 }

@@ -2,6 +2,7 @@ package com.zizibujuan.drip.server.dao;
 
 import java.util.Map;
 
+import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.util.OAuthConstants;
 
 /**
@@ -98,5 +99,14 @@ public interface UserDao {
 	 * @return 本网站用户的全局用户标识
 	 */
 	Long getLocalUserIdByDigitalId(Long digitalId);
+
+
+	/**
+	 * 根据本网站用户标识获取用户的基本信息。
+	 * 如果引用第三方用户信息，则获取第三方用户信息；否则获取本地用户信息
+	 * @param localUserId 为在本网站注册的用户，或者为第三方网站用户生成的本网站用户的用户标识
+	 * @return 基本用户信息，包括用户名，登录名，邮箱地址和数字帐号等
+	 */
+	UserInfo getBaseInfoByLocalUserId(Long localUserId);
 
 }

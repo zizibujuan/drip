@@ -9,6 +9,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.zizibujuan.dbaccess.mysql.service,
  com.zizibujuan.drip.server.dao,
  com.zizibujuan.drip.server.exception.dao,
+ com.zizibujuan.drip.server.model,
  com.zizibujuan.drip.server.util,
  com.zizibujuan.drip.server.util.dao,
  org.apache.commons.lang3,

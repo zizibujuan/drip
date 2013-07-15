@@ -17,7 +17,9 @@ import com.zizibujuan.drip.server.dao.UserAvatarDao;
 import com.zizibujuan.drip.server.dao.UserBindDao;
 import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.dao.UserRelationDao;
+import com.zizibujuan.drip.server.dao.mysql.rowmapper.UserInfoRowMapper;
 import com.zizibujuan.drip.server.exception.dao.DataAccessException;
+import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.util.OAuthConstants;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 
@@ -27,7 +29,9 @@ import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
  * @since 0.0.1
  */
 public class UserDaoImpl extends AbstractDao implements UserDao {
+	
 	private static final Logger logger = LoggerFactory.getLogger(UserDaoImpl.class);
+	
 	private UserRelationDao userRelationDao;
 	private UserBindDao userBindDao;
 	private UserAvatarDao userAvatarDao;
@@ -208,6 +212,19 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		return DatabaseUtil.queryForLong(getDataSource(), SQL_GET_LOCAL_USER_ID_BY_DIGITAL, digitalId);
 	}
 	
+	private static final String SQL_GET_USER_BY_DBID = SQL_GET_USER_FOR_SESSION + "WHERE DBID=?";
+	@Override
+	public UserInfo getBaseInfoByLocalUserId(Long localUserId) {
+		// 先查询是否引用第三方网站的用户信息，如果引用，则返回第三方网站的用户；
+		// 否则返回本网站用户信息
+		Long connectUserId = userBindDao.getRefUserId(localUserId);
+		
+		if(connectUserId == null){
+			connectUserId = localUserId;
+		}
+		return DatabaseUtil.queryForObject(getDataSource(), SQL_GET_USER_BY_DBID, new UserInfoRowMapper(), connectUserId);
+	}
+	
 	public void setUserRelationDao(UserRelationDao userRelationDao) {
 		logger.info("注入userRelationDao");
 		this.userRelationDao = userRelationDao;
@@ -284,5 +301,5 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			this.localUserStatisticsDao = null;
 		}
 	}
-	
+
 }

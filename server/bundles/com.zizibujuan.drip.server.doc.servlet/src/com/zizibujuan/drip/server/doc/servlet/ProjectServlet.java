@@ -14,6 +14,7 @@ import com.zizibujuan.drip.server.doc.service.ProjectService;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
+import com.zizibujuan.drip.server.util.servlet.UserSession;
 
 /**
  * 项目管理
@@ -40,7 +41,8 @@ public class ProjectServlet extends BaseServlet {
 		IPath path = (pathInfo == null ? Path.ROOT : new Path(pathInfo));
 		if(path.segmentCount() == 0){
 			ProjectInfo projectInfo = RequestUtil.fromJsonObject(req, ProjectInfo.class);
-			Long projectId = projectService.create(projectInfo);
+			Long localUserId = UserSession.getLocalUserId(req);
+			Long projectId = projectService.create(localUserId, projectInfo);
 			ResponseUtil.toHTML(req, resp, projectId.toString());
 			return;
 		}

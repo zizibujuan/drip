@@ -587,4 +587,28 @@ public abstract class DatabaseUtil {
 			closeConnection(con);
 		}
 	}
+	
+	public static <T> T queryForObject(DataSource ds, String sql, RowMapper<T> rowMapper, Object... inParams){
+		logger.debug("Query for object [" + sql + "]");
+		Connection con = null;
+		PreparedStatement pst = null;
+		ResultSet rst = null;
+		try{
+			con = ds.getConnection();
+			pst = con.prepareStatement(sql);
+			rst = pst.executeQuery();
+			if(rst.next()){
+				return rowMapper.mapRow(rst, 1);
+			}else{
+				return null;
+			}
+		}catch(SQLException e){
+			logger.error("查询sql出错，sql语句是:" + sql, e);
+			throw new DataAccessException(e);
+		}finally{
+			closeResultSet(rst);
+			closeStatement(pst);
+			closeConnection(con);
+		}
+	}
 }

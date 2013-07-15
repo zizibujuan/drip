@@ -40,6 +40,14 @@ public interface UserBindDao {
 	Map<String, Object> getRefUserMapperInfo(Long localUserId);
 	
 	/**
+	 * 获取引用的用户标识，这个用户标识是本网站为第三方网站用户生成的全局用户标识。
+	 * 注意，这里的引用是指使用第三方网站用户的基本信息
+	 * @param localUserId 本网站用户标识
+	 * @return 引用的为第三方网站用户生成的全局用户标识
+	 */
+	Long getRefUserId(Long localUserId);
+	
+	/**
 	 * 将外部网站的用户标识与本网站的用户进行绑定
 	 * @param conn 数据库链接
 	 * @param localUserId 对应的本网站用户标识，这里存储为本网站用户产生的全局用户标识
