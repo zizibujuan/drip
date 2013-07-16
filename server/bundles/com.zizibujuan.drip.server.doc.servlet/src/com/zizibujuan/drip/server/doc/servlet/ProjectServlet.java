@@ -27,7 +27,7 @@ public class ProjectServlet extends BaseServlet {
 
 	private ProjectService projectService;
 	public ProjectServlet(){
-		projectService = ServiceHolder.getDefault().getProjectServicee();
+		projectService = ServiceHolder.getDefault().getProjectService();
 	}
 	
 	/**

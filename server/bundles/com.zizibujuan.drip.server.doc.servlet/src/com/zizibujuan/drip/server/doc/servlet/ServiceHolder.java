@@ -43,7 +43,7 @@ public class ServiceHolder {
 		}
 	}
 
-	public ProjectService getProjectServicee() {
+	public ProjectService getProjectService() {
 		return this.projectService;
 	}
 }

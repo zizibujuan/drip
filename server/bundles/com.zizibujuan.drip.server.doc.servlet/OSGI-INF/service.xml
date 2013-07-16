@@ -4,15 +4,14 @@
 	deactivate="deactivate"
 	enabled="true"
 	name="com.zizibujuan.drip.server.doc.servlet.serviceHolder">
-	
    <implementation class="com.zizibujuan.drip.server.doc.servlet.ServiceHolder"/>
    
-   <reference 
-		bind="setProjectService" 
+	<reference 
+		bind="setProjectService"
 		unbind="unsetProjectService" 
 		cardinality="0..1" 
 		interface="com.zizibujuan.drip.server.doc.service.ProjectService" 
 		name="projectService" 
 		policy="dynamic" />
-
+		
 </scr:component>

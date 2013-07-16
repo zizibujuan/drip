@@ -175,5 +175,5 @@ public class ServiceHolder {
 	public UserRelationService getUserRelationService() {
 		return userRelationService;
 	}
-	
+
 }

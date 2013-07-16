@@ -70,5 +70,4 @@
 		name="userRelationService" 
 		policy="dynamic" />		
 		
-		
 </scr:component>
