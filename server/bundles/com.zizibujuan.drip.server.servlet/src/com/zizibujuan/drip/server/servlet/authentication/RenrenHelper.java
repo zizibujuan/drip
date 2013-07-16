@@ -59,6 +59,11 @@ public class RenrenHelper {
 		String redirectUri = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_REDIRECT_URL);
 		String renrenOAuthTokenEndPoint = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_OAUTH_TOKEN_END_POINT);
 		
+		String key = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_APP_KEY);
+		String secret = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_APP_SECRET);
+		RenrenApiConfig.renrenApiKey  = key;
+		RenrenApiConfig.renrenApiSecret = secret;
+		
 		Map<String,String> parameters = new HashMap<String, String>();
 		parameters.put("client_id",RenrenApiConfig.renrenApiKey);
 		parameters.put("client_secret", RenrenApiConfig.renrenApiSecret);

@@ -8,9 +8,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.renren.api.client.RenrenApiConfig;
 import com.zizibujuan.drip.server.service.ApplicationPropertyService;
-import com.zizibujuan.drip.server.util.OAuthConstants;
 
 /**
  * 启动bundle时,注入系统属性服务
@@ -41,11 +39,13 @@ public class Activator implements BundleActivator {
 			ApplicationPropertyService applicationPropertyService = this.context.getService(reference);
 			logger.info("applicationPropertyService In activator:"+applicationPropertyService);
 			// TODO:确保依赖的bundle被执行
-			String key = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_APP_KEY);
-			String secret = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_APP_SECRET);
+			// FIXME:因为执行到这里时，applicationPropertyDao为null，所以报错。
+			//		现在改为在RenrenHelper.java中每次都从数据库获取
+//			String key = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_APP_KEY);
+//			String secret = applicationPropertyService.getForString(OAuthConstants.KEY_RENREN_APP_SECRET);
 			
-			RenrenApiConfig.renrenApiKey  = key;
-			RenrenApiConfig.renrenApiSecret = secret;
+//			RenrenApiConfig.renrenApiKey  = key;
+//			RenrenApiConfig.renrenApiSecret = secret;
 			return applicationPropertyService;
 		}
 
