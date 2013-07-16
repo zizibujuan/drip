@@ -68,6 +68,9 @@ public class ProjectServiceImpl implements ProjectService {
 			//初始化commit
 			git.add().addFilepattern(".").call();
 			git.commit().setMessage("初始化提交").call();
+			
+			// TODO:需要一张表存储用户创建的项目列表，注意如果创建仓库失败，则不往project数据库中插入数据
+			// 获取直接通过目录结构获取？
 		} catch (GitAPIException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -75,7 +78,7 @@ public class ProjectServiceImpl implements ProjectService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// TODO:需要一张表存储用户创建的项目列表
+		
 		return null;
 	}
 

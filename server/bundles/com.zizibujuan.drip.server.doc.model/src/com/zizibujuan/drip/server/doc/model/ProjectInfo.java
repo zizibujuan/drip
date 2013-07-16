@@ -1,5 +1,7 @@
 package com.zizibujuan.drip.server.doc.model;
 
+import java.util.Date;
+
 /**
  * 项目信息
  * 
@@ -15,6 +17,10 @@ public class ProjectInfo {
 	private String label;
 	
 	private String description;
+	
+	private Long createUserId;
+	
+	private Date createTime;
 
 	/**
 	 * 获取项目标识
@@ -78,6 +84,40 @@ public class ProjectInfo {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	/**
+	 * 获取项目创建人标识。<br/>
+	 * 存放的是connectUserId，便于统计第三方用户创建项目的个数，
+	 * 比较不同网站来的用户创建项目的个数。
+	 * @return 项目创建人标识
+	 */
+	public Long getCreateUserId() {
+		return createUserId;
+	}
+
+	/**
+	 * 设置项目创建人标识
+	 * @param createUserId 项目创建人标识
+	 */
+	public void setCreateUserId(Long createUserId) {
+		this.createUserId = createUserId;
+	}
+
+	/**
+	 * 获取项目创建时间
+	 * @return 创建时间
+	 */
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	/**
+	 * 设置项目创建时间
+	 * @param createTime 项目创建时间
+	 */
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 	
 	
