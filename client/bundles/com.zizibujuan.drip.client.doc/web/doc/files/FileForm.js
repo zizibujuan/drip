@@ -1,6 +1,7 @@
 define([ "dojo/_base/declare",
          "dojo/_base/lang",
          "dojo/on",
+         "dojo/json",
          "dojo/request/xhr",
          "dojo/dom-construct",
          "dijit/_WidgetBase",
@@ -14,6 +15,7 @@ define([ "dojo/_base/declare",
         		 declare,
         		 lang,
         		 on,
+        		 JSON,
         		 xhr,
         		 domConstruct,
         		 _WidgetBase,
@@ -39,7 +41,7 @@ define([ "dojo/_base/declare",
 					extendDesc: this.extendDesc.get("value")
 				};
 				var jsonData = {fileInfo: fileInfo, commitInfo: commitInfo};
-				xhr.post("/files/",{data:jsonData}).then(function(data){
+				xhr.post("/files/",{data:JSON.stringify(jsonData)}).then(function(data){
 					window.location.href = "/"; // TODO：跳转到项目列表页面
 				}, function(error){
 					// TODO:如果保存失败，则给出提示
