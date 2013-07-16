@@ -227,10 +227,7 @@ public abstract class DatabaseUtil {
 	public static void addParams(PreparedStatement stmt, Object... params)
 			throws SQLException {
 		if(params != null){
-			int len = params.length;
-			for(int i = 0; i < len; i++){
-				stmt.setObject((i+1), params[i]);
-			}
+			setParams(stmt, params);
 		}
 	}
 	
@@ -489,10 +486,7 @@ public abstract class DatabaseUtil {
 		ResultSet rst = null;
 		try{
 			pst = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			int len = inParams.length;
-			for(int i = 0; i < len; i++){
-				pst.setObject((i+1), inParams[i]);
-			}
+			setParams(pst, inParams);
 			pst.executeUpdate();
 			rst = pst.getGeneratedKeys();    
 			rst.next();         
@@ -514,10 +508,7 @@ public abstract class DatabaseUtil {
 		ResultSet rst = null;
 		try{
 			pst = con.prepareStatement(sql);
-			int len = inParams.length;
-			for(int i = 0; i < len; i++){
-				pst.setObject((i+1), inParams[i]);
-			}
+			setParams(pst, inParams);
 			pst.executeUpdate();
 		}catch(SQLException e){
 			logger.error("更新sql出错，sql语句是:" + sql, e);
@@ -525,6 +516,14 @@ public abstract class DatabaseUtil {
 		}finally{
 			DatabaseUtil.closeResultSet(rst);
 			DatabaseUtil.closeStatement(pst);
+		}
+	}
+
+	private static void setParams(PreparedStatement pst, Object... inParams)
+			throws SQLException {
+		int len = inParams.length;
+		for(int i = 0; i < len; i++){
+			pst.setObject((i+1), inParams[i]);
 		}
 	}
 	
@@ -596,6 +595,7 @@ public abstract class DatabaseUtil {
 		try{
 			con = ds.getConnection();
 			pst = con.prepareStatement(sql);
+			setParams(pst, inParams);
 			rst = pst.executeQuery();
 			if(rst.next()){
 				return rowMapper.mapRow(rst, 1);
