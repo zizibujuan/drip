@@ -15,11 +15,13 @@ import org.eclipse.jgit.lib.StoredConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.zizibujuan.drip.server.dao.ApplicationPropertyDao;
 import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.doc.model.ProjectInfo;
 import com.zizibujuan.drip.server.doc.service.ProjectService;
 import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.util.Environment;
+import com.zizibujuan.drip.server.util.GitConstants;
 
 /**
  * 项目维护服务实现类
@@ -30,6 +32,7 @@ public class ProjectServiceImpl implements ProjectService {
 	private Logger logger = LoggerFactory.getLogger(ProjectServiceImpl.class);
 
 	private UserDao userDao;
+	private ApplicationPropertyDao applicationPropertyDao;
 	/**
 	 * 获取存放所有仓库的根目录（在系统参数中配置，该版本使用cm服务）,
 	 * 然后在根目录下的某个用户下创建一个项目仓库，并自动在这个仓库中创建一个readme文件，
@@ -44,7 +47,7 @@ public class ProjectServiceImpl implements ProjectService {
 		// TODO: 抽象用户接口
 		UserInfo userInfo = userDao.getBaseInfoByLocalUserId(localUserId);
 		// 首先确定放git仓库的根目录。
-		String root = getGitRoot();
+		String root = applicationPropertyDao.getForString(GitConstants.KEY_GIT_ROOT);
 		InitCommand command = new InitCommand();
 		// 还是使用项目名称作为仓库的名称，并将仓库放在用户标识（固定不变）下面
 		File directory = new File(root + userInfo.getName() + "/" + projectInfo.getName()); 
@@ -87,11 +90,6 @@ public class ProjectServiceImpl implements ProjectService {
 		config.setBoolean(ConfigConstants.CONFIG_CORE_SECTION, null, ConfigConstants.CONFIG_KEY_FILEMODE, false);
 		config.save();
 	}
-	
-	private String getGitRoot(){
-		// server  /mnt/drip_data
-		return "/home/jzw/git/mygit/";
-	}
 
 	public void setUserDao(UserDao userDao) {
 		logger.info("注入userDao");
@@ -102,6 +100,18 @@ public class ProjectServiceImpl implements ProjectService {
 		if (this.userDao == userDao) {
 			logger.info("注销userDao");
 			this.userDao = null;
+		}
+	}
+	
+	public void setApplicationPropertyDao(ApplicationPropertyDao applicationPropertyDao) {
+		logger.info("注入applicationPropertyDao");
+		this.applicationPropertyDao = applicationPropertyDao;
+	}
+
+	public void unsetApplicationPropertyDao(ApplicationPropertyDao applicationPropertyDao) {
+		if (this.applicationPropertyDao == applicationPropertyDao) {
+			logger.info("注销applicationPropertyDao");
+			this.applicationPropertyDao = null;
 		}
 	}
 }
