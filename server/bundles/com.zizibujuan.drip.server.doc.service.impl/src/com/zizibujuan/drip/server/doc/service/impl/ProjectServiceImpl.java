@@ -64,8 +64,9 @@ public class ProjectServiceImpl implements ProjectService {
 			file.createNewFile();
 			FileWriter fw = new FileWriter(file);
 			IOUtils.write(projectInfo.getName() + Environment.newLine() + StringUtils.repeat('=', 10),fw);
+			fw.close();
 			//初始化commit
-			git.add().call();
+			git.add().addFilepattern(".").call();
 			git.commit().setMessage("初始化提交").call();
 		} catch (GitAPIException e) {
 			// TODO Auto-generated catch block
@@ -74,6 +75,7 @@ public class ProjectServiceImpl implements ProjectService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		// TODO:需要一张表存储用户创建的项目列表
 		return null;
 	}
 

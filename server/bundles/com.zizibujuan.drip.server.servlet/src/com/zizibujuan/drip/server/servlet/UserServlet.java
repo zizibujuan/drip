@@ -46,6 +46,7 @@ public class UserServlet extends BaseServlet {
 	 * </pre>
 	 * 密码加密：MD5+salt
 	 * TODO:注册用户，需要从邮箱中激活（还差一步功能）
+	 * FIXME:注册用户的时候，用户名不能与email相同
 	 */
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
