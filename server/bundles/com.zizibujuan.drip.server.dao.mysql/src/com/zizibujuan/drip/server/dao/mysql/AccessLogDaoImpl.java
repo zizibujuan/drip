@@ -1,6 +1,7 @@
 package com.zizibujuan.drip.server.dao.mysql;
 
 import com.zizibujuan.drip.server.dao.AccessLogDao;
+import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 
 /**

@@ -1,14 +1,12 @@
 package com.zizibujuan.drip.server.dao.mysql;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
 import com.zizibujuan.drip.server.dao.UserBindDao;
-import com.zizibujuan.drip.server.model.UserInfo;
+import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
-import com.zizibujuan.drip.server.util.dao.RowMapper;
 
 /**
  * 用户帐号绑定 数据访问实现类

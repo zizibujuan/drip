@@ -1,4 +1,4 @@
-package com.zizibujuan.drip.server.dao.mysql;
+package com.zizibujuan.dbaccess.mysql.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,14 +10,14 @@ import com.zizibujuan.dbaccess.mysql.service.DataSourceService;
  * @author jzw
  * @since 0.0.1
  */
-public class DaoHolder {
+public class DataSourceHolder {
 
 	private static final Logger logger = LoggerFactory
-			.getLogger(DaoHolder.class);
+			.getLogger(DataSourceHolder.class);
 
-	private static DaoHolder singleton;
+	private static DataSourceHolder singleton;
 
-	public static DaoHolder getDefault() {
+	public static DataSourceHolder getDefault() {
 		return singleton;
 	}
 
@@ -31,17 +31,20 @@ public class DaoHolder {
 	
 	
 	private DataSourceService dataSourceService;
+	
 	public void unsetDataSourceService(DataSourceService dataSourceService) {
 		logger.info("注销datasourceService");
 		if(this.dataSourceService == dataSourceService){
 			this.dataSourceService = null;
 		}
 	}
+	
 	public void setDataSourceService(DataSourceService dataSourceService) {
 		logger.info("注入datasourceService");
 		logger.info(dataSourceService.toString());
 		this.dataSourceService = dataSourceService;
 	}
+	
 	public DataSourceService getDataSourceService(){
 		return this.dataSourceService;
 	}

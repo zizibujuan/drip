@@ -611,4 +611,26 @@ public abstract class DatabaseUtil {
 			closeConnection(con);
 		}
 	}
+	
+	public static <T> Long update(DataSource ds, String sql, PreparedStatementSetter pss){
+		Connection con = null;
+		PreparedStatement pst = null;
+		ResultSet rst = null;
+		try {
+			con = ds.getConnection();
+			con.setAutoCommit(false);
+			pst = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			pss.setValues(pst);
+			rst = pst.getGeneratedKeys();    
+			rst.next();   
+			con.commit();
+			return rst.getLong(1);
+		}catch(SQLException e){
+			logger.error("update sql出错，sql语句是:" + sql, e);
+			safeRollback(con);
+			throw new DataAccessException(e);
+		}finally{
+			safeClose(con, rst, pst);
+		}
+	}
 }

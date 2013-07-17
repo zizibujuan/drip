@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.Map;
 
 import com.zizibujuan.drip.server.dao.LocalUserStatisticsDao;
+import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 
 /**

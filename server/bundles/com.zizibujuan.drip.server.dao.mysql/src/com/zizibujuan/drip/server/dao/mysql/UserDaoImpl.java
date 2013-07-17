@@ -21,6 +21,7 @@ import com.zizibujuan.drip.server.dao.mysql.rowmapper.UserInfoRowMapper;
 import com.zizibujuan.drip.server.exception.dao.DataAccessException;
 import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.util.OAuthConstants;
+import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 
 /**

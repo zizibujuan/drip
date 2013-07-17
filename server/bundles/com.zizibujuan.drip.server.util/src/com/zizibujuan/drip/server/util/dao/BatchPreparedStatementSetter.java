@@ -12,7 +12,7 @@ public interface BatchPreparedStatementSetter {
 
 	/**
 	 * 设置参数值
-	 * @param ps 
+	 * @param ps
 	 * @param index 数值索引，从零开始
 	 * @throws SQLException
 	 */

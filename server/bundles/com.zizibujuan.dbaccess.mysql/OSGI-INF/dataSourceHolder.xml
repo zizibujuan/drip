@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" enabled="true" name="com.zizibujuan.drip.server.dao.mysql.daoHolder">
-   <implementation class="com.zizibujuan.drip.server.dao.mysql.DaoHolder"/>
+   <implementation class="com.zizibujuan.dbaccess.mysql.service.DataSourceHolder"/>
    <reference 
 	     bind="setDataSourceService" 
 	     unbind="unsetDataSourceService" 

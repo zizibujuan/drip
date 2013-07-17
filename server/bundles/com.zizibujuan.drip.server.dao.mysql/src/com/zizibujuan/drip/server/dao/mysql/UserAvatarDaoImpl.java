@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.dao.UserAvatarDao;
+import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.BatchPreparedStatementSetter;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 

@@ -1,6 +1,8 @@
-package com.zizibujuan.drip.server.dao.mysql;
+package com.zizibujuan.drip.server.util.dao;
 
 import javax.sql.DataSource;
+
+import com.zizibujuan.dbaccess.mysql.service.DataSourceHolder;
 
 /**
  * 所有dao实现类的基类，提供注入和注销DataSourceService的功能，
@@ -10,6 +12,6 @@ import javax.sql.DataSource;
  */
 public abstract class AbstractDao {
 	protected DataSource getDataSource(){
-		return DaoHolder.getDefault().getDataSourceService().getDataSource();
+		return DataSourceHolder.getDefault().getDataSourceService().getDataSource();
 	}
 }
