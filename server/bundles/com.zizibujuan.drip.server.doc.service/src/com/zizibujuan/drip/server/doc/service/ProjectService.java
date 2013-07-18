@@ -11,9 +11,18 @@ public interface ProjectService {
 
 	/**
 	 * 新建一个新的项目
-	 * @param localUserId 为在本网站注册的用户，或者为第三方网站用户生成的本网站用户标识
+	 * @param localUserId 本网站用户标识，这里不管是用哪个网站的用户登录的，都使用关联的本网站用户信息。
+	 * 			这样就可以保证所有的项目都放在一个用户目录下面。
 	 * @param projectInfo 项目信息
 	 * @return 新项目的标识
 	 */
 	Long create(Long localUserId, ProjectInfo projectInfo);
+
+	/**
+	 * 判断某用户是否已经使用了指定的项目名称。一个用户不能创建两个名称相同的项目。
+	 * @param localUserId 用户标识
+	 * @param projectName 项目名称
+	 * @return 如果已经使用则返回<code>true</code>；否则返回<code>false</code>
+	 */
+	boolean nameIsUsed(Long localUserId, String projectName);
 }

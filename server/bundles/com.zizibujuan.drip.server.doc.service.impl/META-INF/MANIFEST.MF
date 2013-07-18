@@ -7,6 +7,7 @@ Bundle-Activator: com.zizibujuan.drip.server.doc.service.impl.Activator
 Bundle-Vendor: zizibujuan.com
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.zizibujuan.drip.server.dao,
+ com.zizibujuan.drip.server.doc.dao,
  com.zizibujuan.drip.server.doc.model,
  com.zizibujuan.drip.server.doc.service,
  com.zizibujuan.drip.server.model,

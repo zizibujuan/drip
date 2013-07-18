@@ -41,8 +41,15 @@ public class ProjectServlet extends BaseServlet {
 		IPath path = (pathInfo == null ? Path.ROOT : new Path(pathInfo));
 		if(path.segmentCount() == 0){
 			ProjectInfo projectInfo = RequestUtil.fromJsonObject(req, ProjectInfo.class);
-			// TODO:判断项目名称是否已经被使用
+			// 判断项目名称是否已经被使用
 			Long localUserId = UserSession.getLocalUserId(req);
+			if(projectService.nameIsUsed(localUserId, projectInfo.getName())){
+				// TODO:统一返回json对象
+				// 前置条件校验失败
+				ResponseUtil.toHTML(req, resp, "", HttpServletResponse.SC_PRECONDITION_FAILED);
+				return;
+			}
+			
 			Long projectId = projectService.create(localUserId, projectInfo);
 			ResponseUtil.toHTML(req, resp, projectId.toString());
 			return;

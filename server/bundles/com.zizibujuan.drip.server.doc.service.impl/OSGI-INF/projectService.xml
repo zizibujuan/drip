@@ -17,9 +17,18 @@
 		interface="com.zizibujuan.drip.server.dao.ApplicationPropertyDao" 
 		name="applicationPropertyDao" 
 		policy="dynamic"/>
- <service>
-    <provide interface="com.zizibujuan.drip.server.doc.service.ProjectService"/>
- </service>
+
+	<reference 
+		bind="setProjectDao" 
+		unbind="unsetProjectDao" 
+		cardinality="0..1" 
+		interface="com.zizibujuan.drip.server.doc.dao.ProjectDao" 
+		name="projectDao" 
+		policy="dynamic"/>
+				
+	 <service>
+	    <provide interface="com.zizibujuan.drip.server.doc.service.ProjectService"/>
+	 </service>
 		
 	
 </scr:component>

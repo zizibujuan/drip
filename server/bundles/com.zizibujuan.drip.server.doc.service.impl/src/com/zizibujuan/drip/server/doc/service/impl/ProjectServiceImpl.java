@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.dao.ApplicationPropertyDao;
 import com.zizibujuan.drip.server.dao.UserDao;
+import com.zizibujuan.drip.server.doc.dao.ProjectDao;
 import com.zizibujuan.drip.server.doc.model.ProjectInfo;
 import com.zizibujuan.drip.server.doc.service.ProjectService;
 import com.zizibujuan.drip.server.model.UserInfo;
@@ -33,6 +34,8 @@ public class ProjectServiceImpl implements ProjectService {
 
 	private UserDao userDao;
 	private ApplicationPropertyDao applicationPropertyDao;
+	private ProjectDao projectDao;
+	
 	/**
 	 * 获取存放所有仓库的根目录（在系统参数中配置，该版本使用cm服务）,
 	 * 然后在根目录下的某个用户下创建一个项目仓库，并自动在这个仓库中创建一个readme文件，
@@ -69,8 +72,10 @@ public class ProjectServiceImpl implements ProjectService {
 			git.add().addFilepattern(".").call();
 			git.commit().setMessage("初始化提交").call();
 			
-			// TODO:需要一张表存储用户创建的项目列表，注意如果创建仓库失败，则不往project数据库中插入数据
-			// 获取直接通过目录结构获取？
+			// 需要一张表存储用户创建的项目列表，注意如果创建仓库失败，则不往project数据库中插入数据
+			// 获取直接通过目录结构获取,当前是将元数据存到数据库中，然后根据数据库中的信息判断。
+			projectInfo.setCreateUserId(localUserId);
+			projectDao.create(projectInfo);
 		} catch (GitAPIException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -80,6 +85,12 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		
 		return null;
+	}
+	
+	@Override
+	public boolean nameIsUsed(Long localUserId, String projectName) {
+		ProjectInfo projectInfo = projectDao.get(localUserId, projectName);
+		return projectInfo == null ? false : true;
 	}
 
 	private void configGit(UserInfo userInfo, Git git) throws IOException {
@@ -95,7 +106,7 @@ public class ProjectServiceImpl implements ProjectService {
 		config.setBoolean(ConfigConstants.CONFIG_CORE_SECTION, null, ConfigConstants.CONFIG_KEY_FILEMODE, false);
 		config.save();
 	}
-
+	
 	public void setUserDao(UserDao userDao) {
 		logger.info("注入userDao");
 		this.userDao = userDao;
@@ -119,4 +130,17 @@ public class ProjectServiceImpl implements ProjectService {
 			this.applicationPropertyDao = null;
 		}
 	}
+	
+	public void setProjectDao(ProjectDao projectDao) {
+		logger.info("注入projectDao");
+		this.projectDao = projectDao;
+	}
+
+	public void unsetProjectDao(ProjectDao projectDao) {
+		if (this.projectDao == projectDao) {
+			logger.info("注销projectDao");
+			this.projectDao = null;
+		}
+	}
+	
 }

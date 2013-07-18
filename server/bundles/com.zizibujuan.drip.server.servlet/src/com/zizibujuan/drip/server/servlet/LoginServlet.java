@@ -48,6 +48,14 @@ public class LoginServlet extends BaseServlet {
 		oAuthUserMapService = ServiceHolder.getDefault().getUserBindService();
 	}
 
+	/**
+	 * FIXME：代码应遵循以下逻辑，第三方用户只是用来登录，登录之后就关联到本地用户，后面所有的操作都
+	 * 记录在本地用户的头上，而不记录在第三方用户的头上。
+	 * 弊端，就是无法分析从哪个网站登录的用户做了哪些事情；但是如果这样做的话，就会让查询用户信息时的逻辑变得很复杂
+	 * 如何抉择呢？
+	 * 
+	 * 第一版本先实现复杂的情况，等后续实际运行一段时间之后再定夺。
+	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
