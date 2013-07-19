@@ -1,6 +1,7 @@
 package com.zizibujuan.drip.server.doc.servlet;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -55,6 +56,21 @@ public class ProjectServlet extends BaseServlet {
 			return;
 		}
 		super.doPost(req, resp);
+	}
+
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		traceRequest(req);
+		String pathInfo = req.getPathInfo();
+		IPath path = (pathInfo == null ? Path.ROOT : new Path(pathInfo));
+		if(path.segmentCount() == 0){
+			Long localUserId = UserSession.getLocalUserId(req);
+			List<ProjectInfo> myProjects = projectService.get(localUserId);
+			ResponseUtil.toJSON(req, resp, myProjects);
+			return;
+		}
+		super.doGet(req, resp);
 	}
 
 	

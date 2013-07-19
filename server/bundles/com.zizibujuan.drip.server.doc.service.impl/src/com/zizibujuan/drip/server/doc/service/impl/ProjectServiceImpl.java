@@ -3,6 +3,7 @@ package com.zizibujuan.drip.server.doc.service.impl;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -92,6 +93,11 @@ public class ProjectServiceImpl implements ProjectService {
 		ProjectInfo projectInfo = projectDao.get(localUserId, projectName);
 		return projectInfo == null ? false : true;
 	}
+	
+	@Override
+	public List<ProjectInfo> get(Long localUserId) {
+		return projectDao.get(localUserId);
+	}
 
 	private void configGit(UserInfo userInfo, Git git) throws IOException {
 		StoredConfig config = git.getRepository().getConfig();
@@ -142,5 +148,5 @@ public class ProjectServiceImpl implements ProjectService {
 			this.projectDao = null;
 		}
 	}
-	
+
 }

@@ -12,3 +12,4 @@ Import-Package: com.zizibujuan.drip.server.doc.dao,
  org.apache.commons.lang3,
  org.apache.commons.lang3.time,
  org.osgi.framework;version="1.3.0"
+Service-Component: OSGI-INF/*.xml

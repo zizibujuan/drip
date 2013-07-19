@@ -633,4 +633,26 @@ public abstract class DatabaseUtil {
 			safeClose(con, rst, pst);
 		}
 	}
+	
+	public static <T> List<T> query(DataSource ds, String sql, PreparedStatementSetter pss, RowMapper<T> rowMapper){
+		List<T> result = new ArrayList<T>();
+		Connection con = null;
+		PreparedStatement pst = null;
+		ResultSet rst = null;
+		try {
+			con = ds.getConnection();
+			pst = con.prepareStatement(sql);
+			pss.setValues(pst);
+			rst = pst.executeQuery();
+			while(rst.next()){
+				T t = rowMapper.mapRow(rst, 1);
+				result.add(t);
+			}
+		}catch(SQLException e){
+			throw new DataAccessException(e);
+		}finally{
+			safeClose(con, rst, pst);
+		}
+		return result;
+	}
 }

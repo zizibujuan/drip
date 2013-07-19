@@ -1,5 +1,7 @@
 package com.zizibujuan.drip.server.doc.dao;
 
+import java.util.List;
+
 import com.zizibujuan.drip.server.doc.model.ProjectInfo;
 
 /**
@@ -27,4 +29,12 @@ public interface ProjectDao {
 	 * @return 项目信息，如果找不到则返回null
 	 */
 	ProjectInfo get(Long createUserId, String projectName);
+
+	/**
+	 * 获取指定用户发起的项目列表
+	 * 
+	 * @param createUserId 创建用户标识
+	 * @return 项目列表，如果没有则返回空的list
+	 */
+	List<ProjectInfo> get(Long createUserId);
 }
