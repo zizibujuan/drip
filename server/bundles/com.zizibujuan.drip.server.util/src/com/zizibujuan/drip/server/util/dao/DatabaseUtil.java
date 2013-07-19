@@ -465,9 +465,9 @@ public abstract class DatabaseUtil {
 				pst.setObject(i+1, inParams[i]);
 			}
 			pst.executeUpdate();
-			ResultSet rs = pst.getGeneratedKeys();    
-			rs.next();         
-			result = rs.getLong(1); 
+			rst = pst.getGeneratedKeys();    
+			rst.next();         
+			result = rst.getLong(1); 
 			con.commit();
 			return result;
 		}catch(SQLException e){
@@ -616,15 +616,17 @@ public abstract class DatabaseUtil {
 		Connection con = null;
 		PreparedStatement pst = null;
 		ResultSet rst = null;
+		Long result = null;
 		try {
 			con = ds.getConnection();
 			con.setAutoCommit(false);
 			pst = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			pss.setValues(pst);
+			pst.executeUpdate();
 			rst = pst.getGeneratedKeys();    
-			rst.next();   
+			rst.next();
+			result = rst.getLong(1);
 			con.commit();
-			return rst.getLong(1);
 		}catch(SQLException e){
 			logger.error("update sql出错，sql语句是:" + sql, e);
 			safeRollback(con);
@@ -632,6 +634,7 @@ public abstract class DatabaseUtil {
 		}finally{
 			safeClose(con, rst, pst);
 		}
+		return result;
 	}
 	
 	public static <T> List<T> query(DataSource ds, String sql, PreparedStatementSetter pss, RowMapper<T> rowMapper){

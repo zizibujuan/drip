@@ -318,3 +318,9 @@ border-bottom-right-radius: 4px;
 .project-list {
 list-style: none;
 }
+
+.box-header .new-project {
+	float: right;
+	margin-top: 4px;
+	margin-right: 4px;
+	font-size: 11px;
