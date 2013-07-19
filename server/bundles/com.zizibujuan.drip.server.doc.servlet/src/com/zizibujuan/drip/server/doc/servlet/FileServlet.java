@@ -30,8 +30,10 @@ public class FileServlet extends BaseServlet {
 		String pathInfo = req.getPathInfo();
 		if(pathInfo == null || pathInfo.equals("/")){
 			NewFileForm newFileForm = RequestUtil.fromJsonObject(req, NewFileForm.class);
+			// 判断文件名是否被使用
 			// TODO：往git仓库中写
 			// 1. 获取git仓库
+			
 			return;
 		}
 		

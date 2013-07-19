@@ -7,8 +7,17 @@ package com.zizibujuan.drip.server.doc.model;
  * @since 0.0.1
  */
 public class NewFileForm {
+	private ProjectInfo projectInfo;
 	private FileInfo fileInfo;
 	private CommitInfo commitInfo;
+
+	public ProjectInfo getProjectInfo() {
+		return projectInfo;
+	}
+
+	public void setProjectInfo(ProjectInfo projectInfo) {
+		this.projectInfo = projectInfo;
+	}
 
 	public FileInfo getFileInfo() {
 		return fileInfo;

@@ -10,6 +10,8 @@ public class FileInfo {
 	
 	private Long id;
 	
+	private String path;
+	
 	private String name;
 	
 	private String content;
@@ -31,8 +33,24 @@ public class FileInfo {
 	}
 
 	/**
-	 * 获取文件名
-	 * @return 文件名
+	 * 获取文件相对项目根目录的路径，不包含文件名
+	 * @return 文件所在目录
+	 */
+	public String getPath() {
+		return path;
+	}
+
+	/**
+	 * 设置文件相对项目根目录的路径，包含文件名
+	 * @param path 文件完整路径
+	 */
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	/**
+	 * 获取文件相对项目根目录的路径，包含文件名
+	 * @return 文件完整路径
 	 */
 	public String getName() {
 		return name;
