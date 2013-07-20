@@ -20,6 +20,8 @@ public class ProjectInfo {
 	
 	private Long createUserId;
 	
+	private String createUserName;
+	
 	private Date createTime;
 
 	/**
@@ -102,6 +104,22 @@ public class ProjectInfo {
 	 */
 	public void setCreateUserId(Long createUserId) {
 		this.createUserId = createUserId;
+	}
+
+	/**
+	 * 获取创建人用户名，这个用户名全局唯一
+	 * @return 创建人用户名
+	 */
+	public String getCreateUserName() {
+		return createUserName;
+	}
+
+	/**
+	 * 设置创建人用户名
+	 * @param createUserName 创建人用户名
+	 */
+	public void setCreateUserName(String createUserName) {
+		this.createUserName = createUserName;
 	}
 
 	/**
