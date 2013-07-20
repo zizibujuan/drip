@@ -69,6 +69,23 @@ public class ProjectServlet extends BaseServlet {
 			List<ProjectInfo> myProjects = projectService.get(localUserId);
 			ResponseUtil.toJSON(req, resp, myProjects);
 			return;
+		}else if(path.segmentCount() == 2){
+			Long userId = Long.valueOf(path.segment(0));
+			String projectName = path.segment(1);
+			// 获取项目根目录下的内容
+//			IFileStore rootStore = EFS.getLocalFileSystem().getStore(location);
+//			try {
+//				rootStore.mkdir(EFS.NONE, null);
+//				rootStoreURI = rootStore.toURI();
+//			} catch (CoreException e) {
+//				throw new RuntimeException("Instance location is read only: " + rootStore, e); //$NON-NLS-1$
+//			}
+			
+			
+			return;
+		}else if(path.segmentCount() > 2){
+			// 获取项目某个文件夹下的内容
+			return;
 		}
 		super.doGet(req, resp);
 	}

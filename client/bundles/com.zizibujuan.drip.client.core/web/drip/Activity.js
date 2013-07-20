@@ -380,7 +380,7 @@ define(["dojo/_base/declare",
 				 console.log("个人首页的活动列表：",items);
 				 this.domNode.innerHTML = "";
 				 array.forEach(items, lang.hitch(this,function(item, index){
-					 debugger;
+					 
 					 var node = new ActivityNode({
 						 data : item
 					 });
