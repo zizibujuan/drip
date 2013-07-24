@@ -4,7 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
- * 为对象设置值的回调接口
+ * 为{@link PreparedStatement}设置参数
  * @author jzw
  * @since 0.0.1
  */

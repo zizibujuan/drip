@@ -587,6 +587,14 @@ public abstract class DatabaseUtil {
 		}
 	}
 	
+	/**
+	 * 查询出单条记录，并将其转换为pojo对象
+	 * @param ds 数据库
+	 * @param sql sql语句
+	 * @param rowMapper 返回列映射器
+	 * @param inParams 输入参数
+	 * @return pojo对象
+	 */
 	public static <T> T queryForObject(DataSource ds, String sql, RowMapper<T> rowMapper, Object... inParams){
 		logger.debug("Query for object [" + sql + "]");
 		Connection con = null;
@@ -606,13 +614,48 @@ public abstract class DatabaseUtil {
 			logger.error("查询sql出错，sql语句是:" + sql, e);
 			throw new DataAccessException(e);
 		}finally{
-			closeResultSet(rst);
-			closeStatement(pst);
-			closeConnection(con);
+			safeClose(con, rst, pst);
 		}
 	}
 	
-	public static <T> Long update(DataSource ds, String sql, PreparedStatementSetter pss){
+	/**
+	 * 查询多条记录，并将其转换为pojo对象，存放在{@link List}中
+	 * @param ds 数据库
+	 * @param sql sql语句
+	 * @param pss 参数设置器
+	 * @param rowMapper 返回列映射器
+	 * @return pojo对象列表，如果没有值，则返回空的列表
+	 */
+	public static <T> List<T> query(DataSource ds, String sql, PreparedStatementSetter pss, RowMapper<T> rowMapper){
+		List<T> result = new ArrayList<T>();
+		Connection con = null;
+		PreparedStatement pst = null;
+		ResultSet rst = null;
+		try {
+			con = ds.getConnection();
+			pst = con.prepareStatement(sql);
+			pss.setValues(pst);
+			rst = pst.executeQuery();
+			while(rst.next()){
+				T t = rowMapper.mapRow(rst, 1);
+				result.add(t);
+			}
+		}catch(SQLException e){
+			throw new DataAccessException(e);
+		}finally{
+			safeClose(con, rst, pst);
+		}
+		return result;
+	}
+	
+	/**
+	 * 插入新的记录
+	 * @param ds 数据库
+	 * @param sql sql语句
+	 * @param pss 参数设置器
+	 * @return 新增记录的标识
+	 */
+	public static <T> Long insert(DataSource ds, String sql, PreparedStatementSetter pss){
 		Connection con = null;
 		PreparedStatement pst = null;
 		ResultSet rst = null;
@@ -637,24 +680,30 @@ public abstract class DatabaseUtil {
 		return result;
 	}
 	
-	public static <T> List<T> query(DataSource ds, String sql, PreparedStatementSetter pss, RowMapper<T> rowMapper){
-		List<T> result = new ArrayList<T>();
+	/**
+	 * 更新或删除记录
+	 * @param ds 数据库
+	 * @param sql sql语句
+	 * @param pss 参数设置器
+	 * @return 影响的行数
+	 */
+	public static <T> int update(DataSource ds, String sql, PreparedStatementSetter pss){
 		Connection con = null;
 		PreparedStatement pst = null;
-		ResultSet rst = null;
+		int result = 0;
 		try {
 			con = ds.getConnection();
+			con.setAutoCommit(false);
 			pst = con.prepareStatement(sql);
 			pss.setValues(pst);
-			rst = pst.executeQuery();
-			while(rst.next()){
-				T t = rowMapper.mapRow(rst, 1);
-				result.add(t);
-			}
+			result = pst.executeUpdate();
+			con.commit();
 		}catch(SQLException e){
+			logger.error("update sql出错，sql语句是:" + sql, e);
+			safeRollback(con);
 			throw new DataAccessException(e);
 		}finally{
-			safeClose(con, rst, pst);
+			safeClose(con, pst);
 		}
 		return result;
 	}
