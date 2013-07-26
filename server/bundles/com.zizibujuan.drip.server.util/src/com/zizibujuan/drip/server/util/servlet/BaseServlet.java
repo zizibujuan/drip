@@ -1,13 +1,22 @@
 package com.zizibujuan.drip.server.util.servlet;
 
+import java.io.IOException;
 import java.util.Enumeration;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.zizibujuan.drip.server.util.Activator;
+import com.zizibujuan.drip.server.util.HttpConstants;
 import com.zizibujuan.drip.server.util.PageInfo;
 
 /**
@@ -59,5 +68,54 @@ public class BaseServlet extends HttpServlet {
 			return new PageInfo(range);
 		}
 		return null;
+	}
+	
+	protected IPath getPath(HttpServletRequest req){
+		String pathInfo = req.getPathInfo();
+		return (pathInfo == null ? Path.ROOT : new Path(pathInfo));
+	}
+	
+	/**
+	 * Generic handler for exceptions.
+	 */
+	protected void handleException(HttpServletResponse resp, IStatus error) throws ServletException {
+		int httpCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+		ServerStatus serverStatus;
+		if (error instanceof ServerStatus) {
+			serverStatus = (ServerStatus) error;
+			httpCode = serverStatus.getHttpCode();
+		} else {
+			serverStatus = new ServerStatus(error, httpCode);
+		}
+		resp.setCharacterEncoding("UTF-8");
+		resp.setStatus(httpCode);
+		resp.setContentType(HttpConstants.CONTENT_TYPE_JSON);
+		try {
+			resp.getWriter().print(serverStatus.toJSONString());
+		} catch (IOException ioe) {
+			//just throw a servlet exception
+			throw new ServletException(error.getMessage(), error.getException());
+		}
+	}
+
+	/**
+	 * Generic handler for exceptions.
+	 */
+	protected void handleException(HttpServletResponse resp, IStatus status, int httpCode) throws ServletException {
+		handleException(resp, new ServerStatus(status, httpCode));
+	}
+
+	/**
+	 * Generic handler for exceptions. 
+	 */
+	protected void handleException(HttpServletResponse resp, String msg, Exception e) throws ServletException {
+		handleException(resp, msg, e, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+	}
+
+	/**
+	 * Generic handler for exceptions. 
+	 */
+	protected void handleException(HttpServletResponse resp, String msg, Exception e, int httpCode) throws ServletException {
+		handleException(resp, new Status(IStatus.ERROR, Activator.PI_SERVER_SERVLETS, msg, e), httpCode);
 	}
 }

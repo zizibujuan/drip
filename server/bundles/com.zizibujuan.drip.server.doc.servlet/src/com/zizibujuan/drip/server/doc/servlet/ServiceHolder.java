@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.doc.service.ProjectService;
+import com.zizibujuan.drip.server.service.ApplicationPropertyService;
 
 
 /**
@@ -45,5 +46,26 @@ public class ServiceHolder {
 
 	public ProjectService getProjectService() {
 		return this.projectService;
+	}
+	
+	/**
+	 * 注意在com.zizibujuan.drip.server.servlet.ServiceHolder中也有注入。
+	 * FIXME:应该将这个服务放到通用项目中，这个bundle与com.zizibujuan.drip.server.service不应该有依赖关系
+	 */
+	private ApplicationPropertyService applicationPropertyService;
+	public ApplicationPropertyService getApplicationPropertyService() {
+		return applicationPropertyService;
+	}
+	public void setApplicationPropertyService(ApplicationPropertyService applicationPropertyService) {
+		logger.info("注入ApplicationPropertyService");
+		logger.info("applicationPropertyService In ServiceHolder:"+applicationPropertyService);
+		this.applicationPropertyService = applicationPropertyService;
+	}
+
+	public void unsetApplicationPropertyService(ApplicationPropertyService applicationPropertyService) {
+		logger.info("注销ApplicationPropertyService");
+		if (this.applicationPropertyService == applicationPropertyService) {
+			this.applicationPropertyService = null;
+		}
 	}
 }

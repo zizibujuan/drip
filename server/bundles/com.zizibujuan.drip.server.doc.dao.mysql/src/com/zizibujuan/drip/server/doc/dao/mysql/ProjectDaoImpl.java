@@ -34,7 +34,7 @@ public class ProjectDaoImpl extends AbstractDao implements ProjectDao {
 			+ "(?,?,?,?,?)";
 	@Override
 	public Long create(final ProjectInfo projectInfo) {
-		return DatabaseUtil.update(getDataSource(), SQL_INSERT_PROJECT, new PreparedStatementSetter() {
+		return DatabaseUtil.insert(getDataSource(), SQL_INSERT_PROJECT, new PreparedStatementSetter() {
 			@Override
 			public void setValues(PreparedStatement ps) throws SQLException {
 				ps.setString(1, projectInfo.getName());

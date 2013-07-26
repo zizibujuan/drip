@@ -1,17 +1,25 @@
 package com.zizibujuan.drip.server.doc.servlet;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 
 import com.zizibujuan.drip.server.doc.model.ProjectInfo;
 import com.zizibujuan.drip.server.doc.service.ProjectService;
+import com.zizibujuan.drip.server.service.ApplicationPropertyService;
+import com.zizibujuan.drip.server.util.GitConstants;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
@@ -27,8 +35,11 @@ public class ProjectServlet extends BaseServlet {
 	private static final long serialVersionUID = -2474647543970725994L;
 
 	private ProjectService projectService;
+	private ApplicationPropertyService applicationPropertyService;
+	
 	public ProjectServlet(){
 		projectService = ServiceHolder.getDefault().getProjectService();
+		applicationPropertyService = ServiceHolder.getDefault().getApplicationPropertyService();
 	}
 	
 	/**
@@ -38,8 +49,7 @@ public class ProjectServlet extends BaseServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		traceRequest(req);
-		String pathInfo = req.getPathInfo();
-		IPath path = (pathInfo == null ? Path.ROOT : new Path(pathInfo));
+		IPath path = getPath(req);
 		if(path.segmentCount() == 0){
 			ProjectInfo projectInfo = RequestUtil.fromJsonObject(req, ProjectInfo.class);
 			// 判断项目名称是否已经被使用
@@ -62,29 +72,47 @@ public class ProjectServlet extends BaseServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		traceRequest(req);
-		String pathInfo = req.getPathInfo();
-		IPath path = (pathInfo == null ? Path.ROOT : new Path(pathInfo));
+		IPath path = getPath(req); 
 		if(path.segmentCount() == 0){
 			Long localUserId = UserSession.getLocalUserId(req);
 			List<ProjectInfo> myProjects = projectService.get(localUserId);
 			ResponseUtil.toJSON(req, resp, myProjects);
 			return;
-		}else if(path.segmentCount() == 2){
-			Long userId = Long.valueOf(path.segment(0));
-			String projectName = path.segment(1);
-			// 获取项目根目录下的内容
-//			IFileStore rootStore = EFS.getLocalFileSystem().getStore(location);
-//			try {
-//				rootStore.mkdir(EFS.NONE, null);
-//				rootStoreURI = rootStore.toURI();
-//			} catch (CoreException e) {
-//				throw new RuntimeException("Instance location is read only: " + rootStore, e); //$NON-NLS-1$
-//			}
+		}else if(path.segmentCount() >= 2){
+			// 父目录
+			// 根据登录用户与项目名获取
+			// projects/userName/projectName/directory/file/...
+			String rootPath = applicationPropertyService.getForString(GitConstants.KEY_GIT_ROOT);
+			if(rootPath.endsWith("/")){
+				rootPath = rootPath.substring(0, rootPath.length()-1);
+			}
+			URI parentLocation;
+			try {
+				parentLocation = new URI(rootPath + req.getPathInfo());
+			} catch (URISyntaxException e) {
+				handleException(resp, "路径语法错误", e);
+				return;
+			}
 			
-			
-			return;
-		}else if(path.segmentCount() > 2){
-			// 获取项目某个文件夹下的内容
+			IFileStore fileStore = EFS.getLocalFileSystem().getStore(parentLocation);
+			IFileInfo fileInfo = fileStore.fetchInfo();
+			if(fileInfo.isDirectory()){
+				IFileInfo[] files;
+				try {
+					files = fileStore.childInfos(EFS.NONE, null);
+				} catch (CoreException e) {
+					handleException(resp, "获取目录下的文件列表失败", e);
+					return;
+				}
+				ResponseUtil.toJSON(req, resp, files);
+			}else{
+				try {
+					IOUtils.copy(fileStore.openInputStream(EFS.NONE, null), resp.getOutputStream());
+				} catch (CoreException e) {
+					handleException(resp, "获取文件内容失败", e);
+					return;
+				}
+			}
 			return;
 		}
 		super.doGet(req, resp);
