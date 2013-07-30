@@ -28,7 +28,7 @@ define(["dojo/_base/declare",
 				 
 				 // 创建一个三列的table
 				 array.forEach(items, lang.hitch(this,function(item, index){
-					 // TODO：
+					 console.log("file item", item);
 				 }));
 			 }
 		}

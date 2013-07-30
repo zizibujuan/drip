@@ -3,7 +3,6 @@ package com.zizibujuan.drip.server.util.servlet;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.struts2.json.JSONException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 

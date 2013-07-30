@@ -14,10 +14,17 @@
 <script type="text/javascript">
 
 	require([ "doc/projects/FileList", 
+	          "dojo/store/JsonRest",
 	          "dojo/domReady!"], function(
-	        		  FileList){
-		
-		new FileList({}, "table");
+	        		  FileList,
+	        		  JsonRest){
+		var path = "";// 从path中获取
+		var store = new JsonRest({
+			 target:"/projects/"+path
+		 });
+		new FileList({
+			store: store
+		}, "table");
 		
 	});
 	
