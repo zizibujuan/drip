@@ -12,19 +12,21 @@
 		isDebug:true" 
 	src="/dojo/dojo.js"></script>
 <script type="text/javascript">
+	
+	var pathName = window.location.pathname;
 
 	require([ "doc/projects/FileList", 
 	          "dojo/store/JsonRest",
 	          "dojo/domReady!"], function(
 	        		  FileList,
 	        		  JsonRest){
-		var path = "";// 从path中获取
 		var store = new JsonRest({
-			 target:"/projects/"+path
-		 });
-		new FileList({
+			 target: pathName
+		});
+		var fileList = new FileList({
 			store: store
 		}, "table");
+		//fileList.startup();
 		
 	});
 	
