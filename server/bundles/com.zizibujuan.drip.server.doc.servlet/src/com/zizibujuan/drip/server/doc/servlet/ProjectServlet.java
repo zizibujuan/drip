@@ -1,5 +1,6 @@
 package com.zizibujuan.drip.server.doc.servlet;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -15,6 +16,14 @@ import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.NoHeadException;
+import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 
 import com.zizibujuan.drip.server.doc.model.ProjectInfo;
 import com.zizibujuan.drip.server.doc.service.ProjectService;
@@ -82,10 +91,35 @@ public class ProjectServlet extends BaseServlet {
 			// 父目录
 			// 根据登录用户与项目名获取
 			// projects/userName/projectName/directory/file/...
+			
+			
+			
+			
 			String rootPath = applicationPropertyService.getForString(GitConstants.KEY_GIT_ROOT);
 			if(rootPath.endsWith("/")){
 				rootPath = rootPath.substring(0, rootPath.length()-1);
 			}
+			// 获取指定目录下的最近提交信息
+			Repository repo = FileRepositoryBuilder.create(new File(rootPath + req.getPathInfo(), Constants.DOT_GIT));
+			ObjectId objectId = repo.resolve(Constants.HEAD);
+			Git git = new Git(repo);
+			try {
+				String gitFilePath = rootPath + req.getPathInfo()+"/README";
+				Iterable<RevCommit> logs = git.log().add(objectId).addPath.call();
+				//boolean next = logs.iterator().hasNext();
+				for(RevCommit commit : logs){
+					System.out.println(commit.getFullMessage());
+				}
+				
+			} catch (NoHeadException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (GitAPIException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			// 获取目录下的所有文件			
 			URI parentLocation;
 			try {
 				parentLocation = new URI(rootPath + req.getPathInfo());
@@ -118,5 +152,10 @@ public class ProjectServlet extends BaseServlet {
 		super.doGet(req, resp);
 	}
 
+	/*
+	 gitDir = new File(localFile, Constants.DOT_GIT);
+				Repository repo = FileRepositoryBuilder.create(gitDir);
+				repo.create();
+	 */
 	
 }

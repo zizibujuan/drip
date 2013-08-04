@@ -61,7 +61,7 @@ define(["dojo/_base/declare",
 					 
 					 var messageCell = domConstruct.create("td", {"class": "message"}, row);
 					 var messageSpan = domConstruct.create("span", {"class": ""}, messageCell);
-					 var messageLink = domConstruct.create("a", {"href": "#"}, messageSpan);
+					 var messageLink = domConstruct.create("a", {"href": "#", "innerHTML": item.message}, messageSpan);
 					 debugger;
 					 var date = stamp.toISOString(new Date(item.lastModified));
 					 var ageCell = domConstruct.create("td", {"class": "age"}, row);
