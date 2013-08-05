@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.pde.ui.EquinoxLauncher">
+<setAttribute key="additional_plugins"/>
+<booleanAttribute key="append.args" value="true"/>
+<booleanAttribute key="automaticAdd" value="false"/>
+<booleanAttribute key="automaticValidate" value="false"/>
+<stringAttribute key="bootstrap" value=""/>
+<stringAttribute key="checked" value="[NONE]"/>
+<booleanAttribute key="clearConfig" value="false"/>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/drip_dev_win_x64"/>
+<booleanAttribute key="default" value="true"/>
+<booleanAttribute key="default_auto_start" value="true"/>
+<intAttribute key="default_start_level" value="4"/>
+<stringAttribute key="featureDefaultLocation" value="workspace"/>
+<stringAttribute key="featurePluginResolution" value="workspace"/>
+<booleanAttribute key="includeOptional" value="false"/>
+<stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console"/>
+<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Declipse.ignoreApp=true -Dosgi.noShutdown=true&#13;&#10;-Dorg.osgi.service.http.port=8088"/>
+<stringAttribute key="pde.version" value="3.3"/>
+<setAttribute key="selected_features">
+<setEntry value="com.zizibujuan.drip.base.feature:default"/>
+<setEntry value="com.zizibujuan.drip.client.feature:default"/>
+<setEntry value="com.zizibujuan.drip.server.feature:default"/>
+</setAttribute>
+<booleanAttribute key="show_selected_only" value="false"/>
+<stringAttribute key="target_bundles" value="ch.qos.logback.classic@default:default,ch.qos.logback.core@default:default,ch.qos.logback.slf4j@default:false,com.fasterxml.jackson.core.jackson-annotations@default:default,com.fasterxml.jackson.core.jackson-core@default:default,com.fasterxml.jackson.core.jackson-databind@default:default,com.google.gson@default:default,com.jcraft.jsch@default:default,javaewah@default:default,javax.servlet@default:default,org.apache.commons.io@default:default,org.apache.commons.logging@default:default,org.apache.felix.gogo.command@default:default,org.apache.felix.gogo.runtime@default:default,org.apache.felix.gogo.shell@default:default,org.eclipse.core.contenttype@default:default,org.eclipse.core.filesystem.win32.x86_64@default:false,org.eclipse.core.filesystem@default:default,org.eclipse.core.jobs@default:default,org.eclipse.core.runtime@default:true,org.eclipse.equinox.app@default:default,org.eclipse.equinox.common@2:true,org.eclipse.equinox.console@default:default,org.eclipse.equinox.ds@1:true,org.eclipse.equinox.http.jetty@default:default,org.eclipse.equinox.http.registry@default:default,org.eclipse.equinox.http.servlet@default:default,org.eclipse.equinox.preferences@default:default,org.eclipse.equinox.registry@default:default,org.eclipse.equinox.simpleconfigurator@1:true,org.eclipse.equinox.util@default:default,org.eclipse.jetty.client@default:default,org.eclipse.jetty.continuation@default:default,org.eclipse.jetty.http@default:default,org.eclipse.jetty.io@default:default,org.eclipse.jetty.security@default:default,org.eclipse.jetty.server@default:default,org.eclipse.jetty.servlet@default:default,org.eclipse.jetty.servlets@default:default,org.eclipse.jetty.util@default:default,org.eclipse.jgit@default:default,org.eclipse.osgi.services@default:default,org.eclipse.osgi.util@default:default,org.eclipse.osgi@-1:true,org.hamcrest.core@default:default,org.junit@default:default,org.mozilla.javascript@default:default,org.slf4j.api@default:default,osgi.enterprise@default:default"/>
+<booleanAttribute key="tracing" value="false"/>
+<booleanAttribute key="useCustomFeatures" value="false"/>
+<booleanAttribute key="useDefaultConfigArea" value="true"/>
+<stringAttribute key="workspace_bundles" value="com.zizibujuan.dbaccess.mysql@default:default,com.zizibujuan.drip.client.ace@default:default,com.zizibujuan.drip.client.core@default:default,com.zizibujuan.drip.client.doc@default:default,com.zizibujuan.drip.client.dojo@default:default,com.zizibujuan.drip.client.editor@default:default,com.zizibujuan.drip.client.marked@default:default,com.zizibujuan.drip.client.mathjax@default:default,com.zizibujuan.drip.doc@default:default,com.zizibujuan.drip.server.configurator@default:default,com.zizibujuan.drip.server.dao.mysql@default:default,com.zizibujuan.drip.server.dao@default:default,com.zizibujuan.drip.server.doc.dao.mysql@default:default,com.zizibujuan.drip.server.doc.dao@default:default,com.zizibujuan.drip.server.doc.model@default:default,com.zizibujuan.drip.server.doc.service.impl@default:default,com.zizibujuan.drip.server.doc.service@default:default,com.zizibujuan.drip.server.doc.servlet@default:default,com.zizibujuan.drip.server.exception@default:default,com.zizibujuan.drip.server.git@default:default,com.zizibujuan.drip.server.logback.config@default:false,com.zizibujuan.drip.server.model@default:default,com.zizibujuan.drip.server.service.impl@default:default,com.zizibujuan.drip.server.service@default:default,com.zizibujuan.drip.server.servlet@default:default,com.zizibujuan.drip.server.util@default:default,com.zizibujuan.jdbc.mysql@default:default,com.zizibujuan.server.oauth2.sinaWeibo@default:default"/>
+</launchConfiguration>
