@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -20,11 +22,12 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.NoHeadException;
 import org.eclipse.jgit.lib.Constants;
-import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 
+import com.zizibujuan.drip.server.doc.model.CommitInfo;
+import com.zizibujuan.drip.server.doc.model.LastLogInfo;
 import com.zizibujuan.drip.server.doc.model.ProjectInfo;
 import com.zizibujuan.drip.server.doc.service.ProjectService;
 import com.zizibujuan.drip.server.service.ApplicationPropertyService;
@@ -91,33 +94,14 @@ public class ProjectServlet extends BaseServlet {
 			// 父目录
 			// 根据登录用户与项目名获取
 			// projects/userName/projectName/directory/file/...
-			
-			
-			
-			
 			String rootPath = applicationPropertyService.getForString(GitConstants.KEY_GIT_ROOT);
 			if(rootPath.endsWith("/")){
 				rootPath = rootPath.substring(0, rootPath.length()-1);
 			}
 			// 获取指定目录下的最近提交信息
 			Repository repo = FileRepositoryBuilder.create(new File(rootPath + req.getPathInfo(), Constants.DOT_GIT));
-			ObjectId objectId = repo.resolve(Constants.HEAD);
+			repo.resolve(Constants.HEAD);
 			Git git = new Git(repo);
-			try {
-				String gitFilePath = rootPath + req.getPathInfo()+"/README";
-				Iterable<RevCommit> logs = git.log().add(objectId).addPath.call();
-				//boolean next = logs.iterator().hasNext();
-				for(RevCommit commit : logs){
-					System.out.println(commit.getFullMessage());
-				}
-				
-			} catch (NoHeadException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (GitAPIException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
 			
 			// 获取目录下的所有文件			
 			URI parentLocation;
@@ -128,17 +112,32 @@ public class ProjectServlet extends BaseServlet {
 				return;
 			}
 			
+			String parentPath = path.removeFirstSegments(2).toString();
 			IFileStore fileStore = EFS.getLocalFileSystem().getStore(parentLocation);
 			IFileInfo fileInfo = fileStore.fetchInfo();
 			if(fileInfo.isDirectory()){
+				List<LastLogInfo> result = new ArrayList<LastLogInfo>();
 				IFileInfo[] files;
 				try {
 					files = fileStore.childInfos(EFS.NONE, null);
+					for(IFileInfo file : files){
+						LastLogInfo fileAndLogInfo = new LastLogInfo();
+						fileAndLogInfo.setFileInfo(file);
+						CommitInfo commitInfo = getLastCommitInfo(git, parentPath, file);
+						fileAndLogInfo.setCommitInfo(commitInfo);
+						result.add(fileAndLogInfo);
+					}
 				} catch (CoreException e) {
 					handleException(resp, "获取目录下的文件列表失败", e);
 					return;
+				} catch (NoHeadException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (GitAPIException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				ResponseUtil.toJSON(req, resp, files);
+				ResponseUtil.toJSON(req, resp, result);
 			}else{
 				try {
 					IOUtils.copy(fileStore.openInputStream(EFS.NONE, null), resp.getOutputStream());
@@ -152,10 +151,17 @@ public class ProjectServlet extends BaseServlet {
 		super.doGet(req, resp);
 	}
 
-	/*
-	 gitDir = new File(localFile, Constants.DOT_GIT);
-				Repository repo = FileRepositoryBuilder.create(gitDir);
-				repo.create();
-	 */
+	private CommitInfo getLastCommitInfo(Git git, String parentPath, IFileInfo file) throws NoHeadException, GitAPIException {
+		Iterable<RevCommit> logs = git.log().addPath(parentPath + file.getName()).setMaxCount(1).call();
+		Iterator<RevCommit> logIterator = logs.iterator();
+		if(logIterator.hasNext()){
+			RevCommit revCommit = logIterator.next();
+			CommitInfo commitInfo = new CommitInfo();
+			commitInfo.setSummary(revCommit.getShortMessage());
+			commitInfo.setCommitTime(revCommit.getCommitTime());
+			return commitInfo;
+		}
+		return null;
+	}
 	
 }

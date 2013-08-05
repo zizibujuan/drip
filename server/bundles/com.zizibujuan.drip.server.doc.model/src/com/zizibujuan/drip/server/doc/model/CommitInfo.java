@@ -12,6 +12,8 @@ public class CommitInfo {
 	private String summary;
 	
 	private String extendDesc;
+	
+	private int commitTime;
 
 	/**
 	 * 获取作者标识
@@ -44,6 +46,13 @@ public class CommitInfo {
 	public void setExtendDesc(String extendDesc) {
 		this.extendDesc = extendDesc;
 	}
-	
-	
+
+	public int getCommitTime() {
+		return commitTime;
+	}
+
+	public void setCommitTime(int commitTime) {
+		this.commitTime = commitTime;
+	}
+
 }
