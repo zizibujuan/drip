@@ -44,11 +44,14 @@ define(["dojo/_base/declare",
 				 table.appendChild(tbody);
 				 
 				 array.forEach(items, lang.hitch(this,function(item, index){
+					 var fileInfo = item.fileInfo;
+					 var commitInfo = item.commitInfo;
+					 
 					 var row = domConstruct.create("tr", {}, tbody);
 					 
 					 var iconCell = domConstruct.create("td", {"class":"icon"}, row);
 					 var iconHtml = "";
-					 if(item.directory){
+					 if(fileInfo.directory){
 						 iconHtml = "<i class=\"icon-folder-close-alt\"></i>";
 					 }else{
 						 iconHtml = "<i class=\"icon-file-text-alt\"></i>";
@@ -57,13 +60,13 @@ define(["dojo/_base/declare",
 					 
 					 var contentCell = domConstruct.create("td", {"class": "content"}, row);
 					 var contentSpan = domConstruct.create("span", {"class": ""}, contentCell);
-					 var contentLink = domConstruct.create("a", {"href": "#", "innerHTML": item.name}, contentSpan);
+					 var contentLink = domConstruct.create("a", {"href": "#", "innerHTML": fileInfo.name}, contentSpan);
 					 
 					 var messageCell = domConstruct.create("td", {"class": "message"}, row);
 					 var messageSpan = domConstruct.create("span", {"class": ""}, messageCell);
-					 var messageLink = domConstruct.create("a", {"href": "#", "innerHTML": item.message}, messageSpan);
+					 var messageLink = domConstruct.create("a", {"href": "#", "innerHTML": commitInfo.summary}, messageSpan);
 					 debugger;
-					 var date = stamp.toISOString(new Date(item.lastModified));
+					 var date = stamp.toISOString(new Date(commitInfo.commitTime));
 					 var ageCell = domConstruct.create("td", {"class": "age"}, row);
 					 var ageSpan = domConstruct.create("span", {"class": ""}, ageCell);
 					 var ageTime = domConstruct.create("time", {

@@ -121,6 +121,7 @@ public class ProjectServlet extends BaseServlet {
 				try {
 					files = fileStore.childInfos(EFS.NONE, null);
 					for(IFileInfo file : files){
+						if(file.getName().equals(".git"))continue;
 						LastLogInfo fileAndLogInfo = new LastLogInfo();
 						fileAndLogInfo.setFileInfo(file);
 						CommitInfo commitInfo = getLastCommitInfo(git, parentPath, file);
@@ -158,7 +159,7 @@ public class ProjectServlet extends BaseServlet {
 			RevCommit revCommit = logIterator.next();
 			CommitInfo commitInfo = new CommitInfo();
 			commitInfo.setSummary(revCommit.getShortMessage());
-			commitInfo.setCommitTime(revCommit.getCommitTime());
+			commitInfo.setCommitTime(((long)revCommit.getCommitTime()) * 1000);
 			return commitInfo;
 		}
 		return null;
