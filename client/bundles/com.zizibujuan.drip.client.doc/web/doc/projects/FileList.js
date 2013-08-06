@@ -19,6 +19,8 @@ define(["dojo/_base/declare",
 	
 	return declare("projects.FileList", [_WidgetBase, _StoreMixin], {
 		
+		pathName: "/",
+		
 		postCreate: function(){
 			this.inherited(arguments);
 			this.refresh();
@@ -45,7 +47,7 @@ define(["dojo/_base/declare",
 				 
 				 array.forEach(items, lang.hitch(this,function(item, index){
 					 var fileInfo = item.fileInfo;
-					 var commitInfo = item.commitInfo;
+					 var commitInfo = item.commitInfo || {};
 					 
 					 var row = domConstruct.create("tr", {}, tbody);
 					 
@@ -54,18 +56,19 @@ define(["dojo/_base/declare",
 					 if(fileInfo.directory){
 						 iconHtml = "<i class=\"icon-folder-close-alt\"></i>";
 					 }else{
+						 this.pathName = this.pathName.replace("projects", "blob");
 						 iconHtml = "<i class=\"icon-file-text-alt\"></i>";
 					 }
 					 var iconContent = domConstruct.place(iconHtml, iconCell);
 					 
 					 var contentCell = domConstruct.create("td", {"class": "content"}, row);
 					 var contentSpan = domConstruct.create("span", {"class": ""}, contentCell);
-					 var contentLink = domConstruct.create("a", {"href": "#", "innerHTML": fileInfo.name}, contentSpan);
+					 var contentLink = domConstruct.create("a", {"href": this.pathName + fileInfo.name, "innerHTML": fileInfo.name}, contentSpan);
 					 
 					 var messageCell = domConstruct.create("td", {"class": "message"}, row);
 					 var messageSpan = domConstruct.create("span", {"class": ""}, messageCell);
 					 var messageLink = domConstruct.create("a", {"href": "#", "innerHTML": commitInfo.summary}, messageSpan);
-					 debugger;
+					 
 					 var date = stamp.toISOString(new Date(commitInfo.commitTime));
 					 var ageCell = domConstruct.create("td", {"class": "age"}, row);
 					 var ageSpan = domConstruct.create("span", {"class": ""}, ageCell);

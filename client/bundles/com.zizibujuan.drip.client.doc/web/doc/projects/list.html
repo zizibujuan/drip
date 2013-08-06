@@ -23,8 +23,10 @@
 		var store = new JsonRest({
 			 target: pathName
 		});
+		
 		var fileList = new FileList({
-			store: store
+			store: store,
+			pathName: (pathName.lastIndexOf(0) != "/") ? (pathName+"/"):pathName
 		}, "table");
 		//fileList.startup();
 		

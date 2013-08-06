@@ -98,10 +98,6 @@ public class ProjectServlet extends BaseServlet {
 			if(rootPath.endsWith("/")){
 				rootPath = rootPath.substring(0, rootPath.length()-1);
 			}
-			// 获取指定目录下的最近提交信息
-			Repository repo = FileRepositoryBuilder.create(new File(rootPath + req.getPathInfo(), Constants.DOT_GIT));
-			repo.resolve(Constants.HEAD);
-			Git git = new Git(repo);
 			
 			// 获取目录下的所有文件			
 			URI parentLocation;
@@ -113,11 +109,21 @@ public class ProjectServlet extends BaseServlet {
 			}
 			
 			String parentPath = path.removeFirstSegments(2).toString();
+			
+			String repoPath = path.uptoSegment(2).toString();
 			IFileStore fileStore = EFS.getLocalFileSystem().getStore(parentLocation);
 			IFileInfo fileInfo = fileStore.fetchInfo();
 			if(fileInfo.isDirectory()){
+				// 获取指定目录下的最近提交信息
+				Repository repo = FileRepositoryBuilder.create(new File(rootPath + repoPath, Constants.DOT_GIT));
+				repo.resolve(Constants.HEAD);
+				Git git = new Git(repo);
 				List<LastLogInfo> result = new ArrayList<LastLogInfo>();
 				IFileInfo[] files;
+				
+				if(!parentPath.equals("") && !parentPath.endsWith("/")){
+					parentPath += "/";
+				}
 				try {
 					files = fileStore.childInfos(EFS.NONE, null);
 					for(IFileInfo file : files){
@@ -137,6 +143,8 @@ public class ProjectServlet extends BaseServlet {
 				} catch (GitAPIException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				} finally{
+					repo.close();
 				}
 				ResponseUtil.toJSON(req, resp, result);
 			}else{
