@@ -27,8 +27,14 @@ define([ "dojo/_base/declare",
 		
 		templateString: FileFormTemplate,
 		
+		pathName: null,
+		pathInfo: null,
+		
 		postCreate: function(){
 			this.inherited(arguments);
+			
+			this.pathInfo = this.pathName.replace("/files/", "").replace("/new", "");
+			var projectPath = this.pathName.replace("files", "projects").replace("/new", "");
 			
 			// 绑定事件
 			this.own(on(this.submitFile, "click", lang.hitch(this,function(e){
@@ -37,12 +43,13 @@ define([ "dojo/_base/declare",
 					content: this.content.get("value")
 				};
 				var commitInfo = {
-					summary: this.commitSummary.get("value"),
-					extendDesc: this.extendDesc.get("value")
+					summary: this.commitSummary.get("value")/*,
+					extendDesc: this.extendDesc.get("value")*/
 				};
 				var jsonData = {fileInfo: fileInfo, commitInfo: commitInfo};
-				xhr.post("/files/",{data:JSON.stringify(jsonData)}).then(function(data){
-					window.location.href = "/"; // TODO：跳转到项目列表页面
+				xhr.post("/files/" + this.pathInfo, {data:JSON.stringify(jsonData)}).then(function(data){
+					debugger;
+					window.location.href = projectPath;
 				}, function(error){
 					// TODO:如果保存失败，则给出提示
 					console.error("创建文件失败", error);

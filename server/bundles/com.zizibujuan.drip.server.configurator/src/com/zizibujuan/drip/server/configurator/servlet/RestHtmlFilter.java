@@ -13,6 +13,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
 
 /**
@@ -27,25 +30,33 @@ public class RestHtmlFilter implements Filter {
 
 	private static final String ROOT_WEB = "/drip";
 	private static final String LIST_HTML = "/list.html";
-	private static final String NEW_PATHINFO = "/new";
+	private static final String NEW_PATHINFO = "new";
 	private static final String HTML = ".html";
 	
-	private Map<String,String> actions;
+	private Map<String,String> listActions; // 跳转到查询列表页面，如果是单条记录，则跳转到视图页面
+	private Map<String,String> newActions; // 跳转到新建资源页面
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		 actions = new HashMap<String, String>();
-		 actions.put("/following", "/drip/relation.html");
-		 actions.put("/followers", "/drip/relation.html");
-		 actions.put("/users", "/drip/profile.html");
-		 actions.put("/projects", "/doc/projects/list.html");
-		 actions.put("/blob", "/doc/files/blob.html");
+		listActions = new HashMap<String, String>();
+		listActions.put("/following", "/drip/relation.html");
+		listActions.put("/followers", "/drip/relation.html");
+		listActions.put("/users", "/drip/profile.html");
+		listActions.put("/projects", "/doc/projects/list.html");
+		listActions.put("/blob", "/doc/files/blob.html");
+		
+		newActions = new HashMap<String, String>();
+		newActions.put("/files", "/doc/files/new.html");
 	}
 
 	/**
 	 * 
 	 * 如果是跳转请求：<br/>
 	 * 跳转请求，只用于请求资源。而注销操作，并没有请求资源，因此使用ajax请求。
+	 * 
+	 * 新建项目的url规范
+	 * 在url的最后追加一个/new,  对应的html的命名为new.html， 如servletPath+"/new",
+	 * 在servletPath和“/new”之间可以添加参数，主要为路径参数
 	 * 
 	 * 如果是ajax请求:<br/>
 	 */
@@ -64,25 +75,32 @@ public class RestHtmlFilter implements Filter {
 		if(!RequestUtil.isAjax(httpRequest)){
 			String servletPath = httpRequest.getServletPath();
 			String pathInfo = httpRequest.getPathInfo();
+			IPath path = (pathInfo == null ? Path.ROOT : new Path(pathInfo));
 			System.out.println("ServletPath:'"+httpRequest.getServletPath()+"'");
 			System.out.println("PathInfo:'"+httpRequest.getPathInfo()+"'");
 			System.out.println("ContextPath:'"+httpRequest.getContextPath()+"'");
 			
-			if(actions.containsKey(servletPath)){
-				String path = actions.get(servletPath);
-				httpRequest.getRequestDispatcher(path).forward(httpRequest, httpResponse);
-				return;
-			}
-			
-			// servletPath可看作是资源名
-			if(isValidResource(servletPath)){
+			if(isRegistedServlet(servletPath)){
+				if(path.lastSegment().equals(NEW_PATHINFO)){
+					if(path.segmentCount() == 1){
+						String fileName = ROOT_WEB + servletPath + pathInfo + HTML;
+						httpRequest.getRequestDispatcher(fileName).forward(httpRequest, httpResponse);
+					}else if(newActions.containsKey(servletPath)){
+						String realFilePath = newActions.get(servletPath);
+						httpRequest.getRequestDispatcher(realFilePath).forward(httpRequest, httpResponse);
+					}
+					return;
+				}
+				
+				if(listActions.containsKey(servletPath)){
+					String realFilePath = listActions.get(servletPath);
+					httpRequest.getRequestDispatcher(realFilePath).forward(httpRequest, httpResponse);
+					return;
+				}
+				
 				if(pathInfo == null || pathInfo.equals("/")){			
 					//FIXME:暂时支持一级路径。即把所有的list的html容器都放在根目录下
 					String fileName = ROOT_WEB + servletPath + LIST_HTML;
-					httpRequest.getRequestDispatcher(fileName).forward(httpRequest, httpResponse);
-					return;
-				}else if(pathInfo.equals(NEW_PATHINFO)){
-					String fileName = ROOT_WEB + servletPath + pathInfo + HTML;
 					httpRequest.getRequestDispatcher(fileName).forward(httpRequest, httpResponse);
 					return;
 				}
@@ -99,15 +117,20 @@ public class RestHtmlFilter implements Filter {
 		chain.doFilter(req, resp);
 	}
 
-	private boolean isValidResource(String resourceName) {
-		return !resourceName.equals("");
+	private boolean isRegistedServlet(String servletPath) {
+		// 该servletPath是已经注册过的servlet别名
+		return !servletPath.equals("");
 	}
 
 	@Override
 	public void destroy() {
-		if(actions!=null){
-			actions.clear();
-			actions = null;
+		if(listActions!=null){
+			listActions.clear();
+			listActions = null;
+		}
+		if(newActions!=null){
+			newActions.clear();
+			newActions = null;
 		}
 	}
 

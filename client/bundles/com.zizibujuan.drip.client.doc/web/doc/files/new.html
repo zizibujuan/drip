@@ -13,11 +13,14 @@
 	src="/dojo/dojo.js"></script>
 <script type="text/javascript">
 
+	var pathName = window.location.pathname;
 	require([ "doc/files/FileForm", 
 	          "dojo/domReady!"], function(
 	        		  FileForm){
 		
-		new FileForm({}, "files");
+		new FileForm({
+			pathName: pathName
+		}, "files");
 		
 	});
 	

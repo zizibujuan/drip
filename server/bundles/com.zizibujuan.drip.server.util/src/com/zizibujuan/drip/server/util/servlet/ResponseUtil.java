@@ -33,8 +33,21 @@ public abstract class ResponseUtil {
 		resp.setHeader("Cache-Control", "no-cache"); //$NON-NLS-1$ //$NON-NLS-2$
 		resp.setHeader("Cache-Control", "no-store"); //$NON-NLS-1$ //$NON-NLS-2$
 		resp.setContentType(HttpConstants.CONTENT_TYPE_JSON);
-		String response = JsonUtil.toJson(result);
-		resp.getWriter().print(response);
+		if(result != null){
+			String response = JsonUtil.toJson(result);
+			resp.getWriter().print(response);
+		}
+	}
+	
+	/**
+	 * 往response中输出JSON格式内容
+	 * @param req HttpServletRequest
+	 * @param resp  HttpServletResponse
+	 * @param result 转换的对象
+	 * @throws IOException
+	 */
+	public static void toJSON(HttpServletRequest req, HttpServletResponse resp) throws IOException{
+		toJSON(req, resp, null, HttpServletResponse.SC_OK);
 	}
 	
 	/**

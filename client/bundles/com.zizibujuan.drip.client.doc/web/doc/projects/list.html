@@ -12,14 +12,19 @@
 		isDebug:true" 
 	src="/dojo/dojo.js"></script>
 <script type="text/javascript">
-	
+	debugger;
 	var pathName = window.location.pathname;
+	var filePath = pathName.replace("/projects", "");
 
 	require([ "doc/projects/FileList", 
 	          "dojo/store/JsonRest",
+	          "dojo/dom",
+	          "dojo/on",
 	          "dojo/domReady!"], function(
 	        		  FileList,
-	        		  JsonRest){
+	        		  JsonRest,
+	        		  dom,
+	        		  on){
 		var store = new JsonRest({
 			 target: pathName
 		});
@@ -30,6 +35,11 @@
 		}, "table");
 		//fileList.startup();
 		
+		var btnAddFile = dom.byId("btnAddFile");
+		on(btnAddFile, "click", function(e){
+			// files/new/+当前文档所在文件夹
+			window.location.href = "/files" + filePath+"/new";
+		});
 	});
 	
 </script>
@@ -37,7 +47,10 @@
 <body class="claro">
 
 	<div class="bubble files-bubble">
-		
+		<div>
+			<!-- <button id="">新建文件夹</button> -->
+			<button id="btnAddFile">新建文档</button>
+		</div>
 		<div id="table"></div>
 	</div>
 </body>
