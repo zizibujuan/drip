@@ -6,6 +6,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.core.runtime.IPath;
+
+import com.zizibujuan.drip.server.service.ApplicationPropertyService;
+import com.zizibujuan.drip.server.util.GitConstants;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 
 /**
@@ -16,10 +20,21 @@ import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 public class BlobServlet extends BaseServlet {
 	private static final long serialVersionUID = -2241539925566713677L;
 
+	private ApplicationPropertyService applicationPropertyService;
+	
+	public BlobServlet(){
+		applicationPropertyService = ServiceHolder.getDefault().getApplicationPropertyService();
+	}
+	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		traceRequest(req);
+		IPath path = getPath(req);
+		if(path.segmentCount() > 2){
+			// blob/user/project/file
+			String rootPath = applicationPropertyService.getForString(GitConstants.KEY_GIT_ROOT);
+		}
 		super.doGet(req, resp);
 	}
 

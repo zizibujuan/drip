@@ -17,10 +17,10 @@ define(["dojo/_base/lang",
 	//		将日期格式化为更友好的展示格式。
 
 	var prettyDate = {
-		pretty: function(dateString){
-			var date = stamp.fromISOString(dateString);
+			
+		prettyForNumber: function(dateNumber){
 			var nowTime = new Date().getTime(),
-			diff = (nowTime - date.getTime()) / 1000,
+			diff = (nowTime - dateNumber) / 1000,
 			dayDiff = Math.floor(diff / (60*60*24));
 
 			if (isNaN(dayDiff) || dayDiff < 0) {
@@ -81,6 +81,11 @@ define(["dojo/_base/lang",
 			if(dayDiff > 380){
 				return string.substitute(messages.years,{num:Math.ceil(dayDiff/365)});
 			}
+		},
+		
+		pretty: function(dateString){
+			var date = stamp.fromISOString(dateString);
+			return prettyForNumber(date);
 		},
 		
 		setInterval: function(parent, interval){

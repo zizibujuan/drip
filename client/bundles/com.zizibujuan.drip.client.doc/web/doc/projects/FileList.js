@@ -74,7 +74,7 @@ define(["dojo/_base/declare",
 					 var ageSpan = domConstruct.create("span", {"class": ""}, ageCell);
 					 var ageTime = domConstruct.create("time", {
 						 "datetime":date, 
-						 "innerHTML": prettyDate.pretty(date),
+						 "innerHTML": prettyDate.prettyForNumber(commitInfo.commitTime),
 						 "title": date.replace("T", " ")
 					}, ageSpan);
 				 }));

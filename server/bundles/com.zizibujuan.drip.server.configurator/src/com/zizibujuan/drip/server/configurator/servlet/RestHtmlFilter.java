@@ -39,6 +39,7 @@ public class RestHtmlFilter implements Filter {
 		 actions.put("/followers", "/drip/relation.html");
 		 actions.put("/users", "/drip/profile.html");
 		 actions.put("/projects", "/doc/projects/list.html");
+		 actions.put("/blob", "/doc/files/blob.html");
 	}
 
 	/**
