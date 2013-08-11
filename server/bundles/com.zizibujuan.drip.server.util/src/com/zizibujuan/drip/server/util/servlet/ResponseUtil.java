@@ -106,7 +106,7 @@ public abstract class ResponseUtil {
 	public static void toHTMLFile(HttpServletRequest req,
 			HttpServletResponse resp, String fileName) throws IOException {
 		
-		InputStream io = req.getServletContext().getResourceAsStream(fileName);
+		InputStream io = req.getSession().getServletContext().getResourceAsStream(fileName);
 		if(io == null){
 			resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		}else{
