@@ -11,11 +11,10 @@ Import-Package: com.zizibujuan.drip.server.doc.model,
  com.zizibujuan.drip.server.service,
  com.zizibujuan.drip.server.util,
  com.zizibujuan.drip.server.util.servlet,
- javax.servlet;version="2.6.0",
- javax.servlet.http;version="2.6.0",
+ javax.servlet,
+ javax.servlet.http,
  org.apache.commons.io;version="2.4.0",
  org.eclipse.core.filesystem,
- org.eclipse.core.runtime;version="3.4.0",
  org.eclipse.jgit.api;version="3.0.0",
  org.eclipse.jgit.api.errors;version="3.0.0",
  org.eclipse.jgit.errors;version="3.0.0",
@@ -26,3 +25,4 @@ Import-Package: com.zizibujuan.drip.server.doc.model,
  org.slf4j;version="1.6.4"
 Service-Component: OSGI-INF/service.xml
 Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.8.0"
