@@ -10,12 +10,23 @@
 	               path="/static/marked">
 	         </resource-mapping>
          </httpcontext>
+         <httpcontext
+            id="com.zizibujuan.drip.client.httpcontext.highlight">
+	         <resource-mapping
+	               bundle="com.zizibujuan.drip.client.marked"
+	               path="/static/highlight">
+	         </resource-mapping>
+         </httpcontext>
     </extension>
 	<extension
          point="org.eclipse.equinox.http.registry.resources">
       <resource
             alias="/marked"
             httpcontextId="com.zizibujuan.drip.client.httpcontext.marked">
+      </resource>
+            <resource
+            alias="/highlight"
+            httpcontextId="com.zizibujuan.drip.client.httpcontext.highlight">
       </resource>
     </extension>
 </plugin>
