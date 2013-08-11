@@ -23,6 +23,8 @@ rm -rf "$DISTDIR/dojo"
 rm -rf "$DISTDIR/dojox"
 rm -rf "$DISTDIR/drip"
 rm -rf "$DISTDIR/mathEditor"
+rm -rf "$DISTDIR/doc"
+rm -rf "$DISTDIR/marked"
 echo " Done"
 
 #cp $BASEDIR/com.zizibujuan.drip.client.core/web/drip/index.html $DISTDIR/index.html

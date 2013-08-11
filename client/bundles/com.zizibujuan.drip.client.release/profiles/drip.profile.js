@@ -95,6 +95,12 @@ var profile = {
 	},{
 		name:"drip",
 		location:"./com.zizibujuan.drip.client.core/web/drip"
+	},{
+		name:"doc",
+		location:"./com.zizibujuan.drip.client.doc/web/doc"
+	},{
+		name:"marked",
+		location:"./com.zizibujuan.drip.client.marked/web/marked"
 	}/*,{
 		name:"mathjax",
 		location:"./com.zizibujuan.drip.client.mathjax/static/"
