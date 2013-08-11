@@ -18,6 +18,8 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		<!--<module>server/features/com.zizibujuan.drip.client-feature</module>-->
 		<module>server/features/com.zizibujuan.drip.client.release-feature</module>
 		<module>server/features/com.zizibujuan.drip.server-feature</module>
+		<module>server/features/com.zizibujuan.drip.server.doc-feature</module>
+
 		<!-- plugins -->
 		<!-- client 
 		<module>client/bundles/com.zizibujuan.drip.client.core</module>
