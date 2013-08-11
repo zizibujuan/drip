@@ -100,7 +100,7 @@ var profile = {
 		location:"./com.zizibujuan.drip.client.doc/web/doc"
 	},{
 		name:"marked",
-		location:"./com.zizibujuan.drip.client.marked/web/marked"
+		location:"./com.zizibujuan.drip.client.marked/static/marked"
 	}/*,{
 		name:"mathjax",
 		location:"./com.zizibujuan.drip.client.mathjax/static/"

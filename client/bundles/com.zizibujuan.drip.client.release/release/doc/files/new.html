@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>新建文件 · 孜孜不倦</title>
+<link type="text/css" rel="stylesheet" href="/drip/resources/app.css" />
+<link type="text/css" rel="stylesheet" href="/drip/resources/font-awesome/css/font-awesome.css" />
+<script type="text/javascript" 
+	data-dojo-config="
+		async:true,
+		parseOnLoad:false,
+		isDebug:true" 
+	src="/dojo/dojo.js"></script>
+<script type="text/javascript">
+
+	var pathName = window.location.pathname;
+	require([ "doc/files/FileForm", 
+	          "dojo/domReady!"], function(
+	        		  FileForm){
+		
+		new FileForm({
+			pathName: pathName
+		}, "files");
+		
+	});
+	
+</script>
+</head>
+<body class="claro">
+<div>
+
+	<div id="files" class="new-file">
+	
+	</div>
+	
+</div>
+</body>
+</html>

@@ -1,0 +1,4 @@
+//>>built
+define("mathEditor/IEInputEvent",["dojo/_base/declare","dojo/_base/lang"],function(h,k){function f(a){"value"===a.propertyName&&(a=a.srcElement.value,a!==c&&(c=a,d&&d(c)))}var b=null,c=null,e=null,d=null,l={get:function(){return e.get.call(this)},set:function(a){c=a;e.set.call(this,a)}},g=function(){b&&(delete b.value,b.detachEvent("onpropertychange",f),e=c=activeElementId=b=null)};return h("mathEditor.IEInputEvent",null,{target:null,constructor:function(a){k.mixin(this,a);b=this.target;b.attachEvent("onfocus",
+this._onFocus);b.attachEvent("onblur",this._onBlur);b.attachEvent("onkeyup",this._onKeyUp)},_onFocus:function(a){g();b=a=a.srcElement;c=a.value;e=Object.getOwnPropertyDescriptor(a.constructor.prototype,"value");Object.defineProperty(b,"value",l);b.attachEvent("onpropertychange",f)},_onBlur:function(a){g()},_onKeyUp:function(a){b&&b.value!==c&&(c=b.value,d&&d(c))},on:function(a){d=a}})});
+//@ sourceMappingURL=IEInputEvent.js.map

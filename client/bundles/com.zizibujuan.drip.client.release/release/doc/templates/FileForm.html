@@ -1,0 +1,50 @@
+<div>
+	<h1>新建页面</h1>
+	<div>
+		<div class="breadcrumb">
+		<!-- 在这里根据路径生成 a/b 样式的结构 -->
+			<div data-dojo-type="dijit/form/ValidationTextBox"
+				data-dojo-attach-point = "fileName"
+				data-dojo-props="placeholder:'输入文件名'"></div>
+			<p><a href="#">取消</a></p><!-- 跳转到项目列表页面 -->
+		</div>
+		<div class="file">
+			<div class="meta">
+				<div class="info">
+					<i class="icon-file-text-alt"></i>
+				</div>
+				<div>
+					<!-- 提供预览按钮 -->
+				</div>
+			</div>
+			<div>
+				<div data-dojo-type="drip/widget/form/AceEditor" data-dojo-attach-point="content"></div>
+			</div>
+			
+		</div>
+		
+		<div class="new-commit">
+			<div>
+				<div>提交概述（必输）</div>
+				<div data-dojo-type = "dijit/form/ValidationTextBox"
+					data-dojo-attach-point = "commitSummary"
+					data-dojo-props = "placeholder:'新建文件'"></div>
+				<!-- 
+				<div>详细描述</div>
+				<div data-dojo-type = "dijit/form/SimpleTextarea"
+					data-dojo-attach-point = "extendDesc"
+					data-dojo-props = "rows:2,cols:50"></div>
+				 -->
+			</div>
+			
+			<div>
+			<!-- 跳转到项目列表页面 -->
+				<a href="#" class="minibutton">取消</a>
+				<button data-dojo-attach-point="submitFile" type="submit" class="minibutton primary">提交新文件</button>	
+			</div>
+		</div>
+		
+		
+		
+	</div>
+</div>

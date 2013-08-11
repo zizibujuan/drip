@@ -18,9 +18,11 @@
 <script type="text/javascript">
 require(["dojo/ready",
          "dojo/_base/event",
+         "dojo/_base/array",
 		 "dojo/on",
          "dojo/dom",
          "dojo/dom-class",
+         "dojo/dom-construct",
          "dojo/request/xhr",
          "dojo/store/JsonRest",
          "dijit/registry",
@@ -29,9 +31,11 @@ require(["dojo/ready",
          "dojo/domReady!"],function(
         		 ready,
         		 event,
+        		 array,
         		 on,
         		 dom,
         		 domClass,
+        		 domConstruct,
         		 xhr,
         		 JsonRest,
         		 registry,
@@ -57,6 +61,7 @@ require(["dojo/ready",
 		// 切记：出现在rest链接中的，只能是本地用户标识，而不是第三方网站或映射用户标识
 		dom.byId("following_link").href = "/following/" + userInfo.digitalId;
 		dom.byId("follower_link").href = "/followers/" + userInfo.digitalId;
+		
 	});
 	
 	user.getLoggedUserStatistics().then(function(statistics){
@@ -141,6 +146,28 @@ require(["dojo/ready",
 		domClass.remove(myAnswer, "selected");
 	});
 	
+	
+	// 加载登录用户发起的项目列表
+	// 如果没有传递用户信息，则获取登录用户的项目列表
+	var projectList = dom.byId("my_project_list");
+	xhr.get("/projects/",{handleAs:"json"}).then(function(data){
+		if(data.length == 0){
+			projectList.innerHTML = "您还没有发起项目";
+		}else{
+			array.forEach(data, function(item, index){
+				var li = domConstruct.create("li", null, projectList);
+				var projectUrl = "/projects/" + item.createUserName + "/" + item.name;
+				var a = domConstruct.create("a", {href:projectUrl}, li);
+				domConstruct.create("span", {innerHTML: item.createUserName}, a);
+				var textNode = document.createTextNode("/");
+				a.appendChild(textNode);
+				domConstruct.create("span", {innerHTML: item.name}, a);
+			});
+			
+		}
+	}, function(error){
+		
+	});
 	
 	ready(function(){
 		/*
@@ -277,6 +304,16 @@ function sendRenrenRequest(){
 								 </div>
 							 	<div style="margin-top: 20px;">
 							 		<button class="minibutton" onclick="sendRenrenRequest();"><i class="icon-bullhorn icon-large"></i> 邀请人人好友一起学习</button>
+							 	</div>
+							 	
+							 	<div class="box box-small">
+							 		<div class="box-header">
+							 			<a href="/projects/new" class="minibutton primary new-project">发起新项目</a>
+							 			<h3 class="box-title">我的项目</h3>
+							 		</div>
+							 		<div class="box-body">
+							 			<ul class="project-list" id="my_project_list"></ul>
+							 		</div>
 							 	</div>
 							</div>
 						</div>

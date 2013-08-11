@@ -1,0 +1,4 @@
+//>>built
+define("drip/widget/form/AceEditor",["dojo/_base/declare","dojo/dom-style","dijit/_WidgetBase","ace/ace"],function(b,c,d,e){return b("drip.widget.form.AceEditor",[d],{width:"100%",height:400,mode:"ace/mode/markdown",theme:"ace/theme/textmate",value:"",postCreate:function(){this.inherited(arguments);c.set(this.domNode,{width:this.width,height:this.height+"px"});var a=this.editor=e.edit(this.domNode);a.setTheme(this.theme);a.getSession().setMode(this.mode)},_getValueAttr:function(){return this.editor.getValue()},
+_setValueAttr:function(a){this.editor.setValue(a)}})});
+//@ sourceMappingURL=AceEditor.js.map

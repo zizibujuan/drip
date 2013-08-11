@@ -1,0 +1,23 @@
+<div>
+	<div>项目名称</div>
+	<!-- 项目名称只允许输入字母，数字或下划线_ -->
+	<div data-dojo-type="dijit/form/ValidationTextBox"
+		data-dojo-attach-point = "projectName"
+		data-dojo-props=""></div>
+	
+	<div>项目中文名(选填)</div>
+	<div data-dojo-type="dijit/form/TextBox"
+		data-dojo-attach-point = "projectLabel"
+		data-dojo-props=""></div>
+		
+	<div>项目描述(选填)</div>
+	<div data-dojo-type="dijit/form/SimpleTextarea"
+		data-dojo-attach-point = "peojectDesc"
+		data-dojo-props="rows:2,cols:50"></div>
+		
+	<div>
+		<button data-dojo-attach-point="submitProject" 
+			class="minibutton primary">创建</button>	
+	</div>
+
+</div>
