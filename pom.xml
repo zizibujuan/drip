@@ -35,12 +35,20 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		<module>server/bundles/com.zizibujuan.drip.server.service.impl</module>
 		<module>server/bundles/com.zizibujuan.drip.server.dao</module>
 		<module>server/bundles/com.zizibujuan.drip.server.dao.mysql</module>
+		<module>server/bundles/com.zizibujuan.drip.server.model</module>
 		<module>server/bundles/com.zizibujuan.drip.server.util</module>
 		<module>server/bundles/com.zizibujuan.drip.server.exception</module>
 		<module>server/bundles/com.zizibujuan.server.oauth2.sinaWeibo</module>
-		<!-- doc -->
+		
+		<!-- doc help -->
 		<module>server/doc/com.zizibujuan.drip.doc</module>
-
+		<!-- doc project -->
+		<module>server/bundles/com.zizibujuan.drip.server.doc.servlet</module>
+		<module>server/bundles/com.zizibujuan.drip.server.doc.service</module>
+		<module>server/bundles/com.zizibujuan.drip.server.doc.service.impl</module>
+		<module>server/bundles/com.zizibujuan.drip.server.doc.dao</module>
+		<module>server/bundles/com.zizibujuan.drip.server.doc.dao.mysql</module>
+		<module>server/bundles/com.zizibujuan.drip.server.doc.model</module>
 		<!-- log -->
 		<module>server/bundles/com.zizibujuan.drip.server.logback.config</module>
 		<!-- cache -->

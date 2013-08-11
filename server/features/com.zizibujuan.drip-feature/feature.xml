@@ -29,4 +29,8 @@
          id="com.zizibujuan.drip.client.release.feature"
          version="0.0.0"/>
 
+   <includes
+         id="com.zizibujuan.drip.server.doc.feature"
+         version="0.0.0"/>
+
 </feature>

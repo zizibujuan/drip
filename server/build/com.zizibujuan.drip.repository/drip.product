@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="drip.product" uid="com.zizibujuan.drip.product" id="com.zizibujuan.drip.product" application="com.zizibujuan.drip.application" version="0.0.1.qualifier" useFeatures="true" includeLaunchers="true">
-
+<product name="drip.product" uid="com.zizibujuan.drip.product" id="com.zizibujuan.drip.product" application="org.eclipse.ui.ide.workbench" version="0.0.1.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -17,7 +16,6 @@
 
    <windowImages/>
 
-
    <launcher>
       <solaris/>
       <win useIco="false">
@@ -25,10 +23,8 @@
       </win>
    </launcher>
 
-
    <vm>
    </vm>
-
 
    <plugins>
       <plugin id="ch.qos.logback.classic"/>
@@ -41,8 +37,15 @@
       <plugin id="com.zizibujuan.drip.server.configurator"/>
       <plugin id="com.zizibujuan.drip.server.dao"/>
       <plugin id="com.zizibujuan.drip.server.dao.mysql"/>
+      <plugin id="com.zizibujuan.drip.server.doc.dao"/>
+      <plugin id="com.zizibujuan.drip.server.doc.dao.mysql"/>
+      <plugin id="com.zizibujuan.drip.server.doc.model"/>
+      <plugin id="com.zizibujuan.drip.server.doc.service"/>
+      <plugin id="com.zizibujuan.drip.server.doc.service.impl"/>
+      <plugin id="com.zizibujuan.drip.server.doc.servlet"/>
       <plugin id="com.zizibujuan.drip.server.exception"/>
       <plugin id="com.zizibujuan.drip.server.logback.config" fragment="true"/>
+      <plugin id="com.zizibujuan.drip.server.model"/>
       <plugin id="com.zizibujuan.drip.server.service"/>
       <plugin id="com.zizibujuan.drip.server.service.impl"/>
       <plugin id="com.zizibujuan.drip.server.servlet"/>
@@ -91,7 +94,14 @@
       <plugin id="com.zizibujuan.drip.server.configurator" autoStart="true" startLevel="0" />
       <plugin id="com.zizibujuan.drip.server.dao" autoStart="true" startLevel="0" />
       <plugin id="com.zizibujuan.drip.server.dao.mysql" autoStart="true" startLevel="0" />
+      <plugin id="com.zizibujuan.drip.server.doc.dao" autoStart="true" startLevel="0" />
+      <plugin id="com.zizibujuan.drip.server.doc.dao.mysql" autoStart="true" startLevel="0" />
+      <plugin id="com.zizibujuan.drip.server.doc.model" autoStart="true" startLevel="0" />
+      <plugin id="com.zizibujuan.drip.server.doc.service" autoStart="true" startLevel="0" />
+      <plugin id="com.zizibujuan.drip.server.doc.service.impl" autoStart="true" startLevel="0" />
+      <plugin id="com.zizibujuan.drip.server.doc.servlet" autoStart="true" startLevel="0" />
       <plugin id="com.zizibujuan.drip.server.exception" autoStart="true" startLevel="0" />
+      <plugin id="com.zizibujuan.drip.server.model" autoStart="true" startLevel="0" />
       <plugin id="com.zizibujuan.drip.server.service" autoStart="true" startLevel="0" />
       <plugin id="com.zizibujuan.drip.server.service.impl" autoStart="true" startLevel="0" />
       <plugin id="com.zizibujuan.drip.server.servlet" autoStart="true" startLevel="0" />
