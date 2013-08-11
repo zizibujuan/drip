@@ -12,7 +12,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
@@ -147,15 +146,8 @@ public class ProjectServlet extends BaseServlet {
 					repo.close();
 				}
 				ResponseUtil.toJSON(req, resp, result);
-			}else{
-				try {
-					IOUtils.copy(fileStore.openInputStream(EFS.NONE, null), resp.getOutputStream());
-				} catch (CoreException e) {
-					handleException(resp, "获取文件内容失败", e);
-					return;
-				}
+				return;
 			}
-			return;
 		}
 		super.doGet(req, resp);
 	}

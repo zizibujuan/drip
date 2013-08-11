@@ -28,6 +28,7 @@ define([ "dojo/_base/declare",
 		templateString: FileFormTemplate,
 		
 		pathName: null,
+		
 		pathInfo: null,
 		
 		postCreate: function(){
