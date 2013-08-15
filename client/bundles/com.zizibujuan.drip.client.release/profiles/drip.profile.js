@@ -5,10 +5,10 @@
 var profile = {
 	
 	// 相对于包含该profile文件的目录。
-	// 将根目录定位在client/bundles/下
-	basePath: '../../',
+	// 将根目录定位在client/bundles/om.zizibujuan.drip.client.release/src下
+	basePath: '../src/',
 	
-	releaseDir: './com.zizibujuan.drip.client.release/release',
+	//releaseDir: './release',
 	
 	// 构建一个发布版本
 	action: 'release',
@@ -40,7 +40,7 @@ var profile = {
         },
         async: 1,
         
-        baseUrl: '../../dojo'
+        baseUrl: ''
     },
 	
 	staticHasFeatures: {
@@ -80,31 +80,15 @@ var profile = {
 		'dojo-xhr-factory': 0
 	},
 	
-	packages:[{
-		name:"dojo",
-		location:"./com.zizibujuan.drip.client.dojo/static/dojo"
-	},{
-		name:"dijit",
-		location:"./com.zizibujuan.drip.client.dojo/static/dijit"
-	},{
-		name:"dojox",
-		location:"./com.zizibujuan.drip.client.dojo/static/dojox"
-	},{
-		name:"mathEditor",
-		location:"./com.zizibujuan.drip.client.editor/static/mathEditor"
-	},{
-		name:"drip",
-		location:"./com.zizibujuan.drip.client.core/web/drip"
-	},{
-		name:"doc",
-		location:"./com.zizibujuan.drip.client.doc/web/doc"
-	},{
-		name:"marked",
-		location:"./com.zizibujuan.drip.client.marked/static/marked"
-	}/*,{
-		name:"mathjax",
-		location:"./com.zizibujuan.drip.client.mathjax/static/"
-	}*/],
+	packages:[
+	    "dojo",
+	    "dijit",
+	    "dojox",
+	    "mathEditor",
+	    "drip",
+	    "doc",
+	    "marked"
+	],
 	
 	layers:{
 		'dojo/dojo':{

@@ -1,0 +1,16 @@
+{
+	"name": "doc",
+	"version": "0.0.1",
+	"dependencies":{
+		"dojo": "1.9.0",
+		"dijit": "1.9.0",
+		"dojox": "1.9.0",
+		"util": "1.9.0"
+	},
+	"description": "doc project",
+	"licenses": [],
+	"bugs": "",
+	"keywords": ["JavaScript", "doc", "project", "git"],
+	"homepage": "http://zizibujuan.com",
+	"dojoBuild": "package.js"
+}

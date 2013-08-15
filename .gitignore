@@ -3,7 +3,10 @@ target/
 
 # 忽略wiki
 server/doc/com.zizibujuan.drip.wiki
+client/bundles/com.zizibujuan.drip.client.release/src/
 
 *.consoleStripped.js
 *.uncompressed.js
 *.js.map
+
+
