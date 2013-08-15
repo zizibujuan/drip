@@ -40,7 +40,7 @@ var profile = {
         },
         async: 1,
         
-        baseUrl: ''
+        baseUrl: '../../dojo'
     },
 	
 	staticHasFeatures: {
