@@ -47,6 +47,7 @@ public class RestHtmlFilter implements Filter {
 		
 		newActions = new HashMap<String, String>();
 		newActions.put("/files", "/doc/files/new.html");
+		newActions.put("/projects", "/doc/projects/new.html");
 	}
 
 	/**
@@ -82,12 +83,12 @@ public class RestHtmlFilter implements Filter {
 			
 			if(isRegistedServlet(servletPath)){
 				if(path.lastSegment().equals(NEW_PATHINFO)){
-					if(path.segmentCount() == 1){
-						String fileName = ROOT_WEB + servletPath + pathInfo + HTML;
-						httpRequest.getRequestDispatcher(fileName).forward(httpRequest, httpResponse);
-					}else if(newActions.containsKey(servletPath)){
+					if(newActions.containsKey(servletPath)){
 						String realFilePath = newActions.get(servletPath);
 						httpRequest.getRequestDispatcher(realFilePath).forward(httpRequest, httpResponse);
+					}else{
+						String fileName = ROOT_WEB + servletPath + pathInfo + HTML;
+						httpRequest.getRequestDispatcher(fileName).forward(httpRequest, httpResponse);
 					}
 					return;
 				}
