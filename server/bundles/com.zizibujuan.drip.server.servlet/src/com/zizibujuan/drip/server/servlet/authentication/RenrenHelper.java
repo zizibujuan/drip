@@ -15,13 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
-import com.renren.api.client.RenrenApiClient;
-import com.renren.api.client.RenrenApiConfig;
-import com.renren.api.client.utils.HttpURLUtils;
+import com.renren.api.json.JSONArray;
+import com.renren.api.json.JSONObject;
 import com.zizibujuan.drip.server.service.ApplicationPropertyService;
 import com.zizibujuan.drip.server.service.UserBindService;
 import com.zizibujuan.drip.server.service.UserService;

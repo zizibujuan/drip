@@ -11,6 +11,8 @@ Import-Package: com.zizibujuan.drip.server.service,
  com.zizibujuan.drip.server.util.io,
  com.zizibujuan.drip.server.util.servlet,
  eu.bitwalker.useragentutils,
+ javax.servlet,
+ javax.servlet.http,
  org.apache.commons.io,
  org.apache.commons.io.output,
  org.apache.commons.lang3.time,
@@ -24,12 +26,11 @@ Import-Package: com.zizibujuan.drip.server.service,
  weibo4j.org.json,
  weibo4j.util
 Bundle-ActivationPolicy: lazy
-Require-Bundle: javax.servlet;bundle-version="3.0.0"
 Service-Component: OSGI-INF/*.xml
 Export-Package: com.zizibujuan.drip.server.servlet,
  com.zizibujuan.drip.server.servlet.authentication
 Bundle-ClassPath: .,
  lib/commons-fileupload-1.2.2.jar,
- lib/renren/json-simple-1.1.1.jar,
- lib/renren/Renren-api-java-sdk.jar,
- lib/qq/Sdk4J.jar
+ lib/qq/Sdk4J.jar,
+ lib/renren/commons-logging-1.1.1.jar,
+ lib/renren/renren-api2-sdk-1.0-SNAPSHOT.jar
