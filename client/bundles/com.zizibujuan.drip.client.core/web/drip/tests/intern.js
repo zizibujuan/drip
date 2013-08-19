@@ -48,11 +48,26 @@ define({
 	// used here
 	loader: {
 		// Packages that should be registered with the loader in each testing environment
-		packages: [ { name: 'myPackage', location: '.' } ]
+		baseUrl: "/",
+		packages: [ { name: 'dojo', location: 'dojo/' },
+		            { name: 'drip', location: 'drip/' }
+		            ]
 	},
-
+//
+//	{ baseUrl: internDir + '../../',
+//		  packages: [
+//		    { name: 'intern',
+//		      location: internDir }
+//		  ],
+//		  map: { intern: {
+//		    dojo: 'intern/node_modules/dojo',
+//		    chai: 'intern/node_modules/chai/chai'
+//		  } }
+//		}
+	
 	// Non-functional test suite(s) to run in each browser
-	suites: [ /* 'myPackage/tests/foo', 'myPackage/tests/bar' */ ],
+	// /* 'myPackage/tests/foo', 'myPackage/tests/bar' */
+	suites: [ "drip/tests/mixLogin/Register" ],
 
 	// Functional test suite(s) to run in each browser once non-functional tests are completed
 	functionalSuites: [ /* 'myPackage/tests/functional' */ ],
