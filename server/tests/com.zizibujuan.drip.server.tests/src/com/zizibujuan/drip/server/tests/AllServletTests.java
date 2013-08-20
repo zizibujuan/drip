@@ -14,8 +14,8 @@ import com.zizibujuan.drip.server.tests.servlets.FollowServletTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-	LoginServletTests.class,
-	FollowServletTests.class
+//	LoginServletTests.class,
+//	FollowServletTests.class
 })
 public class AllServletTests {
 
