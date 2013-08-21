@@ -51,6 +51,8 @@ public class AbstractServletTests {
 		webConversation = new WebConversation();
 		params = new HashMap<String, String>();
 		headers = new HashMap<String, String>();
+		// 所有测试的都是ajax请求
+		headers.put("X-Requested-With", "XMLHttpRequest");
 	}
 	
 	@After
@@ -62,31 +64,31 @@ public class AbstractServletTests {
 		headers = null;
 	}
 	
-	protected void initGetServlet(String urlString) throws IOException, SAXException{
+	protected void initGetServlet(String urlString){
 		request = new GetMethodWebRequest(SERVER_LOCATION + urlString);
 		setUpResponse();
 	}
 	
-	protected void initPostServlet(String urlString) throws IOException, SAXException{
+	protected void initPostServlet(String urlString){
 		String json = JsonUtil.toJson(params);
 		request = new PostMethodWebRequest(SERVER_LOCATION + urlString, IOUtils.toInputStream(json), "text/plain");
 		params = null;
 		setUpResponse();
 	}
 	
-	protected void initPutServlet(String urlString) throws IOException, SAXException{
+	protected void initPutServlet(String urlString){
 		String json = JsonUtil.toJson(params);
 		request = new PutMethodWebRequest(SERVER_LOCATION + urlString, IOUtils.toInputStream(json), "text/plain");
 		params = null;
 		setUpResponse();
 	}
 	
-	protected void initDeleteServlet(String urlString) throws IOException, SAXException{
+	protected void initDeleteServlet(String urlString){
 		request = new DeleteMethodWebRequest(SERVER_LOCATION + urlString);
 		setUpResponse();
 	}
 
-	private void setUpResponse() throws IOException, SAXException {
+	private void setUpResponse(){
 		if(params != null){
 			for(Map.Entry<String, String> entry: params.entrySet()){
 				request.setParameter(entry.getKey(), entry.getValue());
@@ -94,10 +96,17 @@ public class AbstractServletTests {
 		}
 		if(headers != null){
 			for(Map.Entry<String, String> entry: headers.entrySet()){
-				request.setParameter(entry.getKey(), entry.getValue());
+				request.setHeaderField(entry.getKey(), entry.getValue());
 			}
 		}
-		response = webConversation.getResponse(request);
+		
+		try {
+			response = webConversation.getResponse(request);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	

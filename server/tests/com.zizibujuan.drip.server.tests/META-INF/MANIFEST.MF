@@ -15,6 +15,8 @@ Import-Package: com.zizibujuan.dbaccess.mysql.service,
  com.zizibujuan.drip.server.util,
  com.zizibujuan.drip.server.util.dao,
  com.zizibujuan.drip.server.util.json,
+ javax.servlet,
+ javax.servlet.http,
  org.apache.commons.io;version="2.4.0",
  org.apache.commons.lang3,
  org.apache.commons.lang3.math,
@@ -24,5 +26,6 @@ Bundle-ClassPath: lib/httpunit.jar,
  lib/nekohtml-0.9.5.jar,
  lib/xercesImpl-2.6.1.jar,
  .
-Require-Bundle: org.junit;bundle-version="4.10.0"
+Require-Bundle: org.mozilla.javascript;bundle-version="1.7.2",
+ org.junit;bundle-version="4.10.0"
 Service-Component: OSGI-INFO/serviceHolder.xml
