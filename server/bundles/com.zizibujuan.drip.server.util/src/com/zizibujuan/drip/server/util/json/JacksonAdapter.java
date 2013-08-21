@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.zizibujuan.drip.server.exception.json.JSONAccessException;
 
 /**
@@ -123,6 +125,23 @@ public class JacksonAdapter implements Json {
 			throw new JSONAccessException(e);
 		}
 		return t;
+	}
+	
+	public <T> List<T> fromJsonArray(String jsonString, Class<List> collectionClass, Class<T> elementClass){
+		List<T> result = null;
+		try {
+			result = objectMapper.readValue(jsonString, objectMapper.getTypeFactory().constructCollectionType(collectionClass, elementClass));
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+			throw new JSONAccessException(e);
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+			throw new JSONAccessException(e);
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new JSONAccessException(e);
+		}
+		return result;
 	}
 
 

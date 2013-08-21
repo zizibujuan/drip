@@ -69,4 +69,11 @@ public class StrutsJsonAdapter implements Json {
 		return null;
 	}
 
+	@Override
+	public <T> List<T> fromJsonArray(String jsonString,
+			Class<List> collectionClass, Class<T> elementClass) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

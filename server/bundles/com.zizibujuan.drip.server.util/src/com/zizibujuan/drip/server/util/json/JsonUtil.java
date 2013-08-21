@@ -54,4 +54,10 @@ public abstract class JsonUtil {
 		return json.fromJson(jsonString, classOfT);
 	}
 	*/
+
+	public static <T> List<T> fromJsonArray(String jsonString,
+			Class<List> collectionClass, Class<T> elementClass) {
+		return json.fromJsonArray(jsonString, collectionClass, elementClass);
+		
+	}
 }

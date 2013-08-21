@@ -9,9 +9,10 @@ public class UserInfo {
 
 	private Long id;
 	private Long digitalId;
-	private String name;
+	private String loginName;
 	private String nickName;
 	private String email;
+	private String password;
 
 	/**
 	 * 获取全局用户标识，对应drip_global_user_info的dbid
@@ -50,18 +51,18 @@ public class UserInfo {
 	/**
 	 * 获取用户名，这个用户名是唯一且固定的，由英文字母、下划线和数字组成。
 	 * 就是用户登录名
-	 * @return 用户名
+	 * @return 用户登录名
 	 */
-	public String getName() {
-		return name;
+	public String getLoginName() {
+		return loginName;
 	}
 
 	/**
 	 * 设置用户名
-	 * @param name 用户名
+	 * @param loginName 用户登录名
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setLoginName(String loginName) {
+		this.loginName = loginName;
 	}
 	
 	/**
@@ -94,6 +95,22 @@ public class UserInfo {
 	 */
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	/**
+	 * 获取登录密码，禁止往客户端发送密码
+	 * @return 登录密码
+	 */
+	public String getPassword() {
+		return password;
+	}
+
+	/**
+	 * 设置登录密码
+	 * @param password 登录密码
+	 */
+	public void setPassword(String password) {
+		this.password = password;
 	}
 	
 }

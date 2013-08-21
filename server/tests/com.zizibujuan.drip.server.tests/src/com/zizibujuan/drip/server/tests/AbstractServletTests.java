@@ -13,6 +13,7 @@ import org.junit.BeforeClass;
 import org.xml.sax.SAXException;
 
 import com.meterware.httpunit.GetMethodWebRequest;
+import com.meterware.httpunit.HttpException;
 import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.PutMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
@@ -71,6 +72,7 @@ public class AbstractServletTests {
 	
 	protected void initPostServlet(String urlString){
 		String json = JsonUtil.toJson(params);
+		webConversation.setExceptionsThrownOnErrorStatus(false);
 		request = new PostMethodWebRequest(SERVER_LOCATION + urlString, IOUtils.toInputStream(json), "text/plain");
 		params = null;
 		setUpResponse();
@@ -78,6 +80,7 @@ public class AbstractServletTests {
 	
 	protected void initPutServlet(String urlString){
 		String json = JsonUtil.toJson(params);
+		webConversation.setExceptionsThrownOnErrorStatus(false);
 		request = new PutMethodWebRequest(SERVER_LOCATION + urlString, IOUtils.toInputStream(json), "text/plain");
 		params = null;
 		setUpResponse();
@@ -105,6 +108,8 @@ public class AbstractServletTests {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (HttpException e) {
 			e.printStackTrace();
 		}
 	}

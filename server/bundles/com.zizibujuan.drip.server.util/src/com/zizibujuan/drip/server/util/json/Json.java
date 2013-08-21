@@ -26,4 +26,6 @@ public interface Json {
 
 	<T> T fromJsonObject(InputStream io, Class<T> clazz);
 	
+	<T> List<T> fromJsonArray(String jsonString, Class<List> collectionClass, Class<T> elementClass);
+	
 }
