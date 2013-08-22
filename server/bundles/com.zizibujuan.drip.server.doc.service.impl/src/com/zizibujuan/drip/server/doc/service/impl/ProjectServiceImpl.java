@@ -54,7 +54,7 @@ public class ProjectServiceImpl implements ProjectService {
 		String root = applicationPropertyDao.getForString(GitConstants.KEY_GIT_ROOT);
 		InitCommand command = new InitCommand();
 		// 还是使用项目名称作为仓库的名称，并将仓库放在用户标识（固定不变）下面
-		File directory = new File(root + userInfo.getName() + "/" + projectInfo.getName()); 
+		File directory = new File(root + userInfo.getLoginName() + "/" + projectInfo.getName()); 
 		command.setDirectory(directory);
 		Repository repository;
 		try {
@@ -101,7 +101,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	private void configGit(UserInfo userInfo, Git git) throws IOException {
 		StoredConfig config = git.getRepository().getConfig();
-		String gitUserName = userInfo.getName();
+		String gitUserName = userInfo.getLoginName();
 		String gitUserEmail = userInfo.getEmail();
 		if (gitUserName != null){
 			config.setString(ConfigConstants.CONFIG_USER_SECTION, null, ConfigConstants.CONFIG_KEY_NAME, gitUserName);

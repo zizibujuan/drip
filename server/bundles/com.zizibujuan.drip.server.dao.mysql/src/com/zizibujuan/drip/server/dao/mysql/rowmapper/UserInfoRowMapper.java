@@ -31,7 +31,7 @@ public class UserInfoRowMapper implements RowMapper<UserInfo> {
 	public UserInfo mapRow(ResultSet rst, int rowNum) throws SQLException {
 		UserInfo userInfo = new UserInfo();
 		userInfo.setId(rst.getLong("id"));
-		userInfo.setName(rst.getString("loginName"));
+		userInfo.setLoginName(rst.getString("loginName"));
 		userInfo.setEmail(rst.getString("email"));
 		userInfo.setDigitalId(rst.getLong("digitalId"));
 		userInfo.setNickName(rst.getString("nickName"));
