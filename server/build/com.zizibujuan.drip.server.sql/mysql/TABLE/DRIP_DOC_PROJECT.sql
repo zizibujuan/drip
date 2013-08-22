@@ -1,9 +1,9 @@
 -- -----------------------------------------------------
--- Table `drip`.`DRIP_DOC_PROJECT` 维护项目信息
+-- Table `DRIP_DOC_PROJECT` 维护项目信息
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `drip`.`DRIP_DOC_PROJECT`;
+DROP TABLE IF `DRIP_DOC_PROJECT`;
 
-CREATE  TABLE IF NOT EXISTS `drip`.`DRIP_DOC_PROJECT` (
+CREATE  TABLE IF NOT `DRIP_DOC_PROJECT` (
   `DBID` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键' ,
   `PROJECT_NAME` VARCHAR(32) NULL COMMENT '项目名称' ,
   `PROJECT_LABEL` VARCHAR(56) NULL COMMENT '项目中文名' ,

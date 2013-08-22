@@ -1,10 +1,10 @@
 -- -----------------------------------------------------
--- Table `drip`.`DRIP_USER_EDU` 用户教育经历
+-- Table `DRIP_USER_EDU` 用户教育经历
 -- TODO:加入学院和班级
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `drip`.`DRIP_USER_EDU`;
+DROP TABLE IF EXISTS `DRIP_USER_EDU`;
 
-CREATE  TABLE IF NOT EXISTS `drip`.`DRIP_USER_EDU` (
+CREATE  TABLE IF NOT EXISTS `DRIP_USER_EDU` (
   `DBID` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键' ,
   `GLOBAL_USER_ID` BIGINT UNSIGNED NOT NULL COMMENT '全局用户标识' ,
   `SCHOOL_CODE` CHAR(10) NULL COMMENT '学校编码',

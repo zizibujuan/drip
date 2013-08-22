@@ -1,9 +1,9 @@
 -- -----------------------------------------------------
--- Table `drip`.`DRIP_USER_AVATAR` 存储用户图像信息
+-- Table `DRIP_USER_AVATAR` 存储用户图像信息
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `drip`.`DRIP_USER_AVATAR`;
+DROP TABLE IF EXISTS `DRIP_USER_AVATAR`;
 
-CREATE  TABLE IF NOT EXISTS `drip`.`DRIP_USER_AVATAR` (
+CREATE  TABLE IF NOT EXISTS `DRIP_USER_AVATAR` (
   `DBID` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键' ,
   `GLOBAL_USER_ID` BIGINT UNSIGNED NOT NULL COMMENT '全局用户标识' ,
   `URL_NAME` VARCHAR(32) NOT NULL COMMENT '链接名称' ,

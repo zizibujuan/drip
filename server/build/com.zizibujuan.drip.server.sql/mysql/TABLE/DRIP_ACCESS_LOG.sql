@@ -1,10 +1,10 @@
 -- 用户访问日志
 -- -----------------------------------------------------
--- Table `drip`.`DRIP_ACCESS_LOG` 用户访问日志
+-- Table `DRIP_ACCESS_LOG` 用户访问日志
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `drip`.`DRIP_ACCESS_LOG`;
+DROP TABLE IF EXISTS `DRIP_ACCESS_LOG`;
 
-CREATE  TABLE IF NOT EXISTS `drip`.`DRIP_ACCESS_LOG` (
+CREATE  TABLE IF NOT EXISTS `DRIP_ACCESS_LOG` (
   `DBID` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键' ,
   `USER_ID` BIGINT NOT NULL COMMENT '全局用户标识/临时为用户生成的标识' ,
   `IP` VARCHAR(255) NULL COMMENT 'IP地址',

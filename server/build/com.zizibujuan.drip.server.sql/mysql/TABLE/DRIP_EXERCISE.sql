@@ -1,9 +1,9 @@
 -- -----------------------------------------------------
--- Table `drip`.`DRIP_EXERCISE` 维护所有的习题
+-- Table `DRIP_EXERCISE` 维护所有的习题
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `drip`.`DRIP_EXERCISE`;
+DROP TABLE IF EXISTS `DRIP_EXERCISE`;
 
-CREATE  TABLE IF NOT EXISTS `drip`.`DRIP_EXERCISE` (
+CREATE  TABLE IF NOT EXISTS `DRIP_EXERCISE` (
   `DBID` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键' ,
   `CONTENT` TEXT NULL COMMENT '习题内容' ,
   `EXER_TYPE` CHAR(2) NULL COMMENT '题型' ,

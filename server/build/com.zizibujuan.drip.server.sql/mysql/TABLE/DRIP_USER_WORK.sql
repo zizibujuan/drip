@@ -1,11 +1,11 @@
 -- -----------------------------------------------------
--- Table `drip`.`DRIP_USER_WORK` 用户工作经历
+-- Table `DRIP_USER_WORK` 用户工作经历
 -- 公司名称，在职时间，工作内容，所属行业
 -- 公司编码和公司描述
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `drip`.`DRIP_USER_WORK`;
+DROP TABLE IF EXISTS `DRIP_USER_WORK`;
 
-CREATE  TABLE IF NOT EXISTS `drip`.`DRIP_USER_WORK` (
+CREATE  TABLE IF NOT EXISTS `DRIP_USER_WORK` (
   `DBID` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键' ,
   `GLOBAL_USER_ID` BIGINT UNSIGNED NOT NULL COMMENT '全局用户标识' ,
   `SCHOOL_CODE` CHAR(10) NULL COMMENT '学校编码',

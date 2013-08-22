@@ -1,9 +1,9 @@
 -- -----------------------------------------------------
--- Table `drip`.`DRIP_PROPERTY_KEY` 系统属性表
+-- Table `DRIP_PROPERTY_KEY` 系统属性表
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `drip`.`DRIP_PROPERTY_KEY`;
+DROP TABLE IF EXISTS `DRIP_PROPERTY_KEY`;
 
-CREATE  TABLE IF NOT EXISTS `drip`.`DRIP_PROPERTY_KEY` (
+CREATE  TABLE IF NOT EXISTS `DRIP_PROPERTY_KEY` (
   `DBID` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键' ,
   `PROPERTY_KEY` VARCHAR(100) NOT NULL COMMENT '键' ,
   `GROUP_ID` BIGINT NOT NULL COMMENT '分类标识' ,

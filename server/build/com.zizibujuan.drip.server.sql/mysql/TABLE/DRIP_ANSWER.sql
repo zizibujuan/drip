@@ -1,10 +1,10 @@
 -- 习题答案的基本信息
 -- -----------------------------------------------------
--- Table `drip`.`DRIP_ANSWER` 习题答案的基本信息
+-- Table `DRIP_ANSWER` 习题答案的基本信息
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `drip`.`DRIP_ANSWER`;
+DROP TABLE IF EXISTS `DRIP_ANSWER`;
 
-CREATE  TABLE IF NOT EXISTS `drip`.`DRIP_ANSWER` (
+CREATE  TABLE IF NOT EXISTS `DRIP_ANSWER` (
   `DBID` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键' ,
   `EXER_ID` BIGINT NOT NULL COMMENT '习题标识' ,
   `GUIDE` TEXT NULL COMMENT '答题解析',

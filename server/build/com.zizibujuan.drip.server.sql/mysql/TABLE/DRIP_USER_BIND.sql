@@ -2,11 +2,11 @@
 -- 新增本网站用户时，也需要本网站用户自我绑定,只有本地用户激活的时候才添加自我绑定。
 -- 注意，一个bind_user_id只能绑定一个本地用户
 -- -----------------------------------------------------
--- Table `drip`.`DRIP_USER_BIND` 本网站用户绑定的第三方网站帐号
+-- Table `DRIP_USER_BIND` 本网站用户绑定的第三方网站帐号
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `drip`.`DRIP_USER_BIND`;
+DROP TABLE IF EXISTS `DRIP_USER_BIND`;
 
-CREATE  TABLE IF NOT EXISTS `drip`.`DRIP_USER_BIND` (
+CREATE  TABLE IF NOT EXISTS `DRIP_USER_BIND` (
   `DBID` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键' ,
   `LOCAL_USER_ID` BIGINT UNSIGNED NOT NULL COMMENT '为本网站用户生成的全局用户标识' ,
   `BIND_USER_ID` BIGINT UNSIGNED NOT NULL COMMENT '为第三方网站用户生成的全局用户标识,当本网站注册的用户激活后，也需要自我绑定',

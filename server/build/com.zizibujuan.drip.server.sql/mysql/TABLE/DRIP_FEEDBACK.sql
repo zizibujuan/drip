@@ -1,9 +1,9 @@
 -- -----------------------------------------------------
--- Table `drip`.`DRIP_FEEDBACK` 搜集用户反馈信息
+-- Table `DRIP_FEEDBACK` 搜集用户反馈信息
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `drip`.`DRIP_FEEDBACK`;
+DROP TABLE IF EXISTS `DRIP_FEEDBACK`;
 
-CREATE  TABLE IF NOT EXISTS `drip`.`DRIP_FEEDBACK` (
+CREATE  TABLE IF NOT EXISTS `DRIP_FEEDBACK` (
   `DBID` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键' ,
   `USER_ID` BIGINT NOT NULL COMMENT '全局用户标识/临时为用户生成的标识' ,
   `ANONYMOUS` TINYINT(1) NULL DEFAULT 1 COMMENT '是否匿名用户',

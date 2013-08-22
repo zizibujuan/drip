@@ -4,11 +4,11 @@
 -- 号码从10位的数字开始
 
 -- -----------------------------------------------------
--- Table `drip`.`DRIP_USER_NUMBER` 孜孜不倦号码库
+-- Table `DRIP_USER_NUMBER` 孜孜不倦号码库
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `drip`.`DRIP_USER_NUMBER`;
+DROP TABLE IF EXISTS `DRIP_USER_NUMBER`;
 
-CREATE  TABLE IF NOT EXISTS `drip`.`DRIP_USER_NUMBER` (
+CREATE  TABLE IF NOT EXISTS `DRIP_USER_NUMBER` (
   `DBID` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
   `NUM` BIGINT UNSIGNED NOT NULL COMMENT '孜孜不倦号码',
   `USE_TOKEN` VARCHAR(32) NULL COMMENT '使用标记，用32位uuid标识',

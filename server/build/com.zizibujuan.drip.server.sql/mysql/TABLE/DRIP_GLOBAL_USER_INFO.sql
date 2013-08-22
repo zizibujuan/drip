@@ -12,11 +12,11 @@
 -- FIXME:将本网站的用户信息也存储在这里，这样全局生成一个统一的用户标识。在解决用户关联的问题上有什么好处呢？
 -- 这个表中即保存第三方网站的用户，也保存在本网站注册的用户信息，同时通过bind表，将第三方网站用户与本网站用户关联起来。
 -- -----------------------------------------------------
--- Table `drip`.`DRIP_GLOBAL_USER_INFO` 包括本网站注册用户和第三方网站注册用户所有用户信息的表
+-- Table `DRIP_GLOBAL_USER_INFO` 包括本网站注册用户和第三方网站注册用户所有用户信息的表
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `drip`.`DRIP_GLOBAL_USER_INFO`;
+DROP TABLE IF EXISTS `DRIP_GLOBAL_USER_INFO`;
 
-CREATE  TABLE IF NOT EXISTS `drip`.`DRIP_GLOBAL_USER_INFO` (
+CREATE  TABLE IF NOT EXISTS `DRIP_GLOBAL_USER_INFO` (
   `DBID` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键，全局统一用户标识' ,
   `SITE_ID` INT NOT NULL COMMENT '本网站或第三方网站标识' ,
   `OPEN_ID` VARCHAR(56) NULL COMMENT '作为第三方网站用户的唯一标识,类型为:数字类型/字符串类型，只有第三方网站用户填',

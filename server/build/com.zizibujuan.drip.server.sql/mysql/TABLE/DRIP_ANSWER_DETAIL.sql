@@ -1,10 +1,10 @@
 -- 习题答案详情
 -- -----------------------------------------------------
--- Table `drip`.`DRIP_ANSWER_DETAIL` 习题答案详情
+-- Table `DRIP_ANSWER_DETAIL` 习题答案详情
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `drip`.`DRIP_ANSWER_DETAIL`;
+DROP TABLE IF EXISTS `DRIP_ANSWER_DETAIL`;
 
-CREATE  TABLE IF NOT EXISTS `drip`.`DRIP_ANSWER_DETAIL` (
+CREATE  TABLE IF NOT EXISTS `DRIP_ANSWER_DETAIL` (
   `DBID` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键' ,
   `ANSWER_ID` BIGINT NOT NULL COMMENT '答案标识' ,
   `OPT_ID` BIGINT NULL COMMENT '答案选项标识，用于完型填空。如果没有选项，则为null' ,

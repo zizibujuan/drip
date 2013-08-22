@@ -1,10 +1,10 @@
 -- -----------------------------------------------------
--- Table `drip`.`DRIP_CODE_CITY` 城市编码
+-- Table `DRIP_CODE_CITY` 城市编码
 -- 城市编码， 9位，000 00 00 00 分别表示 国家 省 市 县
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `drip`.`DRIP_CODE_CITY`;
+DROP TABLE IF EXISTS `DRIP_CODE_CITY`;
 
-CREATE  TABLE IF NOT EXISTS `drip`.`DRIP_CODE_CITY` (
+CREATE  TABLE IF NOT EXISTS `DRIP_CODE_CITY` (
   `DBID` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键' ,
   `CODE` CHAR(9) NOT NULL COMMENT '编码' ,
   `VAL` VARCHAR(52) NULL COMMENT '编码值',

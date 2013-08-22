@@ -1,9 +1,9 @@
 -- -----------------------------------------------------
--- Table `drip`.`DRIP_EXER_OPTION` 存储一道题具有多个答案的选项表，如完型填空题和选择题。
+-- Table `DRIP_EXER_OPTION` 存储一道题具有多个答案的选项表，如完型填空题和选择题。
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `drip`.`DRIP_EXER_OPTION`;
+DROP TABLE IF EXISTS `DRIP_EXER_OPTION`;
 
-CREATE  TABLE IF NOT EXISTS `drip`.`DRIP_EXER_OPTION` (
+CREATE  TABLE IF NOT EXISTS `DRIP_EXER_OPTION` (
   `DBID` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键' ,
   `EXER_ID` BIGINT NOT NULL COMMENT '习题标识' ,
   `CONTENT` TEXT NULL COMMENT '可选项内容' ,
