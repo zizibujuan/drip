@@ -57,30 +57,28 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	
 	// TODO:在注册用户分支中添加用户注册功能
 	@Override
-	public Long add(Map<String, Object> userInfo) {
+	public Long add(UserInfo userInfo) {
 		Connection con = null;
 		try {
 			con = getDataSource().getConnection();
 			con.setAutoCommit(false);
-			Long digitalId = digitalIdDao.random(con);
-			String email = userInfo.get("login").toString();
-			Object oNickName = userInfo.get("realName");
-			String nickName = "";
-			if(oNickName==null){
-				nickName = email;
-			}else{
-				nickName = oNickName.toString();
-			}
-			Object siteId = userInfo.get("siteId");
 			
-			Long userId = DatabaseUtil.insert(con, SQL_INSERT_USER, email,
-					nickName,
+			Long digitalId = digitalIdDao.random(con);
+			int siteId = userInfo.getSiteId();
+			
+			String email = userInfo.getEmail();
+			String password = userInfo.getPassword();
+			String loginName = userInfo.getLoginName();
+			
+			Long userId = DatabaseUtil.insert(con, SQL_INSERT_USER, 
+					loginName,
+					null,
 					siteId,
 					digitalId,
 					email,
-					userInfo.get("md5Password"),
-					userInfo.get("mobile"),
-					userInfo.get("realName"));
+					password,
+					null,
+					null);
 			// 在关联表中添加一条记录，自己关联自己,本地用户也需要添加一个关联关系
 			// 不需要添加一个字段来标识是不是本地用户，只要两个用户标识相等，则必是本地用户，代码中根据这个逻辑判断。
 			userBindDao.bind(con, userId, userId, true);

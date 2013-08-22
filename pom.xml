@@ -53,6 +53,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		<module>server/bundles/com.zizibujuan.drip.server.doc.model</module>
 		<!-- log -->
 		<module>server/bundles/com.zizibujuan.drip.server.logback.config</module>
+		<module>server/bundles/com.zizibujuan.dbaccess.mysql.config</module>
 		<!-- cache -->
 		<module>server/bundles/com.zizibujuan.cache.ehcache</module>
 		<!-- repository -->		

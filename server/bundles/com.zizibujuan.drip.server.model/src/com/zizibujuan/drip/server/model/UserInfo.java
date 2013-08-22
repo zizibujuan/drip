@@ -1,5 +1,7 @@
 package com.zizibujuan.drip.server.model;
 
+import com.zizibujuan.drip.server.util.OAuthConstants;
+
 /**
  * 用户信息
  * @author jzw
@@ -13,6 +15,7 @@ public class UserInfo {
 	private String nickName;
 	private String email;
 	private String password;
+	private int siteId = -1;
 
 	/**
 	 * 获取全局用户标识，对应drip_global_user_info的dbid
@@ -54,7 +57,7 @@ public class UserInfo {
 	 * @return 用户登录名
 	 */
 	public String getLoginName() {
-		return loginName;
+		return loginName.trim();
 	}
 
 	/**
@@ -86,7 +89,7 @@ public class UserInfo {
 	 * @return 邮箱地址
 	 */
 	public String getEmail() {
-		return email;
+		return email.trim();
 	}
 
 	/**
@@ -98,7 +101,8 @@ public class UserInfo {
 	}
 
 	/**
-	 * 获取登录密码，禁止往客户端发送密码
+	 * 获取登录密码，禁止往客户端发送密码。
+	 * 密码的开始和结尾可以包含空字符。
 	 * @return 登录密码
 	 */
 	public String getPassword() {
@@ -112,5 +116,23 @@ public class UserInfo {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
+	/**
+	 * 获取站点标识，标明用户是使用哪个网站的注册用户
+	 * @return 站点标识
+	 */
+	public int getSiteId() {
+		return siteId == -1 ? OAuthConstants.ZIZIBUJUAN : siteId;
+	}
+
+	/**
+	 * 获取站点标识
+	 * @param siteId 站点标识
+	 */
+	public void setSiteId(int siteId) {
+		this.siteId = siteId;
+	}
+	
+	
 	
 }

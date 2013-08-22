@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.validator.routines.EmailValidator;
 import org.eclipse.core.runtime.IPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,7 @@ public class UserServlet extends BaseServlet {
 			logger.warn("errors列表不为空，说明servlet只初始化一次");
 			errors.clear();
 		}
+		
 		traceRequest(req);
 		IPath path = getPath(req);
 		if(path.segmentCount() == 0){
@@ -63,7 +65,12 @@ public class UserServlet extends BaseServlet {
 		String email = userInfo.getEmail().trim();
 		if(email.isEmpty()){
 			errors.add("请输入常用邮箱");
+		}else if(email.length() > 50){
+			errors.add("邮箱不能超过50个字符");
+		}else if(!EmailValidator.getInstance().isValid(email)){
+			errors.add("邮箱格式不正确");
 		}
+		
 		
 		String password = userInfo.getPassword().trim();
 		if(password.isEmpty()){

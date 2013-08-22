@@ -12,6 +12,7 @@ import com.zizibujuan.drip.server.dao.UserAttributesDao;
 import com.zizibujuan.drip.server.dao.UserAvatarDao;
 import com.zizibujuan.drip.server.dao.UserBindDao;
 import com.zizibujuan.drip.server.dao.UserDao;
+import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.ApplicationPropertyService;
 import com.zizibujuan.drip.server.service.UserService;
 
@@ -33,12 +34,12 @@ public class UserServiceImpl implements UserService {
 
 	// FIXME:学习如何加入salt，明白加入salt有哪些具体好处
 	@Override
-	public Long add(Map<String, Object> userInfo) {
+	public Long add(UserInfo userInfo) {
 		String salt = "";
-		String password = userInfo.get("password").toString();
+		String password = userInfo.getPassword();
 		String md5Password = DigestUtils.md5Hex(password+salt);
-		userInfo.put("md5Password", md5Password);
-		userInfo.put("salt", salt);
+		userInfo.setPassword(md5Password);
+		// userInfo.put("salt", salt);
 		
 		return userDao.add(userInfo);
 	}

@@ -35,6 +35,7 @@
       <plugin id="com.fasterxml.jackson.core.jackson-databind"/>
       <plugin id="com.google.gson"/>
       <plugin id="com.zizibujuan.dbaccess.mysql"/>
+      <plugin id="com.zizibujuan.dbaccess.mysql.config" fragment="true"/>
       <plugin id="com.zizibujuan.drip.client.release"/>
       <plugin id="com.zizibujuan.drip.doc"/>
       <plugin id="com.zizibujuan.drip.server.configurator"/>

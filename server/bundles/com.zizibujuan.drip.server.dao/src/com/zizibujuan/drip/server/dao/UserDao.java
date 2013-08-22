@@ -15,17 +15,17 @@ public interface UserDao {
 	/**
 	 * 新增用户。
 	 * <pre>
+	 * 
 	 * 用户信息的格式为:
-	 * 		login: 注册邮箱
+	 * 	 	email: 注册邮箱
 	 * 		password: 登录密码(已加过密)
-	 * 		repassword: 确认密码
-	 * 		realName: 真实姓名
-	 *      siteId: 网站标识 {@link OAuthConstants}
+	 * 		loginName: 登录用户名
+	 *		siteId: 网站标识 {@link OAuthConstants}
 	 * </pre>
 	 * @param userInfo 用户信息
 	 * @return 新增用户的标识
 	 */
-	Long add(Map<String,Object> userInfo);
+	Long add(UserInfo userInfo);
 
 	/**
 	 * 获取用户基本信息，主要往用户session中保存。

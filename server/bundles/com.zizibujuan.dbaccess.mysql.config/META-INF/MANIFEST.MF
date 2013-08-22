@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: dbaccess.mysql.config
+Bundle-SymbolicName: com.zizibujuan.dbaccess.mysql.config
+Bundle-Version: 0.0.1.qualifier
+Bundle-Vendor: zizibujuan.com
+Fragment-Host: com.zizibujuan.dbaccess.mysql;bundle-version="1.1.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
