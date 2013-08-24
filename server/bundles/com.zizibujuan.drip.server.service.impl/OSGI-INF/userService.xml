@@ -11,6 +11,14 @@
    		policy="dynamic"/>
    		
    <reference 
+   		bind="setEmailService" 
+   		unbind="unsetEmailService" 
+   		cardinality="0..1" 
+   		interface="com.zizibujuan.drip.server.service.EmailService" 
+   		name="emailService" 
+   		policy="dynamic"/>
+   		
+   <reference 
 		bind="setUserAttributesDao" 
 		unbind="unsetUserAttributesDao" 
 		cardinality="0..1" 

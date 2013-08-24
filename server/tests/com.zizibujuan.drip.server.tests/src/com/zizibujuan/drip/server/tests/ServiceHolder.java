@@ -1,5 +1,7 @@
 package com.zizibujuan.drip.server.tests;
 
+import com.zizibujuan.drip.server.service.EmailService;
+
 
 /**
  * 放置服务实例
@@ -39,4 +41,20 @@ public class ServiceHolder {
 		}
 	}
 	*/
+	
+	private EmailService emailService;
+	public EmailService getEmailService() {
+		return emailService;
+	}
+	public void setEmailService(EmailService emailService) {
+		System.out.println("注入emailService");
+		this.emailService = emailService;
+	}
+
+	public void unsetEmailService(EmailService emailService) {
+		System.out.println("注销emailService");
+		if (this.emailService == emailService) {
+			this.emailService = null;
+		}
+	}
 }

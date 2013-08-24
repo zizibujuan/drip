@@ -1,6 +1,7 @@
 package com.zizibujuan.drip.server.service;
 
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * 系统属性 服务接口
@@ -43,5 +44,12 @@ public interface ApplicationPropertyService {
 	 * </pre>
 	 */
 	Map<String,Object> getCity(String cityCode);
+
+	/**
+	 * 获取一组属性
+	 * @param groupKey
+	 * @return 属性
+	 */
+	Properties getProperties(String groupKey);
 
 }

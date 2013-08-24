@@ -39,6 +39,15 @@ public interface UserService {
 	 * @return 已被使用则返回<code>true</code>；否则返回<code>false</code>
 	 */
 	boolean loginNameIsUsed(String loginName);
+	
+	/**
+	 * 发送激活用户的邮件
+	 * @param toEmail 用户的邮箱地址
+	 * @param loginName 登录名
+	 * @param confirmKey 激活确认码
+	 */
+	void sendActiveEmail(String toEmail, String loginName, String confirmKey);
+	
 
 	/**
 	 * 用户登录

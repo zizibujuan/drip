@@ -57,6 +57,24 @@ insert into DRIP_PROPERTY_VALUE_STRING (KEY_ID, PROPERTY_VALUE,I18n_ID) VALUES (
 insert into DRIP_PROPERTY_KEY (DBID,PROPERTY_KEY,GROUP_ID,PROPERTY_TYPE) VALUES (60, 'git.repo.root', 1, 1);
 insert into DRIP_PROPERTY_VALUE_STRING (KEY_ID, PROPERTY_VALUE,I18n_ID) VALUES (60, '/mnt/drip_data/','zh_cn');
 
+-- 网站邮箱配置信息
+insert into DRIP_PROPERTY_GROUP (DBID, GROUP_NAME, DISPLAY_NAME,I18N_ID) VALUES (11,'drip.email','drip.email','zh_cn');
+
+insert into DRIP_PROPERTY_KEY (DBID,PROPERTY_KEY,GROUP_ID,PROPERTY_TYPE) VALUES (11, 'email.host.name', 11, 1);
+insert into DRIP_PROPERTY_KEY (DBID,PROPERTY_KEY,GROUP_ID,PROPERTY_TYPE) VALUES (12, 'email.host.port', 11, 1);
+insert into DRIP_PROPERTY_KEY (DBID,PROPERTY_KEY,GROUP_ID,PROPERTY_TYPE) VALUES (13, 'email.support.email', 11, 1);
+insert into DRIP_PROPERTY_KEY (DBID,PROPERTY_KEY,GROUP_ID,PROPERTY_TYPE) VALUES (14, 'email.support.userName', 11, 1);
+insert into DRIP_PROPERTY_KEY (DBID,PROPERTY_KEY,GROUP_ID,PROPERTY_TYPE) VALUES (15, 'email.support.password', 11, 1);
+insert into DRIP_PROPERTY_KEY (DBID,PROPERTY_KEY,GROUP_ID,PROPERTY_TYPE) VALUES (16, 'email.support.subject.activeUser', 11, 1);
+
+insert into DRIP_PROPERTY_VALUE_STRING (KEY_ID, PROPERTY_VALUE,I18n_ID) VALUES (11, 'smtp.googlemail.com','zh_cn');
+insert into DRIP_PROPERTY_VALUE_STRING (KEY_ID, PROPERTY_VALUE,I18n_ID) VALUES (12, '465','zh_cn');
+insert into DRIP_PROPERTY_VALUE_STRING (KEY_ID, PROPERTY_VALUE,I18n_ID) VALUES (13, 'zhengwei.jin@gmail.com','zh_cn');
+insert into DRIP_PROPERTY_VALUE_STRING (KEY_ID, PROPERTY_VALUE,I18n_ID) VALUES (14, '孜孜不倦','zh_cn');
+insert into DRIP_PROPERTY_VALUE_STRING (KEY_ID, PROPERTY_VALUE,I18n_ID) VALUES (15, 'sowhat!@#456','zh_cn');
+insert into DRIP_PROPERTY_VALUE_STRING (KEY_ID, PROPERTY_VALUE,I18n_ID) VALUES (16, '请确认您在孜孜不倦的注册邮箱','zh_cn');
+
+
 -- 职业信息
 
 -- 学校

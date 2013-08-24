@@ -1,8 +1,12 @@
 package com.zizibujuan.drip.server.service.impl;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.text.MessageFormat;
 import java.util.Map;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +18,7 @@ import com.zizibujuan.drip.server.dao.UserBindDao;
 import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.ApplicationPropertyService;
+import com.zizibujuan.drip.server.service.EmailService;
 import com.zizibujuan.drip.server.service.UserService;
 
 /**
@@ -25,23 +30,25 @@ public class UserServiceImpl implements UserService {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	private UserDao userDao;
-	private UserAttributesDao userAttributesDao;
-	private UserAvatarDao userAvatarDao;
-	private ConnectUserDao connectUserDao;
-	private ApplicationPropertyService applicationPropertyService;
-	private UserBindDao userBindDao;
-	private LocalUserStatisticsDao localUserStatisticsDao;
+	private EmailService emailService;
+	
 
 	// FIXME:学习如何加入salt，明白加入salt有哪些具体好处
 	@Override
 	public Long register(UserInfo userInfo) {
+		// 加密密码
 		String salt = "";
 		String password = userInfo.getPassword();
 		String md5Password = DigestUtils.md5Hex(password+salt);
 		userInfo.setPassword(md5Password);
 		// userInfo.put("salt", salt);
 		
-		return userDao.add(userInfo);
+		String confirmKey = DigestUtils.md5Hex(userInfo.getLoginName() + System.nanoTime());
+		userInfo.setConfirmKey(confirmKey);
+		Long userId = userDao.add(userInfo);
+		
+		this.sendActiveEmail(userInfo.getEmail(), userInfo.getLoginName(), confirmKey);
+		return userId;
 	}
 	
 	@Override
@@ -53,7 +60,38 @@ public class UserServiceImpl implements UserService {
 	public boolean loginNameIsUsed(String loginName) {
 		return userDao.loginNameIsUsed(loginName);
 	}
+	
+	// TODO: 改为异步发送，使用新线程完成。
+	// 发送激活邮件
+	// 邮件发送完成后，记录发送时间
+	@Override
+	public void sendActiveEmail(String email, String loginName, String confirmKey) {
+		// TODO Auto-generated method stub
+		StringWriter sw = new StringWriter();
+		try {
+			IOUtils.copy(getClass().getResourceAsStream("active_user_template.html"), sw);
+			String content = MessageFormat.format(sw.toString(), loginName, confirmKey);
+			//sw.toString().replaceFirst("{0}", replacement)
+			emailService.send(email, loginName, content);
+		} catch (IOException e) {
+			logger.error("没有找到模板文件:active_user_template.html", e);
+		}
+	}
+	
+	
+	
+	
+	
+	
 
+	
+	private UserAttributesDao userAttributesDao;
+	private UserAvatarDao userAvatarDao;
+	private ConnectUserDao connectUserDao;
+	private ApplicationPropertyService applicationPropertyService;
+	private UserBindDao userBindDao;
+	private LocalUserStatisticsDao localUserStatisticsDao;
+	
 	@Override
 	public Map<String,Object> login(String email, String password) {
 		// 根据邮箱和密码查找用户信息
@@ -174,6 +212,21 @@ public class UserServiceImpl implements UserService {
 			this.userDao = null;
 		}
 	}
+	
+	public void setEmailService(EmailService emailService) {
+		logger.info("注入emailService");
+		this.emailService = emailService;
+	}
+
+	public void unsetEmailService(EmailService emailService) {
+		if (this.emailService == emailService) {
+			logger.info("注销emailService");
+			this.emailService = null;
+		}
+	}
+	
+	
+	
 	
 	public void setUserAttributesDao(UserAttributesDao userAttributesDao) {
 		logger.info("注入userAttributesDao");

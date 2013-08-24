@@ -2,6 +2,7 @@ package com.zizibujuan.drip.server.dao;
 
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * 系统属性 数据访问接口
@@ -60,4 +61,11 @@ public interface ApplicationPropertyDao {
 	 * 如果只查到n级，则n+1级的信息不加载
 	 */
 	Map<String, Object> getCity(String cityCode);
+	
+	/**
+	 * 获取一组属性
+	 * @param groupKey
+	 * @return 属性
+	 */
+	Properties getProperties(String groupKey);
 }

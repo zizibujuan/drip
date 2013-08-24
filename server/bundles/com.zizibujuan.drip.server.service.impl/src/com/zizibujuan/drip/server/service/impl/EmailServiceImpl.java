@@ -1,0 +1,84 @@
+package com.zizibujuan.drip.server.service.impl;
+
+import java.util.Properties;
+
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMultipart;
+
+import org.apache.commons.mail.DefaultAuthenticator;
+import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.HtmlEmail;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.zizibujuan.drip.server.service.ApplicationPropertyService;
+import com.zizibujuan.drip.server.service.EmailService;
+
+/**
+ * 本网站通用的邮件发送服务实现类
+ * @author jzw
+ * @since 0.0.1
+ */
+public class EmailServiceImpl implements EmailService {
+
+	private static final Logger logger = LoggerFactory.getLogger(EmailServiceImpl.class);
+	
+	private ApplicationPropertyService applicationPropertyService;
+	
+	// 从系统参数中获取邮件服务器的配置信息
+	@Override
+	public void send(String toEmail, String toName, String content) {
+		HtmlEmail email = new HtmlEmail();
+		
+		// 使用一个分组，查询出email的所有相关属性
+		Properties emailProps = applicationPropertyService.getProperties("drip.email");
+		
+		String hostName = emailProps.getProperty("email.host.name");
+		int smtpPort = Integer.valueOf(emailProps.getProperty("email.host.port")).intValue();
+		String fromEmail = emailProps.getProperty("email.support.email");
+		String supportName = emailProps.getProperty("email.support.userName");
+		String password = emailProps.getProperty("email.support.password");
+		String subject = emailProps.getProperty("email.support.subject.activeUser");
+		
+		try {
+			email.setHostName(hostName);
+			email.setSmtpPort(smtpPort);
+			email.setAuthenticator(new DefaultAuthenticator(fromEmail, password));
+			email.setSSLOnConnect(true);
+			
+			email.addTo(toEmail, toName);
+			email.setFrom(fromEmail, supportName);
+			email.setSubject(subject);
+			
+			email.buildMimeMessage();
+			
+			MimeBodyPart body = new MimeBodyPart();
+			body.setContent(content, "text/html;charset=UTF-8");
+			
+			Multipart mp = new MimeMultipart();
+			mp.addBodyPart(body);
+			
+			email.getMimeMessage().setContent(mp);
+			email.sendMimeMessage();
+		} catch (EmailException e) {
+			logger.error("邮件发送失败", e);
+		} catch (MessagingException e) {
+			logger.error("添加邮件内容失败", e);
+		}
+
+	}
+	
+	public void setApplicationPropertyService(ApplicationPropertyService applicationPropertyService) {
+		logger.info("注入applicationPropertyService");
+		this.applicationPropertyService = applicationPropertyService;
+	}
+
+	public void unsetApplicationPropertyService(ApplicationPropertyService applicationPropertyService) {
+		if (this.applicationPropertyService == applicationPropertyService) {
+			logger.info("注销applicationPropertyService");
+			this.applicationPropertyService = null;
+		}
+	}
+}

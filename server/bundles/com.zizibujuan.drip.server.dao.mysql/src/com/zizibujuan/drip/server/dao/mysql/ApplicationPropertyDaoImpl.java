@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 
 import com.zizibujuan.drip.server.dao.ApplicationPropertyDao;
 import com.zizibujuan.drip.server.util.CodeRule;
@@ -69,6 +70,19 @@ public class ApplicationPropertyDaoImpl extends AbstractDao implements
 			result.put(key[i], value);
 		}
 		return result;
+	}
+	
+	private static final String SQL_GET_PROPERTY_LISt = "SELECT a.PROPERTY_KEY, b.PROPERTY_VALUE FROM " +
+			"DRIP_PROPERTY_GROUP pg, DRIP_PROPERTY_KEY a, DRIP_PROPERTY_VALUE_STRING b " +
+			"WHERE a.DBID = b.KEY_ID AND pg.GROUP_NAME=? AND pg.DBID=a.GROUP_ID";
+	@Override
+	public Properties getProperties(String groupKey){
+		List<Map<String, Object>> result = DatabaseUtil.queryForList(getDataSource(), SQL_GET_PROPERTY_LISt, groupKey);
+		Properties props = new Properties();
+		for(Map<String, Object> each: result){
+			props.put(each.get("PROPERTY_KEY"), each.get("PROPERTY_VALUE"));
+		}
+		return props;
 	}
 
 }

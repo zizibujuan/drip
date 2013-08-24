@@ -5,6 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.zizibujuan.drip.server.tests.service.ActivityServiceTests;
+import com.zizibujuan.drip.server.tests.service.EmailServiceTests;
 import com.zizibujuan.drip.server.tests.service.UserBindServiceTests;
 import com.zizibujuan.drip.server.tests.service.UserRelationTests;
 import com.zizibujuan.drip.server.tests.service.UserServiceTests;
@@ -16,10 +17,11 @@ import com.zizibujuan.drip.server.tests.service.UserServiceTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-	UserServiceTests.class,
-	UserBindServiceTests.class,
-	ActivityServiceTests.class,
-	UserRelationTests.class
+//	UserServiceTests.class,
+//	UserBindServiceTests.class,
+//	ActivityServiceTests.class,
+//	UserRelationTests.class
+	EmailServiceTests.class
 })
 public class AllServiceTests {
 
