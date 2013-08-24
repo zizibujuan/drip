@@ -1,6 +1,5 @@
 package com.zizibujuan.drip.server.model;
 
-import com.zizibujuan.drip.server.util.OAuthConstants;
 
 /**
  * 用户信息
@@ -15,8 +14,8 @@ public class UserInfo {
 	private String nickName;
 	private String email;
 	private String password;
-	private int siteId = -1;
-
+	private String confirmKey;
+	
 	/**
 	 * 获取全局用户标识，对应drip_global_user_info的dbid
 	 * @return 全局用户标识
@@ -118,21 +117,19 @@ public class UserInfo {
 	}
 
 	/**
-	 * 获取站点标识，标明用户是使用哪个网站的注册用户
-	 * @return 站点标识
+	 * 获取邮箱激活时使用的key值
+	 * @return 邮箱激活用户的key值
 	 */
-	public int getSiteId() {
-		return siteId == -1 ? OAuthConstants.ZIZIBUJUAN : siteId;
+	public String getConfirmKey() {
+		return confirmKey;
 	}
 
 	/**
-	 * 获取站点标识
-	 * @param siteId 站点标识
+	 * 设置邮箱激活用户的key值
+	 * @param confirmKey 邮箱激活用户的key值
 	 */
-	public void setSiteId(int siteId) {
-		this.siteId = siteId;
+	public void setConfirmKey(String confirmKey) {
+		this.confirmKey = confirmKey;
 	}
-	
-	
 	
 }

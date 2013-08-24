@@ -25,6 +25,15 @@ public interface UserService {
 	 * @return 新增用户的标识
 	 */
 	Long add(UserInfo userInfo);
+	
+	/**
+	 * 判断邮箱是否已被使用
+	 * @param email 有效的邮箱地址
+	 * @return 已存在则返回<code>true</code>；否则返回<code>false</code>
+	 */
+	boolean emailIsUsed(String email);
+	
+	
 
 	/**
 	 * 用户登录
@@ -89,14 +98,6 @@ public interface UserService {
 	 */
 	Map<String, Object> getLoginInfo(Long userId);
 
-	/**
-	 * 判断邮箱是否已被使用
-	 * @param email 有效的邮箱地址
-	 * @return 已存在则返回<code>true</code>；否则返回<code>false</code>
-	 */
-	boolean emailIsExist(String email);
-
-	
 	/**
 	 * 导入第三网站的用户信息
 	 * @param userInfo 用户详细信息

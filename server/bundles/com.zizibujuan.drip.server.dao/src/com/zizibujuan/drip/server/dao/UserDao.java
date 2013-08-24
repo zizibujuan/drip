@@ -26,6 +26,16 @@ public interface UserDao {
 	 * @return 新增用户的标识
 	 */
 	Long add(UserInfo userInfo);
+	
+	/**
+	 * 判断邮箱是否已被使用,不管用户有没有被激活，只要已存在于用户表中，就是被使用。
+	 * TODO: 如果已经超过了激活期限，则可以在这个方法中执行删除未激活用户的操作。
+	 * @param email 有效的邮箱地址
+	 * @return 已存在则返回<code>true</code>；否则返回<code>false</code>
+	 */
+	boolean emailIsUsed(String email);
+	
+	
 
 	/**
 	 * 获取用户基本信息，主要往用户session中保存。
@@ -54,13 +64,6 @@ public interface UserDao {
 	 */
 	Map<String, Object> getLoginInfo(Long userId);
 
-	/**
-	 * 判断邮箱是否已被使用
-	 * @param email 有效的邮箱地址
-	 * @return 已存在则返回<code>true</code>；否则返回<code>false</code>
-	 */
-	boolean emailIsExist(String email);
-	
 	/**
 	 * 导入第三网站的用户信息
 	 * @param userInfo 用户详细信息

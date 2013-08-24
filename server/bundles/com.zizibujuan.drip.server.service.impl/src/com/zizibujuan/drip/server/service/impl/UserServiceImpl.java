@@ -43,6 +43,13 @@ public class UserServiceImpl implements UserService {
 		
 		return userDao.add(userInfo);
 	}
+	
+	@Override
+	public boolean emailIsUsed(String email) {
+		return userDao.emailIsUsed(email);
+	}
+
+	
 
 	@Override
 	public Map<String,Object> login(String email, String password) {
@@ -153,11 +160,6 @@ public class UserServiceImpl implements UserService {
 		return localUserStatisticsDao.getUserStatistics(localUserId);
 	}
 
-	@Override
-	public boolean emailIsExist(String email) {
-		return userDao.emailIsExist(email);
-	}
-	
 	public void setUserDao(UserDao userDao) {
 		logger.info("注入userDao");
 		this.userDao = userDao;

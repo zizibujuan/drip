@@ -3,6 +3,7 @@ package com.zizibujuan.drip.server.servlet;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -16,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.model.UserInfo;
+import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
@@ -31,10 +33,12 @@ public class UserServlet extends BaseServlet {
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserServlet.class);
 	
+	private UserService userService;
 	private List<String> errors;
 	
 	public UserServlet(){
 		errors = new ArrayList<String>();
+		userService = ServiceHolder.getDefault().getUserService();
 	}
 
 	@Override
@@ -52,10 +56,11 @@ public class UserServlet extends BaseServlet {
 			this.validate(userInfo);
 			if(hasErrors()){
 				ResponseUtil.toJSON(req, resp, errors, HttpServletResponse.SC_PRECONDITION_FAILED);
-			}else{
-				
+				return;
 			}
 			
+			userService.add(userInfo);
+			ResponseUtil.toJSON(req, resp, new HashMap<String, Object>());
 			return;
 		}
 		super.doPost(req, resp);
@@ -69,6 +74,8 @@ public class UserServlet extends BaseServlet {
 			errors.add("邮箱不能超过50个字符");
 		}else if(!EmailValidator.getInstance().isValid(email)){
 			errors.add("邮箱格式不正确");
+		}else if(userService.emailIsUsed(email)){
+			errors.add("该邮箱已注册，<a href=\"javascript:\">直接登录</a>");
 		}
 		
 		
