@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
 
 	// FIXME:学习如何加入salt，明白加入salt有哪些具体好处
 	@Override
-	public Long add(UserInfo userInfo) {
+	public Long register(UserInfo userInfo) {
 		String salt = "";
 		String password = userInfo.getPassword();
 		String md5Password = DigestUtils.md5Hex(password+salt);

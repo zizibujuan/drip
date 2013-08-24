@@ -13,7 +13,7 @@ import com.zizibujuan.drip.server.util.OAuthConstants;
 public interface UserService {
 
 	/**
-	 * 新增用户。
+	 * 注册用户，注册成功后，给用户发送邮件
 	 * @param userInfo 用户信息
 	 * <pre>
 	 * 用户信息的格式为:
@@ -24,7 +24,7 @@ public interface UserService {
 	 * </pre>
 	 * @return 新增用户的标识
 	 */
-	Long add(UserInfo userInfo);
+	Long register(UserInfo userInfo);
 	
 	/**
 	 * 判断邮箱是否已被使用

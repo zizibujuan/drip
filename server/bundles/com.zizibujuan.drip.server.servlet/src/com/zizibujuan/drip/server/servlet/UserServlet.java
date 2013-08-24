@@ -59,7 +59,7 @@ public class UserServlet extends BaseServlet {
 				return;
 			}
 			
-			userService.add(userInfo);
+			userService.register(userInfo);
 			ResponseUtil.toJSON(req, resp, new HashMap<String, Object>());
 			return;
 		}
