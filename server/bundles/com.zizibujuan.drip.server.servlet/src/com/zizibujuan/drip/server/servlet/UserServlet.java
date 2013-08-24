@@ -100,6 +100,8 @@ public class UserServlet extends BaseServlet {
 		}else if(!new RegexValidator("^(?![-_])[a-zA-Z0-9_-]+$").isValid(loginName)){
 			// 有关正则表达式的测试用例，LoginNameRegexTests.java
 			errors.add("用户名只能包含英文字母，数字,-或_，不能以-或_开头，不区分大小写");
+		}else if(userService.loginNameIsUsed(loginName)){
+			errors.add("该用户名已注册，<a href=\"javascript:\">直接登录</a>");
 		}
 		
 	}

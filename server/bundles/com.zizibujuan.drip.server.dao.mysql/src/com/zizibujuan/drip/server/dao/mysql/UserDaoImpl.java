@@ -65,13 +65,19 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		});
 	}
 	
-	private static final String SQL_EMAIL_EXIST = "select 1 from DRIP_USER_INFO where EMAIL = ? limit 1";
+	private static final String SQL_EMAIL_IS_USED = "select 1 from DRIP_USER_INFO where EMAIL = ? limit 1";
 	@Override
 	public boolean emailIsUsed(String email) {
-		String result = DatabaseUtil.queryForString(getDataSource(), SQL_EMAIL_EXIST, email);
+		String result = DatabaseUtil.queryForString(getDataSource(), SQL_EMAIL_IS_USED, email);
 		return result != null;
 	}
 	
+	private static final String SQL_LOGIN_NAME_IS_USED = "select 1 from DRIP_USER_INFO where LOGIN_NAME = ? limit 1";
+	@Override
+	public boolean loginNameIsUsed(String loginName) {
+		String result = DatabaseUtil.queryForString(getDataSource(), SQL_LOGIN_NAME_IS_USED, loginName);
+		return result != null;
+	}
 	
 	/*
 	 	// 后面的操作移到用户激活成功之后？

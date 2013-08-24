@@ -31,12 +31,17 @@ public interface UserDao {
 	 * 判断邮箱是否已被使用,不管用户有没有被激活，只要已存在于用户表中，就是被使用。
 	 * TODO: 如果已经超过了激活期限，则可以在这个方法中执行删除未激活用户的操作。
 	 * @param email 有效的邮箱地址
-	 * @return 已存在则返回<code>true</code>；否则返回<code>false</code>
+	 * @return 已被使用则返回<code>true</code>；否则返回<code>false</code>
 	 */
 	boolean emailIsUsed(String email);
 	
+	/**
+	 * 判断用户名是否已被使用
+	 * @param loginName 登录名
+	 * @return 已被使用则返回<code>true</code>；否则返回<code>false</code>
+	 */
+	boolean loginNameIsUsed(String loginName);
 	
-
 	/**
 	 * 获取用户基本信息，主要往用户session中保存。
 	 * @param email 电子邮箱

@@ -29,11 +29,16 @@ public interface UserService {
 	/**
 	 * 判断邮箱是否已被使用
 	 * @param email 有效的邮箱地址
-	 * @return 已存在则返回<code>true</code>；否则返回<code>false</code>
+	 * @return 已被使用则返回<code>true</code>；否则返回<code>false</code>
 	 */
 	boolean emailIsUsed(String email);
 	
-	
+	/**
+	 * 判断用户名是否已被使用
+	 * @param loginName 登录名
+	 * @return 已被使用则返回<code>true</code>；否则返回<code>false</code>
+	 */
+	boolean loginNameIsUsed(String loginName);
 
 	/**
 	 * 用户登录

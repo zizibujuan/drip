@@ -205,6 +205,34 @@ public class UserServletTests extends AbstractServletTests{
 		List<String> errors = JsonUtil.fromJsonArray(jsonString, List.class, String.class);
 		assertEquals("用户名不能多于20个字符", errors.get(0));
 	}
+	
+	@Test
+	public void register_loginName_input_is_used() throws IOException{
+		String email = "a@a.com";
+		try{
+			// 先注册一次
+			params.put("email", email);
+			params.put("password", "aaa111,,,");
+			params.put("loginName", "user1");
+			
+			initPostServlet("users");
+			assertEquals(HttpServletResponse.SC_OK, response.getResponseCode());
+			
+			// 然后再注册一次
+			params = new HashMap<String, String>();
+			params.put("email", "b@b.com");
+			params.put("password", "aaa111,,,");
+			params.put("loginName", "user1");
+			
+			initPostServlet("users");
+			assertEquals(HttpServletResponse.SC_PRECONDITION_FAILED, response.getResponseCode());
+			String jsonString = response.getText();
+			List<String> errors = JsonUtil.fromJsonArray(jsonString, List.class, String.class);
+			assertEquals("该用户名已注册，<a href=\"javascript:\">直接登录</a>", errors.get(0));
+		}finally{
+			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_INFO  WHERE EMAIL=?", email);
+		}
+	}
 
 	/**
 	 * 注册成功
