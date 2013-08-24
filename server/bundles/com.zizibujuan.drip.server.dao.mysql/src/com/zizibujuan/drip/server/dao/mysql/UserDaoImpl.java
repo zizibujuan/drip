@@ -38,7 +38,6 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	private UserAvatarDao userAvatarDao;
 	private ConnectUserDao connectUserDao;
 	private UserAttributesDao userAttributesDao;
-	private DigitalIdDao digitalIdDao;
 	private LocalUserStatisticsDao localUserStatisticsDao;
 	
 	private static final String SQL_INSERT_USER = "INSERT INTO " +
@@ -46,7 +45,6 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			"(LOGIN_NAME," +
 			"NICK_NAME," +
 			"SITE_ID," +
-			"DIGITAL_ID," +
 			"EMAIL," +
 			"LOGIN_PWD," +
 			"MOBILE," +
@@ -62,8 +60,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		try {
 			con = getDataSource().getConnection();
 			con.setAutoCommit(false);
-			
-			Long digitalId = digitalIdDao.random(con);
+
 			int siteId = userInfo.getSiteId();
 			
 			String email = userInfo.getEmail();
@@ -74,11 +71,11 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 					loginName,
 					null,
 					siteId,
-					digitalId,
 					email,
 					password,
 					null,
 					null);
+			// 后面的操作移到用户激活成功之后？
 			// 在关联表中添加一条记录，自己关联自己,本地用户也需要添加一个关联关系
 			// 不需要添加一个字段来标识是不是本地用户，只要两个用户标识相等，则必是本地用户，代码中根据这个逻辑判断。
 			userBindDao.bind(con, userId, userId, true);
@@ -156,7 +153,6 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			con.setAutoCommit(false);
 			// 存储本网站生成的用户信息
 			// 本网站产生的数字帐号
-			digitalId = digitalIdDao.random(con);
 			localGlobalUserId = this.addLocalUser(con,digitalId);
 			// 存储第三方网站的用户信息,connectGlobalUserId是本网站为第三方网站用户产生的代理主键
 			connectGlobalUserId = connectUserDao.add(con, userInfo);
@@ -276,17 +272,6 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		if (this.userAttributesDao == userAttributesDao) {
 			logger.info("注销userAttributesDao");
 			this.userAttributesDao = null;
-		}
-	}
-	
-	public void setDigitalIdDao(DigitalIdDao digitalIdDao) {
-		logger.info("注入digitalIdDao");
-		this.digitalIdDao = digitalIdDao;
-	}
-	public void unsetDigitalIdDao(DigitalIdDao digitalIdDao) {
-		if (this.digitalIdDao == digitalIdDao) {
-			logger.info("注销digitalIdDao");
-			this.digitalIdDao = null;
 		}
 	}
 	

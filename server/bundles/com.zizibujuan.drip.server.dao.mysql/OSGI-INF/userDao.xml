@@ -44,14 +44,6 @@
    		policy="dynamic"/>
    		
    	<reference 
-   		bind="setDigitalIdDao" 
-   		unbind="unsetDigitalIdDao" 
-   		cardinality="0..1" 
-   		interface="com.zizibujuan.drip.server.dao.DigitalIdDao" 
-   		name="digitalIdDao" 
-   		policy="dynamic"/>
-   		
-   	<reference 
    		bind="setLocalUserStatisticsDao" 
    		unbind="unsetLocalUserStatisticsDao" 
    		cardinality="0..1" 
