@@ -1,6 +1,3 @@
--- 支持关联一个网站中的多个用户，如马甲等。
--- 新增本网站用户时，也需要本网站用户自我绑定,只有本地用户激活的时候才添加自我绑定。
--- 注意，一个bind_user_id只能绑定一个本地用户
 -- -----------------------------------------------------
 -- Table `DRIP_USER_BIND` 本网站用户绑定的第三方网站帐号
 -- -----------------------------------------------------
@@ -8,9 +5,9 @@ DROP TABLE IF EXISTS `DRIP_USER_BIND`;
 
 CREATE  TABLE IF NOT EXISTS `DRIP_USER_BIND` (
   `DBID` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键' ,
-  `LOCAL_USER_ID` BIGINT UNSIGNED NOT NULL COMMENT '为本网站用户生成的全局用户标识' ,
-  `BIND_USER_ID` BIGINT UNSIGNED NOT NULL COMMENT '为第三方网站用户生成的全局用户标识,当本网站注册的用户激活后，也需要自我绑定',
-  `REF_USER_INFO` TINYINT NULL DEFAULT 0 COMMENT '1表示引用；0表示不引用。如果是1,表示引用对应的第三方用户信息，一个LOCAL_USER_ID只能对应一个REF_USER_INFO为1的记录',
+  `SITE_ID` INT NOT NULL COMMENT '第三方网站标识' ,
+  `OPEN_ID` VARCHAR(56) NULL COMMENT '作为第三方网站用户的唯一标识,类型为:数字类型/字符串类型，只有第三方网站用户填',
+  `USER_ID` BIGINT UNSIGNED NOT NULL COMMENT '本网站用户标识'
   PRIMARY KEY (`DBID`))
 ENGINE = InnoDB
 COMMENT = '本网站用户绑定的第三方网站帐号';
