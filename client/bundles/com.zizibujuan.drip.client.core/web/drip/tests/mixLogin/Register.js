@@ -24,13 +24,22 @@ define(["intern!tdd",
 			});
 			
 			
-			test("注册，用户名、密码和邮箱输入正确", function(){
-				register.set("loginName", "aa");
-				register.set("password", "123456");
-				register.set("email", "a@a.com");
-				register.signUp().then(function(result){
-					// 注册成功之后返回什么信息呢？
-				});
+			test("注册，所有内容都没有输入", function(){
+				register.validate();
+				var errors = register.errors;
+				assert.isTrue(errors.length == 3, "有三个错误信息");
+				assert.equal("请输入常用邮箱", errors[0]);
+				assert.equal("请输入密码", errors[1]);
+				assert.equal("请输入用户名", errors[2]);
+			});
+			
+			test("注册，所有内容都输入空字符串", function(){
+				register.validate();
+				var errors = register.errors;
+				assert.isTrue(errors.length == 3, "有三个错误信息");
+				assert.equal("请输入常用邮箱", errors[0]);
+				assert.equal("请输入密码", errors[1]);
+				assert.equal("请输入用户名", errors[2]);
 			});
 		});
 	}

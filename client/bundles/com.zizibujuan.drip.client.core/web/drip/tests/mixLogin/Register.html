@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Register 注册部件</title>
+<script type="text/javascript" 
+	data-dojo-config="
+		async:true,
+		parseOnLoad:false,
+		isDebug:true" 
+	src="/dojo/dojo.js"></script>
+	
+<script type="text/javascript">
+require(["dojo/parser",
+         "drip/mixLogin/Register"], function(
+        		 parser,
+        		 Register){
+	
+	parser.parse();
+	
+});
+</script>
+</head>
+<body>
+	<div data-dojo-type="drip/mixLogin/Register"></div>
+</body>
+</html>
