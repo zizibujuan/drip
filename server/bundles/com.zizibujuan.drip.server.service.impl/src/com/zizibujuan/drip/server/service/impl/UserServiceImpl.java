@@ -66,13 +66,12 @@ public class UserServiceImpl implements UserService {
 	// 邮件发送完成后，记录发送时间
 	@Override
 	public void sendActiveEmail(String email, String loginName, String confirmKey) {
-		// TODO Auto-generated method stub
 		StringWriter sw = new StringWriter();
 		try {
-			IOUtils.copy(getClass().getResourceAsStream("active_user_template.html"), sw);
+			IOUtils.copy(getClass().getResourceAsStream("/active_user_template.html"), sw);
 			String content = MessageFormat.format(sw.toString(), loginName, confirmKey);
-			//sw.toString().replaceFirst("{0}", replacement)
 			emailService.send(email, loginName, content);
+			userDao.logSendEmailTime(loginName);
 		} catch (IOException e) {
 			logger.error("没有找到模板文件:active_user_template.html", e);
 		}

@@ -79,6 +79,14 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		return result != null;
 	}
 	
+	private static final String SQL_UPDATE_EMAIL_SEND_TIME = "UPDATE DRIP_USER_INFO "
+			+ "SET EMAIL_SEND_TIME = now() WHERE LOGIN_NAME=?";
+	@Override
+	public void logSendEmailTime(String loginName) {
+		DatabaseUtil.update(getDataSource(), SQL_UPDATE_EMAIL_SEND_TIME, loginName);
+	}
+	
+	
 	/*
 	 	// 后面的操作移到用户激活成功之后？
 		// 在关联表中添加一条记录，自己关联自己,本地用户也需要添加一个关联关系

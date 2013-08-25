@@ -43,6 +43,15 @@ public interface UserDao {
 	boolean loginNameIsUsed(String loginName);
 	
 	/**
+	 * 记录发送激活邮件时间
+	 * @param loginName 登录名
+	 */
+	void logSendEmailTime(String loginName);
+	
+	
+	
+	
+	/**
 	 * 获取用户基本信息，主要往用户session中保存。
 	 * @param email 电子邮箱
 	 * @param md5Password 加密后的密码
