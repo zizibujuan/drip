@@ -53,7 +53,7 @@ define(["dojo/_base/declare",
 				errors.push("请输入常用邮箱");
 			}else if(email.length > 50){
 				errors.push("邮箱不能超过50个字符");
-			}else if(/[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}/.test(email)){
+			}else if(!/[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}/.test(email)){
 				errors.push("邮箱格式不正确");
 			}
 			
@@ -73,8 +73,8 @@ define(["dojo/_base/declare",
 			if(loginName == ""){
 				errors.push("请输入用户名");
 			}else if(loginName.length > 20){// 无需计算中文字符，因为下面限制为不能输入中文字符
-				error.push("用户名不能多于20个字符")
-			}else if(/^(?![-_])[a-zA-Z0-9_-]+$/.test(loginName)){
+				errors.push("用户名不能多于20个字符")
+			}else if(!/^(?![-_])[a-zA-Z0-9_-]+$/.test(loginName)){
 				errors.push("用户名只能包含英文字母，数字,-或_，不能以-或_开头，不区分大小写");
 			}
 			
