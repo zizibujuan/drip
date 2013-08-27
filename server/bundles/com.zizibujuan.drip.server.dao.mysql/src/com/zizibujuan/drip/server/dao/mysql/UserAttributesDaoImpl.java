@@ -25,8 +25,20 @@ public class UserAttributesDaoImpl extends AbstractDao implements UserAttributes
 
 	private static final Logger logger = LoggerFactory.getLogger(UserAttributesDaoImpl.class);
 	
-	private static final String SQL_UPDATE_LAST_LOGIN_MILLIS = "UPDATE DRIP_USER_ATTRIBUTES SET ATTR_VALUE=UNIX_TIMESTAMP(now()) WHERE GLOBAL_USER_ID= %s AND ATTR_NAME='%s'";
-	private static final String SQL_UPDATE_LOGIN_COUNT = "UPDATE DRIP_USER_ATTRIBUTES SET ATTR_VALUE=(cast(ATTR_VALUE as SIGNED)+1) WHERE GLOBAL_USER_ID= %s AND ATTR_NAME='%s'";
+	private static final String SQL_UPDATE_LAST_LOGIN_MILLIS = "UPDATE "
+			+ "DRIP_USER_ATTRIBUTES "
+			+ "SET "
+			+ "ATTR_VALUE=UNIX_TIMESTAMP(now()) "
+			+ "WHERE "
+			+ "USER_ID= %s AND "
+			+ "ATTR_NAME='%s'";
+	private static final String SQL_UPDATE_LOGIN_COUNT = "UPDATE "
+			+ "DRIP_USER_ATTRIBUTES "
+			+ "SET "
+			+ "ATTR_VALUE=(cast(ATTR_VALUE as SIGNED)+1) "
+			+ "WHERE "
+			+ "USER_ID= %s AND "
+			+ "ATTR_NAME='%s'";
 	@Override
 	public void updateLoginState(Long userId) {
 		Connection con = null;
@@ -56,28 +68,27 @@ public class UserAttributesDaoImpl extends AbstractDao implements UserAttributes
 	}
 
 	private static final String SQL_INSERT_USER_ATTRIBUTES = "INSERT INTO DRIP_USER_ATTRIBUTES " +
-			"(GLOBAL_USER_ID," +
+			"(USER_ID," +
 			"ATTR_NAME," +
 			"ATTR_VALUE)" +
 			"VALUES(?,?,?)";
 	// FIXME:需不需要做一个行列转换，变成一个专门存放用户统计信息或活动信息的表
-	// 这个userId是一个全局用户id，不是本地用户标识。
 	@Override
-	public void initUserState(Connection con, Long connectUserId) throws SQLException {
+	public void initUserState(Connection con, Long userId) throws SQLException {
 		PreparedStatement pst = null;
 		try{
 			pst = con.prepareStatement(SQL_INSERT_USER_ATTRIBUTES);
-			pst.setLong(1, connectUserId);
+			pst.setLong(1, userId);
 			pst.setString(2, ApplicationPropertyKey.LOGIN_LAST_LOGIN_MILLIS);
 			pst.setString(3, String.valueOf(new Date().getTime()));
 			pst.addBatch();
 			
-			pst.setLong(1, connectUserId);
+			pst.setLong(1, userId);
 			pst.setString(2, ApplicationPropertyKey.INVALID_PASSWORD_ATTEMPTS);
 			pst.setString(3, "0");
 			pst.addBatch();
 			
-			pst.setLong(1, connectUserId);
+			pst.setLong(1, userId);
 			pst.setString(2, ApplicationPropertyKey.LOGIN_COUNT);
 			pst.setString(3, "0");
 			pst.addBatch();

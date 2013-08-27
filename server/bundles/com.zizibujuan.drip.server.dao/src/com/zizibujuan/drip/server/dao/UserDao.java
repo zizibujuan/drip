@@ -55,18 +55,9 @@ public interface UserDao {
 	 * 获取用户基本信息，主要往用户session中保存。
 	 * @param email 电子邮箱
 	 * @param md5Password 加密后的密码
-	 * @return 如果系统中存在该用户信息则返回，否则返回空的map对象
-	 * <pre>
-	 * 	map结构为：
-	 * 		id: 全局用户标识
-	 * 		loginName: 用户登录名
-	 * 		email: 用户常用邮箱
-	 * 		mobile: 用户手机号码
-	 * 		realName: 真实姓名
-	 * 		digitalId: 数字帐号
-	 * </pre>
+	 * @return 如果系统中存在该用户信息则返回，否则返回null
 	 */
-	Map<String, Object> get(String email, String md5Password);
+	UserInfo get(String email, String md5Password);
 
 	/**
 	 * 获取用户登录信息，返回到客户端的，所以不能包含用户隐私信息。

@@ -1,13 +1,16 @@
 package com.zizibujuan.drip.server.servlet;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.core.runtime.IPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,10 +19,10 @@ import weibo4j.model.WeiboException;
 
 import com.qq.connect.QQConnectException;
 import com.qq.connect.api.OpenID;
-import com.qq.connect.api.qzone.UserInfo;
 import com.qq.connect.javabeans.AccessToken;
 import com.qq.connect.javabeans.qzone.UserInfoBean;
 import com.qq.connect.oauth.Oauth;
+import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.UserBindService;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.servlet.authentication.Oauth2Exception;
@@ -42,6 +45,8 @@ public class LoginServlet extends BaseServlet {
 	private static final long serialVersionUID = 3186980773671995338L;
 	private UserService userService = null;
 	private UserBindService oAuthUserMapService = null;
+	
+	private List<String> errors;
 	
 	public LoginServlet() {
 		userService = ServiceHolder.getDefault().getUserService();
@@ -187,11 +192,11 @@ public class LoginServlet extends BaseServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		traceRequest(req);
-		String pathInfo = req.getPathInfo();
-		if (isNullOrSeparator(pathInfo)) {
+		IPath path = getPath(req);
+		if (path.segmentCount() == 0) {
 			// 从session中获取用户登录信息
-			Map<String,Object> loginInfo = UserSession.getUser(req);
-			if(loginInfo == null || loginInfo.isEmpty()){
+			UserInfo loginInfo = (UserInfo) UserSession.getUser(req);
+			if(loginInfo == null){
 				// 用户未登录
 				Map<String,Object> map = new HashMap<String, Object>();
 				ResponseUtil.toJSON(req, resp, map,HttpServletResponse.SC_UNAUTHORIZED);
@@ -200,28 +205,52 @@ public class LoginServlet extends BaseServlet {
 				ResponseUtil.toJSON(req, resp, loginInfo);
 			}
 			return;
-		}else{
-			if(pathInfo.equals("/form")){
+		}
+		
+		if(path.segmentCount() == 1){
+			if(path.segment(0).equals("form")){
+				errors = new ArrayList<String>();
 				Map<String, Object> userInfo = RequestUtil.fromJsonObject(req);
-				String email = userInfo.get(KEY_LOGIN).toString();
+				// login 邮箱或用户名
+				String login = userInfo.get(KEY_LOGIN).toString().trim();
 				String password = userInfo.get(KEY_PASSWORD).toString();
-				Map<String,Object> existUserInfo = userService.login(email, password);
-				if(existUserInfo != null){
-					// 如果登录成功，则跳转到用户专有首页
-					UserSession.setUser(req, existUserInfo);
-					// 返回到客户端，然后客户端跳转到首页
-					Map<String,Object> result = new HashMap<String, Object>();
-					result.put("status", "1");// 1表示登录成功。
-					ResponseUtil.toJSON(req, resp, result);
-				}else{
-					// 登录失败
-					Map<String,Object> result = new HashMap<String, Object>();
-					result.put("status", "2");// 2表示登录失败。
-					ResponseUtil.toJSON(req, resp, result);
+				this.validate(login, password);
+				if(hasErrors()){
+					ResponseUtil.toJSON(req, resp, errors, HttpServletResponse.SC_PRECONDITION_FAILED);
+					return;
 				}
+				
+				UserInfo existUserInfo = userService.login(login, password);
+				if(existUserInfo == null){
+					// 登录失败
+					errors.add("用户名或密码错误");
+					ResponseUtil.toJSON(req, resp, errors, HttpServletResponse.SC_NOT_FOUND);
+					return;
+				}
+				
+				// 如果登录成功，则跳转到用户专有首页
+				// 在登录的时候设置帐号来源
+				existUserInfo.setSiteId(OAuthConstants.ZIZIBUJUAN);
+				UserSession.setUser(req, existUserInfo);
+				// 返回到客户端，然后客户端跳转到首页
+				ResponseUtil.toJSON(req, resp, new HashMap<String, Object>());
 				return;
 			}
 		}
 		super.doPost(req, resp);
+	}
+	
+	private void validate(String login, String password){
+		if(login.isEmpty()){
+			errors.add("请输入邮箱或用户名");
+		}
+		
+		if(password.isEmpty()){
+			errors.add("请输入密码");
+		}
+	}
+	
+	private boolean hasErrors(){
+		return errors != null && errors.size() > 0;
 	}
 }

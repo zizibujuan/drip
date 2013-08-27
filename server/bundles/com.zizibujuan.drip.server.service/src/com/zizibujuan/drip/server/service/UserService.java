@@ -50,29 +50,25 @@ public interface UserService {
 	
 
 	/**
-	 * 用户登录
-	 * @param email 邮箱地址 (未加密)
-	 * @param password 密码
-	 * @return 如果登录失败则返回null，否则返回用户信息
+	 * 用户登录。记录登录信息，但是不记录用户各项统计信息
+	 * @param email 邮箱地址
+	 * @param password 密码 (未加密)
+	 * @return 如果登录失败则返回null，否则返回用户标识
 	 * <pre>
-	 * 	map结构为：
-	 * 		localUserId: 本网站为本网站用户生成的全局用户标识
-	 * 		connectUserId: 本网站为第三方网站用户生成的全局用户标识
-	 * 		siteId：与哪个网站的用户关联
-	 * 		email: 邮箱
-	 * 		mobile：手机号
-	 * 		nickName: 用户昵称
-	 * 		loginName: 登录名
-	 * 		digitalId: 为本网站用户分配的数字帐号
-	 * 这些字段是按照网站提供的图片尺寸大小从小到大排列的
+	 * 主要返回的用户信息有
+	 * 		id
+	 * 		email
+	 * 		loginName
+	 * 		active
+	 * 		siteId
+	 * 		
 	 * 		smallImageUrl: 小头像
 	 * 		largeImageUrl: 
 	 * 		largerImageUrl:
 	 * 		xLargeImageUrl:
-	 * 
-	 * </pre>
+	 * <pre>
 	 */
-	Map<String,Object> login(String email, String password);
+	UserInfo login(String email, String password);
 	
 	/**
 	 * 用户登录，主要是记录使用第三方网站进行登录。注意每天晚上定时从第三方同步用户信息。

@@ -2,6 +2,7 @@ package com.zizibujuan.drip.server.dao.mysql;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,7 @@ import com.zizibujuan.drip.server.util.OAuthConstants;
 import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 import com.zizibujuan.drip.server.util.dao.PreparedStatementSetter;
+import com.zizibujuan.drip.server.util.dao.RowMapper;
 
 /**
  * 用户数据访问实现类
@@ -54,15 +56,35 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	
 	@Override
 	public Long add(final UserInfo userInfo) {
-		return DatabaseUtil.insert(getDataSource(), SQL_INSERT_USER_REGISTER, new PreparedStatementSetter() {
-			@Override
-			public void setValues(PreparedStatement ps) throws SQLException {
-				ps.setString(1, userInfo.getLoginName());
-				ps.setString(2, userInfo.getPassword());
-				ps.setString(3, userInfo.getEmail());
-				ps.setString(4, userInfo.getConfirmKey());
-			}
-		});
+		Long userId = null;
+		Connection con = null;
+		try{
+			con = getDataSource().getConnection();
+			con.setAutoCommit(false);
+			userId = DatabaseUtil.insert(getDataSource(), SQL_INSERT_USER_REGISTER, new PreparedStatementSetter() {
+				@Override
+				public void setValues(PreparedStatement ps) throws SQLException {
+					ps.setString(1, userInfo.getLoginName());
+					ps.setString(2, userInfo.getPassword());
+					ps.setString(3, userInfo.getEmail());
+					ps.setString(4, userInfo.getConfirmKey());
+				}
+			});
+			// 在用户属性表中初始化属性值,TODO:这里的行列转换设计虽然灵活，但是如果因为保存属性出错，
+			// 反而会影响用户注册，需要再推敲。
+			userAttributesDao.initUserState(con, userId);
+			con.commit();
+		}catch(SQLException e){
+			DatabaseUtil.safeRollback(con);
+			throw new DataAccessException("用户注册失败", e);
+		}catch (Exception e) {
+			DatabaseUtil.safeRollback(con);
+			throw new DataAccessException("用户注册失败", e);
+		}finally{
+			DatabaseUtil.closeConnection(con);
+		}
+		
+		return userId;
 	}
 	
 	private static final String SQL_EMAIL_IS_USED = "select 1 from DRIP_USER_INFO where EMAIL = ? limit 1";
@@ -92,8 +114,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		// 在关联表中添加一条记录，自己关联自己,本地用户也需要添加一个关联关系
 		// 不需要添加一个字段来标识是不是本地用户，只要两个用户标识相等，则必是本地用户，代码中根据这个逻辑判断。
 		userBindDao.bind(con, userId, userId, true);
-		// 在用户属性表中初始化属性值
-		userAttributesDao.initUserState(con, userId);
+		
 		// 添加完用户之后，需要在用户关系表中，添加一条用户关注用户自己的记录
 		userRelationDao.watch(con, userId, userId);
 		// 为本网站用户添加初始的统计信息
@@ -102,22 +123,28 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 
 	// 这里只查询出需要在界面上显示的用户信息，主要存储在当前用户的session中。
 	// 以下信息可以存在session中，但是有些信息不能显示在客户端，如email和mobile。
-	private static final String SQL_GET_USER_FOR_SESSION = "SELECT " +
-			"DBID \"id\"," +
-			"LOGIN_NAME \"loginName\"," +
-			"EMAIL \"email\"," +
-			//"LOGIN_PWD," + 登录密码，不在session中缓存
-			//支持三种大小的头像信息
-			"MOBILE \"mobile\"," +
-			"REAL_NAME \"realName\"," +
-			"NICK_NAME \"nickName\"," +
-			//"CRT_TM \"createTime\" " +
-			"DIGITAL_ID \"digitalId\" " +
-			"FROM DRIP_GLOBAL_USER_INFO ";
-	private static final String SQL_GET_USER_FOR_SESSION_BY_PWD = SQL_GET_USER_FOR_SESSION + "WHERE EMAIL = ? AND LOGIN_PWD = ?";
+	// 注意：获取登录用户自己的信息，则是越全越好；获取好友的信息，则是若不需要，则不提供。
+	private static final String SQL_GET_USER_INFO_FOR_SELF = "SELECT " +
+			"DBID," +
+			"LOGIN_NAME," +
+			"EMAIL " +
+			"FROM DRIP_USER_INFO ";
+	private static final String SQL_GET_USER_FOR_SESSION_BY_PWD = SQL_GET_USER_INFO_FOR_SELF + "WHERE EMAIL = ? AND LOGIN_PWD = ?";
 	@Override
-	public Map<String, Object> get(String email, String md5Password) {
-		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_USER_FOR_SESSION_BY_PWD, email, md5Password);
+	public UserInfo get(String email, String md5Password) {
+		return DatabaseUtil.queryForObject(getDataSource(), SQL_GET_USER_FOR_SESSION_BY_PWD, new RowMapper<UserInfo>() {
+
+			@Override
+			public UserInfo mapRow(ResultSet rs, int rowNum)
+					throws SQLException {
+				UserInfo userInfo = new UserInfo();
+				userInfo.setId(rs.getLong(1));
+				userInfo.setLoginName(rs.getString(2));
+				userInfo.setEmail(rs.getString(3));
+				
+				return userInfo;
+			}
+		}, email, md5Password);
 	}
 	
 	// 在插入记录时，如果nickName为空，则插入登录名
@@ -201,7 +228,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		return DatabaseUtil.queryForLong(getDataSource(), SQL_GET_LOCAL_USER_ID_BY_DIGITAL, digitalId);
 	}
 	
-	private static final String SQL_GET_USER_BY_DBID = SQL_GET_USER_FOR_SESSION + "WHERE DBID=?";
+	private static final String SQL_GET_USER_BY_DBID = SQL_GET_USER_INFO_FOR_SELF + "WHERE DBID=?";
 	@Override
 	public UserInfo getBaseInfoByLocalUserId(Long localUserId) {
 		// 先查询是否引用第三方网站的用户信息，如果引用，则返回第三方网站的用户；

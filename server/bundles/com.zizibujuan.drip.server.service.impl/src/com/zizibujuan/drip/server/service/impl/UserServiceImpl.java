@@ -77,7 +77,27 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 	
-	
+	@Override
+	public UserInfo login(String email, String password) {
+		// 根据邮箱和密码查找用户信息
+		// 如果查到了，则保存在session中。
+		String md5Password = DigestUtils.md5Hex(password);
+		UserInfo userInfo = userDao.get(email, md5Password);
+		
+		if(userInfo == null){
+			return null;
+		}
+		// 添加用户头像
+		Long userId = userInfo.getId();
+		Map<String, String> avatars = userAvatarDao.get(userId);
+		userInfo.setSmallImageUrl(avatars.get("smallImageUrl"));
+		userInfo.setLargeImageUrl(avatars.get("largeImageUrl"));
+		userInfo.setLargerImageUrl(avatars.get("largerImageUrl"));
+		userInfo.setxLargeImageUrl(avatars.get("xLargeImageUrl"));
+		// 更新用户登录状态
+		userAttributesDao.updateLoginState(userId);
+		return userInfo;
+	}
 	
 	
 	
@@ -91,26 +111,7 @@ public class UserServiceImpl implements UserService {
 	private UserBindDao userBindDao;
 	private LocalUserStatisticsDao localUserStatisticsDao;
 	
-	@Override
-	public Map<String,Object> login(String email, String password) {
-		// 根据邮箱和密码查找用户信息
-		// 如果查到了，则保存在session中。
-		String md5Password = DigestUtils.md5Hex(password);
-		Map<String,Object> userInfo = userDao.get(email, md5Password);
-		
-		if(userInfo.isEmpty()){
-			return null;
-		}else{
-			Long userId = Long.valueOf(userInfo.get("id").toString());
-			userInfo.put("connectUserId", userId);
-			userInfo.put("localUserId", userId);// 在本网站创建的用户localUserId与connectUserId相同
-			userAttributesDao.updateLoginState(userId);
-			Map<String,Object> avatarInfo = userAvatarDao.get(userId);
-			userInfo.putAll(avatarInfo);
-
-			return userInfo;
-		}
-	}
+	
 	
 	//TODO:需要将获取本地用户信息和获取第三方用户信息的接口统一。
 	@Override
@@ -122,7 +123,7 @@ public class UserServiceImpl implements UserService {
 		Map<String,Object> userInfo = connectUserDao.getPublicInfo(connectUserId);
 		userInfo.put("localUserId", localUserId);
 		// 获取头像信息
-		Map<String,Object> avatarInfo = userAvatarDao.get(connectUserId);
+		Map<String,String> avatarInfo = userAvatarDao.get(connectUserId);
 		userInfo.putAll(avatarInfo);
 
 		return userInfo;
@@ -156,7 +157,7 @@ public class UserServiceImpl implements UserService {
 		Map<String,Object> statistics = localUserStatisticsDao.getUserStatistics(localGlobalUserId);
 		userInfo.putAll(statistics);
 			
-		Map<String,Object> avatarInfo = userAvatarDao.get(connectUserId);
+		Map<String,String> avatarInfo = userAvatarDao.get(connectUserId);
 		userInfo.putAll(avatarInfo);
 		return userInfo;
 	}

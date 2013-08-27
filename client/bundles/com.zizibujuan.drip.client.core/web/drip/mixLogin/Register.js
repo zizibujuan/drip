@@ -33,13 +33,16 @@ define(["dojo/_base/declare",
 		
 		_signup: function(){
 			this.validate();
-			if(this.hasErrors()){
-				this.showErrors();
+			if(this._hasErrors()){
+				this._showErrors();
 				return;
 			}
 			console.log("signup");
 			var data = domForm.toJson(this.signupForm);
-			xhr.post("/users", {handleAs: "json"});
+			xhr.post("/users", {
+				handleAs: "json", 
+				data: data
+			}).then(lang.hitch(this, this._signupSuccess), lang.hitch(this, this._signupError));
 		},
 		
 		validate: function(){
@@ -81,11 +84,11 @@ define(["dojo/_base/declare",
 			this.errors = errors;
 		},
 		
-		hasErrors: function(){
+		_hasErrors: function(){
 			return this.errors.length > 0;
 		},
 		
-		showErrors: function(){
+		_showErrors: function(){
 			var errorContainer = this.errorContainer
 			domConstruct.empty(errorContainer);
 			
@@ -94,6 +97,15 @@ define(["dojo/_base/declare",
 			for(var i = 0; i < len; i++){
 				domConstruct.create("li", {innerHTML: errors[i]}, errorContainer);
 			}
+		},
+		
+		_signupSuccess: function(){
+			// 注册成功，跳转到个人首页
+			window.location.href = "/";
+		},
+		
+		_signupError: function(){
+			this._showErrors();
 		}
 		
 	});

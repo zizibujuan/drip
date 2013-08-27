@@ -54,11 +54,6 @@ public class BaseServlet extends HttpServlet {
 		}
 	}
 	
-	// FIXME:对这个方法名不太满意，重命名
-	protected boolean isNullOrSeparator(String pathInfo) {
-		return pathInfo == null || pathInfo.equals(REST_SEPARATOR);
-	}
-	
 	protected PageInfo getPageInfo(HttpServletRequest req){
 		String range = req.getHeader("Range");
 		if(range == null){

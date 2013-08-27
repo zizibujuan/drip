@@ -4,7 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.zizibujuan.drip.server.tests.servlets.UserServletTests;
+import com.zizibujuan.drip.server.tests.servlets.LoginServletTests;
 
 /**
  * Servlet测试套件
@@ -13,9 +13,9 @@ import com.zizibujuan.drip.server.tests.servlets.UserServletTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-//	LoginServletTests.class,
+	LoginServletTests.class
 //	FollowServletTests.class
-	UserServletTests.class
+//	UserServletTests.class
 })
 public class AllServletTests {
 

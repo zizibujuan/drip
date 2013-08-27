@@ -21,6 +21,7 @@ import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
+import com.zizibujuan.drip.server.util.servlet.UserSession;
 
 /**
  * 用户注册
@@ -60,7 +61,17 @@ public class UserServlet extends BaseServlet {
 			}
 			
 			userService.register(userInfo);
-			ResponseUtil.toJSON(req, resp, new HashMap<String, Object>());
+			// 注册成功之后，直接登录
+			userInfo = userService.login(userInfo.getEmail(), userInfo.getPassword());
+			if(userInfo != null){
+				// 登录成功
+				UserSession.setUser(req, userInfo);
+				ResponseUtil.toJSON(req, resp, new HashMap<String, Object>());
+			}else{
+				// 注册成功，登录失败，返回登录页面
+				//ResponseUtil.toJSON(req,
+			}
+			
 			return;
 		}
 		super.doPost(req, resp);

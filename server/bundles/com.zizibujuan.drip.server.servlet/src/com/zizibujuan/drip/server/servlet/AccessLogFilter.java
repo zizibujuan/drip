@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.AccessLogService;
 import com.zizibujuan.drip.server.service.ApplicationPropertyService;
 import com.zizibujuan.drip.server.util.WebConstants;
@@ -76,10 +77,11 @@ public class AccessLogFilter implements Filter {
 			// 获取用户标识
 			//		如果用户没有登录，则从cookie中获取
 			//		如果用户登录，则从session中获取
-			Long userId = null;
 			boolean anonymous = true;
+			Long userId = null;
 			if(UserSession.isLogged(httpServletRequest)){
-				userId = UserSession.getLocalUserId(httpServletRequest);
+				UserInfo userInfo = (UserInfo) UserSession.getUser(httpServletRequest);
+				userId = userInfo.getId();
 				anonymous = false;
 			}else{
 				Cookie[] cookies = httpServletRequest.getCookies();

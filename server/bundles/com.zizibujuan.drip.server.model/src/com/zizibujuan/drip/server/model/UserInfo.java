@@ -16,6 +16,17 @@ public class UserInfo {
 	private String password;
 	private String confirmKey;
 	
+	private String sex;
+	private boolean active;
+	private String smallImageUrl;
+	private String largeImageUrl;
+	private String largerImageUrl;
+	private String xLargeImageUrl;
+	
+	// 这两个字段是用户登录的时候赋值的
+	private int siteId;
+	private String openId; // token?做到的时候再确认
+	
 	/**
 	 * 获取全局用户标识，对应drip_global_user_info的dbid
 	 * @return 全局用户标识
@@ -131,5 +142,67 @@ public class UserInfo {
 	public void setConfirmKey(String confirmKey) {
 		this.confirmKey = confirmKey;
 	}
+
+	public String getSex() {
+		return sex;
+	}
+
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public String getSmallImageUrl() {
+		return smallImageUrl;
+	}
+
+	public void setSmallImageUrl(String smallImageUrl) {
+		this.smallImageUrl = smallImageUrl;
+	}
+
+	public String getLargeImageUrl() {
+		return largeImageUrl;
+	}
+
+	public void setLargeImageUrl(String largeImageUrl) {
+		this.largeImageUrl = largeImageUrl;
+	}
+
+	public String getLargerImageUrl() {
+		return largerImageUrl;
+	}
+
+	public void setLargerImageUrl(String largerImageUrl) {
+		this.largerImageUrl = largerImageUrl;
+	}
+
+	public String getxLargeImageUrl() {
+		return xLargeImageUrl;
+	}
+
+	public void setxLargeImageUrl(String xLargeImageUrl) {
+		this.xLargeImageUrl = xLargeImageUrl;
+	}
+
+	/**
+	 * 获取使用第几方的账户信息登录。
+	 * 登录的时候赋值，不是从数据库中查出来的
+	 * @return 站点标识
+	 */
+	public int getSiteId() {
+		return siteId;
+	}
+
+	public void setSiteId(int siteId) {
+		this.siteId = siteId;
+	}
+	
 	
 }

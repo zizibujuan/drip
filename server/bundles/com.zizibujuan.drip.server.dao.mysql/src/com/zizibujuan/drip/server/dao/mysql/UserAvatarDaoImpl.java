@@ -60,10 +60,15 @@ public class UserAvatarDaoImpl extends AbstractDao implements UserAvatarDao {
 	}
 	
 	private static final String[] KEY_AVATAR = {"smallImageUrl","largeImageUrl", "largerImageUrl","xLargeImageUrl"};
-	private static final String SQL_GET_USER_AVATAR = "SELECT URL FROM DRIP_USER_AVATAR WHERE GLOBAL_USER_ID=? ORDER BY width";
+	private static final String SQL_GET_USER_AVATAR = "SELECT "
+			+ "URL "
+			+ "FROM "
+			+ "DRIP_USER_AVATAR "
+			+ "WHERE "
+			+ "USER_ID=? ORDER BY width";
 	@Override
-	public Map<String, Object> get(Long connectGlobalUserId) {
-		Map<String,Object> result = new HashMap<String, Object>();
+	public Map<String, String> get(Long connectGlobalUserId) {
+		Map<String,String> result = new HashMap<String, String>();
 		List<Map<String,Object>> list = DatabaseUtil.queryForList(getDataSource(), SQL_GET_USER_AVATAR, connectGlobalUserId);
 		int length = KEY_AVATAR.length;
 		int listSize = list.size();

@@ -25,7 +25,7 @@ public interface UserAvatarDao {
 
 	/**
 	 * 获取用户头像信息
-	 * @param connectGlobalUserId 本网站为本地用户生成的全局用户标识
+	 * @param userId 本网站用户标识
 	 * @return 用户头像信息，如果没有则返回空的map
 	 * <pre>
 	 *  map结构：
@@ -35,6 +35,6 @@ public interface UserAvatarDao {
  	 *		xLargeImageUrl:
 	 * </pre>
 	 */
-	Map<String, Object> get(Long connectGlobalUserId);
+	Map<String, String> get(Long userId);
 
 }
