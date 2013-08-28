@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>登录部件</title>
+<script type="text/javascript" 
+	data-dojo-config="
+		async:true,
+		parseOnLoad:false,
+		isDebug:true" 
+	src="/dojo/dojo.js"></script>
+	
+<script type="text/javascript">
+require(["dojo/parser",
+         "drip/mixLogin/Login"], function(
+        		 parser,
+        		 Login){
+	
+	parser.parse();
+	
+});
+</script>
+</head>
+<body>
+	<div data-dojo-type="drip/mixLogin/Login"></div>
+</body>
+</html>

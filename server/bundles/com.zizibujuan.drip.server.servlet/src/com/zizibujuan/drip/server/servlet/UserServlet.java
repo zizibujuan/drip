@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -127,6 +128,30 @@ public class UserServlet extends BaseServlet {
 	
 	private boolean hasErrors(){
 		return !errors.isEmpty();
+	}
+
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		traceRequest(req);
+		IPath path = getPath(req);
+		if(path.segmentCount() == 0) {
+			// 从session中获取用户登录信息
+			UserInfo loginInfo = (UserInfo) UserSession.getUser(req);
+			if(loginInfo == null){
+				// 用户未登录
+				Map<String,Object> map = new HashMap<String, Object>();
+				ResponseUtil.toJSON(req, resp, map,HttpServletResponse.SC_UNAUTHORIZED);
+				return;
+			}
+			ResponseUtil.toJSON(req, resp, loginInfo);
+			return;
+		}else if(path.segmentCount() == 1){
+			String loginName = path.segment(0);
+			
+		}
+		
+		super.doGet(req, resp);
 	}
 
 	

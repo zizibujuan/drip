@@ -104,7 +104,8 @@ define(["dojo/_base/declare",
 			window.location.href = "/";
 		},
 		
-		_signupError: function(){
+		_signupError: function(error){
+			this.errors = error.response.data;
 			this._showErrors();
 		}
 		

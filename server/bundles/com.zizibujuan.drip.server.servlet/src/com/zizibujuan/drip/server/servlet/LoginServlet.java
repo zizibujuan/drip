@@ -140,7 +140,7 @@ public class LoginServlet extends BaseServlet {
 			
 			OpenID openIDObj = new OpenID(accessToken);
 			openID = openIDObj.getUserOpenID();
-			UserInfo qzoneUserInfo = new UserInfo(accessToken, openID);
+			UserInfo qzoneUserInfo = new com.qq.connect.javabeans.qzone.UserInfo(accessToken, openID);
 			UserInfoBean qzoneUserInfoBean = qzoneUserInfo.getUserInfo();
 			
 			if(qzoneUserInfoBean.getRet() != 0){
@@ -193,19 +193,6 @@ public class LoginServlet extends BaseServlet {
 			throws ServletException, IOException {
 		traceRequest(req);
 		IPath path = getPath(req);
-		if (path.segmentCount() == 0) {
-			// 从session中获取用户登录信息
-			UserInfo loginInfo = (UserInfo) UserSession.getUser(req);
-			if(loginInfo == null){
-				// 用户未登录
-				Map<String,Object> map = new HashMap<String, Object>();
-				ResponseUtil.toJSON(req, resp, map,HttpServletResponse.SC_UNAUTHORIZED);
-			}else{
-				// 用户已登录
-				ResponseUtil.toJSON(req, resp, loginInfo);
-			}
-			return;
-		}
 		
 		if(path.segmentCount() == 1){
 			if(path.segment(0).equals("form")){
