@@ -83,8 +83,12 @@ define(["dojo/_base/declare",
 		},
 		
 		_loginError: function(error){
-			this.errors = error.response.data;
-			this._showErrors();
+			if(error.response.data){
+				this.errors = error.response.data;
+				this._showErrors();
+			}else{
+				console.error(error);
+			}
 		}
 	});
 	

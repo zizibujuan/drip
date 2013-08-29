@@ -18,25 +18,28 @@
 	src="/dojo/dojo.js"></script>
 	
 <script type="text/javascript">
-	require(["dojo/parser",
-	         "drip/mixLogin/Register"], function(
-	        		 parser,
-	        		 Register){
-		
-		parser.parse();
-		
-	});
+	require(["drip/index"]);
 </script>
 </head>
-<body style="padding: 0px;margin: 0px; height: 100%">
+<body style="padding: 0px;margin: 0px; height: 100%; visibility: hidden;">
 
 <div style="margin: 0 auto; width:245px;position: relative;top: 50%; margin-top: -200px">
 	<div>
 		<h1 class="logo">孜孜不倦</h1>
 		<h2>协作写笔记，快乐做习题</h2>
 	</div>
-	<div data-dojo-type="drip/mixLogin/Register">
+	<div id="authContainer">
 		
+	</div>
+	<div>
+		<a id="link" href="javascript:"></a>
+	</div>
+	<div>
+		<div style="text-align: center;">
+			<a href="/exercises">题库</a>
+			
+			<a href="/docs">笔记</a>
+		</div>
 	</div>
 </div>
 
