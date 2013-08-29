@@ -27,7 +27,9 @@ public class EmailServiceImpl implements EmailService {
 	
 	private ApplicationPropertyService applicationPropertyService;
 	
-	// 从系统参数中获取邮件服务器的配置信息
+	// 从系统参数中获取邮件服务器的配置信息，
+	// 并不需要用户即时收到邮件发送成功或失败的消息，因为耗时较长
+	// 当用户没有收到邮件，提供一个重新发送邮件的功能
 	@Override
 	public void send(String toEmail, String toName, String content) {
 		HtmlEmail email = new HtmlEmail();

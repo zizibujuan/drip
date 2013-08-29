@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -62,6 +63,12 @@ public class UserServlet extends BaseServlet {
 			}
 			
 			userService.register(userInfo);
+			// 注册成功之后，添加一个cookie，标识使用该电脑注册成功过
+			// 以后每登录一次都修改一下这个cookie
+			// XXX:暂时不提供记住密码功能
+			Cookie cookie = new Cookie("zzbj_user", userInfo.getLoginName());
+			cookie.setMaxAge(365*24*60*60);//一年有效
+			resp.addCookie(cookie);
 			// 注册成功之后，直接登录
 			userInfo = userService.login(userInfo.getEmail(), userInfo.getPassword());
 			if(userInfo != null){
