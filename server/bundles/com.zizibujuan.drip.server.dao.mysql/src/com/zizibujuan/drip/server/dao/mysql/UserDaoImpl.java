@@ -108,6 +108,58 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		DatabaseUtil.update(getDataSource(), SQL_UPDATE_EMAIL_SEND_TIME, loginName);
 	}
 	
+	private static final String SQL_GET_USER_INFO = "SELECT "
+			+ "DBID,"
+			+ "LOGIN_NAME,"
+			+ "SEX,"
+			+ "INTRODUCE,"
+			+ "CONFIRM_KEY,"
+			+ "ACTIVITY "
+			+ "FROM "
+			+ "DRIP_USER_INFO ";
+	private static final String SQL_GET_USER_INFO_BY_LOGIN_NAME = SQL_GET_USER_INFO
+			+ "WHERE "
+			+ "LOGIN_NAME=?";
+	@Override
+	public UserInfo getByLoginName(String loginName) {
+		return DatabaseUtil.queryForObject(getDataSource(), SQL_GET_USER_INFO_BY_LOGIN_NAME, new UserInfoRowMapper(), loginName);
+	}
+	
+	private static final String SQL_GET_USER_INFO_BY_CONFIRM_KEY = SQL_GET_USER_INFO
+			+ "WHERE "
+			+ "CONFIRM_KEY=?";
+	@Override
+	public UserInfo getByConfirmKey(String confirmKey) {
+		return DatabaseUtil.queryForObject(getDataSource(), SQL_GET_USER_INFO_BY_CONFIRM_KEY, new UserInfoRowMapper(), confirmKey);
+	}
+		
+	private static final String SQL_UPDATE_ACTIVE_USER = "UPDATE DRIP_USER_INFO "
+			+ "SET "
+			+ "ACTIVITY=1,"
+			+ "ACTIVE_TIME=now() "
+			+ "WHERE "
+			+ "DBID=?";
+	@Override
+	public void active(Long userId) {
+		DatabaseUtil.update(getDataSource(), SQL_UPDATE_ACTIVE_USER, userId);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	/*
 	 	// 后面的操作移到用户激活成功之后？

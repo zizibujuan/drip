@@ -14,6 +14,7 @@ public class UserInfo {
 	private String nickName;
 	private String email;
 	private String password;
+	private String introduce;
 	private String confirmKey;
 	
 	private String sex;
@@ -125,6 +126,22 @@ public class UserInfo {
 	 */
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	/**
+	 * 获取用户的自我介绍
+	 * @return 自我介绍
+	 */
+	public String getIntroduce() {
+		return introduce;
+	}
+
+	/**
+	 * 设置用户的自我介绍
+	 * @param introduce 自我介绍
+	 */
+	public void setIntroduce(String introduce) {
+		this.introduce = introduce;
 	}
 
 	/**

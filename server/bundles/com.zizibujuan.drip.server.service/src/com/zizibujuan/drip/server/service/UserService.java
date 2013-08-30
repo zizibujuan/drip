@@ -7,6 +7,7 @@ import com.zizibujuan.drip.server.util.OAuthConstants;
 
 /**
  * 用户 服务接口
+ * 
  * @author jinzw
  * @since 0.0.1
  */
@@ -14,6 +15,7 @@ public interface UserService {
 
 	/**
 	 * 注册用户，注册成功后，给用户发送邮件
+	 * 
 	 * @param userInfo 用户信息
 	 * <pre>
 	 * 用户信息的格式为:
@@ -28,6 +30,7 @@ public interface UserService {
 	
 	/**
 	 * 判断邮箱是否已被使用
+	 * 
 	 * @param email 有效的邮箱地址
 	 * @return 已被使用则返回<code>true</code>；否则返回<code>false</code>
 	 */
@@ -35,6 +38,7 @@ public interface UserService {
 	
 	/**
 	 * 判断用户名是否已被使用
+	 * 
 	 * @param loginName 登录名
 	 * @return 已被使用则返回<code>true</code>；否则返回<code>false</code>
 	 */
@@ -42,6 +46,7 @@ public interface UserService {
 	
 	/**
 	 * 发送激活用户的邮件
+	 * 
 	 * @param toEmail 用户的邮箱地址
 	 * @param loginName 登录名
 	 * @param confirmKey 激活确认码
@@ -51,6 +56,7 @@ public interface UserService {
 
 	/**
 	 * 用户登录。记录登录信息，但是不记录用户各项统计信息
+	 * 
 	 * @param email 邮箱地址
 	 * @param password 密码 (未加密)
 	 * @return 如果登录失败则返回null，否则返回用户标识
@@ -69,6 +75,32 @@ public interface UserService {
 	 * <pre>
 	 */
 	UserInfo login(String email, String password);
+	
+	/**
+	 * 根据登录名获取用户的基本信息
+	 * 
+	 * @param loginName 登录名
+	 * @return 用户的基本信息，如果没有查到，返回null
+	 */
+	UserInfo getByLoginName(String loginName);
+	
+	/**
+	 * 根据confirmKey值获取用户的基本信息，其中不包含用户头像信息，主要是通过邮件激活帐号时，
+	 * 获取用户信息。
+	 * @param confirmKey
+	 * @return 用户基本信息
+	 */
+	UserInfo getByConfirmKey(String confirmKey);
+	
+	/**
+	 * 激活用户
+	 * 
+	 * @param userId 用户标识
+	 */
+	void active(Long userId);
+	
+	
+	
 	
 	/**
 	 * 用户登录，主要是记录使用第三方网站进行登录。注意每天晚上定时从第三方同步用户信息。
@@ -221,5 +253,7 @@ public interface UserService {
 	 * </pre>
 	 */
 	Map<String, Object> getLocalUserStatistics(Long localUserId);
+
+	
 
 }

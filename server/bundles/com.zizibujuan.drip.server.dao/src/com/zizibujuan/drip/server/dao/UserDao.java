@@ -7,6 +7,7 @@ import com.zizibujuan.drip.server.util.OAuthConstants;
 
 /**
  * 用户数据访问接口
+ * 
  * @author jinzw
  * @since 0.0.1
  */
@@ -14,8 +15,8 @@ public interface UserDao {
 
 	/**
 	 * 新增用户。
-	 * <pre>
 	 * 
+	 * <pre>
 	 * 用户信息的格式为:
 	 * 	 	email: 注册邮箱
 	 * 		password: 登录密码(已加过密)
@@ -30,6 +31,7 @@ public interface UserDao {
 	/**
 	 * 判断邮箱是否已被使用,不管用户有没有被激活，只要已存在于用户表中，就是被使用。
 	 * TODO: 如果已经超过了激活期限，则可以在这个方法中执行删除未激活用户的操作。
+	 * 
 	 * @param email 有效的邮箱地址
 	 * @return 已被使用则返回<code>true</code>；否则返回<code>false</code>
 	 */
@@ -37,6 +39,7 @@ public interface UserDao {
 	
 	/**
 	 * 判断用户名是否已被使用
+	 * 
 	 * @param loginName 登录名
 	 * @return 已被使用则返回<code>true</code>；否则返回<code>false</code>
 	 */
@@ -44,20 +47,60 @@ public interface UserDao {
 	
 	/**
 	 * 记录发送激活邮件时间
+	 * 
 	 * @param loginName 登录名
 	 */
 	void logSendEmailTime(String loginName);
 	
 	
-	
-	
 	/**
 	 * 获取用户基本信息，主要往用户session中保存。
+	 * 
 	 * @param email 电子邮箱
 	 * @param md5Password 加密后的密码
 	 * @return 如果系统中存在该用户信息则返回，否则返回null
 	 */
 	UserInfo get(String email, String md5Password);
+	
+	/**
+	 * 根据登录名获取用户的基本信息
+	 * 
+	 * @param loginName 登录名
+	 * @return 用户的基本信息，如果没有查到，返回null
+	 */
+	UserInfo getByLoginName(String loginName);
+	
+	/**
+	 * 激活用户
+	 * 
+	 * @param userId 用户标识
+	 */
+	void active(Long userId);
+	
+	/**
+	 * 根据confirmKey值获取用户的基本信息，其中不包含用户头像信息，主要是通过邮件激活帐号时，
+	 * 获取用户信息。
+	 * @param confirmKey
+	 * @return 用户基本信息
+	 */
+	UserInfo getByConfirmKey(String confirmKey);
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	/**
 	 * 获取用户登录信息，返回到客户端的，所以不能包含用户隐私信息。

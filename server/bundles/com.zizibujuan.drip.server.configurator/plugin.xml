@@ -40,6 +40,10 @@
             class="com.zizibujuan.drip.server.servlet.LogoutServlet">
       </servlet>
       <servlet
+            alias="/confirm"
+            class="com.zizibujuan.drip.server.servlet.EmailConfirmServlet">
+      </servlet>
+      <servlet
             alias="/signup_check"
             class="com.zizibujuan.drip.server.servlet.SignUpCheckServlet">
       </servlet>

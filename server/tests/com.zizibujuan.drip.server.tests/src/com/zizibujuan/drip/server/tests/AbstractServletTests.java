@@ -29,7 +29,7 @@ import com.zizibujuan.drip.server.util.json.JsonUtil;
  */
 public class AbstractServletTests {
 
-	private static final String SERVER_LOCATION = "http://localhost:8199/";
+	protected static final String SERVER_LOCATION = "http://localhost:8199/";
 	
 	protected WebConversation webConversation;
 	protected WebRequest request;

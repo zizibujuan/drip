@@ -23,6 +23,7 @@ import com.zizibujuan.drip.server.service.UserService;
 
 /**
  * 用户服务实现类
+ * 
  * @author jinzw
  * @since 0.0.1
  */
@@ -88,16 +89,43 @@ public class UserServiceImpl implements UserService {
 			return null;
 		}
 		// 添加用户头像
-		Long userId = userInfo.getId();
-		Map<String, String> avatars = userAvatarDao.get(userId);
+		setAvatars(userInfo);
+		// 更新用户登录状态
+		userAttributesDao.updateLoginState(userInfo.getId());
+		return userInfo;
+	}
+
+	private void setAvatars(UserInfo userInfo) {
+		Map<String, String> avatars = userAvatarDao.get(userInfo.getId());
 		userInfo.setSmallImageUrl(avatars.get("smallImageUrl"));
 		userInfo.setLargeImageUrl(avatars.get("largeImageUrl"));
 		userInfo.setLargerImageUrl(avatars.get("largerImageUrl"));
 		userInfo.setxLargeImageUrl(avatars.get("xLargeImageUrl"));
-		// 更新用户登录状态
-		userAttributesDao.updateLoginState(userId);
+	}
+	
+	@Override
+	public UserInfo getByLoginName(String loginName) {
+		UserInfo userInfo = userDao.getByLoginName(loginName);
+		if(userInfo == null){
+			return null;
+		}
+		setAvatars(userInfo);
 		return userInfo;
 	}
+	
+	@Override
+	public void active(Long userId) {
+		userDao.active(userId);
+	}
+
+	@Override
+	public UserInfo getByConfirmKey(String confirmKey) {
+		return userDao.getByConfirmKey(confirmKey);
+	}
+	
+	
+	
+	
 	
 	
 	
@@ -299,5 +327,5 @@ public class UserServiceImpl implements UserService {
 			this.localUserStatisticsDao = null;
 		}
 	}
-
+	
 }

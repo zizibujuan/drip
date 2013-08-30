@@ -13,28 +13,15 @@ import com.zizibujuan.drip.server.util.dao.RowMapper;
  */
 public class UserInfoRowMapper implements RowMapper<UserInfo> {
 
-	/*
-	private static final String SQL_GET_USER_FOR_SESSION = "SELECT " +
-			"DBID \"id\"," +
-			"LOGIN_NAME \"loginName\"," +
-			"EMAIL \"email\"," +
-			//"LOGIN_PWD," + 登录密码，不在session中缓存
-			//支持三种大小的头像信息
-			"MOBILE \"mobile\"," +
-			"REAL_NAME \"realName\"," +
-			"NICK_NAME \"nickName\"," +
-			//"CRT_TM \"createTime\" " +
-			"DIGITAL_ID \"digitalId\" " +
-			"FROM DRIP_GLOBAL_USER_INFO ";
-	 */
 	@Override
-	public UserInfo mapRow(ResultSet rst, int rowNum) throws SQLException {
+	public UserInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
 		UserInfo userInfo = new UserInfo();
-		userInfo.setId(rst.getLong("id"));
-		userInfo.setLoginName(rst.getString("loginName"));
-		userInfo.setEmail(rst.getString("email"));
-		userInfo.setDigitalId(rst.getLong("digitalId"));
-		userInfo.setNickName(rst.getString("nickName"));
+		userInfo.setId(rs.getLong(1));
+		userInfo.setLoginName(rs.getString(2));
+		userInfo.setSex(rs.getString(3));
+		userInfo.setIntroduce(rs.getString(4));
+		userInfo.setConfirmKey(rs.getString(5));
+		userInfo.setActive(rs.getBoolean(6));
 		return userInfo;
 	}
 
