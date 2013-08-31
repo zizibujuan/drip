@@ -100,7 +100,7 @@ public class UserInfo {
 	 * @return 邮箱地址
 	 */
 	public String getEmail() {
-		return email.trim();
+		return email == null? null: email.trim();
 	}
 
 	/**

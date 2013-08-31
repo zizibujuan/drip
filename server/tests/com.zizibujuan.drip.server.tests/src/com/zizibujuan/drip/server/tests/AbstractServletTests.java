@@ -114,5 +114,8 @@ public class AbstractServletTests {
 		}
 	}
 	
-	
+	protected <T> T getResponseData(Class<T> classOfT) throws IOException{
+		String jsonString = response.getText();
+		return JsonUtil.fromJsonObject(jsonString, classOfT);
+	}
 }

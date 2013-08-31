@@ -56,12 +56,14 @@ public class UserServlet extends BaseServlet {
 		IPath path = getPath(req);
 		if(path.segmentCount() == 0){
 			UserInfo userInfo = RequestUtil.fromJsonObject(req, UserInfo.class);
+			String password = userInfo.getPassword();
 			this.validate(userInfo);
 			if(hasErrors()){
 				ResponseUtil.toJSON(req, resp, errors, HttpServletResponse.SC_PRECONDITION_FAILED);
 				return;
 			}
 			
+			// 注册时会对密码加密，修改了userInfo#password的值
 			userService.register(userInfo);
 			// 注册成功之后，添加一个cookie，标识使用该电脑注册成功过
 			// 以后每登录一次都修改一下这个cookie
@@ -70,7 +72,7 @@ public class UserServlet extends BaseServlet {
 			cookie.setMaxAge(365*24*60*60);//一年有效
 			resp.addCookie(cookie);
 			// 注册成功之后，直接登录
-			userInfo = userService.login(userInfo.getEmail(), userInfo.getPassword());
+			userInfo = userService.login(userInfo.getEmail(), password);
 			if(userInfo != null){
 				// 登录成功
 				UserSession.setUser(req, userInfo);
@@ -147,15 +149,18 @@ public class UserServlet extends BaseServlet {
 			UserInfo loginInfo = (UserInfo) UserSession.getUser(req);
 			if(loginInfo == null){
 				// 用户未登录
-				Map<String,Object> map = new HashMap<String, Object>();
-				ResponseUtil.toJSON(req, resp, map,HttpServletResponse.SC_UNAUTHORIZED);
+				ResponseUtil.toJSON(req, resp, new HashMap<String, Object>(), HttpServletResponse.SC_UNAUTHORIZED);
 				return;
 			}
 			ResponseUtil.toJSON(req, resp, loginInfo);
 			return;
-		}else if(path.segmentCount() == 1){
+		}
+		
+		if(path.segmentCount() == 1){
 			String loginName = path.segment(0);
-			
+			UserInfo loginInfo = userService.getByLoginName(loginName);
+			ResponseUtil.toJSON(req, resp, loginInfo);
+			return;
 		}
 		
 		super.doGet(req, resp);

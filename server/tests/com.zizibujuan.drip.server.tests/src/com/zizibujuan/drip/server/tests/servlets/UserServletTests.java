@@ -2,6 +2,7 @@ package com.zizibujuan.drip.server.tests.servlets;
 
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.zizibujuan.dbaccess.mysql.service.DataSourceHolder;
+import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.tests.AbstractServletTests;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 import com.zizibujuan.drip.server.util.json.JsonUtil;
@@ -230,6 +232,7 @@ public class UserServletTests extends AbstractServletTests{
 			List<String> errors = JsonUtil.fromJsonArray(jsonString, List.class, String.class);
 			assertEquals("该用户名已注册，<a href=\"javascript:\">直接登录</a>", errors.get(0));
 		}finally{
+			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_ATTRIBUTES");
 			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_INFO  WHERE EMAIL=?", email);
 		}
 	}
@@ -264,6 +267,7 @@ public class UserServletTests extends AbstractServletTests{
 			assertEquals("{}", jsonString);
 			
 		}finally{
+			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_ATTRIBUTES");
 			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_INFO  WHERE EMAIL=?", email);
 		}
 	}
@@ -292,8 +296,55 @@ public class UserServletTests extends AbstractServletTests{
 			List<String> errors = JsonUtil.fromJsonArray(jsonString, List.class, String.class);
 			assertEquals("该邮箱已注册，<a href=\"javascript:\">直接登录</a>", errors.get(0));
 		}finally{
+			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_ATTRIBUTES");
 			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_INFO  WHERE EMAIL=?", email);
 		}
 		
+	}
+
+	@Test
+	public void get_user_info_logged() throws IOException{
+		String email = "a@a.com";
+		try{			
+			params.put("email", email);
+			params.put("password", "aaa111,,,");
+			params.put("loginName", "user1");
+			
+			initPostServlet("users");
+			assertEquals(HttpServletResponse.SC_OK, response.getResponseCode());
+			
+			initGetServlet("users");
+			assertEquals(HttpServletResponse.SC_OK, response.getResponseCode());
+			UserInfo userInfo = getResponseData(UserInfo.class);
+			assertEquals(email, userInfo.getEmail());
+			assertEquals("user1", userInfo.getLoginName());
+			assertNull(userInfo.getPassword());
+		}finally{
+			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_ATTRIBUTES");
+			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_INFO  WHERE EMAIL=?", email);
+		}
+	}
+	
+	@Test
+	public void get_user_info_by_loginName() throws IOException{
+		String email = "a@a.com";
+		try{			
+			params.put("email", email);
+			params.put("password", "aaa111,,,");
+			params.put("loginName", "user1");
+			
+			initPostServlet("users");
+			assertEquals(HttpServletResponse.SC_OK, response.getResponseCode());
+			
+			initGetServlet("users/user1");
+			assertEquals(HttpServletResponse.SC_OK, response.getResponseCode());
+			UserInfo userInfo = getResponseData(UserInfo.class);
+			assertNull(userInfo.getEmail()); // 暂不支持获取其他人邮箱的功能
+			assertEquals("user1", userInfo.getLoginName());
+			assertNull(userInfo.getPassword());
+		}finally{
+			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_ATTRIBUTES");
+			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_INFO  WHERE EMAIL=?", email);
+		}
 	}
 }

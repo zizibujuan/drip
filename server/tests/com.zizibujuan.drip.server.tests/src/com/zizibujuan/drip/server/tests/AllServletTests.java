@@ -16,9 +16,9 @@ import com.zizibujuan.drip.server.tests.servlets.UserServletTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-	LoginServletTests.class/*,
+	UserServletTests.class/*,
+	LoginServletTests.class,
 	FollowServletTests.class,
-	UserServletTests.class,
 	EmailConfirmServletTests.class*/
 })
 public class AllServletTests {
