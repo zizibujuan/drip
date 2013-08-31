@@ -144,7 +144,55 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		DatabaseUtil.update(getDataSource(), SQL_UPDATE_ACTIVE_USER, userId);
 	}
 	
-	
+	// 这里只查询出需要在界面上显示的用户信息，主要存储在当前用户的session中。
+	// 以下信息可以存在session中，但是有些信息不能显示在客户端，如email和mobile。
+	// 注意：获取登录用户自己的信息，则是越全越好；获取好友的信息，则是若不需要，则不提供。
+	private static final String SQL_GET_USER_INFO_FOR_SELF = "SELECT " +
+			"DBID," +
+			"LOGIN_NAME," +
+			"EMAIL " +
+			"FROM DRIP_USER_INFO ";
+	private static final String SQL_GET_USER_FOR_SESSION_BY_EMAIL = SQL_GET_USER_INFO_FOR_SELF + 
+			"WHERE "
+			+ "EMAIL = ? AND "
+			+ "LOGIN_PWD = ?";
+	private static final String SQL_GET_USER_FOR_SESSION_BY_LOGIN_NAME = SQL_GET_USER_INFO_FOR_SELF + 
+			"WHERE "
+			+ "LOGIN_NAME = ? AND "
+			+ "LOGIN_PWD = ?";
+	@Override
+	public UserInfo get(String login, String md5Password) {
+		// 推荐使用邮箱登录
+		UserInfo userInfo = DatabaseUtil.queryForObject(getDataSource(), SQL_GET_USER_FOR_SESSION_BY_EMAIL, new RowMapper<UserInfo>() {
+
+			@Override
+			public UserInfo mapRow(ResultSet rs, int rowNum)
+					throws SQLException {
+				UserInfo userInfo = new UserInfo();
+				userInfo.setId(rs.getLong(1));
+				userInfo.setLoginName(rs.getString(2));
+				userInfo.setEmail(rs.getString(3));
+				
+				return userInfo;
+			}
+		}, login, md5Password);
+		
+		if(userInfo != null) return userInfo;
+		
+		return DatabaseUtil.queryForObject(getDataSource(), SQL_GET_USER_FOR_SESSION_BY_LOGIN_NAME, new RowMapper<UserInfo>() {
+
+			@Override
+			public UserInfo mapRow(ResultSet rs, int rowNum)
+					throws SQLException {
+				UserInfo userInfo = new UserInfo();
+				userInfo.setId(rs.getLong(1));
+				userInfo.setLoginName(rs.getString(2));
+				userInfo.setEmail(rs.getString(3));
+				
+				return userInfo;
+			}
+		}, login, md5Password);
+	}
 	
 	
 	
@@ -173,32 +221,6 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		localUserStatisticsDao.init(con, userId);
 	 */
 
-	// 这里只查询出需要在界面上显示的用户信息，主要存储在当前用户的session中。
-	// 以下信息可以存在session中，但是有些信息不能显示在客户端，如email和mobile。
-	// 注意：获取登录用户自己的信息，则是越全越好；获取好友的信息，则是若不需要，则不提供。
-	private static final String SQL_GET_USER_INFO_FOR_SELF = "SELECT " +
-			"DBID," +
-			"LOGIN_NAME," +
-			"EMAIL " +
-			"FROM DRIP_USER_INFO ";
-	private static final String SQL_GET_USER_FOR_SESSION_BY_PWD = SQL_GET_USER_INFO_FOR_SELF + "WHERE EMAIL = ? AND LOGIN_PWD = ?";
-	@Override
-	public UserInfo get(String email, String md5Password) {
-		return DatabaseUtil.queryForObject(getDataSource(), SQL_GET_USER_FOR_SESSION_BY_PWD, new RowMapper<UserInfo>() {
-
-			@Override
-			public UserInfo mapRow(ResultSet rs, int rowNum)
-					throws SQLException {
-				UserInfo userInfo = new UserInfo();
-				userInfo.setId(rs.getLong(1));
-				userInfo.setLoginName(rs.getString(2));
-				userInfo.setEmail(rs.getString(3));
-				
-				return userInfo;
-			}
-		}, email, md5Password);
-	}
-	
 	// 在插入记录时，如果nickName为空，则插入登录名
 	private static final String SQL_GET_LOGIN = "SELECT " +
 			"DBID \"userId\", " +

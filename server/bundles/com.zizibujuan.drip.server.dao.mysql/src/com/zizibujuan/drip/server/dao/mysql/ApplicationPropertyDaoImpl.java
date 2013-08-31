@@ -78,6 +78,7 @@ public class ApplicationPropertyDaoImpl extends AbstractDao implements
 	@Override
 	public Properties getProperties(String groupKey){
 		List<Map<String, Object>> result = DatabaseUtil.queryForList(getDataSource(), SQL_GET_PROPERTY_LISt, groupKey);
+		if(result.size() == 0) return null;
 		Properties props = new Properties();
 		for(Map<String, Object> each: result){
 			props.put(each.get("PROPERTY_KEY"), each.get("PROPERTY_VALUE"));

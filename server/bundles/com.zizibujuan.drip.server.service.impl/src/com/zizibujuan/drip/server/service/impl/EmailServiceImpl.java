@@ -32,11 +32,13 @@ public class EmailServiceImpl implements EmailService {
 	// 当用户没有收到邮件，提供一个重新发送邮件的功能
 	@Override
 	public void send(String toEmail, String toName, String content) {
-		HtmlEmail email = new HtmlEmail();
-		
 		// 使用一个分组，查询出email的所有相关属性
 		Properties emailProps = applicationPropertyService.getProperties("drip.email");
-		
+		if(emailProps == null){
+			logger.error("没有配置发送邮箱信息");
+			return;
+		}
+		HtmlEmail email = new HtmlEmail();
 		String hostName = emailProps.getProperty("email.host.name");
 		int smtpPort = Integer.valueOf(emailProps.getProperty("email.host.port")).intValue();
 		String fromEmail = emailProps.getProperty("email.support.email");

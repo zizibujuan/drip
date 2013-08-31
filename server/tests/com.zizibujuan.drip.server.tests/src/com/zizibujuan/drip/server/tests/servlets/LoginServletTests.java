@@ -20,6 +20,7 @@ import com.zizibujuan.drip.server.util.json.JsonUtil;
 
 /**
  * 测试用户登录方法,使用用户名或邮箱都可以登录成功
+ * 
  * @author jzw
  * @since 0.0.1
  */
@@ -56,7 +57,7 @@ public class LoginServletTests extends AbstractServletTests{
 	}
 	
 	@Test
-	public void test_login_success() throws IOException{
+	public void test_login_with_email_success() throws IOException{
 		String email = "a@a.com";
 		try{
 			params.put("email", email);
@@ -66,6 +67,29 @@ public class LoginServletTests extends AbstractServletTests{
 			
 			params = new HashMap<String, String>();
 			params.put("login", "a@a.com");
+			params.put("password", "abc123");
+			initPostServlet("login/form");
+			assertEquals(HttpServletResponse.SC_OK, response.getResponseCode());
+			String jsonString = response.getText();
+			assertEquals("{}", jsonString);
+		}finally{
+			// 删除用户相关属性
+			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_ATTRIBUTES");
+			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_INFO  WHERE EMAIL=?", email);
+		}
+	}
+	
+	@Test
+	public void test_login_with_loginName_success() throws IOException{
+		String email = "a@a.com";
+		try{
+			params.put("email", email);
+			params.put("password", "abc123");
+			params.put("loginName", "user1");
+			initPostServlet("users");
+			
+			params = new HashMap<String, String>();
+			params.put("login", "user1");
 			params.put("password", "abc123");
 			initPostServlet("login/form");
 			assertEquals(HttpServletResponse.SC_OK, response.getResponseCode());

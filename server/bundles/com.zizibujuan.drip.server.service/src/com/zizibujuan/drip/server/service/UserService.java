@@ -57,7 +57,7 @@ public interface UserService {
 	/**
 	 * 用户登录。记录登录信息，但是不记录用户各项统计信息
 	 * 
-	 * @param email 邮箱地址
+	 * @param login 邮箱地址或者登录名
 	 * @param password 密码 (未加密)
 	 * @return 如果登录失败则返回null，否则返回用户标识
 	 * <pre>
@@ -74,7 +74,7 @@ public interface UserService {
 	 * 		xLargeImageUrl:
 	 * <pre>
 	 */
-	UserInfo login(String email, String password);
+	UserInfo login(String login, String password);
 	
 	/**
 	 * 根据登录名获取用户的基本信息

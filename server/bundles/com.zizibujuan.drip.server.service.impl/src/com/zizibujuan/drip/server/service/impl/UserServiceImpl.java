@@ -47,8 +47,10 @@ public class UserServiceImpl implements UserService {
 		String confirmKey = DigestUtils.md5Hex(userInfo.getLoginName() + System.nanoTime());
 		userInfo.setConfirmKey(confirmKey);
 		Long userId = userDao.add(userInfo);
+		if(applicationPropertyService.getForString("email.active.user.auto").equals("1")){
+			this.sendActiveEmail(userInfo.getEmail(), userInfo.getLoginName(), confirmKey);
+		}
 		
-		this.sendActiveEmail(userInfo.getEmail(), userInfo.getLoginName(), confirmKey);
 		return userId;
 	}
 	
@@ -79,11 +81,11 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public UserInfo login(String email, String password) {
+	public UserInfo login(String login, String password) {
 		// 根据邮箱和密码查找用户信息
 		// 如果查到了，则保存在session中。
 		String md5Password = DigestUtils.md5Hex(password);
-		UserInfo userInfo = userDao.get(email, md5Password);
+		UserInfo userInfo = userDao.get(login, md5Password);
 		
 		if(userInfo == null){
 			return null;

@@ -16,10 +16,10 @@ import com.zizibujuan.drip.server.tests.servlets.UserServletTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-	LoginServletTests.class,
+	LoginServletTests.class/*,
 	FollowServletTests.class,
 	UserServletTests.class,
-	EmailConfirmServletTests.class
+	EmailConfirmServletTests.class*/
 })
 public class AllServletTests {
 
