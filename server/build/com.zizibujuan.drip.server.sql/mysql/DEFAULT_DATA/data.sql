@@ -12,6 +12,14 @@ insert into DRIP_PROPERTY_GROUP (DBID, GROUP_NAME, DISPLAY_NAME,I18N_ID) VALUES 
 insert into DRIP_PROPERTY_KEY (DBID,PROPERTY_KEY,GROUP_ID,PROPERTY_TYPE) VALUES (1, 'drip.cookie.max.userId', 1, 2);
 insert into DRIP_PROPERTY_VALUE_NUMBER (KEY_ID, PROPERTY_VALUE) VALUES (1, 0);
 
+-- git仓库的根目录
+insert into DRIP_PROPERTY_KEY (DBID,PROPERTY_KEY,GROUP_ID,PROPERTY_TYPE) VALUES (60, 'git.repo.root', 1, 1);
+insert into DRIP_PROPERTY_VALUE_STRING (KEY_ID, PROPERTY_VALUE,I18n_ID) VALUES (60, '/mnt/drip_data/','zh_cn');
+
+-- 是否允许自动发送激活邮件，默认是允许
+insert into DRIP_PROPERTY_KEY (DBID,PROPERTY_KEY,GROUP_ID,PROPERTY_TYPE) VALUES (61, 'email.active.user.auto', 1, 1);
+insert into DRIP_PROPERTY_VALUE_STRING (KEY_ID, PROPERTY_VALUE,I18n_ID) VALUES (61, '1','zh_cn');
+
 -- renren连接信息
 insert into DRIP_PROPERTY_GROUP (DBID, GROUP_NAME, DISPLAY_NAME,I18N_ID) VALUES (2,'renren','人人网','zh_cn');
 insert into DRIP_PROPERTY_KEY (DBID,PROPERTY_KEY,GROUP_ID,PROPERTY_TYPE) VALUES (2, 'renren.app.id', 2, 1);
@@ -53,9 +61,6 @@ insert into DRIP_PROPERTY_VALUE_STRING (KEY_ID, PROPERTY_VALUE,I18n_ID) VALUES (
 insert into DRIP_PROPERTY_VALUE_STRING (KEY_ID, PROPERTY_VALUE,I18n_ID) VALUES (53, 'AB型','zh_cn');
 insert into DRIP_PROPERTY_VALUE_STRING (KEY_ID, PROPERTY_VALUE,I18n_ID) VALUES (54, 'RH阴型','zh_cn');
 
--- git仓库的根目录
-insert into DRIP_PROPERTY_KEY (DBID,PROPERTY_KEY,GROUP_ID,PROPERTY_TYPE) VALUES (60, 'git.repo.root', 1, 1);
-insert into DRIP_PROPERTY_VALUE_STRING (KEY_ID, PROPERTY_VALUE,I18n_ID) VALUES (60, '/mnt/drip_data/','zh_cn');
 
 -- 网站邮箱配置信息
 insert into DRIP_PROPERTY_GROUP (DBID, GROUP_NAME, DISPLAY_NAME,I18N_ID) VALUES (11,'drip.email','drip.email','zh_cn');
