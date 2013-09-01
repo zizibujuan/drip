@@ -9,19 +9,18 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.zizibujuan.dbaccess.mysql.service.DataSourceHolder;
 import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.tests.AbstractServletTests;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 import com.zizibujuan.drip.server.util.json.JsonUtil;
+
 /**
  * 测试用户注册
+ * 
  * @author jzw
  * @since 0.0.1
  */

@@ -5,7 +5,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -159,6 +158,9 @@ public class UserServlet extends BaseServlet {
 		if(path.segmentCount() == 1){
 			String loginName = path.segment(0);
 			UserInfo loginInfo = userService.getByLoginName(loginName);
+			// 暂不支持获取其他人邮箱的功能,不在dao层去掉该字段，而是在servlet层过滤
+			// 这样就不会出现太多的dao查询方法。
+			loginInfo.setEmail(null);
 			ResponseUtil.toJSON(req, resp, loginInfo);
 			return;
 		}
