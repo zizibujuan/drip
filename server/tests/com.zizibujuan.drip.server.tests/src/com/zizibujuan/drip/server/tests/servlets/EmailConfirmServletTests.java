@@ -45,13 +45,16 @@ public class EmailConfirmServletTests extends AbstractServletTests{
 			params.put("email", email);
 			params.put("password", "aaa111,,,");
 			params.put("loginName", "user1");
-			
+			// 注册并登录
 			initPostServlet("users");
+			// 注销用户,让可以跳转到中间提示页面，而登录用户直接跳转到个人首页。
+			initPostServlet("logout");
 			
 			UserService userService = ServiceHolder.getDefault().getUserService();
 			UserInfo userInfo = userService.getByLoginName("user1");
 			userId = userInfo.getId();
 			assertFalse(userInfo.isActive());
+			
 			initGetServlet("confirm/" + userInfo.getConfirmKey());
 			userInfo = userService.getByLoginName("user1");
 			assertTrue(userInfo.isActive());
@@ -76,6 +79,7 @@ public class EmailConfirmServletTests extends AbstractServletTests{
 			params.put("loginName", "user1");
 			
 			initPostServlet("users");
+			initPostServlet("logout");
 			
 			UserService userService = ServiceHolder.getDefault().getUserService();
 			UserInfo userInfo = userService.getByLoginName("user1");

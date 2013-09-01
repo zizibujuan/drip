@@ -10,7 +10,6 @@ import org.eclipse.core.runtime.IPath;
 
 import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.UserService;
-import com.zizibujuan.drip.server.util.HttpConstants;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.UserSession;
 
