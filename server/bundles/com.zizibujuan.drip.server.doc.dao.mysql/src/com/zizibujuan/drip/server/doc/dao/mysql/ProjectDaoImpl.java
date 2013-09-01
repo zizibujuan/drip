@@ -11,7 +11,6 @@ import com.zizibujuan.drip.server.doc.model.ProjectInfo;
 import com.zizibujuan.drip.server.util.OAuthConstants;
 import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
-import com.zizibujuan.drip.server.util.dao.DripDateUtils;
 import com.zizibujuan.drip.server.util.dao.PreparedStatementSetter;
 import com.zizibujuan.drip.server.util.dao.RowMapper;
 
@@ -31,7 +30,7 @@ public class ProjectDaoImpl extends AbstractDao implements ProjectDao {
 			+ "CRT_TM,"
 			+ "CRT_USER_ID) "
 			+ "VALUES "
-			+ "(?,?,?,?,?)";
+			+ "(?,?,?,now(),?)";
 	@Override
 	public Long create(final ProjectInfo projectInfo) {
 		return DatabaseUtil.insert(getDataSource(), SQL_INSERT_PROJECT, new PreparedStatementSetter() {
@@ -40,8 +39,7 @@ public class ProjectDaoImpl extends AbstractDao implements ProjectDao {
 				ps.setString(1, projectInfo.getName());
 				ps.setString(2, projectInfo.getLabel());
 				ps.setString(3, projectInfo.getDescription());
-				ps.setTimestamp(4, DripDateUtils.now());
-				ps.setLong(5, projectInfo.getCreateUserId());
+				ps.setLong(4, projectInfo.getCreateUserId());
 			}
 		});
 	}

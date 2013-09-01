@@ -27,13 +27,6 @@ import com.zizibujuan.drip.server.util.json.JsonUtil;
  */
 public class UserServletTests extends AbstractServletTests{
 
-	private static DataSource dataSource;
-	
-	@BeforeClass
-	public static void setUpClass(){
-		dataSource = DataSourceHolder.getDefault().getDataSourceService().getDataSource();
-	}
-	
 	@Test
 	public void register_all_input_is_blank() throws IOException{
 		params.put("email", "");

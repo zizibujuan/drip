@@ -43,17 +43,17 @@ public class ProjectServiceImpl implements ProjectService {
 	 * 然后导出这个仓库
 	 */
 	@Override
-	public Long create(Long localUserId, ProjectInfo projectInfo) {
+	public Long create(String loginName, ProjectInfo projectInfo) {
 		// 在后台为项目生成一个标识，标识名称不可变，作为仓库的名称，这样虽然没有生成一个数字做仓库名称灵活，但是迁移起来比较方便。
 		// 将仓库放在以用户名作为名称的目录下，所以前提是要确定一个稳定的昵称，如果发生了变化，就要整个彻底改变.
 		// 路径: 用户名/仓库名 或 仓库名，然后在数据库上将用户名和仓库名关联起来，这样更灵活。这样当有将仓库转移给别人时，操作起来更方便。
 		
 		// TODO: 抽象用户接口
-		UserInfo userInfo = userDao.getBaseInfoByLocalUserId(localUserId);
+		UserInfo userInfo = userDao.getByLoginName(loginName);
 		// 首先确定放git仓库的根目录。
 		String root = applicationPropertyDao.getForString(GitConstants.KEY_GIT_ROOT);
 		InitCommand command = new InitCommand();
-		// 还是使用项目名称作为仓库的名称，并将仓库放在用户标识（固定不变）下面
+		// 还是使用项目名称作为仓库的名称，并将仓库放在登录名（固定不变）下面
 		File directory = new File(root + userInfo.getLoginName() + "/" + projectInfo.getName()); 
 		command.setDirectory(directory);
 		Repository repository;
@@ -75,8 +75,7 @@ public class ProjectServiceImpl implements ProjectService {
 			
 			// 需要一张表存储用户创建的项目列表，注意如果创建仓库失败，则不往project数据库中插入数据
 			// 获取直接通过目录结构获取,当前是将元数据存到数据库中，然后根据数据库中的信息判断。
-			projectInfo.setCreateUserId(localUserId);
-			projectDao.create(projectInfo);
+			return projectDao.create(projectInfo);
 		} catch (GitAPIException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

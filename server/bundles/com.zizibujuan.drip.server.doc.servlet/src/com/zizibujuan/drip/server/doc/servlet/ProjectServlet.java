@@ -24,11 +24,14 @@ import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.doc.model.CommitInfo;
 import com.zizibujuan.drip.server.doc.model.LastLogInfo;
 import com.zizibujuan.drip.server.doc.model.ProjectInfo;
 import com.zizibujuan.drip.server.doc.service.ProjectService;
+import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.ApplicationPropertyService;
 import com.zizibujuan.drip.server.util.GitConstants;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
@@ -47,6 +50,7 @@ public class ProjectServlet extends BaseServlet {
 
 	private ProjectService projectService;
 	private ApplicationPropertyService applicationPropertyService;
+	private List<String> errors;
 	
 	public ProjectServlet(){
 		projectService = ServiceHolder.getDefault().getProjectService();
@@ -62,18 +66,28 @@ public class ProjectServlet extends BaseServlet {
 		traceRequest(req);
 		IPath path = getPath(req);
 		if(path.segmentCount() == 0){
+			errors = new ArrayList<String>();
 			ProjectInfo projectInfo = RequestUtil.fromJsonObject(req, ProjectInfo.class);
 			// 判断项目名称是否已经被使用
-			Long localUserId = UserSession.getLocalUserId(req);
-			if(projectService.nameIsUsed(localUserId, projectInfo.getName())){
-				// TODO:统一返回json对象
-				// 前置条件校验失败
-				ResponseUtil.toHTML(req, resp, "", HttpServletResponse.SC_PRECONDITION_FAILED);
+			UserInfo userInfo = (UserInfo) UserSession.getUser(req);
+			if(userInfo == null){
+				errors.add("只有登录用户,才能创建项目");
+				ResponseUtil.toJSON(req, resp, errors, HttpServletResponse.SC_UNAUTHORIZED);
 				return;
 			}
 			
-			Long projectId = projectService.create(localUserId, projectInfo);
-			ResponseUtil.toHTML(req, resp, projectId.toString());
+			Long userId = userInfo.getId();
+			if(projectService.nameIsUsed(userId, projectInfo.getName())){
+				errors.add("您已有一个同名项目");
+				ResponseUtil.toJSON(req, resp, errors, HttpServletResponse.SC_PRECONDITION_FAILED);
+				return;
+			}
+			
+			// 创建成功后，跳转到项目首页
+			projectInfo.setCreateUserId(userId);
+			Long projectId = projectService.create(userInfo.getLoginName(), projectInfo);
+			projectInfo.setId(projectId);
+			ResponseUtil.toJSON(req, resp, projectInfo);
 			return;
 		}
 		super.doPost(req, resp);

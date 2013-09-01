@@ -18,10 +18,11 @@ public class UserInfoRowMapper implements RowMapper<UserInfo> {
 		UserInfo userInfo = new UserInfo();
 		userInfo.setId(rs.getLong(1));
 		userInfo.setLoginName(rs.getString(2));
-		userInfo.setSex(rs.getString(3));
-		userInfo.setIntroduce(rs.getString(4));
-		userInfo.setConfirmKey(rs.getString(5));
-		userInfo.setActive(rs.getBoolean(6));
+		userInfo.setEmail(rs.getString(3));
+		userInfo.setSex(rs.getString(4));
+		userInfo.setIntroduce(rs.getString(5));
+		userInfo.setConfirmKey(rs.getString(6));
+		userInfo.setActive(rs.getBoolean(7));
 		return userInfo;
 	}
 

@@ -1,9 +1,10 @@
 package com.zizibujuan.drip.server.tests;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.sql.DataSource;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
@@ -19,7 +20,9 @@ import com.meterware.httpunit.PutMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
+import com.zizibujuan.dbaccess.mysql.service.DataSourceHolder;
 import com.zizibujuan.drip.server.tests.servlets.internal.DeleteMethodWebRequest;
+import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 import com.zizibujuan.drip.server.util.json.JsonUtil;
 
 /**
@@ -31,6 +34,14 @@ public class AbstractServletTests {
 
 	protected static final String SERVER_LOCATION = "http://localhost:8199/";
 	
+	protected static DataSource dataSource;
+	
+	// 
+	protected static String testUserEmail = "test@zizibujuan.com";
+	protected static String testUserPassword = "test123";
+	protected static String testUserLoginName = "test";
+	protected Long testUserId;
+	
 	protected WebConversation webConversation;
 	protected WebRequest request;
 	protected WebResponse response;
@@ -38,8 +49,8 @@ public class AbstractServletTests {
 	protected Map<String, String> headers;
 	
 	@BeforeClass
-	public static void setUpClass() throws MalformedURLException{
-		
+	public static void setUpClass(){
+		dataSource = DataSourceHolder.getDefault().getDataSourceService().getDataSource();
 	}
 	
 	@AfterClass
@@ -117,5 +128,22 @@ public class AbstractServletTests {
 	protected <T> T getResponseData(Class<T> classOfT) throws IOException{
 		String jsonString = response.getText();
 		return JsonUtil.fromJsonObject(jsonString, classOfT);
+	}
+	
+	protected void setUpAuthorization(){
+		// 如果用户不存在，则创建用户
+		params.put("email", testUserEmail);
+		params.put("password", testUserPassword);
+		params.put("loginName", testUserLoginName);
+		// 注册并登录
+		initPostServlet("users");
+		testUserId = DatabaseUtil.queryForLong(dataSource, "SELECT DBID FROM DRIP_USER_INFO WHERE EMAIL=?", testUserEmail);
+	}
+	
+	protected void tearDownAuthorization(){
+		// 删除用户，并注销？
+		DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_ATTRIBUTES WHERE USER_ID=?", testUserId);
+		DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_INFO  WHERE EMAIL=?", testUserEmail);
+		initPostServlet("logout");
 	}
 }

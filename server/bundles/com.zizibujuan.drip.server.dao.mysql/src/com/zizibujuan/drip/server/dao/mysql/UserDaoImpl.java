@@ -111,6 +111,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	private static final String SQL_GET_USER_INFO = "SELECT "
 			+ "DBID,"
 			+ "LOGIN_NAME,"
+			+ "EMAIL,"
 			+ "SEX,"
 			+ "INTRODUCE,"
 			+ "CONFIRM_KEY,"
