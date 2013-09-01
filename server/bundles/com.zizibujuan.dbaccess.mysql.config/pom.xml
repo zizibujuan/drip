@@ -18,7 +18,7 @@
 	<build>
 		<resources>
 			<resource>
-				<directory></directory>
+				<directory>${project.basedir}</directory>
 				<filtering>true</filtering>
 				<includes>
 					<include>jdbc.properties</include>
