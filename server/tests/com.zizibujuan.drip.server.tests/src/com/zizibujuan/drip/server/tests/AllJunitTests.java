@@ -4,7 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.zizibujuan.drip.server.tests.servlets.LoginNameRegexTests;
+import com.zizibujuan.drip.server.tests.servlets.RegexTests;
 
 /**
  * 放置所有Junit测试类的测试套件
@@ -13,7 +13,7 @@ import com.zizibujuan.drip.server.tests.servlets.LoginNameRegexTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-	LoginNameRegexTests.class
+	RegexTests.class
 })
 public class AllJunitTests {
 

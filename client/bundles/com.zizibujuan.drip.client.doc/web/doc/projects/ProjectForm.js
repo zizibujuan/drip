@@ -27,6 +27,8 @@ define([ "dojo/_base/declare",
 		
 		templateString: ProjectFormTemplate,
 		
+		errors: [],
+		
 		postCreate: function(){
 			this.inherited(arguments);
 			
@@ -40,12 +42,24 @@ define([ "dojo/_base/declare",
 				xhr.post("/projects/",{data:JSON.stringify(projectInfo), handleAs:"json"}).then(function(data){
 					window.location.href = data.createUserName + "/" + data.name;
 				}, function(error){
-					// TODO:如果保存失败，则给出提示
-					console.error("创建项目失败", error);
+					var data = error.response.data;
+					if(data){
+						// 在界面上显示错误信息
+						
+					}else{
+						console.error("创建项目失败", error);
+					}
 				});
 			})));
-		}
+		},
 		
+		validate: function(){
+			
+		},
+		
+		showError: function(){
+			
+		}
 	});
 	
 });

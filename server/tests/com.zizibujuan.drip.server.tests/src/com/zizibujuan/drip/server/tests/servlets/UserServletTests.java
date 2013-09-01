@@ -155,7 +155,7 @@ public class UserServletTests extends AbstractServletTests{
 	}
 
 	/**
-	 * 有关测试用户名有效性的正则表达式的测试，参考{@link LoginNameRegexTests}
+	 * 有关测试用户名有效性的正则表达式的测试，参考{@link RegexTests}
 	 * @throws IOException
 	 */
 	@Test

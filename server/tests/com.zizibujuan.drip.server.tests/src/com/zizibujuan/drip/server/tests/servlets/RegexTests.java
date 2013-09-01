@@ -9,13 +9,15 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-public class LoginNameRegexTests {
+public class RegexTests {
 
-	private String regex = "^(?![-_])[a-zA-Z0-9_-]+$";
+	private static String REGEX_LOGIN_NAME = "^(?![-_])[a-zA-Z0-9_-]+$";
+	private static String REGEX_PROJECT_NAME = "^[A-Za-z0-9_\\.-]+$";
+	
 	
 	@Test
-	public void test_valid(){
-		RegexValidator validator = new RegexValidator(regex);
+	public void test_login_name_valid(){
+		RegexValidator validator = new RegexValidator(REGEX_LOGIN_NAME);
 		assertFalse(validator.isValid("a汉字b"));
 		assertFalse(validator.isValid("(a"));
 		assertFalse(validator.isValid("-a"));
@@ -28,9 +30,21 @@ public class LoginNameRegexTests {
 	}
 	
 	@Test
-	public void test_chinses_length() throws UnsupportedEncodingException{
+	public void test_chinese_length() throws UnsupportedEncodingException{
 		assertEquals(3, "a一".getBytes("gb2312").length);
 		assertEquals(5, "a一二".getBytes("gb2312").length);
+	}
+	
+	@Test
+	public void test_project_name(){
+		RegexValidator validator = new RegexValidator(REGEX_PROJECT_NAME);
+		assertFalse(validator.isValid("a b"));
+		assertFalse(validator.isValid("a——b"));
+		assertFalse(validator.isValid("a一b"));
+		
+		assertTrue(validator.isValid("a-b"));
+		assertTrue(validator.isValid("a_b"));
+		assertTrue(validator.isValid("a.b"));
 	}
 	
 }

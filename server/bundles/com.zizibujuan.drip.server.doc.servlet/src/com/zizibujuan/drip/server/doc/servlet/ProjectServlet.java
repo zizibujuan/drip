@@ -12,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.validator.routines.RegexValidator;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
@@ -71,6 +72,11 @@ public class ProjectServlet extends BaseServlet {
 			if(userInfo == null){
 				errors.add("只有登录用户,才能创建项目");
 				ResponseUtil.toJSON(req, resp, errors, HttpServletResponse.SC_UNAUTHORIZED);
+				return;
+			}
+			if(!new RegexValidator("^[A-Za-z0-9_\\.-]+$").isValid(projectInfo.getName())){
+				errors.add("项目名称只能包含英文字母,数字,-,_或.");
+				ResponseUtil.toJSON(req, resp, errors, HttpServletResponse.SC_PRECONDITION_FAILED);
 				return;
 			}
 			

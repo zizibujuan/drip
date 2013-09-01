@@ -1,6 +1,7 @@
 package com.zizibujuan.drip.server.tests.doc.servlets;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -93,13 +94,62 @@ public class ProjectServletTests extends AbstractServletTests {
 		return store;
 	}
 	
-	
-	
-	// TODO:项目名称必须是英文,字母，_ - 或 .
-	
-	
+	// 项目名称必须是英文,字母，_ - 或 .
+	@Test
+	public void create_project_name_is_not_valid() throws IOException, URISyntaxException, CoreException{
+		try{
+			setUpAuthorization();
+			params = new HashMap<String, String>();
+			params.put("name", "a b");
+			params.put("label", "项目1");
+			params.put("description", "描述1");
+			initPostServlet("projects");
+			assertEquals(HttpServletResponse.SC_PRECONDITION_FAILED, response.getResponseCode());
+			List<String> errors = JsonUtil.fromJsonArray(response.getText(), List.class, String.class);
+			assertEquals("项目名称只能包含英文字母,数字,-,_或.", errors.get(0));
+			IFileStore store = getProjectStore(testUserLoginName, "p1");
+			assertFalse("没有为项目创建文件夹", store.fetchInfo().exists());
+		}finally{
+			tearDownAuthorization();
+			// 虽然正常逻辑下不会创建项目信息，但是如果程序中没有添加名称有效性校验，就会创建，所以这里需要删除代码
+			// 删除项目信息
+			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_DOC_PROJECT WHERE PROJECT_NAME=? AND CRT_USER_ID=?", "p1", testUserId);
+			// 删除项目文件
+			IFileStore store = getProjectStore(testUserLoginName, "p1");
+			store.delete(EFS.NONE, null);
+		}
+	}
 	
 	// 登录用户要创建一个同名项目
+	@Test
+	public void create_project_name_is_duplicate() throws IOException, URISyntaxException, CoreException{
+		try{
+			setUpAuthorization();
+			params = new HashMap<String, String>();
+			params.put("name", "p1");
+			params.put("label", "项目1");
+			params.put("description", "描述1");
+			initPostServlet("projects");
+			
+			params = new HashMap<String, String>();
+			params.put("name", "p1");
+			params.put("label", "项目1");
+			params.put("description", "描述1");
+			initPostServlet("projects");
+			
+			assertEquals(HttpServletResponse.SC_PRECONDITION_FAILED, response.getResponseCode());
+			List<String> errors = JsonUtil.fromJsonArray(response.getText(), List.class, String.class);
+			assertEquals("您已有一个同名项目", errors.get(0));
+		}finally{
+			tearDownAuthorization();
+			// 虽然正常逻辑下不会创建项目信息，但是如果程序中没有添加名称有效性校验，就会创建，所以这里需要删除代码
+			// 删除项目信息
+			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_DOC_PROJECT WHERE PROJECT_NAME=? AND CRT_USER_ID=?", "p1", testUserId);
+			// 删除项目文件
+			IFileStore store = getProjectStore(testUserLoginName, "p1");
+			store.delete(EFS.NONE, null);
+		}
+	}
 	
 	// 删除一个项目
 	
