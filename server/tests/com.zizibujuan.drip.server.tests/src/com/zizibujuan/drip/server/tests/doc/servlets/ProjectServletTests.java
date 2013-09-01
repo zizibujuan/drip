@@ -9,6 +9,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -84,7 +85,6 @@ public class ProjectServletTests extends AbstractServletTests {
 			IFileStore store = getProjectStore(testUserLoginName, "p1");
 			store.delete(EFS.NONE, null);
 		}
-		
 	}
 	
 	private IFileStore getProjectStore(String loginName, String projectName) throws URISyntaxException{
@@ -102,5 +102,36 @@ public class ProjectServletTests extends AbstractServletTests {
 	// 登录用户要创建一个同名项目
 	
 	// 删除一个项目
+	
+	   
+	@Test
+	public void get_project_files_list() throws IOException, URISyntaxException, CoreException{
+		try{
+			setUpAuthorization();
+			params = new HashMap<String, String>();
+			params.put("name", "p1");
+			params.put("label", "项目1");
+			params.put("description", "描述1");
+			initPostServlet("projects");
+			
+			initGetServlet("projects/"+testUserLoginName+"/p1");
+			assertEquals(HttpServletResponse.SC_OK, response.getResponseCode());
+			String jsonString = response.getText();
+			List<Map<String, Object>> list = JsonUtil.fromJsonArray(jsonString);
+			// 默认会为项目创建一个README文件
+			assertEquals(1, list.size());
+			
+			@SuppressWarnings("unchecked")
+			Map<String, Object> fileInfo = (Map<String, Object>) list.get(0).get("fileInfo");
+			assertEquals("README", fileInfo.get("name"));
+		}finally{
+			tearDownAuthorization();
+			// 删除项目信息
+			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_DOC_PROJECT WHERE PROJECT_NAME=? AND CRT_USER_ID=?", "p1", testUserId);
+			// 删除项目文件
+			IFileStore store = getProjectStore(testUserLoginName, "p1");
+			store.delete(EFS.NONE, null);
+		}
+	}
 	
 }

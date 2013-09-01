@@ -24,8 +24,6 @@ import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.doc.model.CommitInfo;
 import com.zizibujuan.drip.server.doc.model.LastLogInfo;
@@ -100,8 +98,9 @@ public class ProjectServlet extends BaseServlet {
 		traceRequest(req);
 		IPath path = getPath(req); 
 		if(path.segmentCount() == 0){
-			Long localUserId = UserSession.getLocalUserId(req);
-			List<ProjectInfo> myProjects = projectService.get(localUserId);
+			// 获取登录用户的项目列表
+			UserInfo userInfo = (UserInfo) UserSession.getUser(req);
+			List<ProjectInfo> myProjects = projectService.get(userInfo.getId());
 			ResponseUtil.toJSON(req, resp, myProjects);
 			return;
 		}else if(path.segmentCount() >= 2){

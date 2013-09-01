@@ -32,6 +32,8 @@ import com.zizibujuan.drip.server.util.GitConstants;
  */
 public class ProjectServiceImpl implements ProjectService {
 	private Logger logger = LoggerFactory.getLogger(ProjectServiceImpl.class);
+	
+	private static final String DEFAULT_FILE_NAME = "README";
 
 	private UserDao userDao;
 	private ApplicationPropertyDao applicationPropertyDao;
@@ -64,7 +66,7 @@ public class ProjectServiceImpl implements ProjectService {
 			//先创建一个仓库，给仓库配置用户名和邮箱信息
 			configGit(userInfo, git);
 			//新建一个README.md文件
-			File file = new File(directory, "README");
+			File file = new File(directory, DEFAULT_FILE_NAME);
 			file.createNewFile();
 			FileWriter fw = new FileWriter(file);
 			IOUtils.write(projectInfo.getName() + Environment.newLine() + StringUtils.repeat('=', 10),fw);
