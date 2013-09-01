@@ -8,7 +8,6 @@ import java.util.List;
 import com.zizibujuan.drip.server.doc.dao.ProjectDao;
 import com.zizibujuan.drip.server.doc.dao.mysql.rowMapper.ProjectInfoRowMapper;
 import com.zizibujuan.drip.server.doc.model.ProjectInfo;
-import com.zizibujuan.drip.server.util.OAuthConstants;
 import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 import com.zizibujuan.drip.server.util.dao.PreparedStatementSetter;
@@ -69,16 +68,17 @@ public class ProjectDaoImpl extends AbstractDao implements ProjectDao {
 			+ "a.CRT_USER_ID,"
 			+ "b.LOGIN_NAME "
 			+ "FROM "
-			+ "DRIP_DOC_PROJECT a, DRIP_GLOBAL_USER_INFO b "
+			+ "DRIP_DOC_PROJECT a, "
+			+ "DRIP_USER_INFO b "
 			+ "WHERE "
-			+ "a.CRT_USER_ID=? AND a.CRT_USER_ID = b.DBID AND b.SITE_ID=?";
+			+ "a.CRT_USER_ID=? AND "
+			+ "a.CRT_USER_ID = b.DBID";
 	@Override
 	public List<ProjectInfo> get(final Long createUserId) {
 		return DatabaseUtil.query(getDataSource(), SQL_GET_PROJECT_BY_USER, new PreparedStatementSetter() {
 			@Override
 			public void setValues(PreparedStatement ps) throws SQLException {
 				ps.setLong(1, createUserId);
-				ps.setInt(2, OAuthConstants.ZIZIBUJUAN);
 			}
 		},new RowMapper<ProjectInfo>(){
 			@Override

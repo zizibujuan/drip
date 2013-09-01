@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +28,7 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 
 import com.zizibujuan.drip.server.doc.model.NewFileForm;
+import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.ApplicationPropertyService;
 import com.zizibujuan.drip.server.util.GitConstants;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
@@ -38,6 +38,7 @@ import com.zizibujuan.drip.server.util.servlet.UserSession;
 
 /**
  * 文件管理
+ * 
  * @author jzw
  * @since 0.0.1
  */
@@ -97,9 +98,9 @@ public class FileServlet extends BaseServlet {
 				Git git = new Git(repo);
 				// 往git仓库中提交新建的文件
 				git.add().addFilepattern(relativePath + fileStore.fetchInfo().getName()).call();
-				Map<String,Object> currentUser = UserSession.getUser(req);
+				UserInfo currentUser = (UserInfo) UserSession.getUser(req);
 				// loginName和email在这里是必须要输入的
-				git.commit().setAuthor(currentUser.get("loginName").toString(), currentUser.get("email").toString())
+				git.commit().setAuthor(currentUser.getLoginName(), currentUser.getEmail())
 					.setMessage(newFileForm.getCommitInfo().getSummary())// 加一个空行，追加详细信息？ 暂时不支持录入扩展的提交信息
 					.call();
 				ResponseUtil.toJSON(req, resp);

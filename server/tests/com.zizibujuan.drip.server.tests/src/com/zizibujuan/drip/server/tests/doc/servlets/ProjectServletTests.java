@@ -3,6 +3,7 @@ package com.zizibujuan.drip.server.tests.doc.servlets;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -153,6 +154,51 @@ public class ProjectServletTests extends AbstractServletTests {
 	
 	// 删除一个项目
 	
+	@Test
+	public void get_project_list() throws IOException, URISyntaxException, CoreException{
+		try{
+			setUpAuthorization();
+			params = new HashMap<String, String>();
+			params.put("name", "p1");
+			params.put("label", "项目1");
+			params.put("description", "描述1");
+			initPostServlet("projects");
+			
+			params = new HashMap<String, String>();
+			params.put("name", "p2");
+			params.put("label", "项目2");
+			params.put("description", "描述2");
+			initPostServlet("projects");
+			
+			initGetServlet("projects");
+			assertEquals(HttpServletResponse.SC_OK, response.getResponseCode());
+			String jsonString = response.getText();
+			List<ProjectInfo> list = JsonUtil.fromJsonArray(jsonString, List.class, ProjectInfo.class);
+			
+			assertEquals(2, list.size());
+			ProjectInfo p1 = list.get(0);
+			assertNull(p1.getId()); // 有意没有返回项目标识
+			assertEquals("p1", p1.getName());
+			assertEquals("项目1", p1.getLabel());
+			assertEquals("描述1", p1.getDescription());
+			
+			ProjectInfo p2 = list.get(1);
+			assertNull(p2.getId());
+			assertEquals("p2", p2.getName());
+			assertEquals("项目2", p2.getLabel());
+			assertEquals("描述2", p2.getDescription());
+		}finally{
+			tearDownAuthorization();
+			// 删除项目信息
+			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_DOC_PROJECT WHERE PROJECT_NAME=? AND CRT_USER_ID=?", "p1", testUserId);
+			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_DOC_PROJECT WHERE PROJECT_NAME=? AND CRT_USER_ID=?", "p2", testUserId);
+			// 删除项目文件
+			IFileStore store = getProjectStore(testUserLoginName, "p1");
+			store.delete(EFS.NONE, null);
+			store = getProjectStore(testUserLoginName, "p2");
+			store.delete(EFS.NONE, null);
+		}
+	}
 	   
 	@Test
 	public void get_project_files_list() throws IOException, URISyntaxException, CoreException{

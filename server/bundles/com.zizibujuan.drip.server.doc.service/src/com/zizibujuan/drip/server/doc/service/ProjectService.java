@@ -31,9 +31,9 @@ public interface ProjectService {
 	/**
 	 * 获取指定用户发起的项目列表
 	 * 
-	 * @param localUserId 本地用户标识
+	 * @param userId 本地用户标识
 	 * @return 项目列表，如果没有则返回空的list
 	 */
-	List<ProjectInfo> get(Long localUserId);
+	List<ProjectInfo> get(Long userId);
 	
 }

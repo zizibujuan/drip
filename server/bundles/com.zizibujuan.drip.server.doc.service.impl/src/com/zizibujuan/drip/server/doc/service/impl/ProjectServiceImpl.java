@@ -27,6 +27,7 @@ import com.zizibujuan.drip.server.util.GitConstants;
 
 /**
  * 项目维护服务实现类
+ * 
  * @author jzw
  * @since 0.0.1
  */
@@ -96,8 +97,8 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 	
 	@Override
-	public List<ProjectInfo> get(Long localUserId) {
-		return projectDao.get(localUserId);
+	public List<ProjectInfo> get(Long userId) {
+		return projectDao.get(userId);
 	}
 
 	private void configGit(UserInfo userInfo, Git git) throws IOException {
