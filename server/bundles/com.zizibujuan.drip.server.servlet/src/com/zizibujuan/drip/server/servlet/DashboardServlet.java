@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.ActivityService;
 import com.zizibujuan.drip.server.util.PageInfo;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
@@ -43,7 +44,8 @@ public class DashboardServlet extends BaseServlet {
 		traceRequest(req);
 		String pathInfo = req.getPathInfo();
 		if(pathInfo == null || pathInfo.equals("/")){
-			Long userId = UserSession.getLocalUserId(req);
+			UserInfo userInfo = (UserInfo) UserSession.getUser(req);
+			Long userId = userInfo.getId();
 			PageInfo pageInfo = getPageInfo(req);
 			String type = req.getParameter("type");
 			if(type.equals("following")){

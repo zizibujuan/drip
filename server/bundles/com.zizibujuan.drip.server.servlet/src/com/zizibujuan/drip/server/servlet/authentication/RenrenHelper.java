@@ -47,7 +47,7 @@ public class RenrenHelper {
 	
 	public static void handleOauthReturnAndLogin(HttpServletRequest req,
 			HttpServletResponse resp, String code) throws IOException{
-		
+		/*
 		UserService userService = ServiceHolder.getDefault().getUserService();
 		ApplicationPropertyService applicationPropertyService = ServiceHolder.getDefault().getApplicationPropertyService();
 		UserBindService userBindService = ServiceHolder.getDefault().getUserBindService();
@@ -122,6 +122,7 @@ public class RenrenHelper {
 		logger.info("使用人人帐号登录成功，人人标识是:"+rrUid+",用户名是:"+userInfo.get("displayName")+"。");
 		// 跳转到个人首页
 		resp.sendRedirect("/");
+		*/
 	}
 	
 	/**
@@ -130,6 +131,8 @@ public class RenrenHelper {
 	 * @return drip用户信息
 	 */
 	private static Map<String, Object> renrenUserToDripUser(JSONObject renrenUser) {
+		return null;
+		/*
 		//name,sex,birthday,tinyurl,headurl,mainurl,hometown_location,work_history,university_history
 		int rrUid = Integer.valueOf(renrenUser.get("uid").toString());
 		String name = (String)renrenUser.get("name");
@@ -172,6 +175,7 @@ public class RenrenHelper {
 		renrenUserInfo.put("avatar", avatarList);
 		
 		return renrenUserInfo;
+		*/
 	}
 	
 	/**

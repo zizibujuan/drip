@@ -9,7 +9,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import com.zizibujuan.drip.server.dao.mysql.DaoHolder;
+import com.zizibujuan.dbaccess.mysql.service.DataSourceHolder;
 import com.zizibujuan.drip.server.service.UserRelationService;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.servlet.ServiceHolder;
@@ -25,7 +25,7 @@ public class UserRelationTests {
 
 	private UserService userService = ServiceHolder.getDefault().getUserService();
 	private UserRelationService userRelationService = ServiceHolder.getDefault().getUserRelationService();
-	
+	protected DataSource dataSource = DataSourceHolder.getDefault().getDataSourceService().getDataSource();
 	// 三个本地用户
 	@Test
 	public void testFollow_Three_Local_User(){
@@ -35,7 +35,6 @@ public class UserRelationTests {
 		Long digitalId1 = null;
 		Long digitalId2 = null;
 		Long digitalId3 = null;
-		DataSource dataSource = DaoHolder.getDefault().getDataSourceService().getDataSource();
 		try{
 			Map<String, Object> user1 = new HashMap<String, Object>();
 			user1.put("login", "XXXaaa@aaa.com");
@@ -215,7 +214,6 @@ public class UserRelationTests {
 	private void deleteLoacalUser(Long localUserId, Long digitalId){
 		if(localUserId == null)return;
 		
-		DataSource dataSource = DaoHolder.getDefault().getDataSourceService().getDataSource();
 		// 删除关联信息标识
 		String sql = "DELETE FROM DRIP_USER_BIND WHERE LOCAL_USER_ID=? AND BIND_USER_ID = ?";
 		DatabaseUtil.update(dataSource, sql, localUserId, localUserId);

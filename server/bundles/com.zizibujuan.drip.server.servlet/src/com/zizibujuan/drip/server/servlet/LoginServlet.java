@@ -140,7 +140,8 @@ public class LoginServlet extends BaseServlet {
 			
 			OpenID openIDObj = new OpenID(accessToken);
 			openID = openIDObj.getUserOpenID();
-			UserInfo qzoneUserInfo = new com.qq.connect.javabeans.qzone.UserInfo(accessToken, openID);
+			// 把这些代码移到各自的类中，就不需要写完整的包名
+			com.qq.connect.api.qzone.UserInfo qzoneUserInfo = new com.qq.connect.api.qzone.UserInfo(accessToken, openID);
 			UserInfoBean qzoneUserInfoBean = qzoneUserInfo.getUserInfo();
 			
 			if(qzoneUserInfoBean.getRet() != 0){

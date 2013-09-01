@@ -5,13 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import junit.framework.Assert;
 
 import org.junit.Test;
 
-import com.zizibujuan.drip.server.dao.mysql.DaoHolder;
 import com.zizibujuan.drip.server.service.ActivityService;
 import com.zizibujuan.drip.server.service.ExerciseService;
 import com.zizibujuan.drip.server.servlet.ServiceHolder;
@@ -119,7 +116,6 @@ public class ActivityServiceTests extends AbstractUserTests{
 			
 		}finally{
 			// 删除添加的习题和活动
-			DataSource dataSource = DaoHolder.getDefault().getDataSourceService().getDataSource();
 			
 			String sql = "DELETE FROM DRIP_EXER_OPTION WHERE EXER_ID=?";
 			DatabaseUtil.update(dataSource, sql, exerciseId);

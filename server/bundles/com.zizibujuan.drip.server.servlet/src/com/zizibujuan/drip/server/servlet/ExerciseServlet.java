@@ -8,6 +8,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.core.runtime.IPath;
+
+import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.ExerciseService;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
@@ -28,9 +31,9 @@ public class ExerciseServlet extends BaseServlet{
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		String pathInfo = req.getPathInfo();
-		
-		if(isNullOrSeparator(pathInfo)){
+		traceRequest(req);
+		IPath path = getPath(req);
+		if(path.segmentCount() == 0){
 			List<Map<String,Object>> exercises = exerciseService.get();
 			ResponseUtil.toJSON(req, resp, exercises);
 			return;
@@ -41,14 +44,17 @@ public class ExerciseServlet extends BaseServlet{
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		String pathInfo = req.getPathInfo();
-		if(isNullOrSeparator(pathInfo)){
+		traceRequest(req);
+		IPath path = getPath(req);
+		if(path.segmentCount() == 0){
 			Map<String,Object> exerciseInfo = RequestUtil.fromJsonObject(req);
-			// 如果保存成功，则返回一个成功的状态码
-			exerciseInfo.put("localUserId", UserSession.getLocalUserId(req));
-			// 如果页面没有传过来connectUserId,则从当前session中获取
-			// 但是新增习题必须是登录用户自己操作，所以不会出现从页面传过来connectUserId的情况
-			exerciseInfo.put("connectUserId", UserSession.getConnectUserId(req));
+			UserInfo userInfo = (UserInfo) UserSession.getUser(req);
+//			// 如果保存成功，则返回一个成功的状态码
+//			exerciseInfo.put("localUserId", UserSession.getLocalUserId(req));
+//			// 如果页面没有传过来connectUserId,则从当前session中获取
+//			// 但是新增习题必须是登录用户自己操作，所以不会出现从页面传过来connectUserId的情况
+//			exerciseInfo.put("connectUserId", UserSession.getConnectUserId(req));
+			// FIXME:因为要消除编译错误，暂时将上面的代码注释掉，后面要改为记录本网站用户标识即可。
 			exerciseService.add(exerciseInfo);
 			return;
 		}

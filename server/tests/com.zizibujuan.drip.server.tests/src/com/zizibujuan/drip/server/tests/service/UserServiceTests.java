@@ -12,7 +12,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;
 
-import com.zizibujuan.drip.server.dao.mysql.DaoHolder;
+import com.zizibujuan.dbaccess.mysql.service.DataSourceHolder;
 import com.zizibujuan.drip.server.util.ApplicationPropertyKey;
 import com.zizibujuan.drip.server.util.OAuthConstants;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
@@ -23,12 +23,11 @@ import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
  * @since 0.0.1
  */
 public class UserServiceTests extends AbstractUserTests{
-	
+	protected DataSource dataSource = DataSourceHolder.getDefault().getDataSourceService().getDataSource();
 	@Test
 	public void testImportUser(){
 		try{
 			importUser();
-			DataSource dataSource = DaoHolder.getDefault().getDataSourceService().getDataSource();
 			String sql = "";
 			// 在DRIP_GLOBAL_USER_INFO中新增本地用户信息
 			sql = "SELECT SITE_ID, OPEN_ID, DIGITAL_ID,LOGIN_PWD," +

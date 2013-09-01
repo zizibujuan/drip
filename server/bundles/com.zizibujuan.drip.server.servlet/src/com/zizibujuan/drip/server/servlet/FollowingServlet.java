@@ -8,6 +8,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.core.runtime.IPath;
+
+import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.UserRelationService;
 import com.zizibujuan.drip.server.util.PageInfo;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
@@ -36,13 +39,14 @@ public class FollowingServlet extends BaseServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		traceRequest(req);
-		String pathInfo = req.getPathInfo();
-		if(pathInfo != null && !pathInfo.equals("/")){
-			String[] splitPath = pathInfo.split("/");
-			Long digitalId = Long.valueOf(splitPath[1]);
-			Long loginDigitalId = UserSession.getDigitalId(req);
+		IPath path = getPath(req);
+		if(path.segmentCount() == 1){
+			Long followUserId = Long.valueOf(path.segment(0));
+			// TODO:改为userId
+			UserInfo userInfo = (UserInfo) UserSession.getUser(req);
+			Long curUserId = userInfo.getId();
 			PageInfo pageInfo = getPageInfo(req);
-			List<Map<String, Object>> result = userRelationService.getFollowing(pageInfo,loginDigitalId, digitalId);
+			List<Map<String, Object>> result = userRelationService.getFollowing(pageInfo, curUserId, followUserId);
 			ResponseUtil.toJSON(req, resp, pageInfo, result);
 			return;
 		}

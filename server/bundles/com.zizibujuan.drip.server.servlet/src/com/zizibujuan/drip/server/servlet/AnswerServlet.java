@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.AnswerService;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
@@ -37,7 +38,8 @@ public class AnswerServlet extends BaseServlet {
 			// TODO:从query parameters中获取参数
 			String sExerId = req.getParameter("exerId");
 			Long exerciseId = Long.valueOf(sExerId);
-			Long userId = UserSession.getLocalUserId(req);
+			UserInfo userInfo = (UserInfo) UserSession.getUser(req);
+			Long userId = userInfo.getId();
 			Map<String,Object> answer = answerService.get(userId, exerciseId);
 			ResponseUtil.toJSON(req, resp, answer);
 			return;
@@ -53,8 +55,11 @@ public class AnswerServlet extends BaseServlet {
 		String pathInfo = req.getPathInfo();
 		if(pathInfo == null || pathInfo.equals("/")){
 			Map<String,Object> data = RequestUtil.fromJsonObject(req);
-			Long localUserId = UserSession.getLocalUserId(req);
-			Long mapUserId = UserSession.getConnectUserId(req);
+			// FIXME:修改这段逻辑，不再使用映射标识
+			UserInfo userInfo = (UserInfo) UserSession.getUser(req);
+			Long userId = userInfo.getId();
+			Long localUserId = userId;
+			Long mapUserId = userId;
 			answerService.save(localUserId,mapUserId, data);
 			return;
 		}
@@ -69,7 +74,8 @@ public class AnswerServlet extends BaseServlet {
 		if(pathInfo != null && !pathInfo.equals("/")){
 			Long answerId = Long.valueOf(pathInfo.split("/")[1]);
 			Map<String,Object> data = RequestUtil.fromJsonObject(req);
-			Long userId = UserSession.getLocalUserId(req);
+			UserInfo userInfo = (UserInfo) UserSession.getUser(req);
+			Long userId = userInfo.getId();
 			answerService.update(answerId,userId, data);
 			return;
 		}

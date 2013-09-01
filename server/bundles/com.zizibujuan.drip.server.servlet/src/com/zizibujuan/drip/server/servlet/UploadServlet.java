@@ -18,6 +18,7 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
+import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
 import com.zizibujuan.drip.server.util.servlet.UserSession;
@@ -79,7 +80,9 @@ public class UploadServlet extends BaseServlet {
 					// 根目录 TODO:改为可配置
 					String dataFilePath = "/home/jzw/drip/";
 					// 放置习题配图 FIXME：是否需要在路径中再加一层，mapUserId
-					String exercisePath = "exercise/users/"+UserSession.getLocalUserId(req)+"/";
+					UserInfo userInfo = (UserInfo) UserSession.getUser(req);
+					Long curUserId = userInfo.getId();
+					String exercisePath = "exercise/users/" + curUserId + "/";
 					// TODO：用profile放置用户上传的头像
 					// FIXME：是否使用用户标识分组图像，如果使用的话，便于管理；但是不利于底层共享。
 					// 因为在检索图片时，还需要在路径中增加上传用户的信息。
@@ -113,7 +116,7 @@ public class UploadServlet extends BaseServlet {
 							map.put("type", ext != null?ext.substring(1).toUpperCase():null);
 							map.put("size", item.getSize());
 							map.put("fieldName", item.getFieldName());
-							map.put("url", "/userImages/exercise/"+UserSession.getLocalUserId(req)+"/"+newFileName);
+							map.put("url", "/userImages/exercise/" + curUserId + "/"+newFileName);
 							map.put("fileId", newFileName);
 							result.add(map);
 							File file = new File(dir, newFileName);

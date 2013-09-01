@@ -46,8 +46,8 @@ public class LogoutServlet extends BaseServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		traceRequest(req);
-		String pathInfo = req.getPathInfo();
-		if(isNullOrSeparator(pathInfo)){
+		IPath path = getPath(req);
+		if(path.segmentCount() == 0){
 			req.getSession().invalidate();
 			resp.sendRedirect("/");
 			return;

@@ -9,7 +9,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import com.zizibujuan.drip.server.dao.mysql.DaoHolder;
+import com.zizibujuan.dbaccess.mysql.service.DataSourceHolder;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.servlet.ServiceHolder;
 import com.zizibujuan.drip.server.servlet.authentication.Oauth2Helper;
@@ -21,9 +21,10 @@ import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
  * @author jzw
  * @since 0.0.1
  */
-public abstract class AbstractUserTests {
+public abstract class AbstractUserTests{
 
 	protected UserService userService = ServiceHolder.getDefault().getUserService();
+	protected DataSource dataSource = DataSourceHolder.getDefault().getDataSourceService().getDataSource();
 	
 	protected Long localGlobalUserId = null;
 	protected Long connectGlobalUserId = null;
@@ -74,7 +75,6 @@ public abstract class AbstractUserTests {
 	 * @param userId 第三方网站的用户标识
 	 */
 	protected void deleteTestUser(){
-		DataSource dataSource = DaoHolder.getDefault().getDataSourceService().getDataSource();
 		
 		// 删除关联信息标识
 		String sql = "DELETE FROM DRIP_USER_BIND WHERE LOCAL_USER_ID=? AND BIND_USER_ID = ?";

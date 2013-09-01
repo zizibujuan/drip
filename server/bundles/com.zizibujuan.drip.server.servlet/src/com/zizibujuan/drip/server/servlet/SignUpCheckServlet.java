@@ -47,7 +47,7 @@ public class SignUpCheckServlet extends BaseServlet {
 					return;
 				}
 				
-				if(userService.emailIsExist(email)){
+				if(userService.emailIsUsed(email)){
 					Map<String,Object> map = new HashMap<String, Object>();
 					map.put("msg", "该邮箱已被使用");
 					ResponseUtil.toJSON(req, resp, map, HttpServletResponse.SC_FORBIDDEN);

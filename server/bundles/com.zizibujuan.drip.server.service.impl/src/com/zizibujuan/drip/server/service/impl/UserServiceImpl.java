@@ -204,7 +204,7 @@ public class UserServiceImpl implements UserService {
 		Long connectUserId = Long.valueOf(mapUserInfo.get("connectUserId").toString());
 		Map<String, Object>userInfo = connectUserDao.getPublicInfo(connectUserId);
 		userInfo.put("localUserId", localUserId);
-		Map<String,Object> avatarInfo = userAvatarDao.get(connectUserId);
+		Map<String,String> avatarInfo = userAvatarDao.get(connectUserId);
 		userInfo.putAll(avatarInfo);
 		Map<String,Object> statistics = localUserStatisticsDao.getUserStatistics(localUserId);
 		userInfo.putAll(statistics);

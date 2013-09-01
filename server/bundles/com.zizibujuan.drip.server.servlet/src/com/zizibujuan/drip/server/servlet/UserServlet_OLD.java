@@ -13,7 +13,6 @@ import org.apache.commons.validator.routines.RegexValidator;
 
 import com.zizibujuan.drip.server.service.UserRelationService;
 import com.zizibujuan.drip.server.service.UserService;
-import com.zizibujuan.drip.server.servlet.command.LoginCommand;
 import com.zizibujuan.drip.server.util.OAuthConstants;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
@@ -51,22 +50,22 @@ public class UserServlet_OLD extends BaseServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		traceRequest(req);
-		String pathInfo = req.getPathInfo();
-		if(isNullOrSeparator(pathInfo)){
-			Map<String,Object> userInfo = RequestUtil.fromJsonObject(req);
-			// 先做服务器端检验
-			if(isValid(req, resp, userInfo)){
-				// 通过校验之后再保存
-				userInfo.put("siteId", OAuthConstants.ZIZIBUJUAN);
-				userService.add(userInfo);
-				// 登录
-				LoginCommand.handleCommand(req, resp, userService, userInfo);
-			}else{
-				// 什么也不做
-			}
-			return;
-		}
+//		traceRequest(req);
+//		String pathInfo = req.getPathInfo();
+//		if(isNullOrSeparator(pathInfo)){
+//			Map<String,Object> userInfo = RequestUtil.fromJsonObject(req);
+//			// 先做服务器端检验
+//			if(isValid(req, resp, userInfo)){
+//				// 通过校验之后再保存
+//				userInfo.put("siteId", OAuthConstants.ZIZIBUJUAN);
+//				userService.add(userInfo);
+//				// 登录
+//				LoginCommand.handleCommand(req, resp, userService, userInfo);
+//			}else{
+//				// 什么也不做
+//			}
+//			return;
+//		}
 		super.doPost(req, resp);
 	}
 
@@ -128,7 +127,7 @@ public class UserServlet_OLD extends BaseServlet {
 				login.put("missingMessage", "请输入正确的邮箱");
 				login.put("promptMessage", "请输入正确的邮箱");
 				login.put("invalidMessage", "请输入正确的邮箱");
-			}else if(userService.emailIsExist(email)){
+			}else if(userService.emailIsUsed(email)){
 				login.put("missingMessage", "请输入正确的邮箱");
 				login.put("promptMessage", "该邮箱已被使用");
 				login.put("invalidMessage", "该邮箱已被使用");
@@ -239,40 +238,40 @@ public class UserServlet_OLD extends BaseServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		traceRequest(req);
-		String pathInfo = req.getPathInfo();
-		Map<String,Object> userInfo = null;
-		if(pathInfo == null || pathInfo.equals("/")){
-			String type = req.getParameter("type");
-			if(type.endsWith("statistics")){
-				// 获取用户信息，其中包含该用户的所有统计信息
-				Long localUserId = UserSession.getLocalUserId(req);
-				userInfo = userService.getLocalUserStatistics(localUserId);
-			}else{
-				userInfo = UserSession.getUser(req);
-			}
-			ResponseUtil.toJSON(req, resp, userInfo);
-			return;
-		}else if(pathInfo != null && !pathInfo.equals("/")){
-			String type = req.getParameter("type");
-			Long digitalId = Long.valueOf(pathInfo.split("/")[1]);
-			if(type != null && type.equals("simple")){
-				userInfo = userService.getSimpleInfo(digitalId);
-			}else{
-				// 根据数字帐号获取使用用户信息的用户帐号
-				userInfo = userService.getSimpleInfo(digitalId);
-				Long watchedLocalUserId = Long.valueOf(userInfo.get("localUserId").toString());
-				// 获取登录用户与该用户之间的关系,这里还缺少参数。因为一个帐号绑定多个网站帐号，或者只需要本帐号与用户的任一帐号关联即可。
-				// 以下代码只有获取关联关系时才用。
-				Long userRelationId = userRelationService.getRelationId(UserSession.getLocalUserId(req),watchedLocalUserId);
-				if(userRelationId != null){
-					userInfo.put("userRelationId", userRelationId);
-				}
-			}
-			
-			ResponseUtil.toJSON(req, resp, userInfo);
-			return;
-		}
+//		traceRequest(req);
+//		String pathInfo = req.getPathInfo();
+//		Map<String,Object> userInfo = null;
+//		if(pathInfo == null || pathInfo.equals("/")){
+//			String type = req.getParameter("type");
+//			if(type.endsWith("statistics")){
+//				// 获取用户信息，其中包含该用户的所有统计信息
+//				Long localUserId = UserSession.getLocalUserId(req);
+//				userInfo = userService.getLocalUserStatistics(localUserId);
+//			}else{
+//				userInfo = UserSession.getUser(req);
+//			}
+//			ResponseUtil.toJSON(req, resp, userInfo);
+//			return;
+//		}else if(pathInfo != null && !pathInfo.equals("/")){
+//			String type = req.getParameter("type");
+//			Long digitalId = Long.valueOf(pathInfo.split("/")[1]);
+//			if(type != null && type.equals("simple")){
+//				userInfo = userService.getSimpleInfo(digitalId);
+//			}else{
+//				// 根据数字帐号获取使用用户信息的用户帐号
+//				userInfo = userService.getSimpleInfo(digitalId);
+//				Long watchedLocalUserId = Long.valueOf(userInfo.get("localUserId").toString());
+//				// 获取登录用户与该用户之间的关系,这里还缺少参数。因为一个帐号绑定多个网站帐号，或者只需要本帐号与用户的任一帐号关联即可。
+//				// 以下代码只有获取关联关系时才用。
+//				Long userRelationId = userRelationService.getRelationId(UserSession.getLocalUserId(req),watchedLocalUserId);
+//				if(userRelationId != null){
+//					userInfo.put("userRelationId", userRelationId);
+//				}
+//			}
+//			
+//			ResponseUtil.toJSON(req, resp, userInfo);
+//			return;
+//		}
 		super.doGet(req, resp);
 	}
 	

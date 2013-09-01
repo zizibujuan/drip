@@ -7,6 +7,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.core.runtime.IPath;
+
+import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.UserRelationService;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
@@ -32,10 +35,11 @@ public class FollowServlet extends BaseServlet {
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		traceRequest(req);
-		String pathInfo = req.getPathInfo();
-		if(pathInfo != null && !pathInfo.equals("/")){
-			Long followUserId = Long.valueOf(pathInfo.split("/")[1]);
-			Long userId = UserSession.getConnectUserId(req);
+		IPath path = getPath(req);
+		if(path.segmentCount() == 1){
+			Long followUserId = Long.valueOf(path.segment(0));
+			UserInfo userInfo = (UserInfo) UserSession.getUser(req);
+			Long userId = userInfo.getId();
 			String op = req.getParameter("op");
 			if(op.equals("on")){
 				// 加关注
