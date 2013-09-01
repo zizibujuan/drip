@@ -37,8 +37,8 @@ define([ "dojo/_base/declare",
 					label: this.projectLabel.get("value"),
 					description: this.peojectDesc.get("value")
 				};
-				xhr.post("/projects/",{data:JSON.stringify(projectInfo)}).then(function(data){
-					window.location.href = "/"; // TODO：跳转到项目列表页面
+				xhr.post("/projects/",{data:JSON.stringify(projectInfo), handleAs:"json"}).then(function(data){
+					window.location.href = data.createUserName + "/" + data.name;
 				}, function(error){
 					// TODO:如果保存失败，则给出提示
 					console.error("创建项目失败", error);

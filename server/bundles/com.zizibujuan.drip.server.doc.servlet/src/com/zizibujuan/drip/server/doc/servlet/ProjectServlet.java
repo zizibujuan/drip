@@ -85,7 +85,8 @@ public class ProjectServlet extends BaseServlet {
 			
 			// 创建成功后，跳转到项目首页
 			projectInfo.setCreateUserId(userId);
-			Long projectId = projectService.create(userInfo.getLoginName(), projectInfo);
+			projectInfo.setCreateUserName(userInfo.getLoginName());
+			Long projectId = projectService.create(projectInfo);
 			projectInfo.setId(projectId);
 			ResponseUtil.toJSON(req, resp, projectInfo);
 			return;

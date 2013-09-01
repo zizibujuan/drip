@@ -14,11 +14,10 @@ public interface ProjectService {
 	/**
 	 * 新建一个新的项目
 	 * 
-	 * @param loginName 用户登录名
 	 * @param projectInfo 项目信息
 	 * @return 新项目的标识
 	 */
-	Long create(String loginName, ProjectInfo projectInfo);
+	Long create(ProjectInfo projectInfo);
 
 	/**
 	 * 判断某用户是否已经使用了指定的项目名称。一个用户不能创建两个名称相同的项目。

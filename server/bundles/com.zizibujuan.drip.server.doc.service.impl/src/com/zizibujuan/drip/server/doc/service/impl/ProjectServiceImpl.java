@@ -43,13 +43,13 @@ public class ProjectServiceImpl implements ProjectService {
 	 * 然后导出这个仓库
 	 */
 	@Override
-	public Long create(String loginName, ProjectInfo projectInfo) {
+	public Long create(ProjectInfo projectInfo) {
 		// 在后台为项目生成一个标识，标识名称不可变，作为仓库的名称，这样虽然没有生成一个数字做仓库名称灵活，但是迁移起来比较方便。
 		// 将仓库放在以用户名作为名称的目录下，所以前提是要确定一个稳定的昵称，如果发生了变化，就要整个彻底改变.
 		// 路径: 用户名/仓库名 或 仓库名，然后在数据库上将用户名和仓库名关联起来，这样更灵活。这样当有将仓库转移给别人时，操作起来更方便。
 		
 		// TODO: 抽象用户接口
-		UserInfo userInfo = userDao.getByLoginName(loginName);
+		UserInfo userInfo = userDao.getByLoginName(projectInfo.getCreateUserName());
 		// 首先确定放git仓库的根目录。
 		String root = applicationPropertyDao.getForString(GitConstants.KEY_GIT_ROOT);
 		InitCommand command = new InitCommand();

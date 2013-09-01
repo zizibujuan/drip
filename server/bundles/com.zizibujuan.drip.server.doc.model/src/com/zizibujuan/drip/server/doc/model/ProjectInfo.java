@@ -20,7 +20,7 @@ public class ProjectInfo {
 	
 	private Long createUserId;
 	
-	private String createUserName;
+	private String createUserName; // 项目创建者的登录名
 	
 	private Date createTime;
 
@@ -137,6 +137,4 @@ public class ProjectInfo {
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
-	
-	
 }
