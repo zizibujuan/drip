@@ -15,6 +15,9 @@ define([ "dojo/parser",
         		 on,
         		 Register,
         		 Login){
+	// 如果在渲染完Login/Register部件之后让body可见，
+	// 则第一个input无法获取焦点。
+	domStyle.set(win.body(), "visibility", "visible");
 	
 	var user = cookie("zzbj_user");
 	var loggedIn = cookie("loggedIn");
@@ -27,9 +30,9 @@ define([ "dojo/parser",
 	}else{// 说明已注册过,显示登录部件
 		showRegister = false;
 	}
+	
 	toggle(showRegister);
 	
-	domStyle.set(win.body(), "visibility", "visible");
 	on(link, "click", function(e){
 		showRegister = !showRegister;
 		toggle(showRegister);
@@ -47,6 +50,7 @@ define([ "dojo/parser",
 			link.innerHTML = "我要注册一个新帐号";
 		}
 		widget.placeAt("authContainer");
+		widget.startup();
 	}
 		
 });

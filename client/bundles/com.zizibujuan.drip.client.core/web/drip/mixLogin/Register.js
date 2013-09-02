@@ -111,6 +111,11 @@ define(["dojo/_base/declare",
 			}else{
 				console.error(error);
 			}
+		},
+		
+		startup: function(){
+			this.inherited(arguments);
+			setTimeout(this.email.focus(),0);
 		}
 		
 	});
