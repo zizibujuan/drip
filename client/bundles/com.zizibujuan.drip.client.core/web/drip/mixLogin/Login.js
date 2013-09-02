@@ -2,6 +2,7 @@ define(["dojo/_base/declare",
         "dojo/_base/lang",
         "dojo/request/xhr",
         "dojo/on",
+        "dojo/keys",
         "dojo/string",
         "dojo/dom-form",
         "dojo/dom-construct",
@@ -12,6 +13,7 @@ define(["dojo/_base/declare",
         		lang,
         		xhr,
         		on,
+        		keys,
         		string,
         		domForm,
         		domConstruct,
@@ -27,8 +29,24 @@ define(["dojo/_base/declare",
 		
 		postCreate: function(){
 			this.inherited(arguments);
-			// TODO:敲回车激活按钮
+
 			on(this.btnLogin, "click", lang.hitch(this, this._login));
+			
+			on(this.login, "keyup", lang.hitch(this, function(e){
+				if(event.keyCode == keys.ENTER){
+					this._login();
+				}
+			}));
+			on(this.password, "keyup", lang.hitch(this, function(e){
+				if(event.keyCode == keys.ENTER){
+					this._login();
+				}
+			}));
+			on(this.btnLogin, "keydown", lang.hitch(this, function(e){
+				if(event.keyCode == keys.ENTER){
+					this._login();
+				}
+			}));
 		},
 		
 		_login: function(){

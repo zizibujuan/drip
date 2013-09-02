@@ -2,6 +2,7 @@ define(["dojo/_base/declare",
         "dojo/_base/lang",
         "dojo/request/xhr",
         "dojo/on",
+        "dojo/keys",
         "dojo/string",
         "dojo/dom-form",
         "dojo/dom-construct",
@@ -12,6 +13,7 @@ define(["dojo/_base/declare",
         		lang,
         		xhr,
         		on,
+        		keys,
         		string,
         		domForm,
         		domConstruct,
@@ -29,6 +31,27 @@ define(["dojo/_base/declare",
 			this.inherited(arguments);
 			
 			on(this.btnSignup, "click", lang.hitch(this, this._signup));
+			
+			on(this.email, "keyup", lang.hitch(this, function(e){
+				if(event.keyCode == keys.ENTER){
+					this._signup();
+				}
+			}));
+			on(this.password, "keyup", lang.hitch(this, function(e){
+				if(event.keyCode == keys.ENTER){
+					this._signup();
+				}
+			}));
+			on(this.loginName, "keyup", lang.hitch(this, function(e){
+				if(event.keyCode == keys.ENTER){
+					this._signup();
+				}
+			}));
+			on(this.btnSignup, "keydown", lang.hitch(this, function(e){
+				if(event.keyCode == keys.ENTER){
+					this._signup();
+				}
+			}));
 		},
 		
 		_signup: function(){
