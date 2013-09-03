@@ -659,3 +659,108 @@ margin-left: 25px;
 .form{
 	margin-top: 15px;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.zzbj_signup{
+	margin: 0 auto; width:245px;position: relative;top: 50%; margin-top: -200px
+}
+
+.logo{
+	font-size: 35px;
+	letter-spacing:0.5em;
+	font-family: 楷体;
+	line-height: 1.2;
+	position: relative;
+	left: 50%;
+	margin: 8px 0 20px -245px;
+	width: 500px;
+	white-space: nowrap;
+	color: #00a300;
+	text-align: center;
+	text-shadow: 0 3px 3px rgba(0,0,0,0.8);
+	-webkit-font-smoothing: antialiased;
+	font-smoothing: antialiased;
+}
+
+.subheading{
+	line-height: 1.2;
+	position: relative;
+	left: 50%;
+	margin: 8px 0 18px -250px;
+	width: 500px;
+	font-size: 20px;
+	white-space: nowrap;
+	color: #111;
+	text-align: center;
+	text-shadow: 0 2px 2px rgba(0,0,0,0.8);
+	-webkit-font-smoothing: antialiased;
+	font-smoothing: antialiased;
+	
+}
+
+
+
+.login_link{
+	padding-top: 15px;
+	font-size: 12px;
+	text-align: center;
+	opacity: .87;
+}
+
+.login_link a{
+	color: #4183c4;
+	font-weight: bold;
+}
+
+.menu_link{
+	padding-top: 15px;
+	font-size: 18px;
+}
+.menu_link a{
+	padding-left: 18px;
+	padding-right: 18px;
+	color:#4183c4;
+	font-weight: bold;
+}
+
+.signup_form_errors{
+	list-style-type: none;
+	background: rgba(0,0,0,0.1);
+	border-radius: 3px;
+	margin: 10px 0 0 0;
+}
+
+.error{
+	padding: 5px 15px;
+	font-size: 13px;
+	line-height: 16px;
+	font-weight: bold;
+	color: red;
+}

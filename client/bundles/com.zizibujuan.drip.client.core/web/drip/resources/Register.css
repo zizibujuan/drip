@@ -1,3 +1,29 @@
 .form_row{
-	
+	padding-bottom: 5px;
+	margin-bottom: 15px;
+	border-bottom: dashed 1px #999;
+}
+
+.form_row input{
+	display: inline-block;
+	width: 100%;
+	padding: 4px;
+	margin: 0;
+	margin-top: 5px;
+	outline: none;
+	background-color: white;
+	border: none;
+	border-radius: 3px;
+	font-size: 14px;
+}
+
+.signup_form_submit{
+	width: 100%;
+	margin: 15px 0 0 0;
+	height: 39px;
+	line-height: 34px;
+	font-weight: bold;
+	font-size: 16px;
+	cursor: pointer;
+	letter-spacing: 1em;
 }

@@ -91,7 +91,7 @@ define(["dojo/_base/declare",
 			var errors = this.errors;
 			var len = errors.length;
 			for(var i = 0; i < len; i++){
-				domConstruct.create("li", {innerHTML: errors[i]}, errorContainer);
+				domConstruct.create("li", {innerHTML: errors[i], "class": "error"}, errorContainer);
 			}
 		},
 		
