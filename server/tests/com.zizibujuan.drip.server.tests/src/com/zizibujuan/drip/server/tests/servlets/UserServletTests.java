@@ -2,6 +2,7 @@ package com.zizibujuan.drip.server.tests.servlets;
 
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
@@ -292,6 +293,28 @@ public class UserServletTests extends AbstractServletTests{
 			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_INFO  WHERE EMAIL=?", email);
 		}
 		
+	}
+	
+	// 防止用户自己编写注册程序时，自动激活用户
+	@Test
+	public void test_register_with_active_param_not_active() throws IOException{
+		String email = "a@a.com";
+		try{
+			params.put("email", email);
+			params.put("password", "aaa111,,,");
+			params.put("loginName", "user1");
+			params.put("active", Boolean.TRUE.toString());
+			
+			initPostServlet("users");
+			assertEquals(HttpServletResponse.SC_OK, response.getResponseCode());
+			
+			initGetServlet("users/user1");
+			UserInfo userInfo = getResponseData(UserInfo.class);
+			assertFalse(userInfo.isActive());
+		}finally{
+			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_ATTRIBUTES");
+			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_INFO  WHERE EMAIL=?", email);
+		}
 	}
 
 	@Test
