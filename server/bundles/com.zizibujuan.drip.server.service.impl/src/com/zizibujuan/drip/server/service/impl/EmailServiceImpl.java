@@ -42,18 +42,21 @@ public class EmailServiceImpl implements EmailService {
 		String hostName = emailProps.getProperty("email.host.name");
 		int smtpPort = Integer.valueOf(emailProps.getProperty("email.host.port")).intValue();
 		String fromEmail = emailProps.getProperty("email.support.email");
-		String supportName = emailProps.getProperty("email.support.userName");
-		String password = emailProps.getProperty("email.support.password");
+		String displayUserName = emailProps.getProperty("email.support.displayName");
+		String userName = emailProps.getProperty("email.support.auth.userName");
+		String password = emailProps.getProperty("email.support.auth.password");
 		String subject = emailProps.getProperty("email.support.subject.activeUser");
 		
 		try {
 			email.setHostName(hostName);
 			email.setSmtpPort(smtpPort);
-			email.setAuthenticator(new DefaultAuthenticator(fromEmail, password));
-			email.setSSLOnConnect(true);
+			if(userName != null && !userName.trim().isEmpty()){
+				email.setAuthenticator(new DefaultAuthenticator(fromEmail, password));
+				email.setSSLOnConnect(true);
+			}
 			
 			email.addTo(toEmail, toName);
-			email.setFrom(fromEmail, supportName);
+			email.setFrom(fromEmail, displayUserName);
 			email.setSubject(subject);
 			
 			email.buildMimeMessage();
