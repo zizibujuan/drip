@@ -61,7 +61,7 @@ public class BlobServlet extends BaseServlet {
 				FileInfo fileDetail = new FileInfo();
 				fileDetail.setContent(writer.toString());
 				fileDetail.setName(fileInfo.getName());
-				fileDetail.setSize(fileInfo.getLength());
+				fileDetail.setLongSize(fileInfo.getLength());
 				
 				ResponseUtil.toJSON(req, resp, fileDetail);
 			} catch (CoreException e1) {

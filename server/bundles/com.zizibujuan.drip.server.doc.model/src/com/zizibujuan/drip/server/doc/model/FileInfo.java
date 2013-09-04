@@ -16,7 +16,7 @@ public class FileInfo {
 	
 	private String content;
 	
-	private long size;
+	private String size; // 后面带单位
 
 	/**
 	 * 获取文件标识
@@ -87,23 +87,27 @@ public class FileInfo {
 	 * @return
 	 */
 	public String getSize() {
-		if(size < 1024){
-			return size + "字节";
-		}else if(size < 1024 * 1024){
-			return size/1024 + "KB";
-		}else if(size < 1024 * 1024 * 1024){
-			return size/(1024*1024) + "MB";
-		}else{
-			return size/(1024*1024*1024) +"GB";
-		}
+		return this.size;
 	}
 
+	public void setSize(String size) {
+		this.size = size;
+	}
+	
 	/**
 	 * 设置文件大小
 	 * @param size 文件大小
 	 */
-	public void setSize(long size) {
-		this.size = size;
+	public void setLongSize(long size) {
+		if(size < 1024){
+			this.size = size + "字节";
+		}else if(size < 1024 * 1024){
+			this.size = size/1024 + "KB";
+		}else if(size < 1024 * 1024 * 1024){
+			this.size = size/(1024*1024) + "MB";
+		}else{
+			this.size = size/(1024*1024*1024) +"GB";
+		}
 	}
 
 	

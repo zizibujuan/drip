@@ -47,6 +47,7 @@ public class AbstractServletTests {
 	protected WebResponse response;
 	protected Map<String, String> params;
 	protected Map<String, String> headers;
+	protected Map<String, Object> postData;
 	
 	@BeforeClass
 	public static void setUpClass(){
@@ -65,6 +66,7 @@ public class AbstractServletTests {
 		headers = new HashMap<String, String>();
 		// 所有测试的都是ajax请求
 		headers.put("X-Requested-With", "XMLHttpRequest");
+		postData = new HashMap<String, Object>();
 	}
 	
 	@After
@@ -74,6 +76,7 @@ public class AbstractServletTests {
 		response = null;
 		params = null;
 		headers = null;
+		postData = null;
 	}
 	
 	protected void initGetServlet(String urlString){
@@ -82,7 +85,12 @@ public class AbstractServletTests {
 	}
 	
 	protected void initPostServlet(String urlString){
-		String json = JsonUtil.toJson(params);
+		String json = null;
+		if(postData.isEmpty()){
+			json = JsonUtil.toJson(params);
+		}else{
+			json = JsonUtil.toJson(postData);
+		}
 		webConversation.setExceptionsThrownOnErrorStatus(false);
 		request = new PostMethodWebRequest(SERVER_LOCATION + urlString, IOUtils.toInputStream(json), "text/plain");
 		params = null;
@@ -90,7 +98,12 @@ public class AbstractServletTests {
 	}
 	
 	protected void initPutServlet(String urlString){
-		String json = JsonUtil.toJson(params);
+		String json = null;
+		if(postData.isEmpty()){
+			json = JsonUtil.toJson(params);
+		}else{
+			json = JsonUtil.toJson(postData);
+		}
 		webConversation.setExceptionsThrownOnErrorStatus(false);
 		request = new PutMethodWebRequest(SERVER_LOCATION + urlString, IOUtils.toInputStream(json), "text/plain");
 		params = null;

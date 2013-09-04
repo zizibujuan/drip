@@ -4,6 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.zizibujuan.drip.server.tests.doc.servlets.FileServletTests;
 import com.zizibujuan.drip.server.tests.doc.servlets.ProjectServletTests;
 import com.zizibujuan.drip.server.tests.servlets.EmailConfirmServletTests;
 import com.zizibujuan.drip.server.tests.servlets.FollowServletTests;
@@ -17,11 +18,12 @@ import com.zizibujuan.drip.server.tests.servlets.UserServletTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-	UserServletTests.class//,
+//	UserServletTests.class,
 //	LoginServletTests.class,
 //	FollowServletTests.class,
 //	EmailConfirmServletTests.class,
-//	ProjectServletTests.class
+//	ProjectServletTests.class,
+	FileServletTests.class
 })
 public class AllServletTests {
 
