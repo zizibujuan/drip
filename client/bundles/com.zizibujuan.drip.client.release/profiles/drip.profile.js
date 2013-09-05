@@ -87,8 +87,8 @@ var profile = {
 	    "mathEditor",
 	    "drip",
 	    "doc",
-	    "marked",
-	    "ace"
+	    "marked"/*,
+	    "ace"*/
 	],
 	
 	layers:{

@@ -4,13 +4,13 @@ define([ "dojo/_base/declare",
          "dojo/json",
          "dojo/request/xhr",
          "dojo/dom-construct",
+         "dojo/dom-style",
          "dijit/_WidgetBase",
          "dijit/_TemplatedMixin",
          "dijit/_WidgetsInTemplateMixin",
          "dojo/text!doc/templates/FileForm.html",
          "dijit/form/ValidationTextBox",
-         "dijit/form/SimpleTextarea",
-         "drip/widget/form/AceEditor"
+         "dijit/form/SimpleTextarea"
          ], function(
         		 declare,
         		 lang,
@@ -18,6 +18,7 @@ define([ "dojo/_base/declare",
         		 JSON,
         		 xhr,
         		 domConstruct,
+        		 domStyle,
         		 _WidgetBase,
         		 _TemplatedMixin,
         		 _WidgetsInTemplateMixin,
@@ -37,11 +38,16 @@ define([ "dojo/_base/declare",
 			this.pathInfo = this.pathName.replace("/files/", "").replace("/new", "");
 			var projectPath = this.pathName.replace("files", "projects").replace("/new", "");
 			
+			domStyle.set(this.content, {width: "100%", height: "400px"});
+			// 因为AceEditor在ace压缩后，_WidgetsInTemplateMixin一直报有模块没有预加载，
+			// 所以这里直接使用ace
+			var editor = this.editor = ace.edit(this.content);
+			
 			// 绑定事件
 			this.own(on(this.submitFile, "click", lang.hitch(this,function(e){
 				var fileInfo = {
 					name: this.fileName.get("value"),
-					content: this.content.get("value")
+					content: this.editor.getValue()
 				};
 				var commitInfo = {
 					summary: this.commitSummary.get("value")/*,

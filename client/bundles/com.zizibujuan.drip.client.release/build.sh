@@ -44,10 +44,12 @@ rm -rf "$SRCDIR/drip"
 rm -rf "$SRCDIR/doc"
 rm -rf "$SRCDIR/static"
 
+
 cp -r $DEVDIR/com.zizibujuan.drip.client.editor/static/mathEditor $SRCDIR
 cp -r $DEVDIR/com.zizibujuan.drip.client.core/web/drip $SRCDIR
 cp -r $DEVDIR/com.zizibujuan.drip.client.doc/web/doc $SRCDIR
 cp -r $DEVDIR/com.zizibujuan.drip.client.marked/static/marked $SRCDIR
+
 
 echo " Done"
 
@@ -66,6 +68,7 @@ rm -rf "$DISTDIR/drip"
 rm -rf "$DISTDIR/mathEditor"
 rm -rf "$DISTDIR/doc"
 rm -rf "$DISTDIR/marked"
+
 
 echo " Done"
 

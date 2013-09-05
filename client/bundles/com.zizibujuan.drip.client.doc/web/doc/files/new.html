@@ -11,6 +11,7 @@
 		parseOnLoad:false,
 		isDebug:true" 
 	src="/dojo/dojo.js"></script>
+<script src="/ace/ace.js" charset="utf-8"></script>
 <script type="text/javascript">
 
 	var pathName = window.location.pathname;
@@ -18,9 +19,11 @@
 	          "dojo/domReady!"], function(
 	        		  FileForm){
 		
-		new FileForm({
+		var fileForm = new FileForm({
 			pathName: pathName
 		}, "files");
+		
+		fileForm.startup();
 		
 	});
 	
