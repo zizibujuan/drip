@@ -20,20 +20,36 @@ define(["dojo/_base/declare",
 		postCreate: function(){
 			this.inherited(arguments);
 			xhr.get(this.pathName,{handleAs: "json"}).then(lang.hitch(this, function(fileInfo){
-				debugger;
-				marked.setOptions({
-					gfm: true,
-					highlight: function (code, lang) {
-					    debugger;
-						return hljs.highlight(lang, code).value;
-					},
-					langPrefix: 'lang-'
-				});
-				this.blob.innerHTML = marked(fileInfo.content);
-				
 				this.icon.className = "icon-file-text";
 				this.mode.innerHTML = "文档";
 				this.size.innerHTML = fileInfo.size;
+				
+				marked.setOptions({
+					gfm: true,
+					highlight: function (code, lang) {
+					    try{
+					    	if(lang == "html"){lang = "xml";}
+					 
+					    	return hljs.highlight(lang, code).value;
+					    }catch(e){
+					    	console.error("高亮显示解析失败");
+					    	return code;
+					    }
+						
+					},
+					langPrefix: 'lang-'
+				});
+				try{
+					this.blob.innerHTML = marked(fileInfo.content);
+				}catch(e){
+					// 如果解析失败，则显示原文
+					// 逻辑还是不够完善，尽量不允许解析错误，先要校验文件的有效性
+					this.blob.innerHTML = fileInfo.content;
+					console.error("marked解析失败");
+				}
+				
+				
+				
 				
 			}));
 		}
