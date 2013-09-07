@@ -5,7 +5,16 @@
 <title></title>
 <link type="text/css" rel="stylesheet" href="/drip/resources/app.css" />
 <link type="text/css" rel="stylesheet" href="/drip/resources/font-awesome/css/font-awesome.css" />
+<link type="text/css" rel="stylesheet" href="/doc/resources/typo.css">
 <link type="text/css" rel="stylesheet" href="/highlight/styles/rainbow.css">
+
+<style type="text/css">
+#file{
+min-width: 480px;
+padding: 5% 8%;
+}
+</style>
+
 <script type="text/javascript" src="/highlight/highlight.pack.js"></script>
 <script type="text/javascript" src="/marked/marked.js"></script>
 
@@ -21,14 +30,15 @@
 	          "dojo/domReady!"], function(
 	        		  Blob){
 		var blob = new Blob({
+			"class": "typo",
 			pathName: ((pathName.lastIndexOf(0) != "/") ? (pathName+"/") : pathName)// TODO:提取一个方法，放在获取pathName的地方
 		}, "file");
 	});
 </script>
 </head>
-<body class="claro">
+<body>
 
-	<div id="file">
+	<div id="file" >
 		
 	</div>
 </body>
