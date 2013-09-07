@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>测试邮件服务器</title>
+<link type="text/css" rel="stylesheet" href="/dojo/resources/dojo.css" />
+<link type="text/css" rel="stylesheet" href="/dijit/themes/claro/claro.css" />
+<script type="text/javascript" 
+	data-dojo-config="
+		async:true,
+		parseOnLoad:true,
+		isDebug:true" 
+	src="/dojo/dojo.js"></script>
+	
+<script type="text/javascript">
+require(["dojo/on",
+         "dojo/dom",
+         "dojo/dom-form",
+         "dojo/request/xhr",
+         "dojo/domReady!"], function(
+        		 on,
+        		 dom,
+        		 domForm,
+        		 xhr){
+	var btnTest = dom.byId("btnTest");
+	on(btnTest, "click", function(e){
+		xhr.post("/mailServer", {handleAs: "json", data: domForm.toJson(form)}).then(function(data){
+			console.log("发送成功，请查收邮件");
+		}, function(error){
+			console.error(error);
+		});
+	});
+	
+});
+</script>
+</head>
+<body>
+<div>
+	<form id="form">
+		<div>
+			<input type="text" name="hostName" placeholder="HostName">
+		</div>
+		<div>
+			<input type="text" name="smtpPort" placeholder="smtp port">
+		</div>
+		<div>
+			<input type="text" name="fromEmail" placeholder="from email">
+		</div>
+		<div>
+			<input type="text" name="fromEmailDisplayName" placeholder="from email display name">
+		</div>
+		<div>
+			<input type="text" name="toEmail" placeholder="to email">
+		</div>
+		<div>
+			<input type="text" name="toName" placeholder="to name">
+		</div>
+		<div>
+			<input type="text" name="subject" placeholder="subject">
+		</div>
+		<div>
+			<input type="text" name="content" placeholder="content">
+		</div>
+	</form>
+	<button id="btnTest">发送邮件</button>
+</div>
+</body>
+</html>
