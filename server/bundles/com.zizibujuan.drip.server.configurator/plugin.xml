@@ -84,6 +84,12 @@
       		class="com.zizibujuan.drip.server.servlet.ImageServlet">
       </servlet>
       
+      
+      <!-- admin -->
+      <servlet 
+      		alias="/mailServer"
+      		class="com.zizibujuan.drip.server.servlet.admin.MailServerServlet">
+      </servlet>
     </extension>
 <!--
 	<extension

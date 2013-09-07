@@ -51,7 +51,7 @@ public class EmailServiceImpl implements EmailService {
 			email.setHostName(hostName);
 			email.setSmtpPort(smtpPort);
 			if(userName != null && !userName.trim().isEmpty()){
-				email.setAuthenticator(new DefaultAuthenticator(fromEmail, password));
+				email.setAuthenticator(new DefaultAuthenticator(userName, password));
 				email.setSSLOnConnect(true);
 			}
 			
