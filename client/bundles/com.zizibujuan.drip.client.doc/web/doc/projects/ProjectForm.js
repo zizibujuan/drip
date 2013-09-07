@@ -9,8 +9,7 @@ define([ "dojo/_base/declare",
          "dijit/_WidgetsInTemplateMixin",
          "dojo/text!doc/templates/ProjectForm.html",
          "dijit/form/ValidationTextBox",
-         "dijit/form/SimpleTextarea",
-         "drip/widget/form/AceEditor"
+         "dijit/form/SimpleTextarea"
          ], function(
         		 declare,
         		 lang,
