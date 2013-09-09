@@ -111,7 +111,9 @@ define(["dojo/_base/declare",
 		
 		startup: function(){
 			this.inherited(arguments);
-			setTimeout(this.login.focus(),0);
+			setTimeout(lang.hitch(this, function(){
+				this.login.focus();
+			}),0);
 		}
 	});
 	
