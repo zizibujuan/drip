@@ -32,23 +32,23 @@ define(["dojo/_base/declare",
 			
 			on(this.btnSignup, "click", lang.hitch(this, this._signup));
 			
-			on(this.email, "keyup", lang.hitch(this, function(e){
-				if(event.keyCode == keys.ENTER){
+			on(this.email, "keydown", lang.hitch(this, function(e){
+				if(e.keyCode == keys.ENTER){
 					this._signup();
 				}
 			}));
-			on(this.password, "keyup", lang.hitch(this, function(e){
-				if(event.keyCode == keys.ENTER){
+			on(this.password, "keydown", lang.hitch(this, function(e){
+				if(e.keyCode == keys.ENTER){
 					this._signup();
 				}
 			}));
-			on(this.loginName, "keyup", lang.hitch(this, function(e){
-				if(event.keyCode == keys.ENTER){
+			on(this.loginName, "keydown", lang.hitch(this, function(e){
+				if(e.keyCode == keys.ENTER){
 					this._signup();
 				}
 			}));
 			on(this.btnSignup, "keydown", lang.hitch(this, function(e){
-				if(event.keyCode == keys.ENTER){
+				if(e.keyCode == keys.ENTER){
 					this._signup();
 				}
 			}));

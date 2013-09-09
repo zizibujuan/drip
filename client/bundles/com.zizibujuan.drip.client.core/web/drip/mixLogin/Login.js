@@ -32,18 +32,18 @@ define(["dojo/_base/declare",
 
 			on(this.btnLogin, "click", lang.hitch(this, this._login));
 			
-			on(this.login, "keyup", lang.hitch(this, function(e){
-				if(event.keyCode == keys.ENTER){
+			on(this.login, "keydown", lang.hitch(this, function(e){
+				if(e.keyCode == keys.ENTER){
 					this._login();
 				}
 			}));
-			on(this.password, "keyup", lang.hitch(this, function(e){
-				if(event.keyCode == keys.ENTER){
+			on(this.password, "keydown", lang.hitch(this, function(e){
+				if(e.keyCode == keys.ENTER){
 					this._login();
 				}
 			}));
 			on(this.btnLogin, "keydown", lang.hitch(this, function(e){
-				if(event.keyCode == keys.ENTER){
+				if(e.keyCode == keys.ENTER){
 					this._login();
 				}
 			}));
