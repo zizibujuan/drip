@@ -1,5 +1,6 @@
 define([ "dojo/parser",
          "dojo/_base/window",
+         "dojo/_base/event",
          "dojo/cookie",
          "dojo/dom",
          "dojo/dom-style",
@@ -9,6 +10,7 @@ define([ "dojo/parser",
          "dojo/domReady!"], function(
         		 parser,
         		 win,
+        		 event,
         		 cookie,
         		 dom,
         		 domStyle,
@@ -34,6 +36,7 @@ define([ "dojo/parser",
 	toggle(showRegister);
 	
 	on(link, "click", function(e){
+		event.stop(e);
 		showRegister = !showRegister;
 		toggle(showRegister);
 	});
