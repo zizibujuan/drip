@@ -164,10 +164,11 @@ pre, code {
     white-space: pre-wrap;
     word-wrap: break-word;
 }
-pre {
+
+code {
     background: #f8f8f8;
     border:1px solid #ddd;
-    padding: 1em 1.5em;
+    border-radius: 3px;
 }
 
 /* 一致化 horizonal rule */

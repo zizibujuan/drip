@@ -30,24 +30,34 @@ public class RestHtmlFilter implements Filter {
 
 	private static final String ROOT_WEB = "/drip";
 	private static final String LIST_HTML = "/list.html";
-	private static final String NEW_PATHINFO = "new";
 	private static final String HTML = ".html";
 	
-	private Map<String,String> listActions; // 跳转到查询列表页面，如果是单条记录，则跳转到视图页面
-	private Map<String,String> newActions; // 跳转到新建资源页面
+	private static final String ACTION_NEW = "new";
+	private static final String ACTION_EDIT = "edit";
+	
+	private Map<String, String> listUrlMap; // 跳转到查询列表页面，如果是单条记录，则跳转到视图页面
+	private Map<String, String> newUrlMap; // 跳转到新建资源页面
+	private Map<String, String> editUrlMap; // 跳转到编辑页面
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		listActions = new HashMap<String, String>();
-		listActions.put("/following", "/drip/relation.html");
-		listActions.put("/followers", "/drip/relation.html");
-		listActions.put("/users", "/drip/profile.html");
-		listActions.put("/projects", "/doc/projects/list.html");
-		listActions.put("/blob", "/doc/files/blob.html");
+		listUrlMap = new HashMap<String, String>();
+		listUrlMap.put("/following", "/drip/relation.html");
+		listUrlMap.put("/followers", "/drip/relation.html");
+		listUrlMap.put("/users", "/drip/profile.html");
+		listUrlMap.put("/projects", "/doc/projects/list.html");
+		listUrlMap.put("/blob", "/doc/files/blob.html");
 		
-		newActions = new HashMap<String, String>();
-		newActions.put("/files", "/doc/files/new.html");
-		newActions.put("/projects", "/doc/projects/new.html");
+				
+		// new的一个约定，就是最后一个字母是new，TODO：此时要确保用户不会使用这个关键字
+		newUrlMap = new HashMap<String, String>();
+		newUrlMap.put("/files", "/doc/files/new.html");
+		newUrlMap.put("/projects", "/doc/projects/new.html");
+		
+		
+		// edit
+		editUrlMap = new HashMap<String, String>();
+		editUrlMap.put("/files", "/doc/files/edit.html");
 	}
 
 	/**
@@ -77,14 +87,20 @@ public class RestHtmlFilter implements Filter {
 			String servletPath = httpRequest.getServletPath();
 			String pathInfo = httpRequest.getPathInfo();
 			IPath path = (pathInfo == null ? Path.ROOT : new Path(pathInfo));
-			System.out.println("ServletPath:'"+httpRequest.getServletPath()+"'");
-			System.out.println("PathInfo:'"+httpRequest.getPathInfo()+"'");
-			System.out.println("ContextPath:'"+httpRequest.getContextPath()+"'");
 			
-			if(isRegistedServlet(servletPath)){
-				if(path.lastSegment().equals(NEW_PATHINFO)){
-					if(newActions.containsKey(servletPath)){
-						String realFilePath = newActions.get(servletPath);
+			if(!servletPath.isEmpty()){
+				int segmentCount = path.segmentCount();
+				if(segmentCount == 0){
+					//FIXME:暂时支持一级路径。即把所有的list的html容器都放在根目录下
+					String fileName = ROOT_WEB + servletPath + LIST_HTML;
+					httpRequest.getRequestDispatcher(fileName).forward(httpRequest, httpResponse);
+					return;
+				}
+				
+				String firstSegment = path.segment(0);
+				if(firstSegment.equals(ACTION_NEW)){
+					if(newUrlMap.containsKey(servletPath)){
+						String realFilePath = newUrlMap.get(servletPath);
 						httpRequest.getRequestDispatcher(realFilePath).forward(httpRequest, httpResponse);
 					}else{
 						String fileName = ROOT_WEB + servletPath + pathInfo + HTML;
@@ -93,18 +109,22 @@ public class RestHtmlFilter implements Filter {
 					return;
 				}
 				
-				if(listActions.containsKey(servletPath)){
-					String realFilePath = listActions.get(servletPath);
+				if(firstSegment.equals(ACTION_EDIT)){
+					if(editUrlMap.containsKey(servletPath)){
+						String realFilePath = editUrlMap.get(servletPath);
+						httpRequest.getRequestDispatcher(realFilePath).forward(httpRequest, httpResponse);
+					}
+					return;
+				}
+				
+				
+				if(listUrlMap.containsKey(servletPath)){
+					String realFilePath = listUrlMap.get(servletPath);
 					httpRequest.getRequestDispatcher(realFilePath).forward(httpRequest, httpResponse);
 					return;
 				}
 				
-				if(pathInfo == null || pathInfo.equals("/")){			
-					//FIXME:暂时支持一级路径。即把所有的list的html容器都放在根目录下
-					String fileName = ROOT_WEB + servletPath + LIST_HTML;
-					httpRequest.getRequestDispatcher(fileName).forward(httpRequest, httpResponse);
-					return;
-				}
+				
 			}else{
 				// 放在根目录下的html文件
 				if(pathInfo !=null && !pathInfo.equals("/")&& pathInfo.indexOf(".")==-1){
@@ -125,14 +145,20 @@ public class RestHtmlFilter implements Filter {
 
 	@Override
 	public void destroy() {
-		if(listActions!=null){
-			listActions.clear();
-			listActions = null;
+		
+		if (listUrlMap != null) {
+			listUrlMap.clear();
+			listUrlMap = null;
 		}
-		if(newActions!=null){
-			newActions.clear();
-			newActions = null;
+		if (newUrlMap != null) {
+			newUrlMap.clear();
+			newUrlMap = null;
 		}
+		if (editUrlMap != null) {
+			editUrlMap.clear();
+			editUrlMap = null;
+		}
+		
 	}
 
 }

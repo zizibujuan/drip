@@ -129,6 +129,7 @@ public class AbstractServletTests {
 		
 		try {
 			response = webConversation.getResponse(request);
+			System.out.println(response);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {

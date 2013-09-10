@@ -1,25 +1,27 @@
 define(["dojo/_base/declare",
         "dojo/_base/lang",
         "dojo/_base/array",
+        "dojo/request/xhr",
         "dojo/date/locale",
         "dojo/date/stamp",
         "dojo/dom-construct",
         "dijit/_WidgetBase",
-        "drip/_StoreMixin",
         "drip/prettyDate"], function(
 		declare,
 		lang,
 		array,
+		xhr,
 		locale,
 		stamp,
 		domConstruct,
 		_WidgetBase,
-		_StoreMixin,
 		prettyDate){
 	
-	return declare("projects.FileList", [_WidgetBase, _StoreMixin], {
+	return declare("projects.FileList", [_WidgetBase], {
 		
 		pathName: "/",
+		
+		url: null,
 		
 		postCreate: function(){
 			this.inherited(arguments);
@@ -28,9 +30,10 @@ define(["dojo/_base/declare",
 		
 		refresh: function(){
 			this.domNode.innerHTML = this.loadingMessage;
-			 if(this.store){
-				 this.store.query(this.query).then(lang.hitch(this, this._load));
-			 }
+			
+			xhr.get(this.url, {handleAs: "json", preventCache: true}).then(lang.hitch(this, this._load), function(error){
+					console.error("加载失败", error);
+			});
 		},
 		
 		_load: function(items){

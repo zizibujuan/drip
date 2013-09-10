@@ -9,6 +9,7 @@ import com.zizibujuan.drip.server.tests.doc.servlets.ProjectServletTests;
 import com.zizibujuan.drip.server.tests.servlets.EmailConfirmServletTests;
 import com.zizibujuan.drip.server.tests.servlets.FollowServletTests;
 import com.zizibujuan.drip.server.tests.servlets.LoginServletTests;
+import com.zizibujuan.drip.server.tests.servlets.RestHtmlFilterTests;
 import com.zizibujuan.drip.server.tests.servlets.UserServletTests;
 
 /**
@@ -23,7 +24,8 @@ import com.zizibujuan.drip.server.tests.servlets.UserServletTests;
 //	FollowServletTests.class,
 //	EmailConfirmServletTests.class,
 //	ProjectServletTests.class,
-	FileServletTests.class
+//	FileServletTests.class,
+	RestHtmlFilterTests.class
 })
 public class AllServletTests {
 

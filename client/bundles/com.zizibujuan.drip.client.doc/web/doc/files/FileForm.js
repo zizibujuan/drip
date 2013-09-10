@@ -32,6 +32,10 @@ define([ "dojo/_base/declare",
 		
 		pathInfo: null,
 		
+		method: "POST",
+		
+		errorMsg: "创建文件失败",
+		
 		postCreate: function(){
 			this.inherited(arguments);
 			
@@ -54,8 +58,7 @@ define([ "dojo/_base/declare",
 					extendDesc: this.extendDesc.get("value")*/
 				};
 				var jsonData = {fileInfo: fileInfo, commitInfo: commitInfo};
-				xhr.post("/files/" + this.pathInfo, {data:JSON.stringify(jsonData)}).then(function(data){
-					debugger;
+				xhr("/files/" + this.pathInfo, {method: this.method, data:JSON.stringify(jsonData)}).then(function(data){
 					window.location.href = projectPath;
 				}, function(error){
 					// TODO:如果保存失败，则给出提示

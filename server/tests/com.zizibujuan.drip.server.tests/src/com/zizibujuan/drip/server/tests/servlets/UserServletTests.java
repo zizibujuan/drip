@@ -229,6 +229,15 @@ public class UserServletTests extends AbstractServletTests{
 			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_INFO  WHERE EMAIL=?", email);
 		}
 	}
+	
+	@Test
+	public void register_login_name_not_allowed(){
+		// new
+		// edit
+		// zizibujuan
+		// zzbj
+		// list
+	}
 
 	/**
 	 * 注册成功

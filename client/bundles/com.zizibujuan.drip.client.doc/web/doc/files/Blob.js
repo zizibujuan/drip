@@ -23,6 +23,7 @@ define(["dojo/_base/declare",
 				this.icon.className = "icon-file-text";
 				this.mode.innerHTML = "文档";
 				this.size.innerHTML = fileInfo.size;
+				this.btnEdit.href = this.pathName.replace("blob", "files/edit");
 				
 				marked.setOptions({
 					gfm: true,
