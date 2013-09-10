@@ -12,7 +12,7 @@
 		isDebug:true" 
 	src="/dojo/dojo.js"></script>
 <script type="text/javascript">
-	console.log("before ");
+	
 	var pathName = window.location.pathname;
 	var filePath = pathName.replace("/projects", "");
 
@@ -25,13 +25,9 @@
 	        		  JsonRest,
 	        		  dom,
 	        		  on){
-		console.log("before 1");
-		var store = new JsonRest({
-			 target: pathName
-		});
 		
 		var fileList = new FileList({
-			store: store,
+			url: pathName,
 			loadingMessage: "正在加载文件列表",
 			pathName: (pathName.lastIndexOf(0) != "/") ? (pathName+"/"):pathName
 		}, "table");
@@ -40,7 +36,7 @@
 		var btnAddFile = dom.byId("btnAddFile");
 		on(btnAddFile, "click", function(e){
 			// files/new/+当前文档所在文件夹
-			window.location.href = "/files" + filePath+"/new";
+			window.location.href = "/files/new" + filePath;
 		});
 	});
 	
