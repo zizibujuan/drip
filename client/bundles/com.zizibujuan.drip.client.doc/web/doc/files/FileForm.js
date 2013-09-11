@@ -39,8 +39,8 @@ define([ "dojo/_base/declare",
 		postCreate: function(){
 			this.inherited(arguments);
 			
-			this.pathInfo = this.pathName.replace("/files/", "").replace("/new", "");
-			var projectPath = this.pathName.replace("files", "projects").replace("/new", "");
+			var newFilePathName = this.pathName.replace("files/new", "files");
+			var projectPath = this.pathName.replace("files/new", "projects");
 			
 			domStyle.set(this.content, {width: "100%", height: "400px"});
 			// 因为AceEditor在ace压缩后，_WidgetsInTemplateMixin一直报有模块没有预加载，
@@ -58,7 +58,7 @@ define([ "dojo/_base/declare",
 					extendDesc: this.extendDesc.get("value")*/
 				};
 				var jsonData = {fileInfo: fileInfo, commitInfo: commitInfo};
-				xhr("/files/" + this.pathInfo, {method: this.method, data:JSON.stringify(jsonData)}).then(function(data){
+				xhr(newFilePathName, {method: this.method, data:JSON.stringify(jsonData)}).then(function(data){
 					window.location.href = projectPath;
 				}, function(error){
 					// TODO:如果保存失败，则给出提示
