@@ -3,8 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <title>正在编辑</title>
-</head>
-<body>
+<link type="text/css" rel="stylesheet" href="/drip/resources/app.css" />
+<link type="text/css" rel="stylesheet" href="/drip/resources/font-awesome/css/font-awesome.css" />
+<script type="text/javascript" 
+	data-dojo-config="
+		async:true,
+		parseOnLoad:false,
+		isDebug:true" 
+	src="/dojo/dojo.js"></script>
+<script src="/ace/ace.js" charset="utf-8"></script>
+<script type="text/javascript">
 
+	var pathName = window.location.pathname;
+	require([ "doc/files/EditFileForm", 
+	          "dojo/domReady!"], function(
+	        		  EditFileForm){
+		
+		var fileForm = new EditFileForm({
+			pathName: pathName
+		}, "files");
+		
+		fileForm.startup();
+		
+	});
+	
+</script>
+</head>
+<body class="claro">
+<div>
+
+	<div id="files" class="edit-file">
+	
+	</div>
+	
+</div>
 </body>
 </html>
