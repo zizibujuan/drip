@@ -34,18 +34,26 @@ define([ "dojo/_base/declare",
 		
 		method: "POST",
 		
+		action: "new",
+		
 		errorMsg: "创建文件失败",
+		
+		title: "新建页面",
 		
 		postCreate: function(){
 			this.inherited(arguments);
 			
-			var newFilePathName = this.pathName.replace("files/new", "files");
-			var projectPath = this.pathName.replace("files/new", "projects");
+			this.action_title.innerHTML = this.title;
+			
+			var newFilePathName = this.pathName.replace("files/" + this.action, "files");
+			this.projectPath = this.pathName.replace("files/" + this.action, "projects");
 			
 			domStyle.set(this.content, {width: "100%", height: "400px"});
 			// 因为AceEditor在ace压缩后，_WidgetsInTemplateMixin一直报有模块没有预加载，
 			// 所以这里直接使用ace
 			var editor = this.editor = ace.edit(this.content);
+			editor.setTheme("ace/theme/textmate");
+			editor.getSession().setMode("ace/mode/markdown");
 			
 			// 绑定事件
 			this.own(on(this.submitFile, "click", lang.hitch(this,function(e){
@@ -58,9 +66,9 @@ define([ "dojo/_base/declare",
 					extendDesc: this.extendDesc.get("value")*/
 				};
 				var jsonData = {fileInfo: fileInfo, commitInfo: commitInfo};
-				xhr(newFilePathName, {method: this.method, data:JSON.stringify(jsonData)}).then(function(data){
-					window.location.href = projectPath;
-				}, function(error){
+				xhr(newFilePathName, {method: this.method, data:JSON.stringify(jsonData)}).then(lang.hitch(this, function(data){
+					window.location.href = this.projectPath;
+				}), function(error){
 					// TODO:如果保存失败，则给出提示
 					console.error("创建文件失败", error);
 				});
