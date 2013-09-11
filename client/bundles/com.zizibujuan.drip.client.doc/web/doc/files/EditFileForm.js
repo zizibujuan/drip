@@ -31,7 +31,7 @@ define(["dojo/_base/declare",
 			this.fileName.set("disabled", true);
 			// 加载数据
 			var blobUrl = this.pathName.replace("files/edit", "blob");
-			xhr.get(blobUrl, {handleAs: "json"}).then(lang.hitch(this, this._loadData), function(error){
+			xhr.get(blobUrl, {handleAs: "json", preventCache: true}).then(lang.hitch(this, this._loadData), function(error){
 				console.error(error, "加载文件信息失败")
 			});
 		},
