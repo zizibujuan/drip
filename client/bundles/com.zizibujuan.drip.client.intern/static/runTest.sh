@@ -9,8 +9,9 @@ echo copy files from $DEVDIR/com.zizibujuan.drip.client.editor/static/mathEditor
 cp -r $DEVDIR/com.zizibujuan.drip.client.editor/static/mathEditor $SRCDIR
 
 # run
-pushd $SRCDIR/node_modules/intern
-node runner.js config=mathEditor/tests/intern reporters=console reporters=lcov
+pushd $SRCDIR/
+# locv.info put at static dir
+node node_modules/intern/runner.js config=mathEditor/tests/intern reporters=console reporters=lcov
 popd
 
 #reporters=console reporters=lcov
