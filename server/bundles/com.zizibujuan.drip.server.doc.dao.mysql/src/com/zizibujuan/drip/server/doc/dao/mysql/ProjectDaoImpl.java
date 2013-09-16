@@ -105,7 +105,8 @@ public class ProjectDaoImpl extends AbstractDao implements ProjectDao {
 			+ "b.LOGIN_NAME "
 			+ "FROM "
 			+ "DRIP_DOC_PROJECT a, "
-			+ "DRIP_USER_INFO b ";
+			+ "DRIP_USER_INFO b "
+			+ "WHERE a.CRT_USER_ID = b.DBID ";
 			
 	@Override
 	public List<ProjectInfo> filterByName(final String projectNamePreifx) {
@@ -132,7 +133,7 @@ public class ProjectDaoImpl extends AbstractDao implements ProjectDao {
 		}
 		
 		
-		sql += "WHERE a.PROJECT_NAME LIKE '?%' ";
+		sql += "AND a.PROJECT_NAME LIKE '?%' ";
 		return DatabaseUtil.query(getDataSource(), sql, new PreparedStatementSetter() {
 			@Override
 			public void setValues(PreparedStatement ps) throws SQLException {
