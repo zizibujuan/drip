@@ -12,24 +12,11 @@
 		isDebug:true" 
 	src="/dojo/dojo.js"></script>
 <script type="text/javascript">
-	require([ "dojo/_base/declare",
-	          "dojo/store/JsonRest",
-	          "dgrid/Grid", 
-	          "dgrid/extensions/Pagination",
+	// 第一个版本暂时不支持分页
+	require([ "doc/Projects",
 	          "dojo/domReady!"], function(
-	        		  declare,
-	        		  JsonRest,
-	        		  Grid,
-	        		  Pagination){
-		var projectStore = new JsonRest({"target": "/projects"});
-		var grid = new (declare([Grid, Pagination]))({
-			store: projectStore,
-		    columns: myColumns,
-		    pagingLinks: 1,
-		    pagingTextBox: true,
-		    firstLastArrows: true,
-		    pageSizeOptions: [10, 15, 25]
-		}, "project_list");
+	        		  Projects){
+		var projects = new Projects({url:"/projects", query:{search: "*"}}, "project_list");
 	});
 </script>
 </head>

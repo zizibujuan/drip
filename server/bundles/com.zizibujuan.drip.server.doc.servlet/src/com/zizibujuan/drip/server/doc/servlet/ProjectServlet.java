@@ -40,6 +40,7 @@ import com.zizibujuan.drip.server.util.servlet.UserSession;
 
 /**
  * 项目管理  TODO:名称改为 主题？
+ * 
  * @author jzw
  * @since 0.0.1
  */
@@ -104,6 +105,20 @@ public class ProjectServlet extends BaseServlet {
 		traceRequest(req);
 		IPath path = getPath(req); 
 		if(path.segmentCount() == 0){
+			String search = req.getParameter("search");
+			if(search != null){
+				if(search.equals("*")){
+					search = "";
+				}
+				// 条件查询所有项目列表， TODO：支持分页查询
+				// 根据项目名称查询
+				List<ProjectInfo> projects = projectService.filterByName(search);
+				// TODO: 获取项目内容的最后提交时间
+				// TODO: 需不需要获取项目参与者列表呢？
+				ResponseUtil.toJSON(req, resp, projects);
+				return;
+			}
+			
 			// 获取登录用户的项目列表
 			UserInfo userInfo = (UserInfo) UserSession.getUser(req);
 			List<ProjectInfo> myProjects = projectService.get(userInfo.getId());

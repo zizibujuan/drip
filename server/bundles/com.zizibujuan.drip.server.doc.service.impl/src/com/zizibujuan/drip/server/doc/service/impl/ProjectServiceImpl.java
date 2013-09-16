@@ -115,6 +115,12 @@ public class ProjectServiceImpl implements ProjectService {
 		config.save();
 	}
 	
+
+	@Override
+	public List<ProjectInfo> filterByName(String projectNamePreifx) {
+		return projectDao.filterByName(projectNamePreifx);
+	}
+	
 	public void setUserDao(UserDao userDao) {
 		logger.info("注入userDao");
 		this.userDao = userDao;

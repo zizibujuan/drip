@@ -95,5 +95,63 @@ public class ProjectDaoImpl extends AbstractDao implements ProjectDao {
 			
 		});
 	}
+	
+	private static final String SQL_LIST_PROJECT_FILTER_BY_NAME = "SELECT "
+			+ "a.PROJECT_NAME,"
+			+ "a.PROJECT_LABEL,"
+			+ "a.PROJECT_DESC,"
+			+ "a.CRT_TM,"
+			+ "a.CRT_USER_ID,"
+			+ "b.LOGIN_NAME "
+			+ "FROM "
+			+ "DRIP_DOC_PROJECT a, "
+			+ "DRIP_USER_INFO b ";
+			
+	@Override
+	public List<ProjectInfo> filterByName(final String projectNamePreifx) {
+		String sql = SQL_LIST_PROJECT_FILTER_BY_NAME;
+		if(projectNamePreifx.endsWith("")){
+			return DatabaseUtil.query(getDataSource(), sql, new PreparedStatementSetter() {
+				@Override
+				public void setValues(PreparedStatement ps) throws SQLException {
+					
+				}
+			},new RowMapper<ProjectInfo>(){
+				@Override
+				public ProjectInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
+					ProjectInfo projectInfo = new ProjectInfo();
+					projectInfo.setName(rs.getString(1));
+					projectInfo.setLabel(rs.getString(2));
+					projectInfo.setDescription(rs.getString(3));
+					projectInfo.setCreateTime(rs.getTimestamp(4));
+					projectInfo.setCreateUserId(rs.getLong(5));
+					projectInfo.setCreateUserName(rs.getString(6));
+					return projectInfo;
+				}
+			});
+		}
+		
+		
+		sql += "WHERE a.PROJECT_NAME LIKE '?%' ";
+		return DatabaseUtil.query(getDataSource(), sql, new PreparedStatementSetter() {
+			@Override
+			public void setValues(PreparedStatement ps) throws SQLException {
+				ps.setString(1, projectNamePreifx);
+			}
+		},new RowMapper<ProjectInfo>(){
+			@Override
+			public ProjectInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
+				ProjectInfo projectInfo = new ProjectInfo();
+				projectInfo.setName(rs.getString(1));
+				projectInfo.setLabel(rs.getString(2));
+				projectInfo.setDescription(rs.getString(3));
+				projectInfo.setCreateTime(rs.getTimestamp(4));
+				projectInfo.setCreateUserId(rs.getLong(5));
+				projectInfo.setCreateUserName(rs.getString(6));
+				return projectInfo;
+			}
+			
+		});
+	}
 
 }

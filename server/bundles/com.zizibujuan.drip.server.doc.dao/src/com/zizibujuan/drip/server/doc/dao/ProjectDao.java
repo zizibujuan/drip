@@ -37,4 +37,12 @@ public interface ProjectDao {
 	 * @return 项目列表，如果没有则返回空的list
 	 */
 	List<ProjectInfo> get(Long userId);
+	
+	/**
+	 * 条件查询所有项目列表
+	 * 
+	 * @param projectNamePreifx 以projectNamePrefix开头的项目名称
+	 * @return 项目列表，如果没有则返回空的list
+	 */
+	List<ProjectInfo> filterByName(String projectNamePreifx);
 }

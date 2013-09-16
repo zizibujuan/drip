@@ -5,11 +5,12 @@
     <extension
          point="org.eclipse.equinox.http.registry.servlets">
       
-      <!-- 项目 -->
+      <!-- 访问用户项目 -->
       <servlet 
       		alias="/projects"
       		class="com.zizibujuan.drip.server.doc.servlet.ProjectServlet">
       </servlet>
+      
       <!-- 文档 -->
       <servlet 
       		alias="/files"
