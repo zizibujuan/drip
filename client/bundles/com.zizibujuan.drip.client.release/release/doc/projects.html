@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>笔记</title>
+<link type="text/css" rel="stylesheet" href="/drip/resources/app.css" />
+<link type="text/css" rel="stylesheet" href="/drip/resources/font-awesome/css/font-awesome.css" />
+<script type="text/javascript" 
+	data-dojo-config="
+		async:true,
+		parseOnLoad:false,
+		isDebug:true" 
+	src="/dojo/dojo.js"></script>
+<script type="text/javascript">
+	// 第一个版本暂时不支持分页
+	require([ "doc/Projects",
+	          "dojo/domReady!"], function(
+	        		  Projects){
+		var projects = new Projects({url:"/projects", query:{search: "*"}}, "project_list");
+	});
+</script>
+</head>
+<body>
+	<div id="project_list">
+	
+	</div>
+</body>
+</html>

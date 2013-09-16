@@ -1,0 +1,3 @@
+//>>built
+define("drip/EmailVerifyTip",["dojo/_base/declare","dijit/_WidgetBase","dijit/_TemplatedMixin","dojo/text!drip/templates/EmailVerifyTip.html"],function(a,b,c,d){return a("drip.EmailVerifyTip",[b,c],{templateString:d,postCreate:function(){this.inherited(arguments)}})});require({cache:{"url:drip/templates/EmailVerifyTip.html":'\x3cdiv\x3e\n\x3cspan\x3e\x3ci class\x3d"icon-smile"\x3e\x3c/i\x3e \u6b22\u8fce! \u8bf7\u6fc0\u6d3b\u60a8\u7684\u90ae\u7bb1\x3ca data-dojo-attach-point\x3d"email"\x3e\x3c/a\x3e\uff0c\u53ef\u4ee5\u4f7f\u7528\u66f4\u591a\u529f\u80fd\u3002\x3c/span\x3e(\x3ca data-dojo-attach-point\x3d"resend"\x3e\u91cd\u65b0\u53d1\u9001\u6fc0\u6d3b\u90ae\u4ef6\x3c/a\x3e)\n\x3c/div\x3e'}});
+//@ sourceMappingURL=EmailVerifyTip.js.map
