@@ -1,3 +1,0 @@
-define([
-	'./functional/Keyboard'
-], function(){});
