@@ -38,6 +38,8 @@ public class RestHtmlFilter implements Filter {
 	private Map<String, String> listUrlMap; // 跳转到查询列表页面，如果是单条记录，则跳转到视图页面
 	private Map<String, String> newUrlMap; // 跳转到新建资源页面
 	private Map<String, String> editUrlMap; // 跳转到编辑页面
+	
+	private Map<String, String> homeUrlMap; // 放置各种内容的内容首页链接，如题库首页，笔记项目首页等
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
@@ -47,7 +49,6 @@ public class RestHtmlFilter implements Filter {
 		listUrlMap.put("/users", "/drip/profile.html");
 		listUrlMap.put("/projects", "/doc/projects/list.html");
 		listUrlMap.put("/blob", "/doc/files/blob.html");
-		
 				
 		// new的一个约定，就是最后一个字母是new，TODO：此时要确保用户不会使用这个关键字
 		newUrlMap = new HashMap<String, String>();
@@ -58,6 +59,12 @@ public class RestHtmlFilter implements Filter {
 		// edit
 		editUrlMap = new HashMap<String, String>();
 		editUrlMap.put("/files", "/doc/files/edit.html");
+		
+		homeUrlMap = new HashMap<String, String>();
+		// 所有项目页面,项目首页， key为path segment
+		homeUrlMap.put("explore_projects", "/doc/projects.html");
+		// 所有习题页面，可进一步在这个页面中分门别类
+		homeUrlMap.put("explore_exercises", "/drip/exercises.html");
 	}
 
 	/**
@@ -126,21 +133,23 @@ public class RestHtmlFilter implements Filter {
 				
 				
 			}else{
-				// 放在根目录下的html文件
-				if(pathInfo !=null && !pathInfo.equals("/")&& pathInfo.indexOf(".")==-1){
-					String fileName = pathInfo + HTML;
-					httpRequest.getRequestDispatcher(fileName).forward(httpRequest, httpResponse);
+				if(path.segmentCount() == 1){
+					String firstSegment = path.segment(0);
+					if(homeUrlMap.containsKey(firstSegment)){
+						String realFilePath = homeUrlMap.get(firstSegment);
+						httpRequest.getRequestDispatcher(realFilePath).forward(httpRequest, httpResponse);
+					}else{
+						// 寻找放在根目录下的html文件
+						String fileName = pathInfo + HTML;
+						httpRequest.getRequestDispatcher(fileName).forward(httpRequest, httpResponse);
+					}
+					
 					return;
 				}
 			}
 		}
 		
 		chain.doFilter(req, resp);
-	}
-
-	private boolean isRegistedServlet(String servletPath) {
-		// 该servletPath是已经注册过的servlet别名
-		return !servletPath.equals("");
 	}
 
 	@Override
@@ -158,6 +167,11 @@ public class RestHtmlFilter implements Filter {
 			editUrlMap.clear();
 			editUrlMap = null;
 		}
+		if(homeUrlMap != null){
+			homeUrlMap.clear();
+			homeUrlMap = null;
+		}
+		
 		
 	}
 
