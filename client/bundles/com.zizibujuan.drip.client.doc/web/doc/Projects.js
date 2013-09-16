@@ -26,6 +26,7 @@ define(["dojo/_base/declare",
 			var projectPath = item.createUserName + "/" + item.name;
 			projectName.innerHTML = projectPath;
 			projectName.href = "/projects/" + projectPath;
+			this.label.innerHTML = item.label;
 			this.desc.innerHTML = item.description;
 		}
 	
