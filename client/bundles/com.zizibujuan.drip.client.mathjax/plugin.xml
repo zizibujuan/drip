@@ -10,12 +10,23 @@
 	               path="/static/mathJax">
 	         </resource-mapping>
          </httpcontext>
+         <httpcontext
+            id="com.zizibujuan.drip.client.httpcontext.fonts">
+	         <resource-mapping
+	               bundle="com.zizibujuan.drip.client.mathjax"
+	               path="/static/fonts">
+	         </resource-mapping>
+         </httpcontext>
     </extension>
 	<extension
          point="org.eclipse.equinox.http.registry.resources">
       <resource
             alias="/mathJax"
             httpcontextId="com.zizibujuan.drip.client.httpcontext.mathjax">
+      </resource>
+      <resource
+            alias="/fonts"
+            httpcontextId="com.zizibujuan.drip.client.httpcontext.fonts">
       </resource>
      </extension>
 </plugin>
