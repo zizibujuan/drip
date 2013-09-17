@@ -1,20 +1,29 @@
-set BASEDIR=$(cd $(dirname $0) && pwd)
-set DEVDIR="/home/jzw/git/private/aliyun/com.zizibujuan.drip/client/bundles/"
-set SRCDIR="$BASEDIR"
+echo off
+set BASEDIR=%~dp0
+echo BASEDIR %BASEDIR%
+cd ..
+cd ..
 
-# copy files
-echo copy files from $DEVDIR/com.zizibujuan.drip.client.editor/static/mathEditor to $SRCDIR
-cp -r $DEVDIR/com.zizibujuan.drip.client.editor/static/mathEditor $SRCDIR
+set DEVDIR=%cd%
+echo DEVDIR %DEVDIR%
 
-# run
-pushd $SRCDIR/
-# locv.info put at static dir
+set SRCDIR=%BASEDIR%
+
+cd %BASEDIR%
+
+echo copy files starting
+echo copy files from %DEVDIR%\com.zizibujuan.drip.client.editor\static\mathEditor to %SRCDIR%\mathEditor\
+xcopy  %DEVDIR%\com.zizibujuan.drip.client.editor\static\mathEditor %SRCDIR%\mathEditor\ /Q /s
+
+rem run
+pushd %SRCDIR%
+rem locv.info put at static dir
 node node_modules/intern/runner.js config=mathEditor/tests/intern reporters=console reporters=lcov
 popd
 
-#reporters=console reporters=lcov
+rem reporters=console reporters=lcov
 
-# close Selenium 2 Server
+rem close Selenium 2 Server
 
-# delete files
-rm -rf "$SRCDIR/mathEditor"
+rem delete files
+rmdir /q /s "%SRCDIR%/mathEditor"
