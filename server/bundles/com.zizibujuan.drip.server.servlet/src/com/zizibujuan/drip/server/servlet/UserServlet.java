@@ -67,7 +67,7 @@ public class UserServlet extends BaseServlet {
 			// 注册成功之后，添加一个cookie，标识使用该电脑注册成功过
 			// 以后每登录一次都修改一下这个cookie
 			// XXX:暂时不提供记住密码功能
-			CookieUtil.setCookie(resp, "zzbj_user", userInfo.getLoginName(), null, 365*24*60*60/*一年有效*/);
+			CookieUtil.set(resp, "zzbj_user", userInfo.getLoginName(), null, 365*24*60*60/*一年有效*/);
 			// 注册成功之后，直接登录
 			userInfo = userService.login(userInfo.getEmail(), password);
 			if(userInfo != null){

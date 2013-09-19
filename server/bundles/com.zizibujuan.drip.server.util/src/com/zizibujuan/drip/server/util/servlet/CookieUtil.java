@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public abstract class CookieUtil {
 	
-	public static void setCookie(HttpServletResponse resp, String name,
+	public static void set(HttpServletResponse resp, String name,
 			String value, String domain, int maxAge) {
 		if (value == null) {
 			value = "";
@@ -26,7 +26,7 @@ public abstract class CookieUtil {
 		resp.addCookie(cookie);
 	}
 
-	public static Cookie getCookie(HttpServletRequest req, String name) {
+	public static Cookie get(HttpServletRequest req, String name) {
 		Cookie cookies[] = req.getCookies();
 		// Return null if there are no cookies or the name is invalid.
 		if (cookies == null || name == null || name.length() == 0) {
