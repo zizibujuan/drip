@@ -16,16 +16,18 @@
 	var pathName = window.location.pathname;
 	var filePath = pathName.replace("/projects", "");
 
-	require([ "doc/projects/FileList", 
-	          "dojo/store/JsonRest",
+	require([ "dojo/store/JsonRest",
 	          "dojo/dom",
 	          "dojo/on",
+	          "drip/widget/Header",
+	          "doc/projects/FileList", 
 	          "dojo/domReady!"], function(
-	        		  FileList,
 	        		  JsonRest,
 	        		  dom,
-	        		  on){
-		
+	        		  on,
+	        		  Header,
+	        		  FileList){
+		var header = new Header({}, "header");
 		var fileList = new FileList({
 			url: pathName,
 			loadingMessage: "正在加载文件列表",
@@ -44,12 +46,16 @@
 </head>
 <body class="claro">
 
-	<div class="bubble files-bubble">
-		<div>
-			<!-- <button id="">新建文件夹</button> -->
-			<button id="btnAddFile">新建文档</button>
+	<div id="wrapper" class="drip_body">
+		<div id="header" style="min-height:43px"></div>
+		<div class="bubble files-bubble">
+			<div>
+				<!-- <button id="">新建文件夹</button> -->
+				<button id="btnAddFile">新建文档</button>
+			</div>
+			<div id="table"></div>
 		</div>
-		<div id="table"></div>
 	</div>
+	
 </body>
 </html>

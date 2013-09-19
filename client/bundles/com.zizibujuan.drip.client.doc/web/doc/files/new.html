@@ -16,9 +16,11 @@
 
 	var pathName = window.location.pathname;
 	require([ "doc/files/FileForm", 
+	          "drip/widget/Header",
 	          "dojo/domReady!"], function(
-	        		  FileForm){
-		
+	        		  FileForm,
+	        		  Header){
+		var header = new Header({}, "header");
 		var fileForm = new FileForm({
 			pathName: pathName
 		}, "files");
@@ -30,12 +32,12 @@
 </script>
 </head>
 <body class="claro">
-<div>
-
-	<div id="files" class="new-file">
-	
+	<div id="wrapper" class="drip_body">
+		<div id="header" style="min-height:43px"></div>
+		<div id="files" class="new-file">
+		
+		</div>
+		
 	</div>
-	
-</div>
 </body>
 </html>

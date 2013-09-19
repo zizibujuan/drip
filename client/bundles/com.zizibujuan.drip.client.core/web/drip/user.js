@@ -5,7 +5,8 @@ define(["dojo/dom",
         		domConstruct,
         		xhr){
 	// summary:
-	//	获取当前登录用户信息,返回一个deffered对象，或者直接提供一个方法，用来在浏览器中显示用户信息。
+	//		获取当前登录用户信息,返回一个deffered对象，或者直接提供一个方法，用来在浏览器中显示用户信息。
+	//		约定：只要用户不关浏览器，则用户的状态就不可以丢失，如果session过期了，则自动登录
 	
 	var user = {};
 	
@@ -66,7 +67,7 @@ define(["dojo/dom",
 	// 提供logout方法
 	user.logout = function(){
 		xhr("/logout/",{method:"POST", handleAs:"json"}).then(function(data){
-    		
+			userInfo = null;
     	},function(error){
     		window.location.href = "/";
     	});

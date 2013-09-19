@@ -27,8 +27,11 @@ padding: 5% 8%;
 <script type="text/javascript">
 	var pathName = window.location.pathname;
 	require([ "doc/files/Blob",
+	          "drip/widget/Header",
 	          "dojo/domReady!"], function(
-	        		  Blob){
+	        		  Blob,
+	        		  Header){
+		var header = new Header({}, "header");
 		var blob = new Blob({
 			"class": "typo",
 			pathName: ((pathName.lastIndexOf(0) != "/") ? (pathName+"/") : pathName)// TODO:提取一个方法，放在获取pathName的地方
@@ -36,10 +39,13 @@ padding: 5% 8%;
 	});
 </script>
 </head>
-<body>
 
-	<div id="file" >
-		
+<body class="claro">
+	<div id="wrapper" class="drip_body">
+		<div id="header" style="min-height:43px"></div>
+		<div id="file" >
+			
+		</div>
 	</div>
 </body>
 </html>

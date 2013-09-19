@@ -101,17 +101,6 @@ font-size: 1.17em;
 font-weight: bold;
 }
 
-#header {
-	background: #00a300;/*#ededed*/
-	position: fixed;
-	width: 100%;
-	top: 0;
-	font-size: 13px;
-	box-shadow: 0 2px 2px #999;
-	height: 35px;
-	z-index: 9999;
-}
-
 .wrapper {
 	width: 920px;
 	margin: 0 auto;

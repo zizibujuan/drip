@@ -2,9 +2,26 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>习题库</title>
+<link type="text/css" rel="stylesheet" href="/drip/resources/app.css" />
+<link type="text/css" rel="stylesheet" href="/drip/resources/font-awesome/css/font-awesome.css" />
+<title>习题库 · 孜孜不倦</title>
+<script type="text/javascript" 
+	data-dojo-config="
+		async:true,
+		parseOnLoad:false,
+		isDebug:true" 
+	src="/dojo/dojo.js"></script>
+<script type="text/javascript">
+require(["drip/widget/Header",
+         "dojo/domReady!"], function(
+        		 Header){
+	var header = new Header({}, "header");
+});
+</script>
 </head>
-<body>
-
+<body class="claro">
+<div id="wrapper" class="drip_body">
+	<div id="header" style="min-height:43px"></div>
+</div>
 </body>
 </html>

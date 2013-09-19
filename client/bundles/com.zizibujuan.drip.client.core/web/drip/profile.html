@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title> 孜孜不倦 · 一起交流学习心得，共同优化教育资源。</title>
+<title> 孜孜不倦 · 协作写笔记，快乐做习题。</title>
 <!-- <link type="text/css" rel="stylesheet" href="/drip/resources/app.css" /> -->
 <!-- TODO：使用import合并样式 -->
 
@@ -25,26 +25,12 @@ var userId = splitPathName[2];
 
 require([ "dojo/dom",
           "dojo/on",
-          "drip/user",
+          "drip/widget/Header",
           "dojo/domReady!"], function(
         		  dom,
         		  on,
-        		  user){
-	
-	on(dom.byId("logout"),"click",user.logout);
-	// 登录用户信息
-	user.getLoggedUserInfo().then(function(userInfo){
-		console.log("登录用户信息:", userInfo);
-		// 在右侧用户信息区域显示
-		var displayName = userInfo.nickName;
-		// 在顶部用户信息区域显示
-		var topProfileImage = dom.byId("topProfileImage");
-		topProfileImage.src = userInfo.smallImageUrl || "/drip/resources/images/profile_50_50.gif";
-		topProfileImage.alt = displayName;
-		dom.byId("topUserName").innerHTML = displayName;
-		dom.byId("top_user_link").href = "/users/" + userInfo.digitalId;
-	});
-	
+        		  Header){
+	var header = new Header({}, "header");
 });
 
 </script>
@@ -52,29 +38,7 @@ require([ "dojo/dom",
 </head>
 <body class="claro">
 	<div id="wrapper" class="drip_body">
-		<div class="drip_header drip_header_logged_in" style="position: fixed; width: 100%">
-			<div class="container clearfix">
-				<a href="/" class="drip_header_logo" style="height:25px;">
-					<img alt="孜孜不倦" style="height:25px;" src="/drip/resources/images/home_logo.png">
-				</a>
-				<div class="divider-vertical"></div>
-				<ul class="drip_top_nav">
-					<li><a href="/">首页</a></li>
-					<li><a href="/exercises">题库</a></li>
-					<li><a href="/help">帮助</a></li>
-				</ul>
-				<ul class="drip_user_links">
-					<li>
-					<a href="#" id="top_user_link" class="drip_name">
-						<img width="20px" height="20px" id="topProfileImage">
-						<span id="topUserName"></span>
-					</a>
-					</li>
-					<li><a href="/exercises/new" title="录入新习题" class="minibutton primary"><i class="icon-edit"></i> 录入习题</a></li>
-					<li><button class="minibutton" id="logout"><i class="icon-signout"></i> 退出</button></li>
-				</ul>
-			</div>
-		</div>
+		<div id="header" style="min-height:43px"></div>
 		
 		<div  class="container" style="padding-top: 60px;">
 			<div>
