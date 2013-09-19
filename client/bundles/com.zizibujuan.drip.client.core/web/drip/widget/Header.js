@@ -39,7 +39,9 @@ define(["dojo/_base/declare",
 			this.userName.innerHTML = loginName;
 			user.getLoggedUserInfo().then(lang.hitch(this,function(userInfo){
 				this.userLink.href  = "/users/" + userInfo.id;
-			}));
+			}), function(error){
+				// 获取登录用户信息失败后，要跳转到非登录header
+			});
 			on(this.logout,"click",user.logout);
 		}
 	});
@@ -59,6 +61,7 @@ define(["dojo/_base/declare",
 		postCreate: function(){
 			this.inherited(arguments);
 			var header = null;
+			// 虽然根据这个cookie判断用户是否登录，有一定的风险，但是却能加快header的渲染，值得承担。
 			if(loggedIn && loggedIn == "1"){
 				domClass.add(this.domNode, "drip_header drip_header_logged_in");
 				header = new LoggedInHeader({});

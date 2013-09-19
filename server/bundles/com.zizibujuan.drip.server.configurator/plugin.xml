@@ -130,7 +130,12 @@
 
    <extension
          point="org.eclipse.equinox.http.registry.filters">
-         
+      
+		<!-- 判断用户是否已经登录，即是否有权限访问某个内容，现在这里卡一下，后面的处理就少一些 -->
+      <filter
+            alias="/"
+            class="com.zizibujuan.drip.server.configurator.servlet.SessionFilter">
+      </filter>
          
       <filter
             alias="/"
@@ -143,21 +148,9 @@
       </filter>
       
       
-      <!-- 在进行rest转换后触发-->
-      <!-- TODO：判断哪些资源可以看作有效的资源 -->
-      <!-- 用户无需登录，就可以访问的页面，用逗号隔开。注意开头的/不能删除 -->
-      <!--
-      <filter
-            alias="/"
-            class="com.zizibujuan.drip.server.configurator.servlet.SessionFilter">
-            <init-param
-               name="excludes"
-               value="/,/index.html,/signup.html,/drip/exercises/list.html,/closeRenrenInviteWindow.html,/dripx/login_form.html">
-         	</init-param>
-      </filter>
-      -->
       
       
+      <!-- 是不是放在前面更合适呢？ -->
       <filter
             alias="/"
             class="com.zizibujuan.drip.server.servlet.AccessLogFilter">

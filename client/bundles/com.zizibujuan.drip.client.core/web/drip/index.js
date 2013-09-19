@@ -22,7 +22,6 @@ define([ "dojo/parser",
 	domStyle.set(win.body(), "visibility", "visible");
 	
 	var user = cookie("zzbj_user");
-	var loggedIn = cookie("loggedIn");
 	var link = dom.byId("link");
 	
 	var widget = null;

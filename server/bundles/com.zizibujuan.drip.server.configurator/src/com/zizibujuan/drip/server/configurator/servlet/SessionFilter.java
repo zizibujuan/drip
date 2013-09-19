@@ -37,9 +37,8 @@ public class SessionFilter implements Filter {
 	
 	private UserService userService;
 	
-	// 存放不需要授权的页面
-	private final List<String> excludes = new ArrayList<String>();
-	private final List<String> excludeRestUrls = new ArrayList<String>();
+	private final List<String> authPageRestUrls = new ArrayList<String>();
+	private final List<String> authActionRestUrls = new ArrayList<String>();
 
 	//TODO:如果session已经过期，但是access_token还有效，则自动登录
 	// 或者为了防止session过期，过10分钟就刷一次
@@ -49,16 +48,17 @@ public class SessionFilter implements Filter {
 		final HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
 		final HttpServletResponse httpResponse = (HttpServletResponse)servletResponse;
 		final String requestPath = httpRequest.getServletPath() + (httpRequest.getPathInfo() == null ? "" : httpRequest.getPathInfo()); //$NON-NLS-1$
-		if(this.isAuthenticatedPage(requestPath)){
-			if(!UserSession.isLogged(httpRequest)){
-				// 如果cookie中有logged_in和token，则执行登录操作
-				Cookie loggedInCookie = CookieUtil.get(httpRequest, "logged_in");
-				// TODO:用户每次登录，都自动分配一个token
+		
+		if(!UserSession.isLogged(httpRequest)){
+			// 如果cookie中有logged_in和token，则执行登录操作
+			Cookie loggedInCookie = CookieUtil.get(httpRequest, "logged_in");
+			// TODO:用户每次登录，都自动分配一个token
+			if(loggedInCookie != null){
 				String loggedInValue = loggedInCookie.getValue();
-				if(loggedInValue != null && loggedInValue.equals("1")){
+				if(loggedInValue.equals("1")){
 					Cookie tokenCookie = CookieUtil.get(httpRequest, "zzbj_user_token");
-					String token = tokenCookie.getValue();
-					if(token != null && !token.trim().isEmpty()){
+					if(tokenCookie != null){
+						String token = tokenCookie.getValue();
 						// 自动登录
 						UserInfo userInfo = userService.getByToken(token);
 						if(userInfo == null){
@@ -66,24 +66,27 @@ public class SessionFilter implements Filter {
 						}else{
 							UserSession.setUser(httpRequest, userInfo);
 						}
-						
 					}
+					
 				}
-				// 除了个人首页，其他页面都允许匿名用户访问
-				
-				// 跳转到登录界面
-				String fileName = "/" + WebConstants.PUBLIC_WELCOME_FILE_NAME;
-				if(RequestUtil.isAjax(httpRequest)){
-					// TODO:增加测试用例
-					String script = "<script>window.location.href='/';</script>";
-					ResponseUtil.toHTML(httpRequest, httpResponse, script);
-				}else{
-					httpResponse.setHeader("Cache-Control", "no-cache"); //$NON-NLS-1$ //$NON-NLS-2$
-					httpResponse.setHeader("Cache-Control", "no-store"); //$NON-NLS-1$ //$NON-NLS-2$
-					httpResponse.sendRedirect(fileName);
-				}
-				return;
 			}
+			
+		}
+		
+		if(this.isAuthenticatedPage(httpRequest) && !UserSession.isLogged(httpRequest)){
+			// 除了个人首页，其他页面都允许匿名用户访问
+			
+			// 跳转到登录界面
+			if(RequestUtil.isAjax(httpRequest)){
+				// TODO:增加测试用例
+				String script = "<script>window.location.href='/';</script>";
+				ResponseUtil.toHTML(httpRequest, httpResponse, script);
+			}else{
+				httpResponse.setHeader("Cache-Control", "no-cache"); //$NON-NLS-1$ //$NON-NLS-2$
+				httpResponse.setHeader("Cache-Control", "no-store"); //$NON-NLS-1$ //$NON-NLS-2$
+				httpResponse.sendRedirect("/");
+			}
+			return;
 		}
 		
 		
@@ -92,30 +95,29 @@ public class SessionFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		String excludesParameter = filterConfig.getInitParameter("excludes"); //$NON-NLS-1$
-		if (excludesParameter != null) {
-			StringTokenizer tokenizer = new StringTokenizer(excludesParameter, ",", false); //$NON-NLS-1$
-			while (tokenizer.hasMoreTokens()) {
-				String token = tokenizer.nextToken().trim();
-				excludes.add(token);
-			}
-		}
+
+		// 有两种访问页面的方式，一是直接访问html页面，另一种是通过rest url间接跳转
+		authPageRestUrls.add("/drip/dashboard.html");
 		
-		excludeRestUrls.add("/signup_check/email");
-		excludeRestUrls.add("/users/");
-		excludeRestUrls.add("/login/");
-		excludeRestUrls.add("/login/renren");
-		excludeRestUrls.add("/login/form");
+		
 		
 		userService = ServiceHolder.getDefault().getUserService();
 	}
 	
 	/**
 	 * 判断是否只有登录用户才可以访问
-	 * @param requestPath
+	 * @param httpRequest
 	 * @return 如果该页面之后登录用户才可以访问，则返回<code>true</code>;否则返回<code>false</code>
 	 */
-	private boolean isAuthenticatedPage(String requestPath) {
+	private boolean isAuthenticatedPage(HttpServletRequest httpRequest) {
+		if(!RequestUtil.isAjax(httpRequest)){
+			String requestPath = httpRequest.getServletPath() + (httpRequest.getPathInfo() == null ? "" : httpRequest.getPathInfo());
+			if(authPageRestUrls.contains(requestPath)){
+				return true;
+			}
+		}
+		return false;
+		
 		// 只要不在排除列表中的页面，都是需要授权访问的页面
 		//String excludePattern = "^(js|css|png|jpg|ico)";
 		
@@ -123,18 +125,22 @@ public class SessionFilter implements Filter {
 		//		1. 路径中不包含templates的html页面
 		// 		2. restful风格的链接
 		
-		logger.info("访问路径是"+requestPath);
+		//logger.info("访问路径是"+httpRequest);
+		
+		// 分两种权限：
+		//		1.页面级别的权限，即是否有权访问页面
+		//		2.操作级别的权限，即是否可以执行页面中的某一个操作
 		
 		// 如果是restful路径
-		if(requestPath.indexOf(".") == -1){
-			return !excludeRestUrls.contains(requestPath);
-		}
-		
-		if(!requestPath.endsWith(".html"))return false;
-		if(requestPath.endsWith(".html") && requestPath.contains("/templates/")) return false;
-		
-		
-		return !excludes.contains(requestPath);
+//		if(httpRequest.indexOf(".") == -1){
+//			return !excludeRestUrls.contains(httpRequest);
+//		}
+//		
+//		if(!httpRequest.endsWith(".html"))return false;
+//		if(httpRequest.endsWith(".html") && httpRequest.contains("/templates/")) return false;
+//		
+//		
+//		return !excludes.contains(httpRequest);
 	}
 
 	@Override

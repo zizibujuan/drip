@@ -106,6 +106,7 @@ public class RestHtmlFilter implements Filter {
 				
 				String firstSegment = path.segment(0);
 				if(firstSegment.equals(ACTION_NEW)){
+					// TODO：需要授权
 					if(newUrlMap.containsKey(servletPath)){
 						String realFilePath = newUrlMap.get(servletPath);
 						httpRequest.getRequestDispatcher(realFilePath).forward(httpRequest, httpResponse);
@@ -117,6 +118,7 @@ public class RestHtmlFilter implements Filter {
 				}
 				
 				if(firstSegment.equals(ACTION_EDIT)){
+					// TODO：需要授权
 					if(editUrlMap.containsKey(servletPath)){
 						String realFilePath = editUrlMap.get(servletPath);
 						httpRequest.getRequestDispatcher(realFilePath).forward(httpRequest, httpResponse);

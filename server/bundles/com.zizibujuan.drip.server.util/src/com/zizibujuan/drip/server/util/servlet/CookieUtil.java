@@ -18,7 +18,9 @@ public abstract class CookieUtil {
 			value = "";
 		}
 		Cookie cookie = new Cookie(name, value);
-		cookie.setMaxAge(maxAge);
+		if(maxAge > 0){
+			cookie.setMaxAge(maxAge);
+		}
 		if (domain != null && !"".equals(domain)) {
 			cookie.setDomain(domain);
 		}
