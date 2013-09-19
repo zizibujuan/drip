@@ -68,10 +68,10 @@ define([ "dojo/_base/declare",
 				var jsonData = {fileInfo: fileInfo, commitInfo: commitInfo};
 				xhr(newFilePathName, {method: this.method, data:JSON.stringify(jsonData)}).then(lang.hitch(this, function(data){
 					window.location.href = this.projectPath;
-				}), function(error){
+				}), lang.hitch(this,function(error){
 					// TODO:如果保存失败，则给出提示
 					console.error("创建文件失败", error);
-				});
+				}));
 			})));
 		}
 		

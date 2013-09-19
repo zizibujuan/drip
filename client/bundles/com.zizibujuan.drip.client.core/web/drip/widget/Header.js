@@ -1,5 +1,6 @@
 define(["dojo/_base/declare",
         "dojo/_base/lang",
+        "dojo/request/notify",
         "dojo/on",
         "dojo/cookie",
         "dojo/dom-class",
@@ -10,6 +11,7 @@ define(["dojo/_base/declare",
         "drip/user"], function(
 		declare,
 		lang,
+		notify,
 		on,
 		cookie,
 		domClass,
@@ -18,6 +20,14 @@ define(["dojo/_base/declare",
 		headerLoggedInTemplate,
 		headerLoggedOutTemplate,
 		user){
+	
+	// 监控xhr全局事件
+	notify("error", function(error){
+		if(error.response.status == 401 /*SC_UNAUTHORIZED*/){
+			// 约定ajax返回401的数据是一段js脚本。
+			eval(error.response.data);
+		}
+	});
 	
 	var COOKIE_KEY_LOGGED = "logged_in";
 	var COOKIE_KEY_LOGIN_NAME = "zzbj_user";

@@ -1,9 +1,6 @@
 package com.zizibujuan.drip.server.configurator.servlet;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -15,13 +12,14 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.servlet.ServiceHolder;
-import com.zizibujuan.drip.server.util.WebConstants;
 import com.zizibujuan.drip.server.util.servlet.CookieUtil;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
@@ -36,72 +34,69 @@ public class SessionFilter implements Filter {
 	private static final Logger logger = LoggerFactory.getLogger(SessionFilter.class);
 	
 	private UserService userService;
+	private UrlMapper urlMapper;
 	
-	private final List<String> authPageRestUrls = new ArrayList<String>();
-	private final List<String> authActionRestUrls = new ArrayList<String>();
-
-	//TODO:如果session已经过期，但是access_token还有效，则自动登录
-	// 或者为了防止session过期，过10分钟就刷一次
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
 			FilterChain filterChain) throws IOException, ServletException {
 		final HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
 		final HttpServletResponse httpResponse = (HttpServletResponse)servletResponse;
-		final String requestPath = httpRequest.getServletPath() + (httpRequest.getPathInfo() == null ? "" : httpRequest.getPathInfo()); //$NON-NLS-1$
 		
 		if(!UserSession.isLogged(httpRequest)){
-			// 如果cookie中有logged_in和token，则执行登录操作
-			Cookie loggedInCookie = CookieUtil.get(httpRequest, "logged_in");
-			// TODO:用户每次登录，都自动分配一个token
-			if(loggedInCookie != null){
-				String loggedInValue = loggedInCookie.getValue();
-				if(loggedInValue.equals("1")){
-					Cookie tokenCookie = CookieUtil.get(httpRequest, "zzbj_user_token");
-					if(tokenCookie != null){
-						String token = tokenCookie.getValue();
-						// 自动登录
-						UserInfo userInfo = userService.getByToken(token);
-						if(userInfo == null){
-							logger.error("自动登录失败，这个时候页面上会显示LoggedInHeader，出现不一致的情况");
-						}else{
-							UserSession.setUser(httpRequest, userInfo);
-						}
-					}
-					
+			tryAutoLogin(httpRequest);
+			
+		}
+		
+		if(!UserSession.isLogged(httpRequest)){
+			if(RequestUtil.isAjax(httpRequest)){
+				String servletPath = httpRequest.getServletPath();
+				String httpMethod = httpRequest.getMethod();
+				if(urlMapper.isAuthAction(servletPath, httpMethod)){
+					// 跳转到登录界面
+					String script = "window.location.href='/';";
+					ResponseUtil.toHTML(httpRequest, httpResponse, script, HttpServletResponse.SC_UNAUTHORIZED);
+					return;
+				}
+			}else{
+				if(this.isAuthenticatedPage(httpRequest)){
+					httpResponse.setHeader("Cache-Control", "no-cache"); //$NON-NLS-1$ //$NON-NLS-2$
+					httpResponse.setHeader("Cache-Control", "no-store"); //$NON-NLS-1$ //$NON-NLS-2$
+					httpResponse.sendRedirect("/");
+					return;
 				}
 			}
-			
 		}
-		
-		if(this.isAuthenticatedPage(httpRequest) && !UserSession.isLogged(httpRequest)){
-			// 除了个人首页，其他页面都允许匿名用户访问
-			
-			// 跳转到登录界面
-			if(RequestUtil.isAjax(httpRequest)){
-				// TODO:增加测试用例
-				String script = "<script>window.location.href='/';</script>";
-				ResponseUtil.toHTML(httpRequest, httpResponse, script);
-			}else{
-				httpResponse.setHeader("Cache-Control", "no-cache"); //$NON-NLS-1$ //$NON-NLS-2$
-				httpResponse.setHeader("Cache-Control", "no-store"); //$NON-NLS-1$ //$NON-NLS-2$
-				httpResponse.sendRedirect("/");
-			}
-			return;
-		}
-		
 		
 		filterChain.doFilter(servletRequest, servletResponse);
 	}
 
+	private void tryAutoLogin(final HttpServletRequest httpRequest) {
+		// 如果cookie中有logged_in和token，则执行登录操作
+		Cookie loggedInCookie = CookieUtil.get(httpRequest, "logged_in");
+		// TODO:用户每次登录，都自动分配一个token
+		if(loggedInCookie != null){
+			String loggedInValue = loggedInCookie.getValue();
+			if(loggedInValue.equals("1")){
+				Cookie tokenCookie = CookieUtil.get(httpRequest, "zzbj_user_token");
+				if(tokenCookie != null){
+					String token = tokenCookie.getValue();
+					// 自动登录
+					UserInfo userInfo = userService.getByToken(token);
+					if(userInfo == null){
+						logger.error("自动登录失败，这个时候页面上会显示LoggedInHeader，出现不一致的情况");
+					}else{
+						UserSession.setUser(httpRequest, userInfo);
+					}
+				}
+				
+			}
+		}
+	}
+
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-
-		// 有两种访问页面的方式，一是直接访问html页面，另一种是通过rest url间接跳转
-		authPageRestUrls.add("/drip/dashboard.html");
-		
-		
-		
 		userService = ServiceHolder.getDefault().getUserService();
+		urlMapper = new UrlMapper();
 	}
 	
 	/**
@@ -110,41 +105,16 @@ public class SessionFilter implements Filter {
 	 * @return 如果该页面之后登录用户才可以访问，则返回<code>true</code>;否则返回<code>false</code>
 	 */
 	private boolean isAuthenticatedPage(HttpServletRequest httpRequest) {
-		if(!RequestUtil.isAjax(httpRequest)){
-			String requestPath = httpRequest.getServletPath() + (httpRequest.getPathInfo() == null ? "" : httpRequest.getPathInfo());
-			if(authPageRestUrls.contains(requestPath)){
-				return true;
-			}
-		}
-		return false;
+		String pathInfo = httpRequest.getPathInfo();
+		IPath path = (pathInfo == null ? Path.ROOT : new Path(pathInfo));
+		// 通过Ipath解析各种不安常规写的路径，如//a//b这种写两个/，也是合法路径，但是直接equal却与/a/b不同，实际上是一回事。
 		
-		// 只要不在排除列表中的页面，都是需要授权访问的页面
-		//String excludePattern = "^(js|css|png|jpg|ico)";
-		
-		// 只有两种资源才是有效的程序模块：
-		//		1. 路径中不包含templates的html页面
-		// 		2. restful风格的链接
-		
-		//logger.info("访问路径是"+httpRequest);
-		
-		// 分两种权限：
-		//		1.页面级别的权限，即是否有权访问页面
-		//		2.操作级别的权限，即是否可以执行页面中的某一个操作
-		
-		// 如果是restful路径
-//		if(httpRequest.indexOf(".") == -1){
-//			return !excludeRestUrls.contains(httpRequest);
-//		}
-//		
-//		if(!httpRequest.endsWith(".html"))return false;
-//		if(httpRequest.endsWith(".html") && httpRequest.contains("/templates/")) return false;
-//		
-//		
-//		return !excludes.contains(httpRequest);
+		return urlMapper.isAuthPage(httpRequest.getServletPath(), path);
 	}
 
 	@Override
 	public void destroy() {
-		// do nothing
+		urlMapper = null;
+		userService = null;
 	}
 }

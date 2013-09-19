@@ -1,8 +1,6 @@
 package com.zizibujuan.drip.server.configurator.servlet;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -27,44 +25,12 @@ import com.zizibujuan.drip.server.util.servlet.RequestUtil;
  */
 // TODO：添加测试用例。
 public class RestHtmlFilter implements Filter {
-
-	private static final String ROOT_WEB = "/drip";
-	private static final String LIST_HTML = "/list.html";
-	private static final String HTML = ".html";
 	
-	private static final String ACTION_NEW = "new";
-	private static final String ACTION_EDIT = "edit";
-	
-	private Map<String, String> listUrlMap; // 跳转到查询列表页面，如果是单条记录，则跳转到视图页面
-	private Map<String, String> newUrlMap; // 跳转到新建资源页面
-	private Map<String, String> editUrlMap; // 跳转到编辑页面
-	
-	private Map<String, String> homeUrlMap; // 放置各种内容的内容首页链接，如题库首页，笔记项目首页等
+	private UrlMapper urlMapper;
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		listUrlMap = new HashMap<String, String>();
-		listUrlMap.put("/following", "/drip/relation.html");
-		listUrlMap.put("/followers", "/drip/relation.html");
-		listUrlMap.put("/users", "/drip/profile.html");
-		listUrlMap.put("/projects", "/doc/projects/list.html");
-		listUrlMap.put("/blob", "/doc/files/blob.html");
-				
-		// new的一个约定，就是最后一个字母是new，TODO：此时要确保用户不会使用这个关键字
-		newUrlMap = new HashMap<String, String>();
-		newUrlMap.put("/files", "/doc/files/new.html");
-		newUrlMap.put("/projects", "/doc/projects/new.html");
-		
-		
-		// edit
-		editUrlMap = new HashMap<String, String>();
-		editUrlMap.put("/files", "/doc/files/edit.html");
-		
-		homeUrlMap = new HashMap<String, String>();
-		// 所有项目页面,项目首页， key为path segment
-		homeUrlMap.put("explore_projects", "/doc/projects.html");
-		// 所有习题页面，可进一步在这个页面中分门别类
-		homeUrlMap.put("explore_exercises", "/drip/exercises.html");
+		urlMapper = new UrlMapper();
 	}
 
 	/**
@@ -95,59 +61,10 @@ public class RestHtmlFilter implements Filter {
 			String pathInfo = httpRequest.getPathInfo();
 			IPath path = (pathInfo == null ? Path.ROOT : new Path(pathInfo));
 			
-			if(!servletPath.isEmpty()){
-				int segmentCount = path.segmentCount();
-				if(segmentCount == 0){
-					//FIXME:暂时支持一级路径。即把所有的list的html容器都放在根目录下
-					String fileName = ROOT_WEB + servletPath + LIST_HTML;
-					httpRequest.getRequestDispatcher(fileName).forward(httpRequest, httpResponse);
-					return;
-				}
-				
-				String firstSegment = path.segment(0);
-				if(firstSegment.equals(ACTION_NEW)){
-					// TODO：需要授权
-					if(newUrlMap.containsKey(servletPath)){
-						String realFilePath = newUrlMap.get(servletPath);
-						httpRequest.getRequestDispatcher(realFilePath).forward(httpRequest, httpResponse);
-					}else{
-						String fileName = ROOT_WEB + servletPath + pathInfo + HTML;
-						httpRequest.getRequestDispatcher(fileName).forward(httpRequest, httpResponse);
-					}
-					return;
-				}
-				
-				if(firstSegment.equals(ACTION_EDIT)){
-					// TODO：需要授权
-					if(editUrlMap.containsKey(servletPath)){
-						String realFilePath = editUrlMap.get(servletPath);
-						httpRequest.getRequestDispatcher(realFilePath).forward(httpRequest, httpResponse);
-					}
-					return;
-				}
-				
-				
-				if(listUrlMap.containsKey(servletPath)){
-					String realFilePath = listUrlMap.get(servletPath);
-					httpRequest.getRequestDispatcher(realFilePath).forward(httpRequest, httpResponse);
-					return;
-				}
-				
-				
-			}else{
-				if(path.segmentCount() == 1){
-					String firstSegment = path.segment(0);
-					if(homeUrlMap.containsKey(firstSegment)){
-						String realFilePath = homeUrlMap.get(firstSegment);
-						httpRequest.getRequestDispatcher(realFilePath).forward(httpRequest, httpResponse);
-					}else{
-						// 寻找放在根目录下的html文件
-						String fileName = pathInfo + HTML;
-						httpRequest.getRequestDispatcher(fileName).forward(httpRequest, httpResponse);
-					}
-					
-					return;
-				}
+			String realFilePath = urlMapper.getResourcePath(servletPath, path);
+			if(realFilePath != null){
+				httpRequest.getRequestDispatcher(realFilePath).forward(httpRequest, httpResponse);
+				return;
 			}
 		}
 		
@@ -156,25 +73,7 @@ public class RestHtmlFilter implements Filter {
 
 	@Override
 	public void destroy() {
-		
-		if (listUrlMap != null) {
-			listUrlMap.clear();
-			listUrlMap = null;
-		}
-		if (newUrlMap != null) {
-			newUrlMap.clear();
-			newUrlMap = null;
-		}
-		if (editUrlMap != null) {
-			editUrlMap.clear();
-			editUrlMap = null;
-		}
-		if(homeUrlMap != null){
-			homeUrlMap.clear();
-			homeUrlMap = null;
-		}
-		
-		
+		urlMapper = null;
 	}
 
 }
