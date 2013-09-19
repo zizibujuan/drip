@@ -4,16 +4,13 @@
 <meta charset="UTF-8">
 <link type="text/css" rel="stylesheet" href="/drip/resources/app.css" />
 <link type="text/css" rel="stylesheet" href="/drip/resources/font-awesome/css/font-awesome.css" />
-<title>我的首页 孜孜不倦 · 一起交流学习心得，共同优化教育资源。</title>
+<title>我的首页 孜孜不倦 · 协作写笔记，快乐做习题。</title>
 <script type="text/javascript" 
 	data-dojo-config="
 		async:true,
 		parseOnLoad:false,
 		isDebug:true" 
 	src="/dojo/dojo.js"></script>
-<script type="text/javascript"
-   src="/mathJax/MathJax.js?config=MML_HTMLorMML">
-</script>
 <script type="text/javascript" src="drip/renren.js"></script>
 <script type="text/javascript">
 require(["dojo/ready",
@@ -26,6 +23,7 @@ require(["dojo/ready",
          "dojo/request/xhr",
          "dojo/store/JsonRest",
          "dijit/registry",
+         "drip/widget/Header",
          "drip/user",
          "drip/Activity",
          "dojo/domReady!"],function(
@@ -39,7 +37,10 @@ require(["dojo/ready",
         		 xhr,
         		 JsonRest,
         		 registry,
+        		 Header,
         		 user){
+	var header = new Header({}, "header");
+	
 	// 加载左侧栏目中的数据，因为左侧没有用dijit部件，所无需放在ready方法中
 	user.getLoggedUserInfo().then(function(userInfo){
 		console.log("登录用户信息:", userInfo);
@@ -50,12 +51,6 @@ require(["dojo/ready",
 		profileImg.src = userInfo.largeImageUrl || "/drip/resources/images/profile_180_180.gif";
 		dom.byId("userName").innerHTML = displayName;
 		
-		// 在顶部用户信息区域显示
-		var topProfileImage = dom.byId("topProfileImage");
-		topProfileImage.src = userInfo.smallImageUrl || "/drip/resources/images/profile_50_50.gif";
-		topProfileImage.alt = displayName;
-		dom.byId("topUserName").innerHTML = displayName;
-		dom.byId("largeImageLink").href = dom.byId("top_user_link").href = "/users/" + userInfo.digitalId;
 		
 		// 在关注和粉丝的链接上加上登录者的用户标识
 		// 切记：出现在rest链接中的，只能是本地用户标识，而不是第三方网站或映射用户标识
@@ -71,8 +66,6 @@ require(["dojo/ready",
 		dom.byId("my_answer_count").innerHTML = statistics.answerCount;
 		dom.byId("my_exer_count").innerHTML = statistics.exerciseCount;
 	});
-	
-	on(dom.byId("logout"),"click",user.logout);
 	
 	var store = new JsonRest({
 		 target:"/activities/"
@@ -219,34 +212,43 @@ function sendRenrenRequest(){
 </script>
 
 <div id="wrapper" class="drip_body">
-	<div class="drip_header drip_header_logged_in" style="position: fixed; width: 100%">
-		<div class="container clearfix">
-			<a href="/" class="drip_header_logo" style="height:25px;">
-			 	<!-- 设置文本的高度 -->
-				<img alt="孜孜不倦" style="height:25px;" src="drip/resources/images/home_logo.png">
-			</a>
-			<span class="drip_version">测试版</span>
-			
-			<div class="divider-vertical"></div>
-			<ul class="drip_top_nav">
-				<li><a href="/" class="current">首页</a></li>
-				<li><a href="/exercises">题库</a></li>
-				<li><a href="/help">帮助</a></li>
-			</ul>
-			<ul class="drip_user_links">
-				<li>
-					<a href="#" id="top_user_link" class="drip_name">
-						<img width="20px" height="20px" id="topProfileImage">
-						<span id="topUserName"></span>
-					</a>
-				</li>
-				<li><a href="/exercises/new" title="录入新习题" class="minibutton primary"><i class="icon-edit"></i> 录入习题</a></li>
-				<li><button class="minibutton" id="logout"><i class="icon-signout"></i> 退出</button></li>
-			</ul>
-		</div>
-	</div>
+	<div id="header" style="min-height:43px"></div>
+	<div class="pageHeader clearfix ">
+		<!-- 放置操作按钮 -->
+		<div class="container">
 
-	<div class="container" style="padding-top: 60px;">
+				<ul class="pageHeader-actions">
+
+					<li>
+						<a class="minibutton">写笔记</a>
+					</li>
+
+					<li>
+					<!-- 录入习题 
+							<li><a  class="minibutton primary"><i class="icon-edit"></i> 录入习题</a></li>
+					-->
+						<a href="/exercises/new" title="录入新习题" class="minibutton"></i> 录数学题</a>
+					</li>
+
+
+				</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			</div>
+	</div>
+	<div class="container">
 		<div>
 			<div class="drip_main">
 				<div class="clearfix">
@@ -326,6 +328,10 @@ function sendRenrenRequest(){
 	
 	<div class="footer">footer</div>
 </div>
+
+<script type="text/javascript" defer="defer"
+   src="/mathJax/MathJax.js?config=MML_HTMLorMML">
+</script>
 </body>
 </html>
 

@@ -1,4 +1,4 @@
 //>>built
-define("drip/index","dojo/parser dojo/_base/window dojo/_base/event dojo/cookie dojo/dom dojo/dom-style dojo/on drip/mixLogin/Register drip/mixLogin/Login dojo/domReady!".split(" "),function(d,g,h,e,k,l,m,n,p){function f(b){a&&a.destroyRecursive();b?(a=new n,c.innerHTML="\u6211\u8981\u767b\u5f55"):(a=new p,c.innerHTML="\u6211\u8981\u6ce8\u518c\u4e00\u4e2a\u65b0\u5e10\u53f7");a.placeAt("authContainer");a.startup()}l.set(g.body(),"visibility","visible");d=e("zzbj_user");e("loggedIn");var c=k.byId("link"),
-a=null,b=!1,b=null==d?!0:!1;f(b);m(c,"click",function(a){h.stop(a);b=!b;f(b)})});
+define("drip/index","dojo/parser dojo/_base/window dojo/_base/event dojo/cookie dojo/dom dojo/dom-style dojo/on drip/mixLogin/Register drip/mixLogin/Login dojo/domReady!".split(" "),function(d,f,g,h,k,l,m,n,p){function e(b){a&&a.destroyRecursive();b?(a=new n,c.innerHTML="\u6211\u8981\u767b\u5f55"):(a=new p,c.innerHTML="\u6211\u8981\u6ce8\u518c\u4e00\u4e2a\u65b0\u5e10\u53f7");a.placeAt("authContainer");a.startup()}l.set(f.body(),"visibility","visible");d=h("zzbj_user");var c=k.byId("link"),a=null,
+b=!1,b=null==d?!0:!1;e(b);m(c,"click",function(a){g.stop(a);b=!b;e(b)})});
 //@ sourceMappingURL=index.js.map

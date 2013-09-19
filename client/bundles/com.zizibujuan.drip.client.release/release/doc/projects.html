@@ -13,16 +13,22 @@
 	src="/dojo/dojo.js"></script>
 <script type="text/javascript">
 	// 第一个版本暂时不支持分页
-	require([ "doc/Projects",
+	require([ "drip/widget/Header",
+	          "doc/Projects",
 	          "dojo/domReady!"], function(
+	        		  Header,
 	        		  Projects){
+		var header = new Header({}, "header");
 		var projects = new Projects({url:"/projects", query:{search: "*"}}, "project_list");
 	});
 </script>
 </head>
-<body>
+<body class="claro">
+<div id="wrapper" class="drip_body">
+	<div id="header" style="min-height:43px"></div>
 	<div id="project_list">
 	
 	</div>
+</div>
 </body>
 </html>

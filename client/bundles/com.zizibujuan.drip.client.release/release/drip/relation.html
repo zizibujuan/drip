@@ -20,6 +20,7 @@ require(["dojo/parser",
          "dojo/topic",
          "dojo/_base/window",
          "drip/user",
+         "drip/widget/Header",
          "drip/MemberList",
          "dojo/domReady!"], function(
         		 parser,
@@ -29,7 +30,10 @@ require(["dojo/parser",
         		 topic,
         		 win,
         		 user,
+        		 Header,
         		 MemberList){
+	var header = new Header({}, "header");
+	
 	// TODO:获取要查看用户信息的标识
 	// 第一个版本先从cookie中获取，后续编码改为在后台jsp或者其他模板语言中赋值
 	// 或者从链接中的参数中获取值
@@ -37,20 +41,8 @@ require(["dojo/parser",
 	var action = splitPathName[1];
 	var userId = splitPathName[2];
 	
-	on(dom.byId("logout"),"click",user.logout);
 	
-	// 登录用户信息,几乎每个登录页面都有这段代码
-	user.getLoggedUserInfo().then(function(userInfo){
-		console.log("登录用户信息:", userInfo);
-		// 在右侧用户信息区域显示
-		var displayName = userInfo.nickName;
-		// 在顶部用户信息区域显示
-		var topProfileImage = dom.byId("topProfileImage");
-		topProfileImage.src = userInfo.smallImageUrl || "/drip/resources/images/profile_50_50.gif";
-		topProfileImage.alt = displayName;
-		dom.byId("topUserName").innerHTML = displayName;
-		dom.byId("top_user_link").href = "/users/" + userInfo.digitalId;
-	});
+	
 	var followingCount = dom.byId("following_count");
 	user.getSimpleUserInfo(userId).then(function(userInfo){
 		console.log("simple user info:", userInfo);
@@ -102,28 +94,8 @@ require(["dojo/parser",
 </head>
 <body class="claro">
 	<div id="wrapper" class="drip_body">
-		<div class="drip_header drip_header_logged_in" style="position: fixed; width: 100%">
-			<div class="container clearfix">
-				<a href="/" class="drip_header_logo" style="height:25px;">
-					<img alt="孜孜不倦" style="height:25px;" src="/drip/resources/images/home_logo.png">
-				</a>
-				<div class="divider-vertical"></div>
-				<ul class="drip_top_nav">
-					<li><a href="/">首页</a></li>
-					<li><a href="/exercises">题库</a></li>
-				</ul>
-				<ul class="drip_user_links">
-					<li>
-					<a href="#" id="top_user_link" class="drip_name">
-						<img width="20px" height="20px" id="topProfileImage">
-						<span id="topUserName"></span>
-					</a>
-					</li>
-					<li><a href="/exercises/new" title="录入新习题" class="minibutton primary">录入习题</a></li>
-					<li><input type="button" title="退出" id="logout" value="退出" class="logout"></input></li>
-				</ul>
-			</div>
-		</div>
+		<div id="header" style="min-height:43px"></div>
+		
 		<div class="container" style="padding-top: 60px;">
 			<div>
 				<h1 style="line-height: 50px; font-weight: bold;font-size: 30px">

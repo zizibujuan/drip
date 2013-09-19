@@ -4,16 +4,13 @@
 <meta charset="UTF-8">
 <link type="text/css" rel="stylesheet" href="/drip/resources/app.css" />
 <link type="text/css" rel="stylesheet" href="/drip/resources/font-awesome/css/font-awesome.css" />
-<title>新建数学习题 · 孜孜不倦</title>
+<title>录入数学习题 · 孜孜不倦</title>
 <script type="text/javascript" 
 	data-dojo-config="
 		async:true,
 		parseOnLoad:false,
 		isDebug:true" 
 	src="/dojo/dojo.js"></script>
-<script type="text/javascript"
-   src="/mathJax/MathJax.js?config=MML_HTMLorMML">
-</script>
 <script type="text/javascript">
 require(["dojo/ready", 
          "dojo/on",
@@ -22,6 +19,7 @@ require(["dojo/ready",
          "dijit/registry",
          "drip/exercises/ExerciseForm",
          "drip/user",
+         "drip/widget/Header",
          "dojo/parser",
          "dijit/form/Button",
          "dojo/domReady!"],function(
@@ -31,8 +29,10 @@ require(["dojo/ready",
         		 JsonRest,
         		 registry,
         		 ExerciseForm,
-        		 user){
-	on(dom.byId("logout"),"click",user.logout);
+        		 user,
+        		 Header){
+	var header = new Header({}, "header");
+	
 	user.getLoggedUserInfo().then(function(userInfo){
 		// 在顶部用户信息区域显示
 		var displayName = userInfo.nickName;
@@ -68,53 +68,15 @@ require(["dojo/ready",
 
 <body class="claro">
 	<div id="wrapper" class="drip_body">
-		<div class="drip_header drip_header_logged_in" style="position: fixed; width: 100%">
-			<div class="container clearfix">
-				<a href="/" class="drip_header_logo" style="height:25px;">
-					<img alt="孜孜不倦" style="height:25px;" src="/drip/resources/images/home_logo.png">
-				</a>
-				<span class="drip_version">测试版</span>
-				<div class="divider-vertical"></div>
-				<ul class="drip_top_nav">
-					<li><a href="/">首页</a></li>
-					<li><a href="/exercises">题库</a></li>
-					<li><a href="/help">帮助</a></li>
-				</ul>
-				<ul class="drip_user_links">
-					<li>
-					<a href="#" class="drip_name">
-						<img width="20px" height="20px" id="topProfileImage">
-						<span id="topUserName"></span>
-					</a>
-					</li>
-					<li><a href="/exercises/new" title="录入新习题" class="minibutton primary selected"><i class="icon-edit"></i> 录入习题</a></li>
-					<li><button class="minibutton" id="logout"><i class="icon-signout"></i> 退出</button></li>
-				</ul>
-			</div>
-		</div>
-		<!-- 
-		<div data-dojo-type="Header" id="header">
-			
-		</div>
-		 -->
+		<div id="header" style="min-height:43px"></div>
 		<div id="main" class="container" style="padding-top: 60px;">
 			<!-- <label style="font-size: 18px; font-weight: bold">录入新习题</label> -->
 			<div style="margin-top: 10px;" id="formContainer">
 			</div>
 		</div>
 	</div>
-	<!-- 
-	<div style="margin-top: 60px">
-		<div class="wrapper">
-			<div style="padding: 3px; margin-bottom: 10px; border-radius: 3px; background: #eee">
-				<div style="border: 1px solid #cacaca; background: #fbfbfb; padding-left: 10px; padding-right: 10px">
-					<div style="padding-top: 5px; padding-bottom: 10px;" data-dojo-attach-point="divContent">
-						<div data-dojo-type="drip/Editor" style="height:350px" id="editor" data-dojo-props=""></div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	-->
 </body>
+<script type="text/javascript"
+   src="/mathJax/MathJax.js?config=MML_HTMLorMML">
+</script>
 </html>

@@ -14,18 +14,19 @@
 		parseOnLoad:false,
 		isDebug:true" 
 	src="/dojo/dojo.js"></script>
-<script type="text/javascript"
-   src="/mathJax/MathJax.js?config=MML_HTMLorMML">
-</script>
+
 <script type="text/javascript">
 require(["dojo/ready", 
          "dijit/registry",
+         "drip/widget/Header",
          "dojo/parser",
          "dijit/form/Button",
          "drip/Exercise",
          "dojo/domReady!"],function(
         		 ready,
-        		 registry){
+        		 registry,
+        		 Header){
+	var header = new Header({}, "header");
 	ready(function(){
 		var btnNewExercise = registry.byId("btnNewExercise");
 		btnNewExercise.on("click",function(e){
@@ -42,24 +43,15 @@ require(["dojo/ready",
 </script>
 </head>
 <body class="claro">
-<div id="wrapper">
-	<div class="drip_header drip_header_logged_out">
-		<div class="container clearfix">
-			<a href="/" class="drip_header_logo">
-				<img alt="孜孜不倦" width="140px" height="40px" src="drip/resources/images/home_logo.png">
-			</a>
-			<span class="drip_version">测试版</span>
-			<ul class="drip_top_nav">
-				<li><a href="/exercises">题库</a></li>
-				<!-- <li><a href="#">开发博客</a></li>  -->
-				<!-- 提供新建习题操作，如果没有登录时，点击后跳到登录页面 -->
-			</ul>
-		</div>
-	</div>
+<div id="wrapper" class="drip_body">
+	<div id="header" style="min-height:43px"></div>
 	<!-- 容器 -->
 	<div style="margin-top: 20px" class="container">
 		<div data-dojo-type="Exercise" id="exercises"></div>
 	</div>
 </div>
+<script type="text/javascript"
+   src="/mathJax/MathJax.js?config=MML_HTMLorMML">
+</script>
 </body>
 </html>
