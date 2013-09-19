@@ -11,13 +11,18 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.zizibujuan.drip.server.model.UserInfo;
+import com.zizibujuan.drip.server.service.UserService;
+import com.zizibujuan.drip.server.servlet.ServiceHolder;
 import com.zizibujuan.drip.server.util.WebConstants;
+import com.zizibujuan.drip.server.util.servlet.CookieUtil;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
 import com.zizibujuan.drip.server.util.servlet.UserSession;
@@ -29,6 +34,8 @@ import com.zizibujuan.drip.server.util.servlet.UserSession;
  */
 public class SessionFilter implements Filter {
 	private static final Logger logger = LoggerFactory.getLogger(SessionFilter.class);
+	
+	private UserService userService;
 	
 	// 存放不需要授权的页面
 	private final List<String> excludes = new ArrayList<String>();
@@ -44,6 +51,26 @@ public class SessionFilter implements Filter {
 		final String requestPath = httpRequest.getServletPath() + (httpRequest.getPathInfo() == null ? "" : httpRequest.getPathInfo()); //$NON-NLS-1$
 		if(this.isAuthenticatedPage(requestPath)){
 			if(!UserSession.isLogged(httpRequest)){
+				// 如果cookie中有logged_in和token，则执行登录操作
+				Cookie loggedInCookie = CookieUtil.get(httpRequest, "logged_in");
+				// TODO:用户每次登录，都自动分配一个token
+				String loggedInValue = loggedInCookie.getValue();
+				if(loggedInValue != null && loggedInValue.equals("1")){
+					Cookie tokenCookie = CookieUtil.get(httpRequest, "zzbj_user_token");
+					String token = tokenCookie.getValue();
+					if(token != null && !token.trim().isEmpty()){
+						// 自动登录
+						UserInfo userInfo = userService.getByToken(token);
+						if(userInfo == null){
+							logger.error("自动登录失败，这个时候页面上会显示LoggedInHeader，出现不一致的情况");
+						}else{
+							UserSession.setUser(httpRequest, userInfo);
+						}
+						
+					}
+				}
+				// 除了个人首页，其他页面都允许匿名用户访问
+				
 				// 跳转到登录界面
 				String fileName = "/" + WebConstants.PUBLIC_WELCOME_FILE_NAME;
 				if(RequestUtil.isAjax(httpRequest)){
@@ -79,6 +106,8 @@ public class SessionFilter implements Filter {
 		excludeRestUrls.add("/login/");
 		excludeRestUrls.add("/login/renren");
 		excludeRestUrls.add("/login/form");
+		
+		userService = ServiceHolder.getDefault().getUserService();
 	}
 	
 	/**

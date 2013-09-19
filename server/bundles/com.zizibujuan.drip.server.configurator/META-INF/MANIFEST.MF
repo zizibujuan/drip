@@ -5,7 +5,9 @@ Bundle-SymbolicName: com.zizibujuan.drip.server.configurator;singleton:=true
 Bundle-Version: 0.0.1.qualifier
 Bundle-Vendor: zizibujuan.com
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: com.zizibujuan.drip.server.servlet,
+Import-Package: com.zizibujuan.drip.server.model,
+ com.zizibujuan.drip.server.service,
+ com.zizibujuan.drip.server.servlet,
  com.zizibujuan.drip.server.servlet.admin,
  com.zizibujuan.drip.server.util,
  com.zizibujuan.drip.server.util.servlet,

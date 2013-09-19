@@ -85,6 +85,13 @@ public interface UserDao {
 	 */
 	UserInfo getByConfirmKey(String confirmKey);
 	
+	/**
+	 * 根据token获取用户信息
+	 * 
+	 * @param token
+	 * @return 用户信息
+	 */
+	UserInfo getByToken(String token);
 	
 	
 	

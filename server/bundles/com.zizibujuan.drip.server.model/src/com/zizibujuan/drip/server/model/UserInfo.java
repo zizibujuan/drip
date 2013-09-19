@@ -16,6 +16,7 @@ public class UserInfo {
 	private String password;
 	private String introduce;
 	private String confirmKey;
+	private String accessToken;
 	
 	private String sex;
 	private boolean active;
@@ -219,6 +220,18 @@ public class UserInfo {
 
 	public void setSiteId(int siteId) {
 		this.siteId = siteId;
+	}
+
+	/**
+	 * 获取token，这个token用来标识用户的登录信息
+	 * @return token
+	 */
+	public String getAccessToken() {
+		return accessToken;
+	}
+
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
 	}
 	
 	

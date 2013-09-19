@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.text.MessageFormat;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
@@ -93,7 +94,8 @@ public class UserServiceImpl implements UserService {
 		// 添加用户头像
 		setAvatars(userInfo);
 		// 更新用户登录状态
-		userAttributesDao.updateLoginState(userInfo.getId());
+		String token = UUID.randomUUID().toString().replace("-", "");
+		userAttributesDao.updateLoginState(userInfo.getId(),token);
 		return userInfo;
 	}
 
@@ -104,6 +106,8 @@ public class UserServiceImpl implements UserService {
 		userInfo.setLargerImageUrl(avatars.get("largerImageUrl"));
 		userInfo.setxLargeImageUrl(avatars.get("xLargeImageUrl"));
 	}
+	
+	
 	
 	@Override
 	public UserInfo getByLoginName(String loginName) {
@@ -124,6 +128,19 @@ public class UserServiceImpl implements UserService {
 	public UserInfo getByConfirmKey(String confirmKey) {
 		return userDao.getByConfirmKey(confirmKey);
 	}
+	
+	@Override
+	public UserInfo getByToken(String token) {
+		return userDao.getByToken(token);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -146,7 +163,8 @@ public class UserServiceImpl implements UserService {
 	//TODO:需要将获取本地用户信息和获取第三方用户信息的接口统一。
 	@Override
 	public Map<String, Object> login(Long localUserId, Long connectUserId) {
-		userAttributesDao.updateLoginState(connectUserId);
+		String token = null;// TODO:获取第三方网站的token
+		userAttributesDao.updateLoginState(connectUserId, token);
 		
 		// 第三方网站注册用户
 		// 获取基本信息
@@ -329,5 +347,5 @@ public class UserServiceImpl implements UserService {
 			this.localUserStatisticsDao = null;
 		}
 	}
-	
+
 }

@@ -73,6 +73,8 @@ public class UserServlet extends BaseServlet {
 			if(userInfo != null){
 				// 登录成功
 				UserSession.setUser(req, userInfo);
+				CookieUtil.set(resp, "logged_in", "1", null, -1);
+				CookieUtil.set(resp, "zzbj_user_token", userInfo.getAccessToken(), null, -1);
 				ResponseUtil.toJSON(req, resp, new HashMap<String, Object>());
 			}else{
 				// 注册成功，登录失败，返回登录页面

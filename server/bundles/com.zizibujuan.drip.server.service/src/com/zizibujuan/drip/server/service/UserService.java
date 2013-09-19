@@ -77,6 +77,14 @@ public interface UserService {
 	UserInfo login(String login, String password);
 	
 	/**
+	 * 根据token获取用户信息
+	 * 
+	 * @param token
+	 * @return 用户信息
+	 */
+	 UserInfo getByToken(String token);
+	
+	/**
 	 * 根据登录名获取用户的基本信息
 	 * 
 	 * @param loginName 登录名
@@ -254,6 +262,5 @@ public interface UserService {
 	 */
 	Map<String, Object> getLocalUserStatistics(Long localUserId);
 
-	
 
 }

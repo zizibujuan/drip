@@ -134,6 +134,14 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	public UserInfo getByConfirmKey(String confirmKey) {
 		return DatabaseUtil.queryForObject(getDataSource(), SQL_GET_USER_INFO_BY_CONFIRM_KEY, new UserInfoRowMapper(), confirmKey);
 	}
+	
+	private static final String SQL_GET_USER_INFO_BY_TOKEN = SQL_GET_USER_INFO
+			+ "WHERE "
+			+ "ACCESS_TOKEN=?";
+	@Override
+	public UserInfo getByToken(String token) {
+		return DatabaseUtil.queryForObject(getDataSource(), SQL_GET_USER_INFO_BY_TOKEN, new UserInfoRowMapper(), token);
+	}
 		
 	private static final String SQL_UPDATE_ACTIVE_USER = "UPDATE DRIP_USER_INFO "
 			+ "SET "
@@ -174,7 +182,6 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 				userInfo.setId(rs.getLong(1));
 				userInfo.setLoginName(rs.getString(2));
 				userInfo.setEmail(rs.getString(3));
-				
 				return userInfo;
 			}
 		}, login, md5Password);

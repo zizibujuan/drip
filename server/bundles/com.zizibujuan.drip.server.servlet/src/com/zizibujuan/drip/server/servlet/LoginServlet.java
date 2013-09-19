@@ -224,6 +224,7 @@ public class LoginServlet extends BaseServlet {
 				// 在cookie中添加是否登录标记
 				CookieUtil.set(resp, "zzbj_user", existUserInfo.getLoginName(), null, 365*24*60*60/*一年有效*/);
 				CookieUtil.set(resp, "logged_in", "1", null, -1);
+				CookieUtil.set(resp, "zzbj_user_token", req.getSession().getId(), null, -1);
 				// 返回到客户端，然后客户端跳转到首页
 				ResponseUtil.toJSON(req, resp, new HashMap<String, Object>());
 				return;
