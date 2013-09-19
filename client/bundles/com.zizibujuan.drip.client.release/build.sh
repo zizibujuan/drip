@@ -23,7 +23,7 @@ cp $DEVDIR/com.zizibujuan.drip.client.core/web/baidu_verify_3Em7IPlFxO.html $DIS
 cp $DEVDIR/com.zizibujuan.drip.client.core/web/google4361b96ddcf23ebc.html $DISTDIR/google4361b96ddcf23ebc.html
 
 # 如果版本没有变化，就不拷贝
-grep -q 1.9.0 $SRCDIR/dojo/package.json
+grep -q 1.10.0-pre $SRCDIR/dojo/package.json
 if [ $? -eq 0 ]
 then
       echo "dojo 版本没有变化，因此不拷贝"
