@@ -29,6 +29,7 @@ import com.zizibujuan.drip.server.servlet.authentication.Oauth2Exception;
 import com.zizibujuan.drip.server.servlet.authentication.RenrenHelper;
 import com.zizibujuan.drip.server.util.OAuthConstants;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
+import com.zizibujuan.drip.server.util.servlet.CookieUtil;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
 import com.zizibujuan.drip.server.util.servlet.UserSession;
@@ -220,6 +221,9 @@ public class LoginServlet extends BaseServlet {
 				// 在登录的时候设置帐号来源
 				existUserInfo.setSiteId(OAuthConstants.ZIZIBUJUAN);
 				UserSession.setUser(req, existUserInfo);
+				// 在cookie中添加是否登录标记
+				CookieUtil.setCookie(resp, "zzbj_user", existUserInfo.getLoginName(), null, 365*24*60*60/*一年有效*/);
+				CookieUtil.setCookie(resp, "logged_in", "1", null, -1);
 				// 返回到客户端，然后客户端跳转到首页
 				ResponseUtil.toJSON(req, resp, new HashMap<String, Object>());
 				return;

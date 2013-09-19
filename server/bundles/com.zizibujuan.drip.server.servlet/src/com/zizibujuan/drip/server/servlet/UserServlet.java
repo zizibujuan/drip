@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
+import com.zizibujuan.drip.server.util.servlet.CookieUtil;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
 import com.zizibujuan.drip.server.util.servlet.UserSession;
@@ -67,9 +67,7 @@ public class UserServlet extends BaseServlet {
 			// 注册成功之后，添加一个cookie，标识使用该电脑注册成功过
 			// 以后每登录一次都修改一下这个cookie
 			// XXX:暂时不提供记住密码功能
-			Cookie cookie = new Cookie("zzbj_user", userInfo.getLoginName());
-			cookie.setMaxAge(365*24*60*60);//一年有效
-			resp.addCookie(cookie);
+			CookieUtil.setCookie(resp, "zzbj_user", userInfo.getLoginName(), null, 365*24*60*60/*一年有效*/);
 			// 注册成功之后，直接登录
 			userInfo = userService.login(userInfo.getEmail(), password);
 			if(userInfo != null){

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.core.runtime.IPath;
 
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
+import com.zizibujuan.drip.server.util.servlet.CookieUtil;
 
 /**
  * 用户注销，删除会话
@@ -29,6 +30,7 @@ public class LogoutServlet extends BaseServlet {
 		IPath path = getPath(req);
 		if(path.segmentCount() == 0){
 			req.getSession().invalidate();
+			CookieUtil.setCookie(resp, "logged_in", "0", null, -1);
 			// 注销之后，跳转到首页。
 			// FIXME：要是可以停留在当时的页面，但是显示适合该页面的不同内容，会不会更好些呢？
 			resp.setStatus(HttpServletResponse.SC_FOUND);
