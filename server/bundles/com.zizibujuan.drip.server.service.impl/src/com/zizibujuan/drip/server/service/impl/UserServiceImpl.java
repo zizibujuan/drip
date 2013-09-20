@@ -96,6 +96,7 @@ public class UserServiceImpl implements UserService {
 		// 更新用户登录状态
 		String token = UUID.randomUUID().toString().replace("-", "");
 		userAttributesDao.updateLoginState(userInfo.getId(),token);
+		userInfo.setAccessToken(token);
 		return userInfo;
 	}
 
