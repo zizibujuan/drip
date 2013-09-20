@@ -85,8 +85,8 @@ define(["dojo/_base/declare",
 //					树状结构展示更详细的分类。
 //				</div>
 //			</div>
-			var leftDiv = this.leftDiv = domConstruct.place('<div style="width: 660px; float: left;"></div>', this.domNode);
-			var rightDiv = this.rightDiv = domConstruct.place('<div style="width: 240px; float: right;"></div>', this.domNode);
+			var leftDiv = this.leftDiv = domConstruct.place('<div style="width: 600px; float: left;"></div>', this.domNode);
+			var rightDiv = this.rightDiv = domConstruct.place('<div style="width: 350px; float: right;"></div>', this.domNode);
 			
 			this._createForm(classCode.ExerciseType.ESSAY_QUESTION);
 			
@@ -135,6 +135,8 @@ define(["dojo/_base/declare",
 			this._createCourseOptions();
 			
 			this._createImageInput();
+			
+			this._createMathEditorHelper();
 		},
 		
 		/*
@@ -286,6 +288,17 @@ define(["dojo/_base/declare",
 			list.placeAt(title);
 			//list.startup();
 			this._imageInput = true;
+		},
+		
+		_createMathEditorHelper: function(){
+			if(this._editorHelper)return;
+			domConstruct.create("iframe", {
+				"class": "helper", 
+				"style": "border:none; height:700px; width:100%",
+				"src": "/drip/exercises/mathEditorHelp.html"
+			}, this.rightDiv);
+			
+			this._editorHelper = true;
 		},
 		
 		_showOptionPane: function(optionType){
