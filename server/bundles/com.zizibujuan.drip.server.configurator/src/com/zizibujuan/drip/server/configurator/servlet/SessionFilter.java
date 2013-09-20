@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.servlet.ServiceHolder;
+import com.zizibujuan.drip.server.util.CookieConstants;
 import com.zizibujuan.drip.server.util.servlet.CookieUtil;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
@@ -72,12 +73,12 @@ public class SessionFilter implements Filter {
 
 	private void tryAutoLogin(final HttpServletRequest httpRequest) {
 		// 如果cookie中有logged_in和token，则执行登录操作
-		Cookie loggedInCookie = CookieUtil.get(httpRequest, "logged_in");
+		Cookie loggedInCookie = CookieUtil.get(httpRequest, CookieConstants.LOGGED_IN);
 		// TODO:用户每次登录，都自动分配一个token
 		if(loggedInCookie != null){
 			String loggedInValue = loggedInCookie.getValue();
 			if(loggedInValue.equals("1")){
-				Cookie tokenCookie = CookieUtil.get(httpRequest, "zzbj_user_token");
+				Cookie tokenCookie = CookieUtil.get(httpRequest, CookieConstants.ZZBJ_USER_TOKEN);
 				if(tokenCookie != null){
 					String token = tokenCookie.getValue();
 					// 自动登录

@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.UserService;
+import com.zizibujuan.drip.server.util.CookieConstants;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.CookieUtil;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
@@ -67,14 +68,14 @@ public class UserServlet extends BaseServlet {
 			// 注册成功之后，添加一个cookie，标识使用该电脑注册成功过
 			// 以后每登录一次都修改一下这个cookie
 			// XXX:暂时不提供记住密码功能
-			CookieUtil.set(resp, "zzbj_user", userInfo.getLoginName(), null, 365*24*60*60/*一年有效*/);
+			CookieUtil.set(resp, CookieConstants.LOGIN_NAME, userInfo.getLoginName(), null, 365*24*60*60/*一年有效*/);
 			// 注册成功之后，直接登录
 			userInfo = userService.login(userInfo.getEmail(), password);
 			if(userInfo != null){
 				// 登录成功
 				UserSession.setUser(req, userInfo);
-				CookieUtil.set(resp, "logged_in", "1", null, -1);
-				CookieUtil.set(resp, "zzbj_user_token", userInfo.getAccessToken(), null, -1);
+				CookieUtil.set(resp, CookieConstants.LOGGED_IN, "1", null, -1);
+				CookieUtil.set(resp, CookieConstants.ZZBJ_USER_TOKEN, userInfo.getAccessToken(), null, -1);
 				ResponseUtil.toJSON(req, resp, new HashMap<String, Object>());
 			}else{
 				// 注册成功，登录失败，返回登录页面

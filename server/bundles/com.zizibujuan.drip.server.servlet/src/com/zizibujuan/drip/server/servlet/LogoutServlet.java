@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.core.runtime.IPath;
 
+import com.zizibujuan.drip.server.util.CookieConstants;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.CookieUtil;
 
@@ -30,8 +31,8 @@ public class LogoutServlet extends BaseServlet {
 		IPath path = getPath(req);
 		if(path.segmentCount() == 0){
 			req.getSession().invalidate();
-			CookieUtil.set(resp, "logged_in", "0", null, -1);
-			CookieUtil.remove(req, resp, "zzbj_user_token");
+			CookieUtil.set(resp, CookieConstants.LOGGED_IN, "0", null, -1);
+			CookieUtil.remove(req, resp, CookieConstants.ZZBJ_USER_TOKEN);
 			// 注销之后，跳转到首页。
 			// FIXME：要是可以停留在当时的页面，但是显示适合该页面的不同内容，会不会更好些呢？
 			resp.setStatus(HttpServletResponse.SC_FOUND);

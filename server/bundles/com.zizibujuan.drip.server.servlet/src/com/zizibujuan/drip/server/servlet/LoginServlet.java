@@ -27,6 +27,7 @@ import com.zizibujuan.drip.server.service.UserBindService;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.servlet.authentication.Oauth2Exception;
 import com.zizibujuan.drip.server.servlet.authentication.RenrenHelper;
+import com.zizibujuan.drip.server.util.CookieConstants;
 import com.zizibujuan.drip.server.util.OAuthConstants;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.CookieUtil;
@@ -222,9 +223,9 @@ public class LoginServlet extends BaseServlet {
 				existUserInfo.setSiteId(OAuthConstants.ZIZIBUJUAN);
 				UserSession.setUser(req, existUserInfo);
 				// 在cookie中添加是否登录标记
-				CookieUtil.set(resp, "zzbj_user", existUserInfo.getLoginName(), null, 365*24*60*60/*一年有效*/);
-				CookieUtil.set(resp, "logged_in", "1", null, -1);
-				CookieUtil.set(resp, "zzbj_user_token", existUserInfo.getAccessToken(), null, -1);
+				CookieUtil.set(resp, CookieConstants.LOGIN_NAME, existUserInfo.getLoginName(), null, 365*24*60*60/*一年有效*/);
+				CookieUtil.set(resp, CookieConstants.LOGGED_IN, "1", null, -1);
+				CookieUtil.set(resp, CookieConstants.ZZBJ_USER_TOKEN, existUserInfo.getAccessToken(), null, -1);
 				// 返回到客户端，然后客户端跳转到首页
 				ResponseUtil.toJSON(req, resp, new HashMap<String, Object>());
 				return;
