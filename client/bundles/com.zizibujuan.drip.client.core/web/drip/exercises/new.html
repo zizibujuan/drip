@@ -12,40 +12,15 @@
 		isDebug:true" 
 	src="/dojo/dojo.js"></script>
 <script type="text/javascript">
-require(["dojo/ready", 
-         "dojo/on",
-         "dojo/dom",
-         "dojo/store/JsonRest",
-         "dijit/registry",
-         "drip/exercises/ExerciseForm",
-         "drip/user",
+require(["drip/exercises/ExerciseForm",
          "drip/widget/Header",
-         "dojo/parser",
-         "dijit/form/Button",
          "dojo/domReady!"],function(
-        		 ready,
-        		 on,
-        		 dom,
-        		 JsonRest,
-        		 registry,
         		 ExerciseForm,
-        		 user,
         		 Header){
 	var header = new Header({}, "header");
 	
-	user.getLoggedUserInfo().then(function(userInfo){
-		// 在顶部用户信息区域显示
-		var displayName = userInfo.nickName;
-		var topProfileImage = dom.byId("topProfileImage");
-		topProfileImage.src = userInfo.smallImageUrl || "/drip/resources/images/profile_50_50.gif";
-		topProfileImage.alt = displayName;
-		dom.byId("topUserName").innerHTML = displayName;
-	});
-	
-	ready(function(){
-		var exerciseForm = new ExerciseForm();
-		exerciseForm.placeAt("formContainer");
-	});
+	var exerciseForm = new ExerciseForm();
+	exerciseForm.placeAt("formContainer");
 	
 });
 </script>
