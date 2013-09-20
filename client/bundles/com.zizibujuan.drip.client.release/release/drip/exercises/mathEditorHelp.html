@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>编辑器小贴士</title>
+<link type="text/css" rel="stylesheet" href="/drip/resources/font-awesome/css/font-awesome.css" />
+<link type="text/css" rel="stylesheet" href="/doc/resources/typo.css">
+<style type="text/css">
+#help_keys td{
+	padding: 2px 0px 2px 5px;
+}
+</style>
+<script type="text/javascript" 
+	data-dojo-config="
+		async:true,
+		parseOnLoad:false,
+		isDebug:true" 
+	src="/dojo/dojo.js"></script>
+	
+<script type="text/javascript">
+require(["dojo/on",
+         "dojo/dom",
+         "dojo/dom-class",
+         "dojo/dom-style",
+         "dojo/dom-construct",
+         "dojo/request/xhr",
+         "dojo/domReady!"], function(
+        		 on,
+        		 dom,
+        		 domClass,
+        		 domStyle,
+        		 domConstruct,
+        		 xhr){
+	
+	var greek = dom.byId("greek");
+	var iconGreek = dom.byId("icon_greek");
+	var rendered = false;
+	on(dom.byId("greekHeader"), "click", function(e){
+		if(domClass.contains(iconGreek, "icon-expand-alt")){
+			domClass.replace(iconGreek, "icon-collapse-alt","icon-expand-alt");
+			domStyle.set(greek, "display", "block");
+		}else{
+			domClass.replace(iconGreek, "icon-expand-alt","icon-collapse-alt");
+			domStyle.set(greek, "display", "none");
+		}
+		
+		if(rendered == false){
+			xhr.get("/mathEditor/resources/audio/greek/greek.json", {handleAs: "json", preventCache:true}).then(function(data){
+				renderGreekTable(data);
+			});
+			rendered = true;
+		}
+		
+		
+	});
+	
+	function renderGreekTable(json){
+
+		var columns = json.title;
+		var rows = json.data;
+		
+		var table = domConstruct.create("table");
+		var thead = domConstruct.create("thead", {}, table);
+		var tbody = domConstruct.create("tbody", {}, table);
+		
+		var headTr = domConstruct.create("tr", {}, thead);
+		//domConstruct.create("th", {innerHTML: "序号"}, headTr);
+		for(var i = 0; i < columns.length; i++){
+			domConstruct.create("th", {innerHTML: columns[i]}, headTr);
+		}
+		for(var i = 0; i < rows.length; i++){
+			var tr = domConstruct.create("tr", {}, tbody);
+			var row = rows[i];
+			//domConstruct.create("td", {innerHTML: i+1}, tr);
+			for(var j = 0; j < row.length; j++){
+				var cell = row[j];
+				var td = domConstruct.create("td", {innerHTML: cell, style:"padding:2px 0px 2px 5px"}, tr);
+				if(j == 0){
+					var seq = i + 1;
+					var formatSeq = ("" + seq).length==1 ? "0" + seq : "" + seq;
+					var src = "/mathEditor/resources/audio/greek/"+formatSeq+"_" + row[2] + ".mp3";
+					var btn = domConstruct.place("<button class=\"icon-volume-up\" style=\"cursor:pointer; margin-right:4px\"></button>", td, "first");
+					var audio = domConstruct.create("audio",{"src":src,"preload":"auto"}, td, "first");
+					on(btn, "click", function(e){
+						var audio = this.previousSibling;
+						audio.load();
+						audio.play();
+					});
+				}
+			}
+		}
+		
+		
+	
+		domConstruct.place(table, greek);
+	}
+});
+</script>
+</head>
+<body>
+<div class="typo">
+
+<h1>数学编辑器小贴士</h1>
+<h3>特点</h3>
+<ol>
+	<li>支持纯键盘快速输入；</li>
+	<li>数学符号，会读就会写；</li>
+	<li>输入符号名称的汉语拼音首字母，会弹出提示框，然后选择数学符号。</li>
+</ol>
+
+<h3>快捷键</h3>
+<table style="width: 100%" id="help_keys">
+	<tbody>
+		<tr>
+			<td><code>Ctrl</code> + <code>=</code></td>
+			<td>进入或退出输入数学公式模式</td>
+		</tr>
+		<tr>
+			<td><code>fs</code> | <code>frac</code></td>
+			<td>分数</td>
+		</tr>
+		<tr>
+			<td><code>gh</code></td>
+			<td>根号</td>
+		</tr>
+		<tr>
+			<td><code>^</code></td>
+			<td>右上标</td>
+		</tr>
+		<tr>
+			<td><code>_</code></td>
+			<td>右下标</td>
+		</tr>
+	</tbody>
+	
+</table>
+<h3 style="cursor: pointer;" id="greekHeader"><i id="icon_greek" class="icon-expand-alt"></i> 希腊字母发音参照表</h3>
+<div id="greek" style="font-size: 11px"></div>
+</div>
+</body>
+</html>
