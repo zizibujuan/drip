@@ -59,6 +59,8 @@ define(["dojo/_base/declare",
 		
 		_optionName:"exercise-option",
 		
+		_editors: [],
+		
 		postCreate: function(){
 			this.inherited(arguments);
 			
@@ -229,7 +231,7 @@ define(["dojo/_base/declare",
 			
 			var pane = domConstruct.create("div", {"class":"form"}, this.leftDiv);
 			domConstruct.place('<div class="drip-title">'+label+'</div>', pane);
-			return this._createEditor(pane, rowCount);
+			return this._createEditor(pane, rowCount, 550);
 		},
 		
 		_createEditor: function(parentNode, rowCount, width){
@@ -241,10 +243,14 @@ define(["dojo/_base/declare",
 			var params = {};
 			// TODO:在mathEditor中增加rows参数，但是不增加columns参数，而是依然使用width参数，
 			// 因为输入数学公式之后，列数是无法确定的。
-			params.width = width;
 			params.rows = rowCount;
+			if(width){
+				params.width = width;
+			}
 			var editor = new Editor(params);
 			editor.placeAt(parentNode);
+			editor.startup();
+			this._editors.push(editor);
 			return editor;
 		},
 		
@@ -504,6 +510,15 @@ define(["dojo/_base/declare",
 				w.destroyRecursive();
 			});
 			domConstruct.empty(formPanel);
+		},
+		
+		startup: function(){
+			this.inherited(arguments);
+			var editors = this._editors;
+			for(var i = 0; i < editors.length; i++){
+				var editor = editors[i];
+				editor.startup();
+			}
 		}
 		
 	});
