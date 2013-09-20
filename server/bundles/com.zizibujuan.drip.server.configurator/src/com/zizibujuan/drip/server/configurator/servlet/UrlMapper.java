@@ -42,6 +42,7 @@ public class UrlMapper {
 				
 		// new的一个约定，就是最后一个字母是new，TODO：此时要确保用户不会使用这个关键字
 		newUrlMap = new HashMap<String, String>();
+		newUrlMap.put("/exercises", "/drip/exercises/new.html");// 为了能看到所有的资源，不走约定，都要配置。
 		newUrlMap.put("/files", "/doc/files/new.html");
 		newUrlMap.put("/projects", "/doc/projects/new.html");
 		
