@@ -51,4 +51,22 @@ public abstract class CookieUtil {
 		}
 		return cookie;
 	}
+	
+	public static void remove(HttpServletRequest req, HttpServletResponse resp, String name) {
+		Cookie[] cookies = req.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().equals(name)) {
+					// 设置cookie的周期为0，也就是删除cookie。
+					cookie.setMaxAge(0);
+					// 要删除cookie，必须要设置path
+					cookie.setPath("/");
+					// 必须要加上这一句，否则上面的一句就等于无效。
+					// 结论：服务器修改cookie后，一定要调用addCookie()方法，重新添加到客户端中
+					resp.addCookie(cookie);
+					break;
+				}
+			}
+		}
+	}
 }

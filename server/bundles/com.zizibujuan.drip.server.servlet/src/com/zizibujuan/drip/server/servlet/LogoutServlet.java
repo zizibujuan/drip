@@ -31,6 +31,7 @@ public class LogoutServlet extends BaseServlet {
 		if(path.segmentCount() == 0){
 			req.getSession().invalidate();
 			CookieUtil.set(resp, "logged_in", "0", null, -1);
+			CookieUtil.remove(req, resp, "zzbj_user_token");
 			// 注销之后，跳转到首页。
 			// FIXME：要是可以停留在当时的页面，但是显示适合该页面的不同内容，会不会更好些呢？
 			resp.setStatus(HttpServletResponse.SC_FOUND);
