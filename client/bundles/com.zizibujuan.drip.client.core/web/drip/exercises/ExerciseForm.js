@@ -461,7 +461,7 @@ define(["dojo/_base/declare",
 			var td2 = domConstruct.place('<td></td>', tr);
 			var label = domConstruct.place('<label>'+optionLabel.charAt(index)+'</label>', td2);
 			var td3 = domConstruct.place('<td></td>', tr);
-			var editor = this._createEditor(td3, 2, 550);
+			var editor = this._createEditor(td3, 2, 490);
 			var td4 = domConstruct.place('<td></td>', tr);
 			var aDel = domConstruct.place('<a href="#" class=\"iconbutton\" title=\"删除\"><i class=\"icon-trash\"></i></a>', td4);
 			var aDown = domConstruct.place('<a href="#" class=\"iconbutton\" title=\"下移\"><i class=\"icon-arrow-down\"></i></a>', td4);
