@@ -1,6 +1,7 @@
 package com.zizibujuan.drip.server.dao.mysql;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,10 +17,16 @@ import com.zizibujuan.drip.server.dao.ExerciseDao;
 import com.zizibujuan.drip.server.dao.LocalUserStatisticsDao;
 import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.exception.dao.DataAccessException;
+import com.zizibujuan.drip.server.model.Answer;
+import com.zizibujuan.drip.server.model.AnswerDetail;
+import com.zizibujuan.drip.server.model.Exercise;
+import com.zizibujuan.drip.server.model.ExerciseForm;
+import com.zizibujuan.drip.server.model.ExerciseOption;
 import com.zizibujuan.drip.server.util.ActionType;
 import com.zizibujuan.drip.server.util.ExerciseType;
 import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
+import com.zizibujuan.drip.server.util.dao.PreparedStatementSetter;
 
 /**
  * 维护习题 数据访问实现类
@@ -40,77 +47,52 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 		return DatabaseUtil.queryForList(getDataSource(), SQL_LIST_EXERCISE);
 	}
 	
-	/**
-	 * 新增习题。<br/>
-	 * <pre>
-	 * 习题的数据格式为：
-	 * 		localUserId: 本地用户标识
-	 * 		connectUserId: 本网站为第三方网站用户产生的用户标识
-	 * 		exerType: 题型
-	 * 		exerCategory: 习题所属科目中的分类
-	 * 		content： 习题内容
-	 * 		options：Array  题目选项
-	 * 		answers: Array  习题答案列表
-	 * 		guide: 习题解析
-	 * </pre>
-	 * @param exerciseInfo 习题信息
-	 * @return 新增习题的标识
-	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public Long add(Map<String, Object> exerciseInfo) {
-		Long exerId = -1l;
+	public Long add(ExerciseForm exerciseForm) {
+		Long exerId = null;
 		Connection con = null;
 		try{
 			con = getDataSource().getConnection();
 			con.setAutoCommit(false);
 			// 添加习题
-			Object oUserId = exerciseInfo.get("localUserId");
-			Object oExerType = exerciseInfo.get("exerType");
-			String exerType = oExerType!=null?oExerType.toString():null;
-			Long connectUserId = Long.valueOf(exerciseInfo.get("connectUserId").toString());
-			// localUserId
-			Long localUserId = Long.valueOf(oUserId.toString());
+			Exercise exercise = exerciseForm.getExercise();
+			exerId = this.addExercise(con, exercise);
 			
-			exerId = this.addExercise(con, exerciseInfo);
-			// 如果存在选项，则添加习题选项
-			Object options = exerciseInfo.get("options");
-			List<Long> optionIds = null;
-			if(options != null){
-				ArrayList<String> optionContents = (ArrayList<String>)options;
-				if(optionContents.size()>0){
-					optionIds = this.addOptions(con, exerId, optionContents);
-				}
-			}
-			
+			Long userId = exercise.getCreateUserId();
 			// 习题添加成功后，在用户的“创建的习题数”上加1
 			// 同时修改后端和session中缓存的该记录
-			localUserStatisticsDao.increaseExerciseCount(con, localUserId);
+			localUserStatisticsDao.increaseExerciseCount(con, userId);
 			// 在活动表中插入一条记录
-			addActivity(con, connectUserId, exerId,ActionType.SAVE_EXERCISE);
+			addActivity(con, userId, exerId, ActionType.SAVE_EXERCISE);
 			
 			// 如果存在答案，则添加答案
-			Object oAnswer = exerciseInfo.get("answer");
-			if(oAnswer != null){
-				Map<String,Object> answerInfo = (Map<String,Object>)oAnswer;
-				if(!answerInfo.isEmpty()){
-					answerInfo.put("exerId", exerId);
-					ArrayList<Map<String, Object>> detail = (ArrayList<Map<String, Object>>)answerInfo.get("detail");
-					// 在新增习题的同时保存答案，因为选项的值是刚加的，所以需要在detail中为选项标识赋值。
-					if(detail != null && detail.size()>0){
-						if(ExerciseType.SINGLE_OPTION.equals(exerType)){
-							if(optionIds != null){
-								for(Map<String,Object> each : detail){
-									int seq = Integer.valueOf(each.get("seq").toString());
-									each.put("optionId", optionIds.get(seq));
-									each.put("content", null);
-								}
+			Answer answer = exerciseForm.getAnswer();
+			if(answer != null){
+				
+				Exercise exerciseInfo = exerciseForm.getExercise();
+				String exerciseType = exerciseInfo.getExerciseType();
+				answer.setExerciseId(exerId);
+				answer.setCreateUserId(exerciseInfo.getCreateUserId());
+				
+				List<AnswerDetail> answerList = answer.getDetail();
+				// 在新增习题的同时保存答案，因为选项的值是刚加的，所以需要在detail中为选项标识赋值。
+				if(answerList != null && answerList.size() > 0){
+					
+					if(ExerciseType.SINGLE_OPTION.equals(exerciseType)){
+						List<ExerciseOption> options = exerciseInfo.getOptions();
+						// seq从1开始
+						if(options != null && !options.isEmpty()){
+							for(AnswerDetail answerDetail : answerList){
+								int seq = answerDetail.getSeq();
+								ExerciseOption option = options.get(seq - 1);
+								answerDetail.setOptionId(option.getId());
+								answerDetail.setContent(null);
 							}
 						}
 					}
-					
-					answerDao.save(con, localUserId, connectUserId, answerInfo);
 				}
+					
+				answerDao.save(con, answer);
 			}
 			
 			con.commit();
@@ -136,31 +118,65 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 		activityDao.add(con, activityInfo);
 	}
 	
-	private static final String SQL_INSERT_EXERCISE = 
-			"INSERT INTO DRIP_EXERCISE (CONTENT,EXER_TYPE, EXER_CATEGORY, CRT_TM, CRT_USER_ID) VALUES (?,?,?,now(),?)";
+	private static final String SQL_INSERT_EXERCISE = "INSERT INTO "
+			+ "DRIP_EXERCISE "
+			+ "(CONTENT,"
+			+ "EXER_TYPE, "
+			+ "EXER_COURSE, "
+			+ "CRT_TM, "
+			+ "CRT_USER_ID) "
+			+ "VALUES "
+			+ "(?,?,?,now(),?)";
+
+	private static final String SQL_INSERT_EXER_OPTION = "INSERT INTO "
+			+ "DRIP_EXER_OPTION "
+			+ "(EXER_ID,"
+			+ "CONTENT,"
+			+ "OPT_SEQ) "
+			+ "VALUES " 
+			+ "(?,?,?)";
 	// 1. 新增习题
-	private Long addExercise(Connection con, Map<String,Object> exerciseInfo) throws SQLException{
-		Object oContent = exerciseInfo.get("content");
-		Object oExerType = exerciseInfo.get("exerType");
-		Object oExerCategory = exerciseInfo.get("exerCategory");
-		Object oUserId = exerciseInfo.get("connectUserId");
-		return DatabaseUtil.insert(con,SQL_INSERT_EXERCISE, oContent, oExerType, oExerCategory, oUserId);
+	private Long addExercise(Connection con, Exercise exerciseInfo) throws SQLException{
+		final Exercise finalExerciseInfo = exerciseInfo;
+		Long exerId = DatabaseUtil.insert(con, SQL_INSERT_EXERCISE, new PreparedStatementSetter() {
+			
+			@Override
+			public void setValues(PreparedStatement ps) throws SQLException {
+				ps.setString(1, finalExerciseInfo.getContent());
+				ps.setString(2, finalExerciseInfo.getExerciseType());
+				ps.setString(3, finalExerciseInfo.getCourse());
+				ps.setLong(4, finalExerciseInfo.getCreateUserId());
+			}
+		});
+		
+		// 如果存在选项，则添加习题选项
+		List<ExerciseOption> finalOptions = finalExerciseInfo.getOptions();
+		List<ExerciseOption> options = exerciseInfo.getOptions();
+		if(finalOptions != null && !finalOptions.isEmpty()){
+			for(int i = 0; i < finalOptions.size(); i++){
+				final ExerciseOption finalOption = finalOptions.get(i);
+				final int seq = i+1;
+				Long optionId = DatabaseUtil.insert(con, SQL_INSERT_EXER_OPTION, new PreparedStatementSetter() {
+					
+					@Override
+					public void setValues(PreparedStatement ps) throws SQLException {
+						ps.setLong(1, finalExerciseInfo.getId());
+						ps.setString(2, finalOption.getContent());
+						ps.setInt(3, seq);
+						
+					}
+				});
+				
+				ExerciseOption option = options.get(i);
+				option.setId(optionId);
+			}
+		}
+		
+		return exerId;
 	}
 	
-	private static final String SQL_INSERT_EXER_OPTION = "INSERT INTO DRIP_EXER_OPTION " +
-			"(EXER_ID,CONTENT,OPT_SEQ) VALUES " +
-			"(?,?,?)";
-	// 2. 添加选项
-	private List<Long> addOptions(Connection con, Long exerId, List<String> optionContents) throws SQLException{
-		List<Long> result = new ArrayList<Long>();
-		int len = optionContents.size();
-		
-		for(int i = 0; i < len; i++){
-			Long id = DatabaseUtil.insert(con, SQL_INSERT_EXER_OPTION, exerId, optionContents.get(i),(i+1));
-			result.add(id);
-		}
-		return result;
-	}
+	
+
 	
 	// TODO:不在sql中联合查询编码，而是从缓存中获取编码对应的文本信息
 	private static final String SQL_GET_EXERCISE = "SELECT " +

@@ -3,6 +3,8 @@ package com.zizibujuan.drip.server.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.zizibujuan.drip.server.model.ExerciseForm;
+
 /**
  * 维护习题 数据访问接口
  * @author jinzw
@@ -21,26 +23,12 @@ public interface ExerciseDao {
 	List<Map<String,Object>> get();
 
 	/**
-	 * 新增习题。<br/>
-	 * <pre>
-	 * 习题的数据格式为：
-	 * 		localUserId: 本网站用户标识
-	 * 		connectUserId: 本网站为第三方网站用户生成的全局唯一标识
-	 * 		exerType: 题型
-	 * 		exerCategory: 习题所属科目中的分类
-	 * 		content： 习题内容
-	 * 		options：Array  题目选项
-	 * 		answer:  习题答案
-	 * 			guide: 习题解析
-	 * 			detail: 答案详情
-	 * 				seq: 对应option的顺序
-	 * 				optionId: 选项标识
-	 * 				content: 内容
-	 * </pre>
-	 * @param exerciseInfo 习题信息
-	 * @return 新增习题的标识,如果返回-1，则新增用户失败。
+	 * 新增习题。
+	 * 
+	 * @param exerciseForm 包含习题信息和录入习题人提供的答案信息
+	 * @return 新增习题的标识, 如果新增习题失败，则返回null
 	 */
-	Long add(Map<String, Object> exerciseInfo);
+	Long add(ExerciseForm exerciseForm);
 
 	/**
 	 * 获取习题详情

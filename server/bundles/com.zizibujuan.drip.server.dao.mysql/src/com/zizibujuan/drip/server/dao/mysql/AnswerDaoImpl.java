@@ -15,9 +15,12 @@ import com.zizibujuan.drip.server.dao.AnswerDao;
 import com.zizibujuan.drip.server.dao.LocalUserStatisticsDao;
 import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.exception.dao.DataAccessException;
+import com.zizibujuan.drip.server.model.Answer;
+import com.zizibujuan.drip.server.model.AnswerDetail;
 import com.zizibujuan.drip.server.util.ActionType;
 import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
+import com.zizibujuan.drip.server.util.dao.PreparedStatementSetter;
 
 /**
  * 答案 数据访问实现类
@@ -110,30 +113,44 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 		}
 	}
 
-	private static final String SQL_INSERT_ANSWER = "INSERT INTO DRIP_ANSWER (EXER_ID,GUIDE,CRT_TM,CRT_USER_ID) VALUES (?,?,now(),?)";
-	private static final String SQL_INSERT_ANSWER_DETAIL = "INSERT INTO DRIP_ANSWER_DETAIL (ANSWER_ID,OPT_ID,CONTENT) VALUES (?,?,?)";
+	private static final String SQL_INSERT_ANSWER = "INSERT INTO "
+			+ "DRIP_ANSWER "
+			+ "(EXER_ID,"
+			+ "GUIDE,"
+			+ "CRT_TM,"
+			+ "CRT_USER_ID) "
+			+ "VALUES "
+			+ "(?,?,now(),?)";
+	private static final String SQL_INSERT_ANSWER_DETAIL = "INSERT INTO "
+			+ "DRIP_ANSWER_DETAIL "
+			+ "(ANSWER_ID,"
+			+ "OPT_ID,"
+			+ "CONTENT) "
+			+ "VALUES "
+			+ "(?,?,?)";
 	@Override
-	public void save(Connection con, Long localGlobalUserId, Long connectGlobalUserId, Map<String, Object> answerInfo) throws SQLException {
-		Object exerId = answerInfo.get("exerId");
-		Object guide = answerInfo.get("guide");
-		Long answerId = DatabaseUtil.insert(con, SQL_INSERT_ANSWER, exerId, guide, connectGlobalUserId);
-		
-		Object oDetail = answerInfo.get("detail");
-		if(oDetail != null){
-			@SuppressWarnings("unchecked")
-			List<Map<String,Object>> detail = (List<Map<String, Object>>) oDetail;
-			try {
-				addAnswerDetail(con, answerId, detail);
-			} catch (SQLException e) {
-				throw new DataAccessException(e);
+	public void save(Connection con, final Answer answer) throws SQLException {
+		Long answerId = DatabaseUtil.insert(con, SQL_INSERT_ANSWER, new PreparedStatementSetter() {
+			
+			@Override
+			public void setValues(PreparedStatement ps) throws SQLException {
+				ps.setLong(1, answer.getExerciseId());
+				ps.setString(2, answer.getGuide());
+				ps.setLong(3, answer.getCreateUserId());
 			}
+		});
+		
+		List<AnswerDetail> answerDetail = answer.getDetail();
+		if(answerDetail != null && !answerDetail.isEmpty()){
+			addAnswerDetail(con, answerId, answerDetail);
 		}
 		
 		// 答案回答完成后，在用户的“已回答的习题数”上加1
 		// 同时修改后端和session中缓存的该记录
-		localUserStatisticsDao.increaseAnswerCount(con, localGlobalUserId);
+		Long userId = answer.getCreateUserId();
+		localUserStatisticsDao.increaseAnswerCount(con, userId);
 		// 在活动表中插入一条记录
-		activityDao.add(con, connectGlobalUserId, answerId, ActionType.ANSWER_EXERCISE, true);
+		activityDao.add(con, userId, answerId, ActionType.ANSWER_EXERCISE, true);
 		// 插入答案概述
 		
 		// 插入答案详情
@@ -147,28 +164,22 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 	}
 
 
-	private void addAnswerDetail(Connection con, Long answerId,
-			List<Map<String, Object>> detail) throws SQLException {
+	private void addAnswerDetail(Connection con, Long answerId, List<AnswerDetail> answerDetails) throws SQLException {
 		PreparedStatement pst = con.prepareStatement(SQL_INSERT_ANSWER_DETAIL);
-		for(Map<String,Object> each : detail){
+		for(AnswerDetail each : answerDetails){
 			pst.setLong(1, answerId);
-			Object oOptId = each.get("optionId");
-			if(oOptId == null){
+			Long optionId = each.getOptionId();
+			if(optionId == null){
 				pst.setNull(2, Types.NUMERIC);
 			}else{
-				pst.setLong(2, Long.valueOf(oOptId.toString()));
+				pst.setLong(2, optionId);
 			}
 			
-			Object oContent = each.get("content");
-			if(oContent == null){
+			String content = each.getContent();
+			if(content == null || content.trim().isEmpty()){
 				pst.setNull(3, Types.VARCHAR);
 			}else{
-				String content = oContent.toString();
-				if(content.trim().isEmpty()){
-					pst.setNull(3, Types.VARCHAR);
-				}else{
-					pst.setString(3, content);
-				}
+				pst.setString(3, content);
 			}
 			pst.addBatch();
 		}

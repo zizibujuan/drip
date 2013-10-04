@@ -12,6 +12,7 @@ public class AnswerDetail {
 	private Long answerId;
 	private Long optionId;
 	private String content;
+	private int seq;
 
 	/**
 	 * 获取答案内容标识
@@ -85,4 +86,21 @@ public class AnswerDetail {
 		this.content = content;
 	}
 
+	/**
+	 * 获取序列号，在optionId不存在时，使用seq来标识出对应的option的位置
+	 * 
+	 * @return 序列号，从1开始
+	 */
+	public int getSeq() {
+		return seq;
+	}
+
+	/**
+	 * 设置序列号，在optionId不存在时，使用seq来标识出对应的option的位置
+	 * 
+	 * @param seq 序列号，从1开始
+	 */
+	public void setSeq(int seq) {
+		this.seq = seq;
+	}
 }

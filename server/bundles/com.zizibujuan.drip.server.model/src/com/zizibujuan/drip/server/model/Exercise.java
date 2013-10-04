@@ -13,7 +13,7 @@ import com.zizibujuan.drip.server.util.model.LogModel;
 public class Exercise extends LogModel{
 
 	private Long id;
-	private String questionType;
+	private String exerciseType;
 	private String content;
 	private String course;
 	
@@ -41,17 +41,17 @@ public class Exercise extends LogModel{
 	 * 
 	 * @return 题型编码
 	 */
-	public String getQuestionType() {
-		return questionType;
+	public String getExerciseType() {
+		return exerciseType;
 	}
 
 	/**
 	 * 设置题型编码
 	 * 
-	 * @param questionType 题型编码
+	 * @param exerciseType 题型编码
 	 */
-	public void setQuestionType(String questionType) {
-		this.questionType = questionType;
+	public void setExerciseType(String exerciseType) {
+		this.exerciseType = exerciseType;
 	}
 
 	/**

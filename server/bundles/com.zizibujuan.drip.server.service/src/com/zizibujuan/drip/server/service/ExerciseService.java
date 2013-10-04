@@ -3,6 +3,8 @@ package com.zizibujuan.drip.server.service;
 import java.util.List;
 import java.util.Map;
 
+import com.zizibujuan.drip.server.model.ExerciseForm;
+
 /**
  * 维护习题 服务接口
  * @author jinzw
@@ -28,20 +30,10 @@ public interface ExerciseService {
 	List<Map<String,Object>> get();
 
 	/**
-	 * 新增习题。<br/>
-	 * <pre>
-	 * 习题的数据格式为：
-	 * 	 	localUserId: 本网站用户标识
-	 * 		connectUserId: 本网站为第三方网站用户生成的全局唯一标识
-	 * 		exerType: 题型
-	 * 		exerCategory: 习题所属科目中的分类
-	 * 		content： 习题内容
-	 * 		options：Array  题目选项
-	 * 		answers: Array  习题答案列表
-	 * 		guide: 习题解析
-	 * </pre>
-	 * @param exerciseInfo 习题信息
+	 * 新增习题。
+	 * 
+	 * @param exerciseForm 包含习题信息和录入习题人提供的答案信息
 	 * @return 新增习题的标识
 	 */
-	Long add(Map<String, Object> exerciseInfo);
+	Long add(ExerciseForm exerciseForm);
 }

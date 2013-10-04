@@ -4,8 +4,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 
+import com.zizibujuan.drip.server.model.Answer;
+
 /**
  * 答案 数据访问接口
+ * 
  * @author jinzw
  * @since 0.0.1
  */
@@ -75,23 +78,11 @@ public interface AnswerDao {
 	
 	/**
 	 * 新增习题答案和习题解析
+	 * 
 	 * @param con 数据库链接
-	 * @param localGlobalUserId 本网站为本网站用户生成的全局用户标识
-	 * @param connectGlobalUserId 本网站为关联的网站用户生成的全局用户标识
-	 * @param answerInfo 答案信息
-	 * <pre>
-	 * map结构：
-	 * 		exerId: 习题标识
-	 * 		guide: 习题解析
-	 * 		detail：答案详情 Array
-	 * 			optionId：选项标识
-	 * 			content: 答案内容
-	 * </pre>
+	 * @param answer 答案信息
 	 * @throws SQLException 
 	 */
-	void save(Connection con, 
-			Long localGlobalUserId,
-			Long connectGlobalUserId, 
-			Map<String, Object> answerInfo) throws SQLException;
+	void save(Connection con, Answer answer) throws SQLException;
 
 }

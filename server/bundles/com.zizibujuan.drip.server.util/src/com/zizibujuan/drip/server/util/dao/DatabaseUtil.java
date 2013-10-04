@@ -499,6 +499,28 @@ public abstract class DatabaseUtil {
 			DatabaseUtil.closeStatement(pst);
 		}
 	}
+	
+	public static long insert(Connection con, String sql, PreparedStatementSetter pss) throws SQLException{
+		PreparedStatement pst = null;
+		ResultSet rst = null;
+		Long result = null;
+		try {
+			pst = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			pss.setValues(pst);
+			pst.executeUpdate();
+			rst = pst.getGeneratedKeys();    
+			rst.next();
+			result = rst.getLong(1);
+		}catch(SQLException e){
+			logger.error("update sql出错，sql语句是:" + sql, e);
+			throw e;
+		}finally{
+			DatabaseUtil.closeResultSet(rst);
+			DatabaseUtil.closeStatement(pst);
+		}
+		return result;
+	}
+	
 
 	public static void update(Connection con, String sql, Object... inParams) throws SQLException {
 		if(inParams == null){

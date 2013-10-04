@@ -16,8 +16,7 @@ define(["dojo/_base/declare",
         "mathEditor/Editor",
         "drip/classCode",
         "dojox/form/Uploader",
-        "drip/widget/form/uploader/FileList"
-        ], function(
+        "drip/widget/form/uploader/FileList"], function(
         		declare,
         		lang,
         		array,
@@ -336,6 +335,9 @@ define(["dojo/_base/declare",
 		_getFormData: function(){
 			var data = this.data;
 			data.content = this.exerContentEditor.get("value");
+			// TODO:获取题型和科目
+			data.course = ;
+			data.exerciseType = ;
 			
 			if(this.tblOption){
 				data.options = [];

@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.dao.ExerciseDao;
+import com.zizibujuan.drip.server.model.ExerciseForm;
 import com.zizibujuan.drip.server.service.ExerciseService;
 
 /**
@@ -24,8 +25,8 @@ public class ExerciseServiceImpl implements ExerciseService {
 	}
 
 	@Override
-	public Long add(Map<String, Object> exerciseInfo) {
-		return exerciseDao.add(exerciseInfo);
+	public Long add(ExerciseForm exerciseForm) {
+		return exerciseDao.add(exerciseForm);
 	}
 
 	public void setExerciseDao(ExerciseDao exerciseDao) {
