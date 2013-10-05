@@ -44,11 +44,11 @@
    		policy="dynamic"/>
    		
    	<reference 
-   		bind="setLocalUserStatisticsDao" 
-   		unbind="unsetLocalUserStatisticsDao" 
+   		bind="setUserStatisticsDao" 
+   		unbind="unsetUserStatisticsDao" 
    		cardinality="0..1" 
-   		interface="com.zizibujuan.drip.server.dao.LocalUserStatisticsDao" 
-   		name="localUserStatisticsDao" 
+   		interface="com.zizibujuan.drip.server.dao.UserStatisticsDao" 
+   		name="userStatisticsDao" 
    		policy="dynamic"/>	
    			
    <service>

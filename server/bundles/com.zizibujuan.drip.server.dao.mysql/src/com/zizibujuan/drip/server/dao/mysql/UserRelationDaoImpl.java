@@ -8,7 +8,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.zizibujuan.drip.server.dao.LocalUserStatisticsDao;
+import com.zizibujuan.drip.server.dao.UserStatisticsDao;
 import com.zizibujuan.drip.server.dao.UserBindDao;
 import com.zizibujuan.drip.server.dao.UserRelationDao;
 import com.zizibujuan.drip.server.exception.dao.DataAccessException;
@@ -25,7 +25,7 @@ import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 public class UserRelationDaoImpl extends AbstractDao implements UserRelationDao {
 	private static final Logger logger = LoggerFactory.getLogger(UserRelationDaoImpl.class);
 	
-	private LocalUserStatisticsDao localUserStatisticsDao;
+	private UserStatisticsDao userStatisticsDao;
 	private UserBindDao userBindDao;
 
 	private static final String SQL_INSERT_USER_RELATION = "INSERT INTO " +
@@ -45,8 +45,8 @@ public class UserRelationDaoImpl extends AbstractDao implements UserRelationDao 
 			con.setAutoCommit(false);
 			this.watch(con, userId, watchUserId);
 			Long watchLocalUserId = userBindDao.getLocalUserId(watchUserId);
-			localUserStatisticsDao.increaseFollowingCount(con, userId);
-			localUserStatisticsDao.increaseFollowerCount(con, watchLocalUserId);
+			userStatisticsDao.increaseFollowingCount(con, userId);
+			userStatisticsDao.increaseFollowerCount(con, watchLocalUserId);
 			con.commit();
 		} catch (SQLException e) {
 			DatabaseUtil.safeRollback(con);
@@ -71,8 +71,8 @@ public class UserRelationDaoImpl extends AbstractDao implements UserRelationDao 
 			con.setAutoCommit(false);
 			DatabaseUtil.update(getDataSource(), SQL_DELETE_RELATION, userId, watchUserId);
 			Long watchLocalUserId = userBindDao.getLocalUserId(watchUserId);
-			localUserStatisticsDao.decreaseFollowingCount(con, userId);
-			localUserStatisticsDao.decreaseFollowerCount(con, watchLocalUserId);
+			userStatisticsDao.decreaseFollowingCount(con, userId);
+			userStatisticsDao.decreaseFollowerCount(con, watchLocalUserId);
 			con.commit();
 		} catch (SQLException e) {
 			DatabaseUtil.safeRollback(con);
@@ -135,15 +135,15 @@ public class UserRelationDaoImpl extends AbstractDao implements UserRelationDao 
 		return result.size() > 0;
 	}
 
-	public void setLocalUserStatisticsDao(LocalUserStatisticsDao localUserStatisticsDao) {
-		logger.info("注入localUserStatisticsDao");
-		this.localUserStatisticsDao = localUserStatisticsDao;
+	public void setUserStatisticsDao(UserStatisticsDao userStatisticsDao) {
+		logger.info("注入userStatisticsDao");
+		this.userStatisticsDao = userStatisticsDao;
 	}
-	
-	public void unsetLocalUserStatisticsDao(LocalUserStatisticsDao localUserStatisticsDao) {
-		if (this.localUserStatisticsDao == localUserStatisticsDao) {
-			logger.info("注销localUserStatisticsDao");
-			this.localUserStatisticsDao = null;
+
+	public void unsetUserStatisticsDao(UserStatisticsDao userStatisticsDao) {
+		if (this.userStatisticsDao == userStatisticsDao) {
+			logger.info("注销userStatisticsDao");
+			this.userStatisticsDao = null;
 		}
 	}
 	

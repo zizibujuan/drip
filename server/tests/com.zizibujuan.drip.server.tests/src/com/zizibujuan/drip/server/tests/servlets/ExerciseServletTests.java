@@ -46,7 +46,7 @@ public class ExerciseServletTests extends AbstractServletTests {
 		try{
 			// TODO:需要先登录
 			Map<String, Object> exercise = new HashMap<String, Object>();
-			exercise.put("questionType", ExerciseType.MULTI_OPTION);
+			exercise.put("exerciseType", ExerciseType.MULTI_OPTION);
 			exercise.put("content", "content_");
 			exercise.put("course", CourseType.HIGHER_MATH);
 			postData.put("exercise", exercise);

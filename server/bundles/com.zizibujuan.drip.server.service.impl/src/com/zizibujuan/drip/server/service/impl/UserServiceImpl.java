@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.dao.ConnectUserDao;
-import com.zizibujuan.drip.server.dao.LocalUserStatisticsDao;
+import com.zizibujuan.drip.server.dao.UserStatisticsDao;
 import com.zizibujuan.drip.server.dao.UserAttributesDao;
 import com.zizibujuan.drip.server.dao.UserAvatarDao;
 import com.zizibujuan.drip.server.dao.UserBindDao;
@@ -157,7 +157,7 @@ public class UserServiceImpl implements UserService {
 	private ConnectUserDao connectUserDao;
 	private ApplicationPropertyService applicationPropertyService;
 	private UserBindDao userBindDao;
-	private LocalUserStatisticsDao localUserStatisticsDao;
+	private UserStatisticsDao userStatisticsDao;
 	
 	
 	
@@ -203,7 +203,7 @@ public class UserServiceImpl implements UserService {
 			userInfo.put("homeCity", applicationPropertyService.getCity(cityCode));
 		}
 		// 这个统计数据是所有关联用户和本网站用户的数据之和。
-		Map<String,Object> statistics = localUserStatisticsDao.getUserStatistics(localGlobalUserId);
+		Map<String,Object> statistics = userStatisticsDao.getUserStatistics(localGlobalUserId);
 		userInfo.putAll(statistics);
 			
 		Map<String,String> avatarInfo = userAvatarDao.get(connectUserId);
@@ -225,7 +225,7 @@ public class UserServiceImpl implements UserService {
 		userInfo.put("localUserId", localUserId);
 		Map<String,String> avatarInfo = userAvatarDao.get(connectUserId);
 		userInfo.putAll(avatarInfo);
-		Map<String,Object> statistics = localUserStatisticsDao.getUserStatistics(localUserId);
+		Map<String,Object> statistics = userStatisticsDao.getUserStatistics(localUserId);
 		userInfo.putAll(statistics);
 		return userInfo;
 	}
@@ -246,8 +246,8 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public Map<String, Object> getLocalUserStatistics(Long localUserId) {
-		return localUserStatisticsDao.getUserStatistics(localUserId);
+	public Map<String, Object> getUserStatistics(Long userId) {
+		return userStatisticsDao.getUserStatistics(userId);
 	}
 
 	public void setUserDao(UserDao userDao) {
@@ -337,15 +337,15 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 	
-	public void setLocalUserStatisticsDao(LocalUserStatisticsDao localUserStatisticsDao) {
-		logger.info("注入localUserStatisticsDao");
-		this.localUserStatisticsDao = localUserStatisticsDao;
+	public void setUserStatisticsDao(UserStatisticsDao userStatisticsDao) {
+		logger.info("注入userStatisticsDao");
+		this.userStatisticsDao = userStatisticsDao;
 	}
 
-	public void unsetLocalUserStatisticsDao(LocalUserStatisticsDao localUserStatisticsDao) {
-		if (this.localUserStatisticsDao == localUserStatisticsDao) {
-			logger.info("注销localUserStatisticsDao");
-			this.localUserStatisticsDao = null;
+	public void unsetUserStatisticsDao(UserStatisticsDao userStatisticsDao) {
+		if (this.userStatisticsDao == userStatisticsDao) {
+			logger.info("注销userStatisticsDao");
+			this.userStatisticsDao = null;
 		}
 	}
 

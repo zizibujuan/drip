@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.dao.ConnectUserDao;
-import com.zizibujuan.drip.server.dao.LocalUserStatisticsDao;
+import com.zizibujuan.drip.server.dao.UserStatisticsDao;
 import com.zizibujuan.drip.server.dao.UserAttributesDao;
 import com.zizibujuan.drip.server.dao.UserAvatarDao;
 import com.zizibujuan.drip.server.dao.UserBindDao;
@@ -42,7 +42,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	private UserAvatarDao userAvatarDao;
 	private ConnectUserDao connectUserDao;
 	private UserAttributesDao userAttributesDao;
-	private LocalUserStatisticsDao localUserStatisticsDao;
+	private UserStatisticsDao userStatisticsDao;
 	
 	private static final String SQL_INSERT_USER_REGISTER = "INSERT INTO " +
 			"DRIP_USER_INFO " +
@@ -272,7 +272,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 				userAvatarDao.add(con, connectGlobalUserId, avatarList);
 			}
 			// 为本网站用户添加初始的统计信息
-			localUserStatisticsDao.init(con, localGlobalUserId);
+			userStatisticsDao.init(con, localGlobalUserId);
 			con.commit();
 		}catch(SQLException e){
 			DatabaseUtil.safeRollback(con);
@@ -379,14 +379,15 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		}
 	}
 	
-	public void setLocalUserStatisticsDao(LocalUserStatisticsDao localUserStatisticsDao) {
-		logger.info("注入localUserStatisticsDao");
-		this.localUserStatisticsDao = localUserStatisticsDao;
+	public void setUserStatisticsDao(UserStatisticsDao userStatisticsDao) {
+		logger.info("注入userStatisticsDao");
+		this.userStatisticsDao = userStatisticsDao;
 	}
-	public void unsetLocalUserStatisticsDao(LocalUserStatisticsDao localUserStatisticsDao) {
-		if (this.localUserStatisticsDao == localUserStatisticsDao) {
-			logger.info("注销localUserStatisticsDao");
-			this.localUserStatisticsDao = null;
+
+	public void unsetUserStatisticsDao(UserStatisticsDao userStatisticsDao) {
+		if (this.userStatisticsDao == userStatisticsDao) {
+			logger.info("注销userStatisticsDao");
+			this.userStatisticsDao = null;
 		}
 	}
 

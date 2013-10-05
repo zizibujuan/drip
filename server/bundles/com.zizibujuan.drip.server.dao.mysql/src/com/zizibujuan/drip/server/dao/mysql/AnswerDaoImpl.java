@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.dao.ActivityDao;
 import com.zizibujuan.drip.server.dao.AnswerDao;
-import com.zizibujuan.drip.server.dao.LocalUserStatisticsDao;
+import com.zizibujuan.drip.server.dao.UserStatisticsDao;
 import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.exception.dao.DataAccessException;
 import com.zizibujuan.drip.server.model.Answer;
@@ -32,7 +32,7 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 	private static final Logger logger = LoggerFactory.getLogger(AnswerDaoImpl.class);
 	private UserDao userDao;
 	private ActivityDao activityDao;
-	private LocalUserStatisticsDao localUserStatisticsDao;
+	private UserStatisticsDao userStatisticsDao;
 	
 	private static final String SQL_GET_ANSWER = "SELECT " +
 			"DBID \"id\"," +
@@ -148,7 +148,7 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 		// 答案回答完成后，在用户的“已回答的习题数”上加1
 		// 同时修改后端和session中缓存的该记录
 		Long userId = answer.getCreateUserId();
-		localUserStatisticsDao.increaseAnswerCount(con, userId);
+		userStatisticsDao.increaseAnswerCount(con, userId);
 		// 在活动表中插入一条记录
 		activityDao.add(con, userId, answerId, ActionType.ANSWER_EXERCISE, true);
 		// 插入答案概述
@@ -211,15 +211,15 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 		}
 	}
 	
-	public void setLocalUserStatisticsDao(LocalUserStatisticsDao localUserStatisticsDao) {
-		logger.info("注入localUserStatisticsDao");
-		this.localUserStatisticsDao = localUserStatisticsDao;
+	public void setUserStatisticsDao(UserStatisticsDao userStatisticsDao) {
+		logger.info("注入userStatisticsDao");
+		this.userStatisticsDao = userStatisticsDao;
 	}
 
-	public void unsetLocalUserStatisticsDao(LocalUserStatisticsDao localUserStatisticsDao) {
-		if (this.localUserStatisticsDao == localUserStatisticsDao) {
-			logger.info("注销localUserStatisticsDao");
-			this.localUserStatisticsDao = null;
+	public void unsetUserStatisticsDao(UserStatisticsDao userStatisticsDao) {
+		if (this.userStatisticsDao == userStatisticsDao) {
+			logger.info("注销userStatisticsDao");
+			this.userStatisticsDao = null;
 		}
 	}
 }

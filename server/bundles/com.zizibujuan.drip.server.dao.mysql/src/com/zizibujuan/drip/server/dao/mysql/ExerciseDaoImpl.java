@@ -3,7 +3,6 @@ package com.zizibujuan.drip.server.dao.mysql;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.zizibujuan.drip.server.dao.ActivityDao;
 import com.zizibujuan.drip.server.dao.AnswerDao;
 import com.zizibujuan.drip.server.dao.ExerciseDao;
-import com.zizibujuan.drip.server.dao.LocalUserStatisticsDao;
+import com.zizibujuan.drip.server.dao.UserStatisticsDao;
 import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.exception.dao.DataAccessException;
 import com.zizibujuan.drip.server.model.Answer;
@@ -38,7 +37,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 	private UserDao userDao;
 	private ActivityDao activityDao;
 	private AnswerDao answerDao;
-	private LocalUserStatisticsDao localUserStatisticsDao;
+	private UserStatisticsDao userStatisticsDao;
 	
 	private static final String SQL_LIST_EXERCISE = 
 			"SELECT DBID, CONTENT, CRT_TM, CRT_USER_ID FROM DRIP_EXERCISE ORDER BY CRT_TM DESC";
@@ -61,7 +60,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			Long userId = exercise.getCreateUserId();
 			// 习题添加成功后，在用户的“创建的习题数”上加1
 			// 同时修改后端和session中缓存的该记录
-			localUserStatisticsDao.increaseExerciseCount(con, userId);
+			userStatisticsDao.increaseExerciseCount(con, userId);
 			// 在活动表中插入一条记录
 			addActivity(con, userId, exerId, ActionType.SAVE_EXERCISE);
 			
@@ -256,15 +255,15 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 		}
 	}
 	
-	public void setLocalUserStatisticsDao(LocalUserStatisticsDao localUserStatisticsDao) {
-		logger.info("注入localUserStatisticsDao");
-		this.localUserStatisticsDao = localUserStatisticsDao;
+	public void setUserStatisticsDao(UserStatisticsDao userStatisticsDao) {
+		logger.info("注入userStatisticsDao");
+		this.userStatisticsDao = userStatisticsDao;
 	}
 
-	public void unsetLocalUserStatisticsDao(LocalUserStatisticsDao localUserStatisticsDao) {
-		if (this.localUserStatisticsDao == localUserStatisticsDao) {
-			logger.info("注销localUserStatisticsDao");
-			this.localUserStatisticsDao = null;
+	public void unsetUserStatisticsDao(UserStatisticsDao userStatisticsDao) {
+		if (this.userStatisticsDao == userStatisticsDao) {
+			logger.info("注销userStatisticsDao");
+			this.userStatisticsDao = null;
 		}
 	}
 	

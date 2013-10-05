@@ -249,8 +249,8 @@ public interface UserService {
 
 	/**
 	 * 获取本地用户的统计信息
-	 * @param localUserId 为本地用户生成的全局用户标识
-	 * @return 本地用户的统计信息
+	 * @param userId 本网站用户标识
+	 * @return 用户的统计信息
 	 * <pre>
 	 * map结构：
 	 * 	 	fanCount：粉丝数
@@ -260,7 +260,7 @@ public interface UserService {
 	 * 		answerCount： 习题总数 = 习题草稿数+发布的习题数
 	 * </pre>
 	 */
-	Map<String, Object> getLocalUserStatistics(Long localUserId);
+	Map<String, Object> getUserStatistics(Long userId);
 
 
 }
