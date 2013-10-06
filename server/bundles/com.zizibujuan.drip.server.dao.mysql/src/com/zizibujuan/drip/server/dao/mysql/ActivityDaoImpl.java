@@ -1,15 +1,18 @@
 package com.zizibujuan.drip.server.dao.mysql;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
 import com.zizibujuan.drip.server.dao.ActivityDao;
+import com.zizibujuan.drip.server.model.Activity;
 import com.zizibujuan.drip.server.util.ActionType;
 import com.zizibujuan.drip.server.util.PageInfo;
 import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
+import com.zizibujuan.drip.server.util.dao.PreparedStatementSetter;
 
 /**
  * 活动列表 数据访问实现类
@@ -52,9 +55,9 @@ public class ActivityDaoImpl extends AbstractDao implements ActivityDao {
 			"DA.GLOBAL_USER_ID = UBD.BIND_USER_ID " + // 找到每一个关联用户对应的本地用户
 			"ORDER BY DA.DBID DESC";
 	@Override
-	public List<Map<String, Object>> getFollowing(PageInfo pageInfo, Long localUserId) {
+	public List<Map<String, Object>> getFollowing(PageInfo pageInfo, Long userId) {
 		return DatabaseUtil.queryForList(getDataSource(),
-				SQL_LIST_ACTIVITY_FOLLOWING, pageInfo, localUserId);
+				SQL_LIST_ACTIVITY_FOLLOWING, pageInfo, userId);
 	}
 
 	private static final String SQL_LIST_MY_ACTIVITY_FILTER_BY_TYPE = "SELECT " +
@@ -84,21 +87,27 @@ public class ActivityDaoImpl extends AbstractDao implements ActivityDao {
 				SQL_LIST_MY_ACTIVITY_FILTER_BY_TYPE, pageInfo, localUserId, ActionType.SAVE_EXERCISE);
 	}
 	
-	private static final String SQL_INSERT_ACTIVITY = "INSERT INTO DRIP_ACTIVITY " +
-			"(GLOBAL_USER_ID," +
-			"ACTION_TYPE," +
-			"IS_IN_HOME," +
-			"CONTENT_ID," +
-			"CRT_TM) " +
-			"VALUES " +
-			"(?,?,?,?,now())";
+	private static final String SQL_INSERT_ACTIVITY = "INSERT INTO "
+			+ "DRIP_ACTIVITY "
+			+ "(USER_ID,"
+			+ "ACTION_TYPE,"
+			+ "IS_IN_HOME,"
+			+ "CONTENT_ID,"
+			+ "CRT_TM) "
+			+ "VALUES "
+			+ "(?,?,?,?,now())";
 	@Override
-	public Long add(Connection con, Map<String, Object> activityInfo) throws SQLException {
-		Object connectGlobalUserId = activityInfo.get("connectGlobalUserId");
-		Object actionType = activityInfo.get("actionType");
-		Object isInHome = activityInfo.get("isInHome");
-		Object contentId = activityInfo.get("contentId");
-		return DatabaseUtil.insert(con, SQL_INSERT_ACTIVITY, connectGlobalUserId,actionType,isInHome,contentId);
+	public Long add(Connection con, final Activity activityInfo) throws SQLException {
+		return DatabaseUtil.insert(con, SQL_INSERT_ACTIVITY, new PreparedStatementSetter() {
+			
+			@Override
+			public void setValues(PreparedStatement ps) throws SQLException {
+				ps.setLong(1, activityInfo.getUserId());
+				ps.setString(2, activityInfo.getActionType());
+				ps.setBoolean(3, activityInfo.isInHome());
+				ps.setLong(4, activityInfo.getContentId());
+			}
+		});
 	}
 	
 	@Override

@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import com.zizibujuan.drip.server.model.Activity;
 import com.zizibujuan.drip.server.util.ActionType;
 import com.zizibujuan.drip.server.util.PageInfo;
 
@@ -36,18 +37,13 @@ public interface ActivityDao {
 	
 	/**
 	 * 添加一个新的活动
+	 * 
 	 * @param con 数据库链接
 	 * @param activityInfo 活动信息
-	 * <pre>
-	 * 		connectGlobalUserId: 用户标识
-	 * 		actionType: 操作类型，参考 {@link ActionType}
-	 * 		isInhome: 是否在个人首页显示，boolean
-	 * 		contentId: 内容标识
-	 * </pre>
 	 * @return 活动标识
 	 * @throws SQLException 
 	 */
-	Long add(Connection con, Map<String,Object> activityInfo) throws SQLException;
+	Long add(Connection con, Activity activityInfo) throws SQLException;
 	
 	/**
 	 * 添加一个新的活动

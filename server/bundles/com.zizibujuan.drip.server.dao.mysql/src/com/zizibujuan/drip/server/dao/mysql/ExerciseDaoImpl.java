@@ -16,6 +16,7 @@ import com.zizibujuan.drip.server.dao.ExerciseDao;
 import com.zizibujuan.drip.server.dao.UserStatisticsDao;
 import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.exception.dao.DataAccessException;
+import com.zizibujuan.drip.server.model.Activity;
 import com.zizibujuan.drip.server.model.Answer;
 import com.zizibujuan.drip.server.model.AnswerDetail;
 import com.zizibujuan.drip.server.model.Exercise;
@@ -107,13 +108,9 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 		return exerId;
 	}
 
-	private void addActivity(Connection con,Long connectGlobalUserId, Long contentId, String actionType) throws SQLException {
-		// FIXME:是不是直接传各自的参数更好一些，而不是现在传入map对象，还需要两遍转换
-		Map<String,Object> activityInfo = new HashMap<String, Object>();
-		activityInfo.put("connectGlobalUserId", connectGlobalUserId);
-		activityInfo.put("actionType", actionType);
-		activityInfo.put("isInHome", 1);
-		activityInfo.put("contentId", contentId);
+	private void addActivity(Connection con,Long userId, Long contentId, String actionType) throws SQLException {
+		Activity activityInfo = new Activity(userId, contentId, actionType);
+		
 		activityDao.add(con, activityInfo);
 	}
 	

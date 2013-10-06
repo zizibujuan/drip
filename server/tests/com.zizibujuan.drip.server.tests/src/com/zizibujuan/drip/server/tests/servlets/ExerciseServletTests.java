@@ -35,8 +35,8 @@ public class ExerciseServletTests extends AbstractServletTests {
 	
 	@After
 	public void tearDown(){
-		super.tearDown();
 		tearDownAuthorization();
+		super.tearDown();
 	}
 	
 	
