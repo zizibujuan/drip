@@ -1,15 +1,19 @@
 package com.zizibujuan.drip.server.tests.servlets;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.zizibujuan.drip.server.model.Exercise;
 import com.zizibujuan.drip.server.service.ExerciseService;
 import com.zizibujuan.drip.server.servlet.ServiceHolder;
 import com.zizibujuan.drip.server.tests.AbstractServletTests;
@@ -39,23 +43,33 @@ public class ExerciseServletTests extends AbstractServletTests {
 		super.tearDown();
 	}
 	
-	
 	@Test
 	public void post_add_exercise_success() throws IOException{
 		
 		try{
-			// TODO:需要先登录
 			Map<String, Object> exercise = new HashMap<String, Object>();
 			exercise.put("exerciseType", ExerciseType.MULTI_OPTION);
 			exercise.put("content", "content_");
 			exercise.put("course", CourseType.HIGHER_MATH);
+			List<Map<String, Object>> options = new ArrayList<Map<String,Object>>();
+			Map<String, Object> option1 = new HashMap<String, Object>();
+			option1.put("content", "option_1");
+			options.add(option1);
+			exercise.put("options", options);
 			postData.put("exercise", exercise);
 			initPostServlet("exercises");
 			// 只返回dbid 
 			Long dbid = Long.valueOf(response.getText());
 			assertNotNull(dbid);
-			//exerciseService.get
 			
+			Exercise result = exerciseService.get(dbid);
+			assertEquals(dbid, result.getId());
+			assertEquals(ExerciseType.MULTI_OPTION, result.getExerciseType());
+			assertEquals("content_", result.getContent());
+			assertEquals(CourseType.HIGHER_MATH, result.getCourse());
+			assertEquals(1, result.getOptions().size());
+			assertNotNull(result.getOptions().get(0).getId());
+			assertEquals("option_1", result.getOptions().get(0).getContent());
 		}finally{
 			// TODO: 表之间添加级联删除操作。
 			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_EXERCISE");

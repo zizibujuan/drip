@@ -18,7 +18,7 @@ public class Exercise extends LogModel{
 	private String course;
 	
 	private String imageId; // 一个习题只能有一个附图
-	private List<ExerciseOption> options;
+	private List<ExerciseOption> options; // 支持随机模式,按照seq排序
 	
 	/**
 	 * 获取习题标识

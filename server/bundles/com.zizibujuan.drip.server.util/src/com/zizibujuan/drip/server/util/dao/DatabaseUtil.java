@@ -611,11 +611,12 @@ public abstract class DatabaseUtil {
 	
 	/**
 	 * 查询出单条记录，并将其转换为pojo对象
+	 * 
 	 * @param ds 数据库
 	 * @param sql sql语句
 	 * @param rowMapper 返回列映射器
 	 * @param inParams 输入参数
-	 * @return pojo对象
+	 * @return pojo对象, 如果没有查到则返回null。
 	 */
 	public static <T> T queryForObject(DataSource ds, String sql, RowMapper<T> rowMapper, Object... inParams){
 		logger.debug("Query for object [" + sql + "]");

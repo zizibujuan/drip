@@ -2,8 +2,8 @@ package com.zizibujuan.drip.server.dao.mysql;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +27,7 @@ import com.zizibujuan.drip.server.util.ExerciseType;
 import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 import com.zizibujuan.drip.server.util.dao.PreparedStatementSetter;
+import com.zizibujuan.drip.server.util.dao.RowMapper;
 
 /**
  * 维护习题 数据访问实现类
@@ -134,7 +135,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 	// 1. 新增习题
 	private Long addExercise(Connection con, Exercise exerciseInfo) throws SQLException{
 		final Exercise finalExerciseInfo = exerciseInfo;
-		Long exerId = DatabaseUtil.insert(con, SQL_INSERT_EXERCISE, new PreparedStatementSetter() {
+		final Long exerId = DatabaseUtil.insert(con, SQL_INSERT_EXERCISE, new PreparedStatementSetter() {
 			
 			@Override
 			public void setValues(PreparedStatement ps) throws SQLException {
@@ -156,7 +157,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 					
 					@Override
 					public void setValues(PreparedStatement ps) throws SQLException {
-						ps.setLong(1, finalExerciseInfo.getId());
+						ps.setLong(1, exerId);
 						ps.setString(2, finalOption.getContent());
 						ps.setInt(3, seq);
 						
@@ -175,41 +176,79 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 
 	
 	// TODO:不在sql中联合查询编码，而是从缓存中获取编码对应的文本信息
-	private static final String SQL_GET_EXERCISE = "SELECT " +
-			"DBID \"id\"," +
-			"CONTENT \"content\"," +
-			"EXER_TYPE \"exerType\"," +
-			"EXER_CATEGORY \"exerCategory\"," +
-			"CRT_TM \"createTime\"," +
-			"CRT_USER_ID \"createUserId\"," +
-			"UPT_TM \"updateTime\"," +
-			"UPT_USER_ID \"updateUserId\" " +
-			"FROM " +
-			"DRIP_EXERCISE WHERE DBID=?";
+	private static final String SQL_GET_EXERCISE = "SELECT "
+			+ "DBID,"
+			+ "CONTENT,"
+			+ "EXER_TYPE,"
+			+ "EXER_COURSE,"
+			+ "CRT_TM,"
+			+ "CRT_USER_ID,"
+			+ "UPT_TM,"
+			+ "UPT_USER_ID "
+			+ "FROM "
+			+ "DRIP_EXERCISE "
+			+ "WHERE "
+			+ "DBID=?";
 	@Override
-	public Map<String, Object> get(Long exerciseId) {
-		Map<String,Object> exercise = DatabaseUtil.queryForMap(getDataSource(), SQL_GET_EXERCISE, exerciseId);
-		if(!exercise.isEmpty()){
-			String exerType = exercise.get("exerType").toString();
-			if (ExerciseType.SINGLE_OPTION.equals(exerType)
-					|| ExerciseType.MULTI_OPTION.equals(exerType)
-					|| ExerciseType.FILL.equals(exerType)) {
-				List<Map<String,Object>> options = this.getExerciseOptions(exerciseId);
-				exercise.put("options", options);
+	public Exercise get(Long exerciseId) {
+		Exercise result = DatabaseUtil.queryForObject(getDataSource(), SQL_GET_EXERCISE, new RowMapper<Exercise>() {
+			@Override
+			public Exercise mapRow(ResultSet rs, int rowNum)
+					throws SQLException {
+				Exercise exercise = new Exercise();
+				exercise.setId(rs.getLong(1));
+				exercise.setContent(rs.getString(2));
+				exercise.setExerciseType(rs.getString(3));
+				exercise.setCourse(rs.getString(4));
+				exercise.setCreateTime(rs.getTimestamp(5));
+				exercise.setCreateUserId(rs.getLong(6));
+				exercise.setLastUpdateTime(rs.getTimestamp(7));
+				exercise.setLastUpdateUserId(rs.getLong(8));
+				return exercise;
 			}
+		}, exerciseId);
+				
+		if(result == null){
+			return result;
 		}
-		return exercise;
+		
+		String exerType = result.getExerciseType();
+		if (ExerciseType.SINGLE_OPTION.equals(exerType)
+				|| ExerciseType.MULTI_OPTION.equals(exerType)
+				|| ExerciseType.FILL.equals(exerType)) {
+			List<ExerciseOption> options = this.getExerciseOptions(exerciseId);
+			result.setOptions(options);
+		}
+		
+		return result;
 	}
 
-	private final static String SQL_LIST_EXERCISE_OPTION = "SELECT " +
-			"DBID \"id\"," +
-			"EXER_ID \"exerId\"," +
-			"CONTENT \"content\"," +
-			"OPT_SEQ \"seq\" " +
-			"FROM DRIP_EXER_OPTION WHERE EXER_ID=? " +
-			"ORDER BY OPT_SEQ";
-	private List<Map<String,Object>> getExerciseOptions(Long exerciseId){
-		return DatabaseUtil.queryForList(getDataSource(), SQL_LIST_EXERCISE_OPTION, exerciseId);
+	private final static String SQL_LIST_EXERCISE_OPTION = "SELECT "
+			+ "DBID,"
+			+ "EXER_ID,"
+			+ "CONTENT,"
+			+ "OPT_SEQ "
+			+ "FROM "
+			+ "DRIP_EXER_OPTION "
+			+ "WHERE "
+			+ "EXER_ID=? "
+			+ "ORDER BY OPT_SEQ";
+	private List<ExerciseOption> getExerciseOptions(final Long exerciseId){
+		return DatabaseUtil.query(getDataSource(), SQL_LIST_EXERCISE_OPTION, new PreparedStatementSetter() {
+			@Override
+			public void setValues(PreparedStatement ps) throws SQLException {
+				ps.setLong(1, exerciseId);
+			}
+		}, new RowMapper<ExerciseOption>() {
+			@Override
+			public ExerciseOption mapRow(ResultSet rs, int rowNum) throws SQLException {
+				ExerciseOption option = new ExerciseOption();
+				option.setId(rs.getLong(1));
+				option.setContent(rs.getString(3));
+				// seq与list中元素的顺序相同
+				return option;
+			}
+		});
 	}
 	
 	// 2. 回答习题

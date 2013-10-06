@@ -3,6 +3,7 @@ package com.zizibujuan.drip.server.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.zizibujuan.drip.server.model.Exercise;
 import com.zizibujuan.drip.server.model.ExerciseForm;
 
 /**
@@ -29,27 +30,12 @@ public interface ExerciseDao {
 	 * @return 新增习题的标识, 如果新增习题失败，则返回null
 	 */
 	Long add(ExerciseForm exerciseForm);
-
+	
 	/**
-	 * 获取习题详情
+	 * 获取习题内容
+	 * 
 	 * @param exerciseId 习题标识
-	 * @return 习题详情，如果没有找到，则返回空的map对象。
-	 * <pre>
-	 * map的结构为：
-	 * 		id: 习题标识
-	 * 		exerType: 题型
-	 * 		exerCategory: 习题所属科目
-	 * 		content: 习题内容
-	 * 		options: 习题选项
-	 * 			id：	习题选项标识
-	 * 			exerId: 所属习题标识
-	 * 			content： 选项内容
-	 * 			seq： 选项显示顺序，TODO:支持随机模式，可在客户端处理
-	 * 		createTime: 创建时间
-	 * 		updateTime: 更新时间
-	 * 		createUserId: 创建用户标识
-	 * 		updateUserId: 更新用户标识
-	 * </pre>
+	 * @return 习题内容
 	 */
-	Map<String, Object> get(Long exerciseId);
+	Exercise get(Long exerciseId);
 }

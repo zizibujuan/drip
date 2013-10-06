@@ -3,6 +3,7 @@ package com.zizibujuan.drip.server.service;
 import java.util.List;
 import java.util.Map;
 
+import com.zizibujuan.drip.server.model.Exercise;
 import com.zizibujuan.drip.server.model.ExerciseForm;
 
 /**
@@ -36,4 +37,12 @@ public interface ExerciseService {
 	 * @return 新增习题的标识
 	 */
 	Long add(ExerciseForm exerciseForm);
+
+	/**
+	 * 获取习题内容
+	 * 
+	 * @param exerciseId 习题标识
+	 * @return 习题内容
+	 */
+	Exercise get(Long exerciseId);
 }

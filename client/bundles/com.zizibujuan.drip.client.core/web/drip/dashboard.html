@@ -150,7 +150,7 @@ require(["dojo/ready",
 			array.forEach(data, function(item, index){
 				var li = domConstruct.create("li", null, projectList);
 				var projectUrl = "/projects/" + item.createUserName + "/" + item.name;
-				var a = domConstruct.create("a", {href:projectUrl}, li);
+				var a = domConstruct.create("a", {href: projectUrl}, li);
 				domConstruct.create("span", {innerHTML: item.createUserName}, a);
 				var textNode = document.createTextNode("/");
 				a.appendChild(textNode);
