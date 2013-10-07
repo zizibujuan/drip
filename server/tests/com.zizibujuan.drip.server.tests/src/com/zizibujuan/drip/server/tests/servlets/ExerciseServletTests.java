@@ -94,8 +94,6 @@ public class ExerciseServletTests extends AbstractServletTests {
 		return result;
 	}
 	
-	// 服务器端校验，习题内容必输，如果是选择题，则必须选项个数大于2
-	
 	@Test
 	public void post_add_exercise_and_answer_success() throws NumberFormatException, IOException{
 		Map<String, Object> exercise = prepareMultiOptionExercise();
@@ -119,5 +117,6 @@ public class ExerciseServletTests extends AbstractServletTests {
 		assertEquals(result.getId(), details.get(0).getAnswerId());
 	}
 
+	// TODO:服务器端校验，习题内容必输，如果是选择题，则必须选项个数大于2
 	
 }

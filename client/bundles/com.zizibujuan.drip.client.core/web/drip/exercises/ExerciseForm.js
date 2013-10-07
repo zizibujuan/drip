@@ -44,10 +44,10 @@ define(["dojo/_base/declare",
 	               {id:"multiple", label:"多项选择题", type: classCode.ExerciseType.MULTI_OPTION}/*,
 	               {id:"fill", label:"填空题"}*/];
 	
-	return declare("drip.exercises.ExerciseForm",[_WidgetBase],{
+	return declare("drip.exercises.ExerciseForm", [_WidgetBase], {
 		// summary:
 		//		数据
-		//		exerType:
+		//		exerciseType:
 		//		content:
 		//		guide:
 		//		options:[]
@@ -100,9 +100,9 @@ define(["dojo/_base/declare",
 			//		创建习题输入界面
 			// exerciseType: String
 			//		题型
-			this.data.exerType = exerciseType;
+			this.data.exerciseType = exerciseType;
 			// 创建题型
-			this._createQuestionTypeOptions(exerciseType);
+			this._createExerciseTypeOptions(exerciseType);
 			
 			// 随着题型而变化的form对象为答案可选项，分为单选和多选。
 			// 而内容、图片和习题解析是每个题型都有的。
@@ -125,13 +125,14 @@ define(["dojo/_base/declare",
 			}
 			this._showOptionPane(optionType);
 			
-			// 创建习题解析输入框
-			this._createGuideInput();
-			
 			// 创建科目course
 			// 科目默认不选择（optional，甚至可以录完习题内容之后再设置，
 			// 因为这个页面的第一功能是录入习题，而科目是用来设置习题的类别关系）。
 			this._createCourseOptions();
+			
+			this._createAnswerInput();
+			// 创建习题解析输入框
+			this._createGuideInput();
 			
 			this._createImageInput();
 			
@@ -148,16 +149,16 @@ define(["dojo/_base/declare",
 			 -->
 		</ul>
 		 */
-		_createQuestionTypeOptions: function(exerciseType){
+		_createExerciseTypeOptions: function(exerciseType){
 			// summary:
 			//		创建题型选择项。
 			//		只创建一次。
-			if(this._questionTypeInput)return;
+			if(this.exerciseTypePane)return;
 			
 			var row = domConstruct.create("div", {"class":"form clearfix"}, this.leftDiv);
 			
 			domConstruct.place('<div class="drip-title">题型</div>', row);
-			var name = "questionType";
+			var name = this._exerciseTypeOptionName = "exerciseType";
 			var ul = domConstruct.place("<ul class=\"radio-group\"></ul>", row);
 			for(var i = 0; i < cources.length; i++){
 				var cource = cources[i];
@@ -176,7 +177,7 @@ define(["dojo/_base/declare",
 					
 				}));
 			}
-			this._questionTypeInput = true;
+			this.exerciseTypePane = row;
 		},
 		
 		_createContentInput: function(){
@@ -185,7 +186,7 @@ define(["dojo/_base/declare",
 			//		只创建一次。
 			
 			if(this.exerContentEditor)return;
-			var editor = this.exerContentEditor = this._createMathInput("习题内容", 10);
+			var editor = this.exerContentEditor = this._createMathInput("习题内容", 10, "必填");
 			this.contentPane = editor.domNode.parentNode;
 		},
 		
@@ -204,34 +205,40 @@ define(["dojo/_base/declare",
 			var row = domConstruct.create("div", {"class":"form clearfix"}, this.leftDiv);
 			
 			domConstruct.place('<div class="drip-title">科目</div>', row);
-			var name = "course";
-			var cources = [{id:"higherMath", label:"高等数学"},
-			               {id:"linearAlgebra", label:"线性代数"},
-			               {id:"probability", label:"概率论与数理统计"}];
+			var name = this._courseOptionName = "course";
+			var cources = [{id:"01", label:"高等数学"},
+			               {id:"02", label:"线性代数"},
+			               {id:"03", label:"概率论与数理统计"}];
 			var ul = domConstruct.place("<ul class=\"radio-group\"></ul>", row);
 			for(var i = 0; i < cources.length; i++){
 				var cource = cources[i];
 				var li = domConstruct.create("li", null, ul);
-				var input = domConstruct.create("input", {type:"radio", name:name, id: cource.id}, li);
-				var label = domConstruct.create("label", {"for":cource.id, innerHTML: cource.label}, li);
+				var input = domConstruct.create("input", {type:"radio", name:name, id: "course_"+cource.id}, li);
+				var label = domConstruct.create("label", {"for":"course_"+cource.id, innerHTML: cource.label}, li);
 			}
 			this.coursePane = row;
+		},
+		
+		_createAnswerInput: function(){
+			if(this.answerEditor)return;
+			this.answerEditor = this._createMathInput("答案", 5);
 		},
 		
 		_createGuideInput: function(){
 			// summary:
 			//		创建习题解析输入框
 			//		只创建一次，为的是保留之前的内容
+			
 			if(this.guideEditor)return;
 			this.guideEditor = this._createMathInput("习题解析", 5);
 		},
 		
-		_createMathInput: function(label, rowCount){
+		_createMathInput: function(label, rowCount, requireLabel){
 			// summary:
 			//		创建包含label的支持输入数学公式的输入框
-			
+			var _requireLabel = requireLabel ? "(" + requireLabel + ")" : "";
 			var pane = domConstruct.create("div", {"class":"form"}, this.leftDiv);
-			domConstruct.place('<div class="drip-title">'+label+'</div>', pane);
+			domConstruct.place('<div><span class="drip-title">'+label+'</span>'+_requireLabel+'</div>', pane);
 			return this._createEditor(pane, rowCount, 550);
 		},
 		
@@ -336,8 +343,10 @@ define(["dojo/_base/declare",
 			var data = this.data;
 			data.content = this.exerContentEditor.get("value");
 			// TODO:获取题型和科目
-			data.course = ;
-			data.exerciseType = ;
+			query("[name=" + this._courseOptionName + "]:checked", this.coursePane).forEach(function(inputEl, index){
+				data.course = inputEl.id.split("_")[1];
+				return;
+			});
 			
 			if(this.tblOption){
 				data.options = [];
@@ -376,7 +385,6 @@ define(["dojo/_base/declare",
 			domAttr.set(this.btnSave,"disabled", true);
 			
 			var data = this._getFormData();
-			
 			console.log("将要保存的习题数据为：",data);
 			
 			xhr("/exercises/",{method:"POST", data:JSON.stringify(data)}).then(lang.hitch(this,function(response){

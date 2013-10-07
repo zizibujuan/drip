@@ -50,16 +50,14 @@ define(["dojo/_base/declare",
 	// TODO:重复存在，重构
 	var optionLabel = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	
-	var ActivityNode = declare("drip.ActivityNode",[_WidgetBase, _TemplatedMixin],{
+	var ActivityNode = declare("drip.ActivityNode", [_WidgetBase, _TemplatedMixin],{
 		templateString: nodeTemplate,
 		data:{},
 		postCreate : function(){
 			this.inherited(arguments);
-			debugger;
 			this._showActionLabel();
 			
 			this.miniCard = new MiniCard();
-			
 			// 为模板赋值
 			var exerciseInfo = this.data.exercise;
 			var exerciseId = exerciseInfo.id;
