@@ -7,6 +7,7 @@ import java.util.Map;
  * 
  * @author jinzw
  * @since 0.0.1
+ * @deprecated 不推荐使用
  */
 public interface ExerciseGuideDao {
 

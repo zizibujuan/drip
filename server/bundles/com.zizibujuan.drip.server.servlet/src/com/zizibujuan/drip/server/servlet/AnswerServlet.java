@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.zizibujuan.drip.server.model.Answer;
 import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.AnswerService;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
@@ -16,6 +17,7 @@ import com.zizibujuan.drip.server.util.servlet.UserSession;
 
 /**
  * 习题答案
+ * 
  * @author jinzw
  * @since 0.0.1
  */
@@ -40,7 +42,7 @@ public class AnswerServlet extends BaseServlet {
 			Long exerciseId = Long.valueOf(sExerId);
 			UserInfo userInfo = (UserInfo) UserSession.getUser(req);
 			Long userId = userInfo.getId();
-			Map<String,Object> answer = answerService.get(userId, exerciseId);
+			Answer answer = answerService.get(userId, exerciseId);
 			ResponseUtil.toJSON(req, resp, answer);
 			return;
 		}

@@ -2,6 +2,7 @@ package com.zizibujuan.drip.server.dao.mysql;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
@@ -21,6 +22,7 @@ import com.zizibujuan.drip.server.util.ActionType;
 import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 import com.zizibujuan.drip.server.util.dao.PreparedStatementSetter;
+import com.zizibujuan.drip.server.util.dao.RowMapper;
 
 /**
  * 答案 数据访问实现类
@@ -34,26 +36,29 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 	private ActivityDao activityDao;
 	private UserStatisticsDao userStatisticsDao;
 	
-	private static final String SQL_GET_ANSWER = "SELECT " +
-			"DBID \"id\"," +
-			"EXER_ID \"exerciseId\"," +
-			"GUIDE \"guide\"," +
-			"CRT_TM \"createTime\"," +
-			"CRT_USER_ID \"createUserId\"," +
-			"UPT_TM \"updateTime\"," +
-			"UPT_USER_ID \"updateUserId\" " +
-			"FROM DRIP_ANSWER ";
+	private static final String SQL_GET_ANSWER = "SELECT "
+			+ "DBID,"
+			+ "EXER_ID,"
+			+ "GUIDE,"
+			+ "CRT_TM,"
+			+ "CRT_USER_ID,"
+			+ "UPT_TM,"
+			+ "UPT_USER_ID "
+			+ "FROM "
+			+ "DRIP_ANSWER ";
 
 	// 暂定，将习题解析看作答案的一部分。
 	private static final String SQL_GET_ANSWER_BY_ID = SQL_GET_ANSWER + "WHERE DBID=? ";
 	
-	private static final String SQL_LIST_ANSWER_DETAIL = "SELECT " +
-			"DBID \"id\"," +
-			"ANSWER_ID \"answerId\"," +
-			"OPT_ID \"optionId\"," +
-			"CONTENT \"content\" " +
-			"FROM DRIP_ANSWER_DETAIL " +
-			"WHERE ANSWER_ID=?";
+	private static final String SQL_LIST_ANSWER_DETAIL = "SELECT "
+			+ "DBID,"
+			+ "ANSWER_ID,"
+			+ "OPT_ID,"
+			+ "CONTENT "
+			+ "FROM "
+			+ "DRIP_ANSWER_DETAIL "
+			+ "WHERE "
+			+ "ANSWER_ID=?";
 	@Override
 	public Map<String, Object> get(Long answerId) {
 		Map<String,Object> result = DatabaseUtil.queryForMap(getDataSource(), SQL_GET_ANSWER_BY_ID, answerId);
@@ -82,15 +87,47 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 	}
 
 
-	private static final String SQL_GET_EXERCISE_ANSWER_BY_USER_ID = SQL_GET_ANSWER + "WHERE CRT_USER_ID=? AND EXER_ID=?";
+	private static final String SQL_GET_EXERCISE_ANSWER_BY_USER_ID = SQL_GET_ANSWER
+			+ "WHERE "
+			+ "CRT_USER_ID=? AND "
+			+ "EXER_ID=?";
 	@Override
-	public Map<String, Object> get(Long userId, Long exerciseId) {
-		Map<String,Object> result = DatabaseUtil.queryForMap(getDataSource(), SQL_GET_EXERCISE_ANSWER_BY_USER_ID, userId, exerciseId);
-		if(!result.isEmpty()){
-			Long answerId = Long.valueOf(result.get("id").toString());
-			List<Map<String,Object>> detail = DatabaseUtil.queryForList(getDataSource(), SQL_LIST_ANSWER_DETAIL, answerId);
-			result.put("detail", detail);
+	public Answer get(Long userId, Long exerciseId) {
+		final Answer result = DatabaseUtil.queryForObject(getDataSource(), SQL_GET_EXERCISE_ANSWER_BY_USER_ID, new RowMapper<Answer>() {
+			@Override
+			public Answer mapRow(ResultSet rs, int rowNum) throws SQLException {
+				Answer answer = new Answer();
+				answer.setId(rs.getLong(1));
+				answer.setExerciseId(rs.getLong(2));
+				answer.setGuide(rs.getString(3));
+				answer.setCreateTime(rs.getTimestamp(4));
+				answer.setCreateUserId(rs.getLong(5));
+				answer.setLastUpdateTime(rs.getTimestamp(6));
+				answer.setLastUpdateUserId(rs.getLong(7));
+				return answer;
+			}
+		}, userId, exerciseId);
+		if(result == null){
+			return result;
 		}
+		
+		List<AnswerDetail> details = DatabaseUtil.query(getDataSource(), SQL_LIST_ANSWER_DETAIL, new PreparedStatementSetter() {
+			@Override
+			public void setValues(PreparedStatement ps) throws SQLException {
+				ps.setLong(1, result.getId());
+			}
+		}, new RowMapper<AnswerDetail>() {
+			@Override
+			public AnswerDetail mapRow(ResultSet rs, int rowNum) throws SQLException {
+				AnswerDetail detail = new AnswerDetail();
+				detail.setId(rs.getLong(1));
+				detail.setAnswerId(rs.getLong(2));
+				detail.setOptionId(rs.getLong(3));
+				detail.setContent(rs.getString(4));
+				return detail;
+			}
+		});
+		result.setDetail(details);
 		return result;
 	}
 

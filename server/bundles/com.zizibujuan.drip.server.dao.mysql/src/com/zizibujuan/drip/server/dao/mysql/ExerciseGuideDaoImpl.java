@@ -11,8 +11,8 @@ import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
  * 
  * @author jinzw
  * @since 0.0.1
+ * @Deprecated 在下一个版本中删除
  */
-@Deprecated
 public class ExerciseGuideDaoImpl extends AbstractDao implements
 		ExerciseGuideDao {
 

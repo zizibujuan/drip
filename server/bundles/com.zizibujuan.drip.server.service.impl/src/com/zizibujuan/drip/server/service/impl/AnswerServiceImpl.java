@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.dao.AnswerDao;
 import com.zizibujuan.drip.server.dao.ExerciseGuideDao;
+import com.zizibujuan.drip.server.model.Answer;
 import com.zizibujuan.drip.server.service.AnswerService;
 
 /**
@@ -37,14 +38,8 @@ public class AnswerServiceImpl implements AnswerService {
 	}
 	
 	@Override
-	public Map<String, Object> get(Long userId, Long exerciseId) {
-		Map<String,Object> result = answerDao.get(userId, exerciseId);
-		Map<String,Object> guideMap = exerciseGuideDao.get(userId, exerciseId);
-		if(!guideMap.isEmpty()){
-			result.put("guide", guideMap.get("content").toString());
-		}
-		
-		return result;
+	public Answer get(Long userId, Long exerciseId) {
+		return answerDao.get(userId, exerciseId);
 	}
 
 	public void setAnswerDao(AnswerDao answerDao) {

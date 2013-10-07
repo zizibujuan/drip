@@ -39,11 +39,12 @@ public interface AnswerDao {
 	
 	/**
 	 * 获取某用户对某道习题的答案
+	 * 
 	 * @param userId 用户标识
 	 * @param exerciseId 习题标识
-	 * @return 答案信息，其中带上了习题解析内容
+	 * @return 答案信息，其中带上了习题解析内容。如果没有找到对应的答案，则返回null
 	 */
-	Map<String, Object> get(Long userId, Long exerciseId);
+	Answer get(Long userId, Long exerciseId);
 
 	/**
 	 * 执行用户新增或更新指定习题的答案

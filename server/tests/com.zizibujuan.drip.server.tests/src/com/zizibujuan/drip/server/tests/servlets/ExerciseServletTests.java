@@ -13,7 +13,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.zizibujuan.drip.server.model.Answer;
+import com.zizibujuan.drip.server.model.AnswerDetail;
 import com.zizibujuan.drip.server.model.Exercise;
+import com.zizibujuan.drip.server.service.AnswerService;
 import com.zizibujuan.drip.server.service.ExerciseService;
 import com.zizibujuan.drip.server.servlet.ServiceHolder;
 import com.zizibujuan.drip.server.tests.AbstractServletTests;
@@ -30,6 +33,7 @@ import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 public class ExerciseServletTests extends AbstractServletTests {
 	
 	private ExerciseService exerciseService = ServiceHolder.getDefault().getExerciseService();
+	private AnswerService answerService = ServiceHolder.getDefault().getAnswerService();
 	
 	@Before
 	public void setUp(){
@@ -45,17 +49,8 @@ public class ExerciseServletTests extends AbstractServletTests {
 	
 	@Test
 	public void post_add_exercise_success() throws IOException{
-		
 		try{
-			Map<String, Object> exercise = new HashMap<String, Object>();
-			exercise.put("exerciseType", ExerciseType.MULTI_OPTION);
-			exercise.put("content", "content_");
-			exercise.put("course", CourseType.HIGHER_MATH);
-			List<Map<String, Object>> options = new ArrayList<Map<String,Object>>();
-			Map<String, Object> option1 = new HashMap<String, Object>();
-			option1.put("content", "option_1");
-			options.add(option1);
-			exercise.put("options", options);
+			Map<String, Object> exercise = prepareMultiOptionExercise();
 			postData.put("exercise", exercise);
 			initPostServlet("exercises");
 			// 只返回dbid 
@@ -71,14 +66,58 @@ public class ExerciseServletTests extends AbstractServletTests {
 			assertNotNull(result.getOptions().get(0).getId());
 			assertEquals("option_1", result.getOptions().get(0).getContent());
 		}finally{
-			// TODO: 表之间添加级联删除操作。
 			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_EXERCISE");
 		}
-		
+	}
+
+	private Map<String, Object> prepareMultiOptionExercise() {
+		Map<String, Object> exercise = new HashMap<String, Object>();
+		exercise.put("exerciseType", ExerciseType.MULTI_OPTION);
+		exercise.put("content", "content_");
+		exercise.put("course", CourseType.HIGHER_MATH);
+		List<Map<String, Object>> options = new ArrayList<Map<String,Object>>();
+		Map<String, Object> option1 = new HashMap<String, Object>();
+		option1.put("content", "option_1");
+		options.add(option1);
+		exercise.put("options", options);
+		return exercise;
 	}
 	
-	@Test
-	public void post_add_and_answer_exercise_success(){
-		
+	private Map<String, Object> prepareMultiOptionAnswer() {
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("guide", "guide_1");
+		List<Map<String, Object>> details = new ArrayList<Map<String, Object>>();
+		Map<String, Object> detail1 = new HashMap<String, Object>();
+		detail1.put("seq", 1);
+		details.add(detail1);
+		result.put("detail", details);
+		return result;
 	}
+	
+	// 服务器端校验，习题内容必输，如果是选择题，则必须选项个数大于2
+	
+	@Test
+	public void post_add_exercise_and_answer_success() throws NumberFormatException, IOException{
+		Map<String, Object> exercise = prepareMultiOptionExercise();
+		Map<String, Object> answer = prepareMultiOptionAnswer();
+		
+		postData.put("exercise", exercise);
+		postData.put("answer", answer);
+		
+		initPostServlet("exercises");
+		Long exerciseId = Long.valueOf(response.getText());
+		assertNotNull(exerciseId);
+		
+		Answer result = answerService.get(testUserId, exerciseId);
+		assertEquals(exerciseId, result.getExerciseId());
+		assertNotNull(result.getId());
+		assertEquals("guide_1", result.getGuide());
+		List<AnswerDetail> details = result.getDetail();
+		assertEquals(1, details.size());
+		assertNotNull(details.get(0).getOptionId());
+		assertNotNull(details.get(0).getId());
+		assertEquals(result.getId(), details.get(0).getAnswerId());
+	}
+
+	
 }

@@ -2,6 +2,8 @@ package com.zizibujuan.drip.server.service;
 
 import java.util.Map;
 
+import com.zizibujuan.drip.server.model.Answer;
+
 /**
  * 答题服务接口
  * @author jinzw
@@ -51,9 +53,11 @@ public interface AnswerService {
 
 	/**
 	 * 获取某用户对某道习题的答案
+	 * 
 	 * @param userId 用户标识
 	 * @param exerciseId 习题标识
-	 * @param answer 答案内容，包括习题解析
+	 * 
+	 * @return 答案内容
 	 * <pre>
 	 * map结构为：
 	 * 		exerId: 习题标识
@@ -63,5 +67,5 @@ public interface AnswerService {
 	 * 			optionId:选项标识
 	 * </pre>
 	 */
-	Map<String, Object> get(Long userId, Long exerciseId);
+	Answer get(Long userId, Long exerciseId);
 }
