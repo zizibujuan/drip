@@ -21,6 +21,8 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 import com.zizibujuan.dbaccess.mysql.service.DataSourceHolder;
+import com.zizibujuan.drip.server.service.UserService;
+import com.zizibujuan.drip.server.servlet.ServiceHolder;
 import com.zizibujuan.drip.server.tests.servlets.internal.DeleteMethodWebRequest;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 import com.zizibujuan.drip.server.util.json.JsonUtil;
@@ -33,7 +35,7 @@ import com.zizibujuan.drip.server.util.json.JsonUtil;
 public class AbstractServletTests {
 
 	protected static final String SERVER_LOCATION = "http://localhost:8199/";
-	
+	protected static UserService userService;
 	protected static DataSource dataSource;
 	
 	// 
@@ -52,6 +54,7 @@ public class AbstractServletTests {
 	@BeforeClass
 	public static void setUpClass(){
 		dataSource = DataSourceHolder.getDefault().getDataSourceService().getDataSource();
+		userService = ServiceHolder.getDefault().getUserService();
 	}
 	
 	@AfterClass
@@ -158,6 +161,19 @@ public class AbstractServletTests {
 		// 删除用户，并注销？
 		DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_ATTRIBUTES WHERE USER_ID=?", testUserId);
 		DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_INFO  WHERE EMAIL=?", testUserEmail);
+		// 删除自我关注信息,如果存在的话
+		DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_RELATION WHERE USER_ID=? AND WATCH_USER_ID=?", testUserId, testUserId);
+		
 		initPostServlet("logout");
+	}
+	
+	protected void activeTestUser(){
+		if(testUserId != null){
+			userService.active(testUserId);
+		}
+	}
+	
+	protected void clearActiveInfo(){
+		
 	}
 }
