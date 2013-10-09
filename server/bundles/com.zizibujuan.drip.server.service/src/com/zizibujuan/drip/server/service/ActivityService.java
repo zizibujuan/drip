@@ -13,7 +13,8 @@ import com.zizibujuan.drip.server.util.PageInfo;
 public interface ActivityService {
 
 	/**
-	 * 获取关注用户的所有活动列表，如果有多个第三方帐号与本地帐号关联，则获取所有帐号的活动。
+	 * 获取关注用户的活动列表，分页查询。根据不同的活动类型，所获取的活动内容的属性是不同的，
+	 * 所以这里依然使用Map对象存放活动信息。
 	 * 
 	 * @param pageInfo 分页信息
 	 * @param localUserId 本网站为本地用户生成的全局用户标识
@@ -21,12 +22,11 @@ public interface ActivityService {
 	 * <pre>
 	 *  map结构为：
 	 *  以下为活动列表中的信息
-	 *		localUserId：被关注的用户对应的本网站用户标识
-	 *		connectUserId：本网站用户与第三方网站用户的映射标识
+	 *		userId：本网站用户与第三方网站用户的映射标识
 	 *		createTime：活动发生的时间
 	 *		contentId：活动输出的内容标识
 	 *		actionType：活动类型
-	 *		userInfo: 用户信息。FIXME：这里获取的用户信息需要需要这么多呢，因为用户的名片信息是延迟加载的。
+	 *		userInfo: 用户信息。FIXME：这里获取的用户信息需要这么多吗，因为用户的名片信息是延迟加载的。
 	 *			id: 本地用户标识，即localUserId
 	 *			connectUserId：本网站为第三方用户生成的代理主键
 	 *			nickName: 显示名
@@ -76,7 +76,7 @@ public interface ActivityService {
 	 *				content: 所填答案内容
 	 * </pre>
 	 */
-	List<Map<String, Object>> getFollowing(PageInfo pageInfo, Long localUserId);
+	List<Map<String, Object>> getFollowing(PageInfo pageInfo, Long userId);
 
 	/**
 	 * 获取我回答的习题列表

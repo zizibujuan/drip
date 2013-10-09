@@ -671,6 +671,41 @@ public abstract class DatabaseUtil {
 		return result;
 	}
 	
+	public static <T> List<T> query(DataSource ds, String sql, RowMapper<T> rowMapper, PageInfo pageInfo, Object... inParams){
+		List<T> result = new ArrayList<T>();
+		PreparedStatement stmt = null;
+		ResultSet rst = null;
+		Connection con= null;
+		try {
+			String sqlPage = sql;
+			if(pageInfo != null){
+				 sqlPage += "limit "+pageInfo.getStart()+" "+(pageInfo.getEnd()-pageInfo.getStart());
+			}
+			con = ds.getConnection();
+			con.setAutoCommit(false);
+			stmt = con.prepareStatement(sqlPage);
+			setParams(stmt, inParams);
+			rst = stmt.executeQuery();
+			while(rst.next()){
+				T t = rowMapper.mapRow(rst, 1);
+				result.add(t);
+			}
+			
+		} catch (SQLException e) {
+			throw new DataAccessException(e);
+		}
+		finally
+		{
+			DatabaseUtil.safeClose(con, rst, stmt);
+		}
+		
+		if(pageInfo != null){
+			int count = getCount(ds,sql,inParams);
+			pageInfo.setCount(count);
+		}
+		return result;
+	}
+	
 	/**
 	 * 插入新的记录
 	 * @param ds 数据库

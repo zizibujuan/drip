@@ -167,4 +167,22 @@ public interface UserDao {
 	 */
 	UserInfo getBaseInfoByLocalUserId(Long localUserId);
 
+	/**
+	 * 获取本网站用户的基本信息。只包含页面显示信息，不包含用户隐私信息。
+	 * 
+	 * @param userId 本网站用户标识
+	 * @return 用户基本信息，不包含敏感数据，因为第三方传过来的数据基本都过滤了敏感数据的，所以可以全部查出。
+	 * <pre>
+	 * map结构：
+	 *		userId：用户标识
+	 *		nickName：用户昵称
+	 *		loginName: 登录名
+	 *		digitalId: 为本网站用户分配的数字帐号
+	 *		homeCityCode：用户家乡所在城市编码
+	 *		sex：用户性别
+	 *		siteId：来自哪个网站的标识
+	 * </pre>
+	 */
+	Map<String, Object> getPublicInfo(Long userId);
+
 }

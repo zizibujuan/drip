@@ -23,17 +23,8 @@ public interface ActivityDao {
 	 * @param localUserId 本地用户标识
 	 * 
 	 * @return 活动列表的索引，并不包含活动内容详情。如果不存在，则返回空列表。
-	 * <pre>
-	 * map值：
-	 * 		DBID：活动标识
-	 * 		connectGlobalUserId：本网站为关联的网站用户生成的全局用户标识
-	 * 		localGlobalUserId：本网站为本网站用户产生的全局用户标识
-	 * 		createTime：活动发生的时间
-	 * 		contentId：活动输出的内容标识
-	 * 		actionType：活动类型
-	 * </pre>
 	 */
-	List<Map<String, Object>> getFollowing(PageInfo pageInfo, Long localUserId);
+	List<Activity> getFollowing(PageInfo pageInfo, Long localUserId);
 	
 	/**
 	 * 添加一个新的活动

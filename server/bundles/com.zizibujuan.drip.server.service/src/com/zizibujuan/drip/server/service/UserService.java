@@ -194,13 +194,11 @@ public interface UserService {
 	 *  <li>头像信息</li>
 	 * </ul>
 	 * 
-	 * <p>在界面上可以直接通过mapUserId获取用户信息，无需id</p>
-	 * @param localGlobalUserId 本网站为本网站用户产生的全局用户标识
+	 * @param userId 本网站为本网站用户产生的全局用户标识
 	 * @return 可以公开的用户信息。如果系统中存在该用户信息则返回，否则返回空的map对象。
 	 * <pre>
 	 * 	map结构为：
-	 * 		localUserId: 本地用户标识，即localUserId
-	 * 		connectUserId：本网站为第三方用户生成的代理主键
+	 * 		userId: 本网站用户标识
 	 * 		nickName: 用户昵称
 	 * 		loginName: 登录名
 	 * 		digitalId: 为本网站用户分配的数字帐号,任何来自第三方网站的用户，本网站都会分配一个数字帐号。
@@ -225,7 +223,7 @@ public interface UserService {
 	 * 		xLargeImageUrl:
 	 * </pre>
 	 */
-	Map<String, Object> getPublicInfo(Long localGlobalUserId);
+	Map<String, Object> getPublicInfo(Long userId);
 
 	/**
 	 * 获取简化的用户信息

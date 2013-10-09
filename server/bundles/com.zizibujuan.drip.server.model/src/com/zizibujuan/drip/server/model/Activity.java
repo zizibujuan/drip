@@ -25,6 +25,8 @@ public class Activity {
 		this.actionType = actionType;
 	}
 	
+	public Activity() {}
+
 	public Long getId() {
 		return id;
 	}

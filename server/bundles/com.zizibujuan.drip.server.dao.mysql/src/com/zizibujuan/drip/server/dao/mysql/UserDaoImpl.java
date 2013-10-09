@@ -324,6 +324,22 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		return DatabaseUtil.queryForObject(getDataSource(), SQL_GET_USER_BY_DBID, new UserInfoRowMapper(), connectUserId);
 	}
 	
+	private static final String SQL_GET_USER_PUBLIC_INFO = "SELECT " +
+			"a.DBID \"userId\"," +
+			"a.NICK_NAME \"nickName\"," +
+			"a.LOGIN_NAME \"loginName\"," +
+			"a.DIGITAL_ID \"digitalId\","+
+			"a.HOME_CITY_CODE \"homeCityCode\"," +
+			"a.SEX \"sex\"," +
+			"a.SITE_ID \"siteId\" " +
+			"FROM DRIP_USER_INFO a " +
+			"WHERE a.DBID=?";
+	@Override
+	public Map<String, Object> getPublicInfo(Long userId) {
+		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_USER_PUBLIC_INFO, userId);
+	}
+	
+	
 	public void setUserRelationDao(UserRelationDao userRelationDao) {
 		logger.info("注入userRelationDao");
 		this.userRelationDao = userRelationDao;

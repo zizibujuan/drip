@@ -1,5 +1,7 @@
 package com.zizibujuan.drip.server.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.zizibujuan.drip.server.dao.ActivityDao;
 import com.zizibujuan.drip.server.dao.AnswerDao;
 import com.zizibujuan.drip.server.dao.ExerciseDao;
+import com.zizibujuan.drip.server.model.Activity;
 import com.zizibujuan.drip.server.service.ActivityService;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.util.ActionType;
@@ -28,40 +31,48 @@ public class ActivityServiceImpl implements ActivityService {
 	private UserService userService;
 	
 	@Override
-	public List<Map<String, Object>> getFollowing(PageInfo pageInfo, Long localUserId) {
+	public List<Map<String, Object>> getFollowing(PageInfo pageInfo, Long userId) {
+		List<Map<String, Object>> result = new ArrayList<Map<String,Object>>();
 		// 获取关注用户的活动列表
-		List<Map<String,Object>> list = activityDao.getFollowing(pageInfo,localUserId);
+		List<Activity> list = activityDao.getFollowing(pageInfo,userId);
 		// TODO:然后循环着获取每个活动的详情,如果缓存中已存在，则从缓存中获取。
 		// 用户的详细信息也从缓存中获取
 		// 注意，新增的习题和答案，都要缓存起来。
 		
-		logger.info(list.toString());
-		for(Map<String,Object> each : list){
-			// 这些用户信息，都是被关注人的信息
-			Long localGlobalUserId = Long.valueOf(each.get("localGlobalUserId").toString());
+		// TODO:支持多种活动类型
+		for(Activity each : list){
+			Map<String, Object> map = new HashMap<String, Object>();
+			Long watchUserId = each.getUserId(); 
+			String actionType = each.getActionType();
+			Long contentId = each.getContentId();
 			
-			// 1.获取关联的用户标识connectGlobalUserId
-			// 2.获取第三方用户标识关联的本网站用户标识
-			// 3.获取本网站用户引用用户信息的用户标识
-			Map<String,Object> userInfo = userService.getPublicInfo(localGlobalUserId);
-			each.put("userInfo", userInfo);
+			map.put("id", each.getId());
+			map.put("userId", watchUserId);
+			map.put("actionType", actionType);
+			map.put("contentId", contentId);
+			map.put("createTime", each.getCreateTime());
 			
-			Long contentId = Long.valueOf(each.get("contentId").toString());
-			String actionType = each.get("actionType").toString();
+			// 被关注人的信息
+			Map<String,Object> userInfo = userService.getPublicInfo(watchUserId);
+			map.put("userInfo", userInfo);
+			
 			if(actionType.equals(ActionType.SAVE_EXERCISE)){
 				Map<String,Object> exercise = getExercise(contentId);
-				each.put("exercise", exercise);
+				map.put("exercise", exercise);
 			}else if(actionType.equals(ActionType.ANSWER_EXERCISE)){
 				// 将答案和习题解析看作一体，是用户在答题时写下的做题思路
 				Map<String,Object> answer = getAnswer(contentId);
 				Long exerciseId = Long.valueOf(answer.get("exerciseId").toString());
 				Map<String,Object> exercise = getExercise(exerciseId);
-				each.put("exercise", exercise);
-				each.put("answer", answer);
+				map.put("exercise", exercise);
+				map.put("answer", answer);
 			}
+			// 如果是新增项目（主题）
+			// 如果是维护日志呢
 			
+			result.add(map);
 		}
-		return list;
+		return result;
 	}
 	
 	@Override

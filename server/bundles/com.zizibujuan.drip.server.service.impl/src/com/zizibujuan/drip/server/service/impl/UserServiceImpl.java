@@ -182,31 +182,22 @@ public class UserServiceImpl implements UserService {
 	// 获取统计信息
 	// 获取头像信息
 	@Override
-	public Map<String, Object> getPublicInfo(Long localGlobalUserId) {
-		// TODO：需要缓存
+	public Map<String, Object> getPublicInfo(Long userId) {
+		// TODO：需要缓存, 但是统计信息不适合缓存
 		Map<String,Object> userInfo = null;
-		// 先从映射关系表中获取信息。
-		Map<String, Object> mapUserInfo = userBindDao.getRefUserMapperInfo(localGlobalUserId);
-		if(mapUserInfo.isEmpty()){
-			return mapUserInfo;
-		}
-		
-		// 注意，该connectUserId是与本地用户引用用户信息的帐号，与参数中的connectGlobalUserId可能不是同一个帐号
-		Long connectUserId = Long.valueOf(mapUserInfo.get("connectUserId").toString());
-		
 		// TODO:获取用户家乡所在地和用户性别代码。将用户家乡所在地缓存
 		// 从propertyService中获取城市名称，该方法要支持缓存。
-		userInfo = connectUserDao.getPublicInfo(connectUserId);
-		userInfo.put("localUserId", localGlobalUserId);
+		// FIXME:直接读取本网站用户的可公开信息
+		userInfo = userDao.getPublicInfo(userId);
 		String cityCode = (String) userInfo.get("homeCityCode");
 		if(cityCode != null && !cityCode.isEmpty()){
 			userInfo.put("homeCity", applicationPropertyService.getCity(cityCode));
 		}
 		// 这个统计数据是所有关联用户和本网站用户的数据之和。
-		Map<String,Object> statistics = userStatisticsDao.getUserStatistics(localGlobalUserId);
+		Map<String,Object> statistics = userStatisticsDao.getUserStatistics(userId);
 		userInfo.putAll(statistics);
 			
-		Map<String,String> avatarInfo = userAvatarDao.get(connectUserId);
+		Map<String,String> avatarInfo = userAvatarDao.get(userId);
 		userInfo.putAll(avatarInfo);
 		return userInfo;
 	}
