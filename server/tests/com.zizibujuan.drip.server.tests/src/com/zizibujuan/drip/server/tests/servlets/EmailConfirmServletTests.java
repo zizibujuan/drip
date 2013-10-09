@@ -2,6 +2,7 @@ package com.zizibujuan.drip.server.tests.servlets;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -15,6 +16,7 @@ import org.xml.sax.SAXException;
 
 import com.zizibujuan.dbaccess.mysql.service.DataSourceHolder;
 import com.zizibujuan.drip.server.model.UserInfo;
+import com.zizibujuan.drip.server.service.UserRelationService;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.servlet.ServiceHolder;
 import com.zizibujuan.drip.server.tests.AbstractServletTests;
@@ -29,11 +31,12 @@ import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 public class EmailConfirmServletTests extends AbstractServletTests{
 
 	private static DataSource dataSource;
-	
+	private static UserRelationService userRelationService;
 	
 	@BeforeClass
 	public static void setUpClass(){
 		dataSource = DataSourceHolder.getDefault().getDataSourceService().getDataSource();
+		userRelationService = ServiceHolder.getDefault().getUserRelationService();
 	}
 	
 	// 第一次激活
@@ -62,6 +65,9 @@ public class EmailConfirmServletTests extends AbstractServletTests{
 			assertEquals(HttpServletResponse.SC_OK, response.getResponseCode());
 			assertTrue(response.isHTML());
 			//assertEquals("孜孜不倦 · 激活成功", response.getTitle());
+			// 激活成功之后，确认用户已自我关注
+			Long relationId = userRelationService.getRelationId(userId, userId);
+			assertNotNull(relationId);
 		}finally{
 			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_ATTRIBUTES WHERE USER_ID=?", userId);
 			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_INFO  WHERE EMAIL=?", email);

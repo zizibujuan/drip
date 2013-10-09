@@ -101,7 +101,7 @@ public interface UserService {
 	UserInfo getByConfirmKey(String confirmKey);
 	
 	/**
-	 * 激活用户
+	 * 激活用户,激活成功之后，要添加自我关注
 	 * 
 	 * @param userId 用户标识
 	 */

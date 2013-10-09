@@ -142,16 +142,32 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	public UserInfo getByToken(String token) {
 		return DatabaseUtil.queryForObject(getDataSource(), SQL_GET_USER_INFO_BY_TOKEN, new UserInfoRowMapper(), token);
 	}
-		
+	
 	private static final String SQL_UPDATE_ACTIVE_USER = "UPDATE DRIP_USER_INFO "
 			+ "SET "
 			+ "ACTIVITY=1,"
 			+ "ACTIVE_TIME=now() "
 			+ "WHERE "
 			+ "DBID=?";
+	/**
+	 * 激活成功之后，要自我关注
+	 */
 	@Override
 	public void active(Long userId) {
-		DatabaseUtil.update(getDataSource(), SQL_UPDATE_ACTIVE_USER, userId);
+		Connection con = null;
+		try{
+			con = getDataSource().getConnection();
+			con.setAutoCommit(false);
+			DatabaseUtil.update(con, SQL_UPDATE_ACTIVE_USER, userId);
+			// 关注自己
+			userRelationDao.watch(con, userId, userId);
+			con.commit();
+		}catch (Exception e) {
+			DatabaseUtil.safeRollback(con);
+			throw new DataAccessException(e);
+		}finally{
+			DatabaseUtil.closeConnection(con);
+		}
 	}
 	
 	// 这里只查询出需要在界面上显示的用户信息，主要存储在当前用户的session中。
