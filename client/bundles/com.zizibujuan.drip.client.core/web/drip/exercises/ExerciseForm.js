@@ -39,7 +39,7 @@ define(["dojo/_base/declare",
 	
 	var optionLabel = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	
-	var cources = [{id: "essayQuestion", label: "问答题", type: classCode.ExerciseType.ESSAY_QUESTION},
+	var courses = [{id: "essayQuestion", label: "问答题", type: classCode.ExerciseType.ESSAY_QUESTION},
 	               {id:"single", label:"单项选择题", type: classCode.ExerciseType.SINGLE_OPTION},
 	               {id:"multiple", label:"多项选择题", type: classCode.ExerciseType.MULTI_OPTION}/*,
 	               {id:"fill", label:"填空题"}*/];
@@ -47,12 +47,14 @@ define(["dojo/_base/declare",
 	return declare("drip.exercises.ExerciseForm", [_WidgetBase], {
 		// summary:
 		//		数据
-		//		exerciseType:
-		//		content:
-		//		guide:
-		//		options:[]
-		//		answers:[]
-		data:{},
+		//		exercise
+		//			exerciseType:
+		//			content:
+		//			options:[]
+		//		answer
+		//			guide:
+		//			answers:[]
+		data:{exercise: {}, answer: {}},
 		
 		optionLength: 4,
 		
@@ -100,7 +102,7 @@ define(["dojo/_base/declare",
 			//		创建习题输入界面
 			// exerciseType: String
 			//		题型
-			this.data.exerciseType = exerciseType;
+			this.data.exercise.exerciseType = exerciseType;
 			// 创建题型
 			this._createExerciseTypeOptions(exerciseType);
 			
@@ -160,12 +162,12 @@ define(["dojo/_base/declare",
 			domConstruct.place('<div class="drip-title">题型</div>', row);
 			var name = this._exerciseTypeOptionName = "exerciseType";
 			var ul = domConstruct.place("<ul class=\"radio-group\"></ul>", row);
-			for(var i = 0; i < cources.length; i++){
-				var cource = cources[i];
-				var checked = (cource.type == exerciseType);
+			for(var i = 0; i < courses.length; i++){
+				var course = courses[i];
+				var checked = (course.type == exerciseType);
 				var li = domConstruct.create("li", null, ul);
-				var input = domConstruct.create("input", {type:"radio", name:name, id: cource.type, checked: checked}, li);
-				var label = domConstruct.create("label", {"for":cource.type, innerHTML: cource.label}, li);
+				var input = domConstruct.create("input", {type:"radio", name:name, id: course.type, checked: checked}, li);
+				var label = domConstruct.create("label", {"for":course.type, innerHTML: course.label}, li);
 				on(input,"click", lang.hitch(this,function(e){
 					var target = e.target;
 					if(target.id != this.data.exerType){
@@ -341,18 +343,18 @@ define(["dojo/_base/declare",
 		
 		_getFormData: function(){
 			var data = this.data;
-			data.content = this.exerContentEditor.get("value");
+			data.exercise.content = this.exerContentEditor.get("value");
 			// TODO:获取题型和科目
 			query("[name=" + this._courseOptionName + "]:checked", this.coursePane).forEach(function(inputEl, index){
-				data.course = inputEl.id.split("_")[1];
+				data.exercise.course = inputEl.id.split("_")[1];
 				return;
 			});
 			
 			if(this.tblOption){
-				data.options = [];
+				data.exercise.options = [];
 				registry.findWidgets(this.tblOption).forEach(function(widget, index){
 					console.log(widget, index, widget.get("value"));
-					data.options.push(widget.get("value"));
+					data.exercise.options.push({content: widget.get("value")});
 				});
 			}
 			var answer = {};
@@ -399,14 +401,22 @@ define(["dojo/_base/declare",
 		
 		_reset: function(){
 			this.data = {};
-			this.exerContentEditor.set("value","");
-			this.guideEditor.set("value","");
+			this.exerContentEditor.set("value", "");
+			this.answerEditor.set("value", "");
+			this.guideEditor.set("value", "");
 			query("[name="+this._optionName+"]:checked", this.tblOption).forEach(function(inputEl, index){
 				domAttr.set(inputEl,"checked", false);
 			});
-			registry.findWidgets(this.tblOption).forEach(function(widget, index){
-				widget.set("value","");
+			
+			query("[name="+this._courseOptionName+"]:checked", this.coursePane).forEach(function(inputEl, index){
+				domAttr.set(inputEl,"checked", false);
 			});
+			
+			if(this.tblOption){
+				registry.findWidgets(this.tblOption).forEach(function(widget, index){
+					widget.set("value","");
+				});
+			}
 		},
 		
 		empty: function(){
