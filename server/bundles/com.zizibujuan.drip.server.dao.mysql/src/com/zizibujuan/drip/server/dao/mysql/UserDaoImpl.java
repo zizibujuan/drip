@@ -219,7 +219,25 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		}, login, md5Password);
 	}
 	
-	
+	private static final String SQL_GET_USER_PUBLIC_INFO = "SELECT "
+			+ "a.DBID \"userId\","
+			+ "a.NICK_NAME \"nickName\","
+			+ "a.LOGIN_NAME \"loginName\","
+			+ "a.DIGITAL_ID \"digitalId\","
+			+ "a.HOME_CITY_CODE \"homeCityCode\","
+			+ "a.SEX \"sex\","
+			+ "b.SITE_ID \"siteId\" "
+			+ "FROM "
+			+ "DRIP_USER_INFO a LEFT JOIN DRIP_USER_BIND b ON a.DBID = b.USER_ID "
+			+ "WHERE a.DBID=?";
+	@Override
+	public Map<String, Object> getPublicInfo(Long userId) {
+		Map<String, Object> userInfo = DatabaseUtil.queryForMap(getDataSource(), SQL_GET_USER_PUBLIC_INFO, userId);
+		if(userInfo.get("siteId") == null){
+			userInfo.put("siteId", OAuthConstants.ZIZIBUJUAN);
+		}
+		return userInfo;
+	}
 	
 	
 	
@@ -339,22 +357,6 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		}
 		return DatabaseUtil.queryForObject(getDataSource(), SQL_GET_USER_BY_DBID, new UserInfoRowMapper(), connectUserId);
 	}
-	
-	private static final String SQL_GET_USER_PUBLIC_INFO = "SELECT " +
-			"a.DBID \"userId\"," +
-			"a.NICK_NAME \"nickName\"," +
-			"a.LOGIN_NAME \"loginName\"," +
-			"a.DIGITAL_ID \"digitalId\","+
-			"a.HOME_CITY_CODE \"homeCityCode\"," +
-			"a.SEX \"sex\"," +
-			"a.SITE_ID \"siteId\" " +
-			"FROM DRIP_USER_INFO a " +
-			"WHERE a.DBID=?";
-	@Override
-	public Map<String, Object> getPublicInfo(Long userId) {
-		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_USER_PUBLIC_INFO, userId);
-	}
-	
 	
 	public void setUserRelationDao(UserRelationDao userRelationDao) {
 		logger.info("注入userRelationDao");
