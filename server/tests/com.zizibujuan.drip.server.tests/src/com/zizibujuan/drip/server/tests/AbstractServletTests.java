@@ -2,6 +2,7 @@ package com.zizibujuan.drip.server.tests;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -142,38 +143,51 @@ public class AbstractServletTests {
 		}
 	}
 	
+	protected List<Map<String, Object>> getResponseArray() throws IOException{
+		String jsonString = response.getText();
+		return JsonUtil.fromJsonArray(jsonString);
+	}
+	
 	protected <T> T getResponseData(Class<T> classOfT) throws IOException{
 		String jsonString = response.getText();
 		return JsonUtil.fromJsonObject(jsonString, classOfT);
 	}
 	
 	protected void setUpAuthorization(){
+		testUserId = createUser(testUserEmail, testUserPassword, testUserLoginName);
+	}
+	
+	protected Long createUser(String email, String password, String loginName){
 		// 如果用户不存在，则创建用户
-		params.put("email", testUserEmail);
-		params.put("password", testUserPassword);
-		params.put("loginName", testUserLoginName);
+		params = new HashMap<String, String>();
+		params.put("email", email);
+		params.put("password", password);
+		params.put("loginName", loginName);
 		// 注册并登录
 		initPostServlet("users");
-		testUserId = DatabaseUtil.queryForLong(dataSource, "SELECT DBID FROM DRIP_USER_INFO WHERE EMAIL=?", testUserEmail);
+		return DatabaseUtil.queryForLong(dataSource, "SELECT DBID FROM DRIP_USER_INFO WHERE EMAIL=?", email);
+	}
+	
+	protected void removeUser(Long userId){
+		// 删除用户
+		DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_ATTRIBUTES WHERE USER_ID=?", userId);
+		DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_INFO  WHERE DBID=?", userId);
+		// 删除自我关注信息,如果存在的话
+		DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_RELATION WHERE USER_ID=? AND WATCH_USER_ID=?", userId, userId);
+	}
+	
+	protected void activeUser(Long userId){
+		if(userId != null){
+			userService.active(userId);
+		}
 	}
 	
 	protected void tearDownAuthorization(){
-		// 删除用户，并注销？
-		DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_ATTRIBUTES WHERE USER_ID=?", testUserId);
-		DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_INFO  WHERE EMAIL=?", testUserEmail);
-		// 删除自我关注信息,如果存在的话
-		DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_RELATION WHERE USER_ID=? AND WATCH_USER_ID=?", testUserId, testUserId);
-		
+		removeUser(testUserId);
 		initPostServlet("logout");
 	}
 	
 	protected void activeTestUser(){
-		if(testUserId != null){
-			userService.active(testUserId);
-		}
-	}
-	
-	protected void clearActiveInfo(){
-		
+		activeUser(testUserId);
 	}
 }

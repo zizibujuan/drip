@@ -6,6 +6,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.zizibujuan.drip.server.tests.doc.servlets.FileServletTests;
 import com.zizibujuan.drip.server.tests.doc.servlets.ProjectServletTests;
+import com.zizibujuan.drip.server.tests.servlets.DashboardServletTests;
 import com.zizibujuan.drip.server.tests.servlets.EmailConfirmServletTests;
 import com.zizibujuan.drip.server.tests.servlets.ExerciseServletTests;
 import com.zizibujuan.drip.server.tests.servlets.FollowServletTests;
@@ -27,7 +28,8 @@ import com.zizibujuan.drip.server.tests.servlets.UserServletTests;
 //	ProjectServletTests.class,
 //	FileServletTests.class,
 	//RestHtmlFilterTests.class,
-	ExerciseServletTests.class
+//	ExerciseServletTests.class,
+	DashboardServletTests.class
 })
 public class AllServletTests {
 

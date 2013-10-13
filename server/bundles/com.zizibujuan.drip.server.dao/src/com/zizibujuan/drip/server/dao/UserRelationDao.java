@@ -31,10 +31,11 @@ public interface UserRelationDao {
 	 * 用户关注另一个用户。
 	 * <p>不论是被关注用户还是关注用户，这里的标识都是指drip的用户标识，而不是第三方网站的用户标识。
 	 * 这样就可以通过drip用户，获取到所有关联帐号的信息</p>
-	 * @param connectUserId 执行关注操作的用户标识,本网站为第三方用户生成的全局用户标识/本网站用户标识
-	 * @param watchConnectUserId 被关注的用户标识,本网站为第三方用户生成的全局用户标识/本网站用户标识
+	 * 
+	 * @param userId 执行关注操作的用户标识,本网站用户标识
+	 * @param watchUserId 被关注的用户标识,本网站用户标识
 	 */
-	void watch(Long connectUserId, Long watchConnectUserId);
+	void watch(Long userId, Long watchUserId);
 
 	/**
 	 * 获取第一个用户没有关注第二个用户的关系标识。

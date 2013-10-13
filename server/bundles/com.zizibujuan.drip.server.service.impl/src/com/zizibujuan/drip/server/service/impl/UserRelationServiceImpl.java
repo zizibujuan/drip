@@ -31,10 +31,10 @@ public class UserRelationServiceImpl implements UserRelationService {
 	}
 	
 	@Override
-	public void follow(Long connectUserId, Long followConnectUserId) {
+	public void follow(Long userId, Long watchUserId) {
 		// 判断用户是否已被关注，如果已被关注，则不再重复关注
-		if(userRelationDao.getRelationId(connectUserId, followConnectUserId) == null){
-			userRelationDao.watch(connectUserId, followConnectUserId);
+		if(userRelationDao.getRelationId(userId, watchUserId) == null){
+			userRelationDao.watch(userId, watchUserId);
 		}
 	}
 

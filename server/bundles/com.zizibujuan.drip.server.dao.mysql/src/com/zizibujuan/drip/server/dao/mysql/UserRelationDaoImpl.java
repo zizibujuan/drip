@@ -37,6 +37,7 @@ public class UserRelationDaoImpl extends AbstractDao implements UserRelationDao 
 	public void watch(Connection con, Long userId, Long watchUserId) throws SQLException {
 		DatabaseUtil.insert(con, SQL_INSERT_USER_RELATION, userId, watchUserId);
 	}
+	
 	@Override
 	public void watch(Long userId, Long watchUserId) {
 		Connection con = null;
@@ -44,9 +45,9 @@ public class UserRelationDaoImpl extends AbstractDao implements UserRelationDao 
 			con = getDataSource().getConnection();
 			con.setAutoCommit(false);
 			this.watch(con, userId, watchUserId);
-			Long watchLocalUserId = userBindDao.getLocalUserId(watchUserId);
+			// 只关注本网站用户
 			userStatisticsDao.increaseFollowingCount(con, userId);
-			userStatisticsDao.increaseFollowerCount(con, watchLocalUserId);
+			userStatisticsDao.increaseFollowerCount(con, watchUserId);
 			con.commit();
 		} catch (SQLException e) {
 			DatabaseUtil.safeRollback(con);

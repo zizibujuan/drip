@@ -23,10 +23,11 @@ public interface UserRelationService {
 
 	/**
 	 * 关注好友，不能重复关注同一个人
-	 * @param connectUserId 发起关注的用户标识,本网站为第三方用户生成的全局用户标识/本网站用户标识
-	 * @param followConnectUserId 被关注的用户标识，本网站为第三方用户生成的全局用户标识/本网站用户标识
+	 * 
+	 * @param userId 发起关注的用户标识,本网站用户标识
+	 * @param watchUserId 被关注的用户标识，本网站用户标识
 	 */
-	void follow(Long connectUserId, Long followConnectUserId);
+	void follow(Long userId, Long watchUserId);
 
 	/**
 	 * 取消关注好友

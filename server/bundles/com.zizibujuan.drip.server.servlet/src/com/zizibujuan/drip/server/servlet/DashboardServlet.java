@@ -8,6 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.core.runtime.IPath;
+
 import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.ActivityService;
 import com.zizibujuan.drip.server.util.PageInfo;
@@ -17,6 +19,7 @@ import com.zizibujuan.drip.server.util.servlet.UserSession;
 
 /**
  * 个人首页
+ * 
  * @author jinzw
  * @since 0.0.1
  */
@@ -42,23 +45,23 @@ public class DashboardServlet extends BaseServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		traceRequest(req);
-		String pathInfo = req.getPathInfo();
-		if(pathInfo == null || pathInfo.equals("/")){
+		IPath path = getPath(req);
+		if(path.segmentCount() == 0){
 			UserInfo userInfo = (UserInfo) UserSession.getUser(req);
 			Long userId = userInfo.getId();
 			PageInfo pageInfo = getPageInfo(req);
 			String type = req.getParameter("type");
 			if(type.equals("following")){
 				List<Map<String,Object>> result = activityService.getFollowing(pageInfo, userId);
-				ResponseUtil.toJSON(req, resp, result);
+				ResponseUtil.toJSON(req, resp, pageInfo, result);
 				return;
 			}else if(type.equals("myAnswer")){
 				List<Map<String,Object>> result = activityService.getMyAnswers(pageInfo, userId);
-				ResponseUtil.toJSON(req, resp, result);
+				ResponseUtil.toJSON(req, resp, pageInfo, result);
 				return;
 			}else if(type.equals("myExercise")){
 				List<Map<String,Object>> result = activityService.getMyExercises(pageInfo, userId);
-				ResponseUtil.toJSON(req, resp, result);
+				ResponseUtil.toJSON(req, resp, pageInfo, result);
 				return;
 			}
 		}
