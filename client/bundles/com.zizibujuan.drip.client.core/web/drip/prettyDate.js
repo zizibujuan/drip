@@ -85,7 +85,7 @@ define(["dojo/_base/lang",
 		
 		pretty: function(dateString){
 			var date = stamp.fromISOString(dateString);
-			return prettyForNumber(date);
+			return this.prettyForNumber(date);
 		},
 		
 		setInterval: function(parent, interval){
@@ -99,7 +99,7 @@ define(["dojo/_base/lang",
 		_format: function(){
 			query("time",this.parent).forEach(lang.hitch(this,function(el, index){
 				var datetime = domProp.get(el, "datetime");
-				var pretty = this.pretty(datetime);
+				var pretty = this.prettyForNumber(datetime);
 				el.innerHTML = pretty;
 			}));
 		}

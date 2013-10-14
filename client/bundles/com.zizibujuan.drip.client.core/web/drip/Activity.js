@@ -10,6 +10,7 @@ define(["dojo/_base/declare",
         "dojo/query",
         "dojo/on",
         "dojo/json",
+        "dojo/date/locale",
         "dijit/_WidgetBase",
         "dijit/_TemplatedMixin",
         "dijit/form/Button",
@@ -32,6 +33,7 @@ define(["dojo/_base/declare",
         		query,
         		on,
         		JSON,
+        		locale,
         		_WidgetBase,
         		_TemplatedMixin,
         		Button,
@@ -306,10 +308,14 @@ define(["dojo/_base/declare",
 			var userName = data.userInfo.nickName;
 			this.userInfo.innerHTML = userName;
 			this.action.innerHTML = classCode.ActionTypeMap[data.actionType];
-			this.time.innerHTML = prettyDate.pretty(data.createTime);
-			this.time.title = data.createTime.replace("T", " ");
+			this.time.innerHTML = prettyDate.prettyForNumber(data.createTime);
+			var _createTime = new Date(data.createTime);
+			this.time.title = locale.format(_createTime, {
+				selector: "date", 
+				//datePattern: "yyyy-MM-d h:m:s.SSS"
+				formatLength: "full"
+			});
 			this.time.datetime = data.createTime;
-			
 			// 用户头像
 			// TODO:每天晚上到人人上同步一下用户信息
 			//this.userLinkNode.href = "/users/"+data.userId;
