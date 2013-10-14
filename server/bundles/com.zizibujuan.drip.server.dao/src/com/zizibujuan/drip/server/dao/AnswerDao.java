@@ -35,7 +35,7 @@ public interface AnswerDao {
 	 * 			content: 所填答案内容
 	 * </pre>
 	 */
-	Map<String, Object> get(Long answerId);
+	Answer get(Long answerId);
 	
 	/**
 	 * 获取某用户对某道习题的答案

@@ -3,6 +3,7 @@ package com.zizibujuan.drip.server.tests.servlets;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.zizibujuan.drip.server.model.Answer;
+import com.zizibujuan.drip.server.model.AnswerDetail;
 import com.zizibujuan.drip.server.model.Exercise;
 import com.zizibujuan.drip.server.model.ExerciseForm;
 import com.zizibujuan.drip.server.service.ExerciseService;
@@ -117,7 +120,7 @@ public class DashboardServletTests extends AbstractServletTests {
 			Exercise exercise = new Exercise();
 			exercise.setContent("a");
 			exercise.setExerciseType(ExerciseType.ESSAY_QUESTION);
-			exercise.setCreateUserId(testUserId);
+			exercise.setCreateUserId(userId1);
 			exerciseForm.setExercise(exercise);
 			exerciseService.add(exerciseForm);
 			
@@ -126,7 +129,49 @@ public class DashboardServletTests extends AbstractServletTests {
 			initGetServlet("activities");
 			assertEquals(HttpServletResponse.SC_OK, response.getResponseCode());
 			List<Map<String, Object>> activities = getResponseArray();
-			assertEquals(0, activities.size());
+			assertEquals(1, activities.size());
+		}finally{
+			// 删除习题信息
+			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_EXERCISE");
+			// 删除活动列表信息
+			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_ACTIVITY");
+			// 删除统计信息列表
+			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_STATISTICS");
+			removeUser(userId1);
+		}
+	}
+	
+	@Test
+	public void test_get_watch_user_activities_add_exercise_and_answer() throws IOException{
+		Long userId1 = null;
+		try{
+			userId1 = createUser("a@a.com", "abc123", "a");
+			activeUser(userId1);
+			
+			userRelationService.follow(testUserId, userId1);
+			
+			ExerciseForm exerciseForm = new ExerciseForm();
+			Exercise exercise = new Exercise();
+			exercise.setContent("a");
+			exercise.setExerciseType(ExerciseType.ESSAY_QUESTION);
+			exercise.setCreateUserId(userId1);
+			Answer answer = new Answer();
+			answer.setGuide("b");
+			List<AnswerDetail> details = new ArrayList<AnswerDetail>();
+			AnswerDetail detail1 = new AnswerDetail();
+			detail1.setContent("c");
+			details.add(detail1);
+			answer.setDetail(details);
+			exerciseForm.setAnswer(answer);
+			exerciseForm.setExercise(exercise);
+			exerciseService.add(exerciseForm);
+			
+			params = new HashMap<String, String>();
+			params.put("type", "following");
+			initGetServlet("activities");
+			assertEquals(HttpServletResponse.SC_OK, response.getResponseCode());
+			List<Map<String, Object>> activities = getResponseArray();
+			assertEquals(2, activities.size());
 		}finally{
 			// 删除习题信息
 			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_EXERCISE");

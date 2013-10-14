@@ -60,13 +60,41 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 			+ "WHERE "
 			+ "ANSWER_ID=?";
 	@Override
-	public Map<String, Object> get(Long answerId) {
-		Map<String,Object> result = DatabaseUtil.queryForMap(getDataSource(), SQL_GET_ANSWER_BY_ID, answerId);
+	public Answer get(final Long answerId) {
+		Answer result = DatabaseUtil.queryForObject(getDataSource(), SQL_GET_ANSWER_BY_ID, new RowMapper<Answer>() {
+			@Override
+			public Answer mapRow(ResultSet rs, int rowNum) throws SQLException {
+				Answer answer = new Answer();
+				answer.setId(rs.getLong(1));
+				answer.setExerciseId(rs.getLong(2));
+				answer.setGuide(rs.getString(3));
+				answer.setCreateTime(rs.getTimestamp(4));
+				answer.setCreateUserId(rs.getLong(5));
+				answer.setLastUpdateTime(rs.getTimestamp(6));
+				answer.setLastUpdateUserId(rs.getLong(7));
+				return answer;
+			}
+		}, answerId);
 		
-		if(!result.isEmpty()){
-			List<Map<String,Object>> detail = DatabaseUtil.queryForList(getDataSource(), SQL_LIST_ANSWER_DETAIL, answerId);
-			result.put("detail", detail);
-		}
+		
+		List<AnswerDetail> detail = DatabaseUtil.query(getDataSource(), SQL_LIST_ANSWER_DETAIL, new PreparedStatementSetter() {
+			@Override
+			public void setValues(PreparedStatement ps) throws SQLException {
+				ps.setLong(1, answerId);
+				
+			}
+		}, new RowMapper<AnswerDetail>() {
+			@Override
+			public AnswerDetail mapRow(ResultSet rs, int rowNum) throws SQLException {
+				AnswerDetail d = new AnswerDetail();
+				d.setId(rs.getLong(1));
+				d.setAnswerId(rs.getLong(2));
+				d.setOptionId(rs.getLong(3));
+				d.setContent(rs.getString(4));
+				return d;
+			}
+		});
+		result.setDetail(detail);
 		return result;
 	}
 	

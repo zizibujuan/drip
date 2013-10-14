@@ -12,6 +12,7 @@ import com.zizibujuan.drip.server.dao.ActivityDao;
 import com.zizibujuan.drip.server.dao.AnswerDao;
 import com.zizibujuan.drip.server.dao.ExerciseDao;
 import com.zizibujuan.drip.server.model.Activity;
+import com.zizibujuan.drip.server.model.Answer;
 import com.zizibujuan.drip.server.model.Exercise;
 import com.zizibujuan.drip.server.service.ActivityService;
 import com.zizibujuan.drip.server.service.UserService;
@@ -62,8 +63,8 @@ public class ActivityServiceImpl implements ActivityService {
 				map.put("exercise", exercise);
 			}else if(actionType.equals(ActionType.ANSWER_EXERCISE)){
 				// 将答案和习题解析看作一体，是用户在答题时写下的做题思路
-				Map<String,Object> answer = getAnswer(contentId);
-				Long exerciseId = Long.valueOf(answer.get("exerciseId").toString());
+				Answer answer = getAnswer(contentId);
+				Long exerciseId = answer.getExerciseId();
 				Exercise exercise = getExercise(exerciseId);
 				map.put("exercise", exercise);
 				map.put("answer", answer);
@@ -91,9 +92,8 @@ public class ActivityServiceImpl implements ActivityService {
 			
 			Long contentId = Long.valueOf(each.get("contentId").toString());
 		
-			Map<String,Object> answer = getAnswer(contentId);
-			Long exerciseId = Long.valueOf(answer.get("exerciseId").toString());
-			Exercise exercise = getExercise(exerciseId);
+			Answer answer = getAnswer(contentId);
+			Exercise exercise = getExercise(answer.getExerciseId());
 			each.put("exercise", exercise);
 			each.put("answer", answer);
 		}
@@ -126,9 +126,9 @@ public class ActivityServiceImpl implements ActivityService {
 		return result;
 	}
 	
-	private Map<String,Object> getAnswer(Long answerId){
+	private Answer getAnswer(Long answerId){
 		// TODO: 改为从缓存中获取
-		Map<String,Object> result = answerDao.get(answerId);
+		Answer result = answerDao.get(answerId);
 		return result;
 	}
 
