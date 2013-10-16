@@ -15,11 +15,14 @@ import org.junit.Test;
 import org.xml.sax.SAXException;
 
 import com.zizibujuan.dbaccess.mysql.service.DataSourceHolder;
+import com.zizibujuan.drip.server.dao.UserStatisticsDao;
 import com.zizibujuan.drip.server.model.UserInfo;
+import com.zizibujuan.drip.server.model.UserStatistics;
 import com.zizibujuan.drip.server.service.UserRelationService;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.servlet.ServiceHolder;
 import com.zizibujuan.drip.server.tests.AbstractServletTests;
+import com.zizibujuan.drip.server.tests.DaoHolder;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 
 /**
@@ -32,11 +35,13 @@ public class EmailConfirmServletTests extends AbstractServletTests{
 
 	private static DataSource dataSource;
 	private static UserRelationService userRelationService;
+	private static UserStatisticsDao userStatisticsDao;
 	
 	@BeforeClass
 	public static void setUpClass(){
 		dataSource = DataSourceHolder.getDefault().getDataSourceService().getDataSource();
 		userRelationService = ServiceHolder.getDefault().getUserRelationService();
+		userStatisticsDao = DaoHolder.getDefault().getUserStatisticsDao();
 	}
 	
 	// 第一次激活
@@ -68,9 +73,19 @@ public class EmailConfirmServletTests extends AbstractServletTests{
 			// 激活成功之后，确认用户已自我关注
 			Long relationId = userRelationService.getRelationId(userId, userId);
 			assertNotNull(relationId);
+			// 激活成功之后，为该用户添加一条统计信息
+			UserStatistics statistics = userStatisticsDao.getUserStatistics(userId);
+			assertNotNull(statistics);
+			assertEquals(0l, statistics.getFanCount().longValue());
+			assertEquals(0l, statistics.getFollowCount().longValue());
+			assertEquals(0l, statistics.getExerDraftCount().longValue());
+			assertEquals(0l, statistics.getExerPublishCount().longValue());
+			assertEquals(0l, statistics.getAnswerCount().longValue());
 		}finally{
 			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_ATTRIBUTES WHERE USER_ID=?", userId);
 			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_INFO  WHERE EMAIL=?", email);
+			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_RELATION WHERE USER_ID=?", userId);
+			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_STATISTICS WHERE USER_ID=?", userId);
 		}
 	}
 	
@@ -104,6 +119,8 @@ public class EmailConfirmServletTests extends AbstractServletTests{
 		}finally{
 			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_ATTRIBUTES WHERE USER_ID=?", userId);
 			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_INFO  WHERE EMAIL=?", email);
+			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_RELATION WHERE USER_ID=?", userId);
+			DatabaseUtil.update(dataSource, "DELETE FROM DRIP_USER_STATISTICS WHERE USER_ID=?", userId);
 		}
 	}
 	

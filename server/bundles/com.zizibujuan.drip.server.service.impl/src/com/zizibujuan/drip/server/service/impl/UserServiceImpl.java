@@ -18,6 +18,7 @@ import com.zizibujuan.drip.server.dao.UserAvatarDao;
 import com.zizibujuan.drip.server.dao.UserBindDao;
 import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.model.UserInfo;
+import com.zizibujuan.drip.server.model.UserStatistics;
 import com.zizibujuan.drip.server.service.ApplicationPropertyService;
 import com.zizibujuan.drip.server.service.EmailService;
 import com.zizibujuan.drip.server.service.UserService;
@@ -194,9 +195,9 @@ public class UserServiceImpl implements UserService {
 			userInfo.put("homeCity", applicationPropertyService.getCity(cityCode));
 		}
 		// 这个统计数据是所有关联用户和本网站用户的数据之和。
-		Map<String,Object> statistics = userStatisticsDao.getUserStatistics(userId);
-		userInfo.putAll(statistics);
-			
+		UserStatistics statistics = userStatisticsDao.getUserStatistics(userId);
+		userInfo.put("statistics", statistics);
+		
 		Map<String,String> avatarInfo = userAvatarDao.get(userId);
 		userInfo.putAll(avatarInfo);
 		return userInfo;
@@ -216,8 +217,8 @@ public class UserServiceImpl implements UserService {
 		userInfo.put("localUserId", localUserId);
 		Map<String,String> avatarInfo = userAvatarDao.get(connectUserId);
 		userInfo.putAll(avatarInfo);
-		Map<String,Object> statistics = userStatisticsDao.getUserStatistics(localUserId);
-		userInfo.putAll(statistics);
+		UserStatistics statistics = userStatisticsDao.getUserStatistics(localUserId);
+		userInfo.put("statistics", statistics);
 		return userInfo;
 	}
 	
@@ -237,7 +238,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public Map<String, Object> getUserStatistics(Long userId) {
+	public UserStatistics getUserStatistics(Long userId) {
 		return userStatisticsDao.getUserStatistics(userId);
 	}
 

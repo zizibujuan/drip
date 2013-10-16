@@ -31,7 +31,7 @@ define(["dojo/dom",
 	
 	user.getLoggedUserStatistics = function(){
 		return  xhr("/users/",{handleAs:"json",query:{type:"statistics"}}).then(function(data){
-			console.log("statistics:",data);
+			console.log("user statistics:",data);
 			return data;
 		});
 	};

@@ -24,12 +24,12 @@ import com.zizibujuan.drip.server.tests.servlets.UserServletTests;
 //	UserServletTests.class,
 //	LoginServletTests.class,
 //	FollowServletTests.class,
-//	EmailConfirmServletTests.class,
+	EmailConfirmServletTests.class
 //	ProjectServletTests.class,
 //	FileServletTests.class,
 	//RestHtmlFilterTests.class,
 //	ExerciseServletTests.class,
-	DashboardServletTests.class
+//	DashboardServletTests.class
 })
 public class AllServletTests {
 

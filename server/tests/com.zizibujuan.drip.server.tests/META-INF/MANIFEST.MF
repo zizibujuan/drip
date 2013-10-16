@@ -7,6 +7,7 @@ Bundle-Activator: com.zizibujuan.drip.server.tests.Activator
 Bundle-Vendor: zizibujuan.com
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.zizibujuan.dbaccess.mysql.service,
+ com.zizibujuan.drip.server.dao,
  com.zizibujuan.drip.server.dao.mysql,
  com.zizibujuan.drip.server.doc.model,
  com.zizibujuan.drip.server.model,
@@ -33,4 +34,5 @@ Bundle-ClassPath: lib/httpunit.jar,
  .
 Require-Bundle: org.mozilla.javascript;bundle-version="1.7.2",
  org.junit;bundle-version="4.10.0"
-Service-Component: OSGI-INFO/serviceHolder.xml
+Service-Component: OSGI-INFO/serviceHolder.xml,
+ OSGI-INFO/daoHolder.xml

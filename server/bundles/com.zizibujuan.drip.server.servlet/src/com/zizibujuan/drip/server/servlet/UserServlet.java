@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.model.UserInfo;
+import com.zizibujuan.drip.server.model.UserStatistics;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.util.CookieConstants;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
@@ -27,6 +28,7 @@ import com.zizibujuan.drip.server.util.servlet.UserSession;
 
 /**
  * 用户注册
+ * 
  * @author jzw
  * @since 0.0.1
  */
@@ -147,6 +149,14 @@ public class UserServlet extends BaseServlet {
 		if(path.segmentCount() == 0) {
 			// 从session中获取用户登录信息
 			UserInfo loginInfo = (UserInfo) UserSession.getUser(req);
+			
+			String type = req.getParameter("type");
+			if(type != null && type.equals("statistics")){
+				UserStatistics stat = userService.getUserStatistics(loginInfo.getId());
+				ResponseUtil.toJSON(req, resp, stat);
+				return;
+			}
+			
 			if(loginInfo == null){
 				// 用户未登录
 				ResponseUtil.toJSON(req, resp, new HashMap<String, Object>(), HttpServletResponse.SC_UNAUTHORIZED);

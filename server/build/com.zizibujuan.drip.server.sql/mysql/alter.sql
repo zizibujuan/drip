@@ -10,3 +10,6 @@ alter table DRIP_USER_INFO add column `EXER_PUBLISH_COUNT` INT NULL DEFAULT 0 CO
 alter table DRIP_USER_INFO add column `ANSWER_COUNT` INT NULL DEFAULT 0 COMMENT '回答的习题数量';
 
 alter table DRIP_EXERCISE change column `EXER_CATEGORY` `EXER_COURSE` CHAR(3);
+
+
+alter table DRIP_USER_STATISTICS add column `DOC_COMMIT_COUNT` INT NULL DEFAULT 0 COMMENT '文档提交次数' 

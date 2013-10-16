@@ -1,12 +1,14 @@
 package com.zizibujuan.drip.server.dao.mysql;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Map;
 
 import com.zizibujuan.drip.server.dao.UserStatisticsDao;
+import com.zizibujuan.drip.server.model.UserStatistics;
 import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
+import com.zizibujuan.drip.server.util.dao.RowMapper;
 
 /**
  * 本地用户的统计信息 数据访问实现类
@@ -71,19 +73,33 @@ public class UserStatisticsDaoImpl extends AbstractDao implements
 	}
 	
 	private static final String SQL_GET_USER_STATISTICS = "SELECT "
-			+ "DBID \"statisticId\","
-			+ "FAN_COUNT \"fanCount\","
-			+ "FOLLOW_COUNT \"followCount\","
-			+ "EXER_DRAFT_COUNT \"exerDraftCount\","
-			+ "EXER_PUBLISH_COUNT \"exerPublishCount\", "
-			+ "ANSWER_COUNT \"answerCount\", "
-			+ "EXER_DRAFT_COUNT+EXER_PUBLISH_COUNT \"exerciseCount\" "
-			+ "FROM DRIP_USER_STATISTICS "
+			+ "DBID,"
+			+ "FAN_COUNT,"
+			+ "FOLLOW_COUNT,"
+			+ "EXER_DRAFT_COUNT,"
+			+ "EXER_PUBLISH_COUNT, "
+			+ "ANSWER_COUNT,"
+			+ "DOC_COMMIT_COUNT "
+			+ "FROM "
+			+ "DRIP_USER_STATISTICS "
 			+ "WHERE "
 			+ "USER_ID=?";
 	@Override
-	public Map<String, Object> getUserStatistics(Long userId) {
-		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_USER_STATISTICS, userId);
+	public UserStatistics getUserStatistics(Long userId) {
+		return DatabaseUtil.queryForObject(getDataSource(), SQL_GET_USER_STATISTICS,new RowMapper<UserStatistics>() {
+			@Override
+			public UserStatistics mapRow(ResultSet rs, int rowNum) throws SQLException {
+				UserStatistics statistics = new UserStatistics();
+				statistics.setId(rs.getLong(1));
+				statistics.setFanCount(rs.getLong(2));
+				statistics.setFollowCount(rs.getLong(3));
+				statistics.setExerDraftCount(rs.getLong(4));
+				statistics.setExerPublishCount(rs.getLong(5));
+				statistics.setAnswerCount(rs.getLong(6));
+				statistics.setDocCommitCount(rs.getLong(7));
+				return statistics;
+			}
+		}, userId);
 	}
 	
 	private static final String SQL_UPDATE_INCREASE_FOLLOWER_COUNT = "UPDATE "

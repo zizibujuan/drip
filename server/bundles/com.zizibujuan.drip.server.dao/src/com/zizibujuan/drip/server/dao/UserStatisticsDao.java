@@ -2,7 +2,8 @@ package com.zizibujuan.drip.server.dao;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Map;
+
+import com.zizibujuan.drip.server.model.UserStatistics;
 
 /**
  * 本地用户的统计信息 数据访问接口
@@ -93,13 +94,11 @@ public interface UserStatisticsDao {
 	 */
 	void decreaseFollowingCount(Connection con, Long userId) throws SQLException;
 	
-	
-	
 	/**
 	 * 获取本地用户相关的统计数据，这些只是在客户端显示的统计项。
 	 * 
 	 * @param userId 本网站用户标识
 	 * @return 返回基于本地用户的统计数据。
 	 */
-	Map<String, Object> getUserStatistics(Long userId);
+	UserStatistics getUserStatistics(Long userId);
 }

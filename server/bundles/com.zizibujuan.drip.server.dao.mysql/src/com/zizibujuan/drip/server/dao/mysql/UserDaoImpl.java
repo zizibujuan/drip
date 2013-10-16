@@ -161,6 +161,8 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			DatabaseUtil.update(con, SQL_UPDATE_ACTIVE_USER, userId);
 			// 关注自己
 			userRelationDao.watch(con, userId, userId);
+			// 添加一条值都为0的统计记录
+			userStatisticsDao.init(con, userId);
 			con.commit();
 		}catch (Exception e) {
 			DatabaseUtil.safeRollback(con);

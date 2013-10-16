@@ -3,6 +3,7 @@ package com.zizibujuan.drip.server.service;
 import java.util.Map;
 
 import com.zizibujuan.drip.server.model.UserInfo;
+import com.zizibujuan.drip.server.model.UserStatistics;
 import com.zizibujuan.drip.server.util.OAuthConstants;
 
 /**
@@ -258,7 +259,7 @@ public interface UserService {
 	 * 		answerCount： 习题总数 = 习题草稿数+发布的习题数
 	 * </pre>
 	 */
-	Map<String, Object> getUserStatistics(Long userId);
+	UserStatistics getUserStatistics(Long userId);
 
 
 }

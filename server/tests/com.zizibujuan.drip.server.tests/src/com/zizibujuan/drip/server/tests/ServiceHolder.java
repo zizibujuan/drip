@@ -2,9 +2,9 @@ package com.zizibujuan.drip.server.tests;
 
 import com.zizibujuan.drip.server.service.EmailService;
 
-
 /**
  * 放置服务实例
+ * 
  * @author jzw
  * @since 0.0.1
  */
