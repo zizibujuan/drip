@@ -37,7 +37,7 @@ Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/*.xml
 Export-Package: com.zizibujuan.drip.server.servlet,
  com.zizibujuan.drip.server.servlet.admin,
- com.zizibujuan.drip.server.servlet.authentication
+ com.zizibujuan.drip.server.servlet.connect
 Bundle-ClassPath: .,
  lib/commons-fileupload-1.2.2.jar,
  lib/qq/Sdk4J.jar,

@@ -1,4 +1,4 @@
-package com.zizibujuan.drip.server.servlet.authentication;
+package com.zizibujuan.drip.server.servlet.connect;
 
 import java.util.HashMap;
 import java.util.List;

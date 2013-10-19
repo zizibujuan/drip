@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 import com.zizibujuan.dbaccess.mysql.service.DataSourceHolder;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.servlet.ServiceHolder;
-import com.zizibujuan.drip.server.servlet.authentication.Oauth2Helper;
+import com.zizibujuan.drip.server.servlet.connect.Oauth2Helper;
 import com.zizibujuan.drip.server.util.OAuthConstants;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 

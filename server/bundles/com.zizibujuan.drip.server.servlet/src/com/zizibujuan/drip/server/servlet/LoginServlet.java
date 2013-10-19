@@ -25,8 +25,8 @@ import com.qq.connect.oauth.Oauth;
 import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.UserBindService;
 import com.zizibujuan.drip.server.service.UserService;
-import com.zizibujuan.drip.server.servlet.authentication.Oauth2Exception;
-import com.zizibujuan.drip.server.servlet.authentication.RenrenHelper;
+import com.zizibujuan.drip.server.servlet.connect.Oauth2Exception;
+import com.zizibujuan.drip.server.servlet.connect.RenrenHelper;
 import com.zizibujuan.drip.server.util.CookieConstants;
 import com.zizibujuan.drip.server.util.OAuthConstants;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
@@ -67,10 +67,21 @@ public class LoginServlet extends BaseServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		traceRequest(req);
-		String pathInfo = req.getPathInfo();
-		
-		if (pathInfo != null && !pathInfo.equals("/")) {
-			if (pathInfo.equals("/renren")) {
+		IPath path = getPath(req);
+		if(path.segmentCount() == 1){
+			String site = path.segment(0);
+			
+			if (site.equals("qq")) {
+				String code = req.getParameter("code");
+				if(code != null && !code.isEmpty()){
+					processQQLogin(req, resp, code);
+				}else{
+					redirectToQQLoginPage(req, resp);
+				}
+				return;
+			}
+			
+			if (site.equals("renren")) {
 				String code = req.getParameter("code");
 				if(code != null && !code.isEmpty()){
 					try{
@@ -82,15 +93,7 @@ public class LoginServlet extends BaseServlet {
 					RenrenHelper.redirectToOauthProvider(req, resp);
 				}
 				return;
-			} else if (pathInfo.equals("/qq")) {
-				String code = req.getParameter("code");
-				if(code != null && !code.isEmpty()){
-					processQQLogin(req, resp, code);
-				}else{
-					redirectToQQLoginPage(req, resp);
-				}
-				return;
-			}else if(pathInfo.equals("/sinaWeibo")){
+			} else if(site.equals("sinaWeibo")){
 				String code = req.getParameter("code");
 				if(code != null && !code.isEmpty()){
 					processSinaWeiboLogin(req, resp, code);
