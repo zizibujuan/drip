@@ -17,16 +17,12 @@ import org.slf4j.LoggerFactory;
 import weibo4j.Account;
 import weibo4j.model.WeiboException;
 
-import com.qq.connect.QQConnectException;
-import com.qq.connect.api.OpenID;
-import com.qq.connect.javabeans.AccessToken;
-import com.qq.connect.javabeans.qzone.UserInfoBean;
-import com.qq.connect.oauth.Oauth;
 import com.zizibujuan.drip.server.model.UserInfo;
-import com.zizibujuan.drip.server.service.UserBindService;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.servlet.connect.Oauth2Exception;
+import com.zizibujuan.drip.server.servlet.connect.QQUserConnect;
 import com.zizibujuan.drip.server.servlet.connect.RenrenHelper;
+import com.zizibujuan.drip.server.servlet.connect.UserConnect;
 import com.zizibujuan.drip.server.util.CookieConstants;
 import com.zizibujuan.drip.server.util.OAuthConstants;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
@@ -46,13 +42,11 @@ public class LoginServlet extends BaseServlet {
 
 	private static final long serialVersionUID = 3186980773671995338L;
 	private UserService userService = null;
-	private UserBindService oAuthUserMapService = null;
 	
 	private List<String> errors;
 	
 	public LoginServlet() {
 		userService = ServiceHolder.getDefault().getUserService();
-		oAuthUserMapService = ServiceHolder.getDefault().getUserBindService();
 	}
 
 	/**
@@ -70,16 +64,14 @@ public class LoginServlet extends BaseServlet {
 		IPath path = getPath(req);
 		if(path.segmentCount() == 1){
 			String site = path.segment(0);
-			
+			UserConnect connect = null;
 			if (site.equals("qq")) {
-				String code = req.getParameter("code");
-				if(code != null && !code.isEmpty()){
-					processQQLogin(req, resp, code);
-				}else{
-					redirectToQQLoginPage(req, resp);
-				}
+				connect = new QQUserConnect();
+				connect.manager(req, resp);
 				return;
 			}
+			
+			
 			
 			if (site.equals("renren")) {
 				String code = req.getParameter("code");
@@ -117,55 +109,7 @@ public class LoginServlet extends BaseServlet {
 		}
 	}
 	
-	private void redirectToQQLoginPage(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        try {
-        	resp.sendRedirect(new Oauth().getAuthorizeURL(req));
-        } catch (QQConnectException e) {
-            logger.error("获取qq登录页面失败", e);
-        }
-	}
-
-	private void processQQLogin(HttpServletRequest req,
-			HttpServletResponse resp, String code) throws IOException {
-		try {
-			AccessToken accessTokenObj = new Oauth().getAccessTokenByRequest(req);
-			String accessToken = null;
-			String openID = null;
-			long tokenExpireIn = 0L;
-			
-			accessToken = accessTokenObj.getAccessToken();
-			if(accessToken.equals("")){
-				logger.error("没有获取到响应参数");
-				return;
-			}
-		
-			tokenExpireIn = accessTokenObj.getExpireIn();
-			req.getSession().setAttribute("qq_access_token", accessToken);
-			req.getSession().setAttribute("qq_token_expirein", tokenExpireIn);
-			
-			OpenID openIDObj = new OpenID(accessToken);
-			openID = openIDObj.getUserOpenID();
-			// 把这些代码移到各自的类中，就不需要写完整的包名
-			com.qq.connect.api.qzone.UserInfo qzoneUserInfo = new com.qq.connect.api.qzone.UserInfo(accessToken, openID);
-			UserInfoBean qzoneUserInfoBean = qzoneUserInfo.getUserInfo();
-			
-			if(qzoneUserInfoBean.getRet() != 0){
-				logger.error(qzoneUserInfoBean.getMsg());
-				return;
-			}
-			
-			Map<String,Object> userMapperInfo = oAuthUserMapService.getUserMapperInfo(OAuthConstants.QQ, openID);
-			if(userMapperInfo.isEmpty()){
-				Map<String, Object> renrenUserInfo = qqUserToDripUser(qzoneUserInfoBean);
-				userMapperInfo = userService.importUser(renrenUserInfo);
-			}
-			
-		
-		} catch (QQConnectException e) {
-			e.printStackTrace();
-		}
-		resp.sendRedirect("/");
-	}
+	
 
 	private void processSinaWeiboLogin(HttpServletRequest req,
 			HttpServletResponse resp, String code) throws IOException {
@@ -185,12 +129,6 @@ public class LoginServlet extends BaseServlet {
 		
 	}
 
-	private Map<String, Object> qqUserToDripUser(UserInfoBean qzoneUserInfoBean) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	
 
 	private static final String KEY_LOGIN = "login";
 	private static final String KEY_PASSWORD = "password";

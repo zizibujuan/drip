@@ -3,6 +3,7 @@ package com.zizibujuan.drip.server.service.impl;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -17,6 +18,8 @@ import com.zizibujuan.drip.server.dao.UserAttributesDao;
 import com.zizibujuan.drip.server.dao.UserAvatarDao;
 import com.zizibujuan.drip.server.dao.UserBindDao;
 import com.zizibujuan.drip.server.dao.UserDao;
+import com.zizibujuan.drip.server.model.Avatar;
+import com.zizibujuan.drip.server.model.UserBindInfo;
 import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.model.UserStatistics;
 import com.zizibujuan.drip.server.service.ApplicationPropertyService;
@@ -136,7 +139,17 @@ public class UserServiceImpl implements UserService {
 		return userDao.getByToken(token);
 	}
 	
-	
+	@Override
+	public UserInfo login(Long userId) {
+		UserInfo userInfo = userDao.getById(userId);
+		if(userInfo == null){
+			return null;
+		}
+		// 添加用户头像
+		setAvatars(userInfo);
+		userAttributesDao.updateLoginState(userId, null); // 将token放在这个方法中不合适
+		return userInfo;
+	}	
 	
 	
 	
@@ -161,23 +174,6 @@ public class UserServiceImpl implements UserService {
 	private UserStatisticsDao userStatisticsDao;
 	
 	
-	
-	//TODO:需要将获取本地用户信息和获取第三方用户信息的接口统一。
-	@Override
-	public Map<String, Object> login(Long localUserId, Long connectUserId) {
-		String token = null;// TODO:获取第三方网站的token
-		userAttributesDao.updateLoginState(connectUserId, token);
-		
-		// 第三方网站注册用户
-		// 获取基本信息
-		Map<String,Object> userInfo = connectUserDao.getPublicInfo(connectUserId);
-		userInfo.put("localUserId", localUserId);
-		// 获取头像信息
-		Map<String,String> avatarInfo = userAvatarDao.get(connectUserId);
-		userInfo.putAll(avatarInfo);
-
-		return userInfo;
-	}
 	
 	// 获取基本信息
 	// 获取统计信息
@@ -223,8 +219,8 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public Map<String,Object> importUser(Map<String, Object> userInfo) {
-		return userDao.importUser(userInfo);
+	public Long importUser(UserInfo userInfo, UserBindInfo userBindInfo, List<Avatar> avatars) {
+		return userDao.importUser(userInfo, userBindInfo, avatars);
 	}
 	
 	@Override

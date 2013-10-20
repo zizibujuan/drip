@@ -1,7 +1,10 @@
 package com.zizibujuan.drip.server.service;
 
+import java.util.List;
 import java.util.Map;
 
+import com.zizibujuan.drip.server.model.Avatar;
+import com.zizibujuan.drip.server.model.UserBindInfo;
 import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.model.UserStatistics;
 import com.zizibujuan.drip.server.util.OAuthConstants;
@@ -108,36 +111,40 @@ public interface UserService {
 	 */
 	void active(Long userId);
 	
-	
-	
+	/**
+	 * 导入第三网站的用户信息
+	 * 
+	 * @param userInfo 从第三方网站获取的用户信息
+	 * @param userBindInfo 第三方网站用户的绑定信息
+	 * @param avatars 用户头像信息
+	 * @return 本网站的用户标识
+	 */
+	Long importUser(UserInfo userInfo, UserBindInfo userBindInfo, List<Avatar> avatars);
 	
 	/**
 	 * 用户登录，主要是记录使用第三方网站进行登录。注意每天晚上定时从第三方同步用户信息。
 	 * 这个方法获取用户的静态信息，即变化不是很频繁的信息，主要是用来在session中保存。
 	 * 因此不会返回用户统计信息。
-	 * @param localUserId 为本网站用户生成的全局用户标识
-	 * @param connectUserId 本网站为第三方网站用户生成的全局用户标识
-	 * @return 如果系统中存在该用户信息则返回，否则返回空的map对象。
-	 * <pre>
-	 * 	map结构为：
-	 * 		localUserId: 本网站为本网站用户生成的全局用户标识
-	 * 		connectUserId: 本网站为第三方网站用户生成的全局用户标识
-	 * 		siteId：与哪个网站的用户关联
-	 * 		email: 邮箱
-	 * 		mobile：手机号
-	 * 		nickName: 用户昵称
-	 * 		loginName: 登录名
-	 * 		digitalId: 为本网站用户分配的数字帐号
-	 * 这些字段是按照网站提供的图片尺寸大小从小到大排列的
-	 * 		smallImageUrl: 小头像
-	 * 		largeImageUrl: 
-	 * 		largerImageUrl:
-	 * 		xLargeImageUrl:
 	 * 
-	 * </pre>
-	 * 
+	 * @param userId 为本网站用户生成的全局用户标识
+	 * @return 返回用户静态信息，如果系统中存在该用户信息则返回null。
 	 */
-	Map<String, Object> login(Long localUserId, Long connectUserId);
+	UserInfo login(Long userId);
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	/**
 	 * 获取用户登录信息，返回到客户端的，所以不能包含用户隐私信息。
@@ -149,37 +156,6 @@ public interface UserService {
 	 */
 	Map<String, Object> getLoginInfo(Long userId);
 
-	/**
-	 * 导入第三网站的用户信息
-	 * @param userInfo 用户详细信息
-	 * <pre>
-	 * map结构
-	 * 		loginName:登录名
-	 * 		nickName:昵称
-	 * 		realName:真实姓名
-	 * 		sex:性别代码
-	 * 		birthday:生日 java.util.Date
-	 * 		homeCityCode:家乡所在城市编码
-	 * 		homeCity:家乡所在城市名称
-	 * 		siteId：第三方网站标识 {@link OAuthConstants}
-	 * 					如果是使用第三方网站的用户登录，则是第三方网站用户标识；如果是用本网站用户登录，则是本网站用户标识
-	 * 		openId: 第三方网站的用户标识
-	 * 		avatar：用户头像列表
-	 * 			urlName:头像名称
-	 * 			url：头像链接
-	 * 			width：头像宽度
-	 * 			height：头像高度
-	 * </pre>
-	 * @return 该网站的用户标识
-	 * <pre>
-	 *  返回map的结构
-	 * 		localUserId: 本网站用户标识
-	 * 		connectUserId: 本网站为第三方网站用户统一生成的用户标识
-	 *      digitalId: 本网站产生的数字帐号
-	 * </pre>
-	 */
-	Map<String,Object> importUser(Map<String, Object> userInfo);
-	
 	/**
 	 * 同步用户信息。
 	 */

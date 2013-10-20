@@ -165,7 +165,8 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 		try {
 			con = getDataSource().getConnection();
 			con.setAutoCommit(false);
-			this.save(con, localGlobalUserId, connectGlobalUserId, answerInfo);
+			// FIXME: 这个方法还没有调试通过，为了消除编译错误，暂时注释掉
+			// this.save(con, localGlobalUserId, connectGlobalUserId, answerInfo);
 			con.commit();
 		} catch (SQLException e) {
 			DatabaseUtil.safeRollback(con);

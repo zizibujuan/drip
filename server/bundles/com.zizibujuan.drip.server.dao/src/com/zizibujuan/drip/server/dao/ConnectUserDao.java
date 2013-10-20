@@ -10,6 +10,7 @@ import com.zizibujuan.drip.server.util.OAuthConstants;
  * 通过第三方网站提供的connect功能，接入的用户。
  * <p>因为第三方网站的用户基本信息，如头像等信息，可能会发生变化，所以需要每天在网站闲暇时间同步一下第三方网站的用户信息</p>
  * 数据访问接口
+ * 
  * @author jzw
  * @since 0.0.1
  */

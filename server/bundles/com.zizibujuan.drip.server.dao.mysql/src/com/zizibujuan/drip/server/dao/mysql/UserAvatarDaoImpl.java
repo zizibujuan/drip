@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.dao.UserAvatarDao;
+import com.zizibujuan.drip.server.model.Avatar;
 import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.BatchPreparedStatementSetter;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
@@ -26,35 +27,33 @@ public class UserAvatarDaoImpl extends AbstractDao implements UserAvatarDao {
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserAvatarDaoImpl.class);
 
-	private static final String SQL_INSERT_USER_AVATAR = "INSERT INTO DRIP_USER_AVATAR " +
-			"(GLOBAL_USER_ID, " +
-			"URL_NAME, " +
-			"WIDTH, " +
-			"HEIGHT, " +
-			"URL, " +
-			"CREATE_TIME) " +
-			"VALUES (?,?,?,?,?,now())";
-	/**
-	 * 使用批量新增的方式插入
-	 * @throws SQLException 
-	 */
+	private static final String SQL_INSERT_USER_AVATAR = "INSERT INTO "
+			+ "DRIP_USER_AVATAR "
+			+ "(USER_ID, "
+			+ "URL_NAME, "
+			+ "WIDTH, "
+			+ "HEIGHT, "
+			+ "URL, "
+			+ "CREATE_TIME) "
+			+ "VALUES "
+			+ "(?, ?, ?, ?, ?, now())";
 	@Override
-	public void add(Connection con, final Long userId, final List<Map<String, Object>> avatarList) throws SQLException {
+	public void add(Connection con, final Long userId, final List<Avatar> avatars) throws SQLException {
 		DatabaseUtil.batchUpdate(con, SQL_INSERT_USER_AVATAR, new BatchPreparedStatementSetter() {
 			
 			@Override
 			public void setValues(PreparedStatement ps, int index) throws SQLException {
-				Map<String,Object> avatar = avatarList.get(index);
+				Avatar avatar = avatars.get(index);
 				ps.setLong(1, userId);
-				ps.setObject(2, avatar.get("urlName"));
-				ps.setObject(3, avatar.get("width"));
-				ps.setObject(4, avatar.get("height"));
-				ps.setObject(5, avatar.get("url"));
+				ps.setObject(2, avatar.getUrlName());
+				ps.setObject(3, avatar.getWidth());
+				ps.setObject(4, avatar.getHeight());
+				ps.setObject(5, avatar.getUrl());
 			}
 			
 			@Override
 			public int getBatchSize() {
-				return avatarList.size();
+				return avatars.size();
 			}
 		});
 	}

@@ -1,7 +1,10 @@
 package com.zizibujuan.drip.server.dao;
 
+import java.util.List;
 import java.util.Map;
 
+import com.zizibujuan.drip.server.model.Avatar;
+import com.zizibujuan.drip.server.model.UserBindInfo;
 import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.util.OAuthConstants;
 
@@ -56,11 +59,11 @@ public interface UserDao {
 	/**
 	 * 获取用户基本信息，主要往用户session中保存。
 	 * 
-	 * @param email 电子邮箱
+	 * @param login 电子邮箱或登录用户名
 	 * @param md5Password 加密后的密码
 	 * @return 如果系统中存在该用户信息则返回，否则返回null
 	 */
-	UserInfo get(String email, String md5Password);
+	UserInfo get(String login, String md5Password);
 	
 	/**
 	 * 根据登录名获取用户的基本信息
@@ -93,6 +96,15 @@ public interface UserDao {
 	 */
 	UserInfo getByToken(String token);
 	
+	/**
+	 * 根据用户标识，获取用户信息。注意包含用户的一些不允许公开的信息，如邮箱等。
+	 * 即会有一些隐私数据，如果需要公开显示用户信息，则请使用{@link #getPublicInfo(Long)}
+	 * 
+	 * @param userId
+	 * @return 用户信息，包含隐私数据
+	 */
+	UserInfo getById(Long userId);
+	
 	
 	/**
 	 * 获取本网站用户的基本信息。只包含页面显示信息，不包含用户隐私信息。
@@ -112,7 +124,15 @@ public interface UserDao {
 	 */
 	Map<String, Object> getPublicInfo(Long userId);
 	
-	
+	/**
+	 * 导入第三网站的用户信息
+	 * 
+	 * @param userInfo 从第三方网站获取的用户信息
+	 * @param userBindInfo 第三方网站用户的绑定信息
+	 * @param avatars 用户头像信息
+	 * @return 本网站的用户标识
+	 */
+	Long importUser(UserInfo userInfo, UserBindInfo userBindInfo, List<Avatar> avatars);
 	
 	
 	
@@ -135,37 +155,7 @@ public interface UserDao {
 	 */
 	Map<String, Object> getLoginInfo(Long userId);
 
-	/**
-	 * 导入第三网站的用户信息
-	 * @param userInfo 用户详细信息
-	 * <pre>
-	 * map结构
-	 * 		loginName:登录名
-	 * 		nickName:昵称
-	 * 		realName:真实姓名
-	 * 		sex:性别代码
-	 * 		headUrl:头像链接
-	 * 		homeCityCode:家乡所在城市编码
-	 * 		homeCity:家乡所在城市名称
-	 * 		authSiteId：第三方网站标识 {@link OAuthConstants}
-	 * 					如果是使用第三方网站的用户登录，则是第三方网站用户标识；如果是用本网站用户登录，则是本网站用户标识
-	 * 		authUserId: 第三方网站的用户标识
-	 * 		avatar：用户头像列表
-	 * 			urlName:头像名称
-	 * 			url：头像链接
-	 * 			width：头像宽度
-	 * 			height：头像高度
-	 * </pre>
-	 * 
-	 * @return 该网站生成的用户标识
-	 * <pre>
-	 *  返回map的结构
-	 * 		localUserId: 本网站用户标识
-	 * 		connectUserId: 本网站为第三方网站用户统一生成的用户标识
-	 * 		digitalId: 本网站产生的数字帐号
-	 * </pre>
-	 */
-	Map<String, Object> importUser(Map<String, Object> userInfo);
+	
 
 	/**
 	 * 根据数字帐号获取本网站用户的全局用户标识

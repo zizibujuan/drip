@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,14 +11,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.dao.ConnectUserDao;
-import com.zizibujuan.drip.server.dao.UserStatisticsDao;
 import com.zizibujuan.drip.server.dao.UserAttributesDao;
 import com.zizibujuan.drip.server.dao.UserAvatarDao;
 import com.zizibujuan.drip.server.dao.UserBindDao;
 import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.dao.UserRelationDao;
+import com.zizibujuan.drip.server.dao.UserStatisticsDao;
 import com.zizibujuan.drip.server.dao.mysql.rowmapper.UserInfoRowMapper;
 import com.zizibujuan.drip.server.exception.dao.DataAccessException;
+import com.zizibujuan.drip.server.model.Avatar;
+import com.zizibujuan.drip.server.model.UserBindInfo;
 import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.util.OAuthConstants;
 import com.zizibujuan.drip.server.util.dao.AbstractDao;
@@ -44,36 +45,28 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	private UserAttributesDao userAttributesDao;
 	private UserStatisticsDao userStatisticsDao;
 	
-	private static final String SQL_INSERT_USER_REGISTER = "INSERT INTO " +
-			"DRIP_USER_INFO " +
-			"(LOGIN_NAME," +
-			"LOGIN_PWD," +
-			"EMAIL," +
-			"CONFIRM_KEY," +
-			"ACTIVITY," +
-			"CREATE_TIME) " + 
-			"VALUES " +
-			"(?,?,?,?,0,now())";
+	private static final String SQL_INSERT_USER_REGISTER = "INSERT INTO "
+			+ "DRIP_USER_INFO "
+			+ "(LOGIN_NAME,"
+			+ "NICK_NAME,"
+			+ "LOGIN_PWD,"
+			+ "EMAIL,"
+			+ "CONFIRM_KEY,"
+			+ "ACTIVITY,"
+			+ "CREATE_TIME) " 
+			+ "VALUES "
+			+ "(?,?,?,?,?,now())";
 	
 	@Override
 	public Long add(final UserInfo userInfo) {
 		Long userId = null;
 		Connection con = null;
+		// 用户默认不激活
+		userInfo.setActive(false);
 		try{
 			con = getDataSource().getConnection();
 			con.setAutoCommit(false);
-			userId = DatabaseUtil.insert(getDataSource(), SQL_INSERT_USER_REGISTER, new PreparedStatementSetter() {
-				@Override
-				public void setValues(PreparedStatement ps) throws SQLException {
-					ps.setString(1, userInfo.getLoginName());
-					ps.setString(2, userInfo.getPassword());
-					ps.setString(3, userInfo.getEmail());
-					ps.setString(4, userInfo.getConfirmKey());
-				}
-			});
-			// 在用户属性表中初始化属性值,TODO:这里的行列转换设计虽然灵活，但是如果因为保存属性出错，
-			// 反而会影响用户注册，需要再推敲。
-			userAttributesDao.initUserState(con, userId);
+			this.add(con, userInfo);
 			con.commit();
 		}catch(SQLException e){
 			DatabaseUtil.safeRollback(con);
@@ -85,6 +78,24 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			DatabaseUtil.closeConnection(con);
 		}
 		
+		return userId;
+	}
+	
+	private Long add(Connection con, final UserInfo userInfo) throws SQLException{
+		Long userId = DatabaseUtil.insert(getDataSource(), SQL_INSERT_USER_REGISTER, new PreparedStatementSetter() {
+			@Override
+			public void setValues(PreparedStatement ps) throws SQLException {
+				ps.setString(1, userInfo.getLoginName());
+				ps.setString(2, userInfo.getNickName());
+				ps.setString(3, userInfo.getPassword());
+				ps.setString(4, userInfo.getEmail());
+				ps.setString(5, userInfo.getConfirmKey());
+				ps.setBoolean(6, userInfo.isActive());
+			}
+		});
+		// 在用户属性表中初始化属性值,TODO:这里的行列转换设计虽然灵活，但是如果因为保存属性出错，
+		// 反而会影响用户注册，需要再推敲。
+		userAttributesDao.initUserState(con, userId);
 		return userId;
 	}
 	
@@ -175,17 +186,19 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	// 这里只查询出需要在界面上显示的用户信息，主要存储在当前用户的session中。
 	// 以下信息可以存在session中，但是有些信息不能显示在客户端，如email和mobile。
 	// 注意：获取登录用户自己的信息，则是越全越好；获取好友的信息，则是若不需要，则不提供。
-	private static final String SQL_GET_USER_INFO_FOR_SELF = "SELECT " +
-			"DBID," +
-			"LOGIN_NAME," +
-			"EMAIL " +
-			"FROM DRIP_USER_INFO ";
-	private static final String SQL_GET_USER_FOR_SESSION_BY_EMAIL = SQL_GET_USER_INFO_FOR_SELF + 
-			"WHERE "
+	private static final String SQL_GET_USER_INFO_FOR_SELF = "SELECT "
+			+ "DBID,"
+			+ "LOGIN_NAME,"
+			+ "EMAIL, "
+			+ "NICK_NAME "
+			+ "FROM "
+			+ "DRIP_USER_INFO ";
+	private static final String SQL_GET_USER_FOR_SESSION_BY_EMAIL = SQL_GET_USER_INFO_FOR_SELF
+			+ "WHERE "
 			+ "EMAIL = ? AND "
 			+ "LOGIN_PWD = ?";
-	private static final String SQL_GET_USER_FOR_SESSION_BY_LOGIN_NAME = SQL_GET_USER_INFO_FOR_SELF + 
-			"WHERE "
+	private static final String SQL_GET_USER_FOR_SESSION_BY_LOGIN_NAME = SQL_GET_USER_INFO_FOR_SELF
+			+ "WHERE "
 			+ "LOGIN_NAME = ? AND "
 			+ "LOGIN_PWD = ?";
 	@Override
@@ -200,6 +213,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 				userInfo.setId(rs.getLong(1));
 				userInfo.setLoginName(rs.getString(2));
 				userInfo.setEmail(rs.getString(3));
+				userInfo.setNickName(rs.getString(4));
 				return userInfo;
 			}
 		}, login, md5Password);
@@ -215,10 +229,30 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 				userInfo.setId(rs.getLong(1));
 				userInfo.setLoginName(rs.getString(2));
 				userInfo.setEmail(rs.getString(3));
-				
+				userInfo.setNickName(rs.getString(4));
 				return userInfo;
 			}
 		}, login, md5Password);
+	}
+	
+	private static final String SQL_GET_USER_FOR_SESSION_BY_USER_ID = SQL_GET_USER_INFO_FOR_SELF
+			+ "WHERE "
+			+ "DBID=?";
+	@Override
+	public UserInfo getById(Long userId) {
+		return DatabaseUtil.queryForObject(getDataSource(), SQL_GET_USER_FOR_SESSION_BY_USER_ID, new RowMapper<UserInfo>() {
+
+			@Override
+			public UserInfo mapRow(ResultSet rs, int rowNum)
+					throws SQLException {
+				UserInfo userInfo = new UserInfo();
+				userInfo.setId(rs.getLong(1));
+				userInfo.setLoginName(rs.getString(2));
+				userInfo.setEmail(rs.getString(3));
+				userInfo.setNickName(rs.getString(4));
+				return userInfo;
+			}
+		}, userId);
 	}
 	
 	private static final String SQL_GET_USER_PUBLIC_INFO = "SELECT "
@@ -241,7 +275,37 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		return userInfo;
 	}
 	
-	
+	@Override
+	public Long importUser(UserInfo userInfo, UserBindInfo userBindInfo, List<Avatar> avatars) {
+		Long userId = null;
+		Connection con = null;
+		try{
+			con = getDataSource().getConnection();
+			con.setAutoCommit(false);
+			// 导入的用户默认激活
+			userInfo.setActive(true);
+			userId = this.add(con, userInfo);
+			// 将本地用户与第三方用户关联起来
+			userBindInfo.setUserId(userId);
+			userBindDao.bind(con, userBindInfo);
+			
+			// 关注自己
+			userRelationDao.watch(con, userId, userId);
+			// 添加一条值都为0的统计记录
+			userStatisticsDao.init(con, userId);
+			userAvatarDao.add(con, userId, avatars);
+			con.commit();
+		}catch(SQLException e){
+			DatabaseUtil.safeRollback(con);
+			throw new DataAccessException(e);
+		}catch(Exception e){
+			DatabaseUtil.safeRollback(con);
+			throw new DataAccessException(e);
+		}finally{
+			DatabaseUtil.closeConnection(con);
+		}
+		return userId;
+	}
 	
 	
 	
@@ -277,69 +341,11 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		return DatabaseUtil.queryForMap(getDataSource(), SQL_GET_LOGIN, userId);
 	}
 	
-	@Override
-	public Map<String,Object> importUser(Map<String, Object> userInfo) {
-		Map<String,Object> result = new HashMap<String, Object>();
-		Long localGlobalUserId = null;
-		Long connectGlobalUserId = null;
-		Long digitalId = null;
-		
-		Connection con = null;
-		
-		@SuppressWarnings("unchecked")
-		List<Map<String,Object>> avatarList = (List<Map<String, Object>>) userInfo.get("avatar");
-		try{
-			con = getDataSource().getConnection();
-			con.setAutoCommit(false);
-			// 存储本网站生成的用户信息
-			// 本网站产生的数字帐号
-			localGlobalUserId = this.addLocalUser(con,digitalId);
-			// 存储第三方网站的用户信息,connectGlobalUserId是本网站为第三方网站用户产生的代理主键
-			connectGlobalUserId = connectUserDao.add(con, userInfo);
-			// 将本地用户与第三方用户关联起来
-			userBindDao.bind(con,localGlobalUserId, connectGlobalUserId, true);
-			
-			// 初始化用户属性表,导入的用户肯定都是第三方网站的用户。
-			userAttributesDao.initUserState(con, connectGlobalUserId);
-			// 自己关注自己，使用drip用户标识, 在关注的表中，也要加入connectUserId, 这样可以跟踪哪个网站的用户关注的比较多
-			// 但是为了可以顺利迁移，最好存储connectUserId
-			userRelationDao.watch(con, connectGlobalUserId, connectGlobalUserId);
-			if(avatarList != null && avatarList.size()>0){
-				userAvatarDao.add(con, connectGlobalUserId, avatarList);
-			}
-			// 为本网站用户添加初始的统计信息
-			userStatisticsDao.init(con, localGlobalUserId);
-			con.commit();
-		}catch(SQLException e){
-			DatabaseUtil.safeRollback(con);
-			throw new DataAccessException(e);
-		}catch(Exception e){
-			DatabaseUtil.safeRollback(con);
-			throw new DataAccessException(e);
-		}finally{
-			DatabaseUtil.closeConnection(con);
-		}
-		
-		result.put("localUserId", localGlobalUserId);
-		result.put("connectUserId", connectGlobalUserId);
-		result.put("digitalId", digitalId);
-		return result;
-	}
 	
-	private static final String SQL_INSERT_BASE_LOCAL_USER = "INSERT INTO " +
-			"DRIP_GLOBAL_USER_INFO " +
-			"(DIGITAL_ID," +
-			"SITE_ID, " +
-			"ACTIVITY, " +
-			"CREATE_TIME) " +
-			"VALUES " +
-			"(?,?,?,now())";
-	private Long addLocalUser(Connection con, Long digitalId) throws SQLException{
-		return DatabaseUtil.insert(con, SQL_INSERT_BASE_LOCAL_USER,
-				digitalId,
-				OAuthConstants.ZIZIBUJUAN,
-				false);
-	}
+	
+	
+	
+	
 	
 	private static final String SQL_GET_LOCAL_USER_ID_BY_DIGITAL = "SELECT DBID FROM DRIP_GLOBAL_USER_INFO WHERE DIGITAL_ID=?";
 	@Override
