@@ -82,7 +82,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	}
 	
 	private Long add(Connection con, final UserInfo userInfo) throws SQLException{
-		Long userId = DatabaseUtil.insert(getDataSource(), SQL_INSERT_USER_REGISTER, new PreparedStatementSetter() {
+		Long userId = DatabaseUtil.insert(con, SQL_INSERT_USER_REGISTER, new PreparedStatementSetter() {
 			@Override
 			public void setValues(PreparedStatement ps) throws SQLException {
 				ps.setString(1, userInfo.getLoginName());
