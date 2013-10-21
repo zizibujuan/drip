@@ -51,11 +51,12 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			+ "NICK_NAME,"
 			+ "LOGIN_PWD,"
 			+ "EMAIL,"
+			+ "SEX,"
 			+ "CONFIRM_KEY,"
 			+ "ACTIVITY,"
 			+ "CREATE_TIME) " 
 			+ "VALUES "
-			+ "(?,?,?,?,?,now())";
+			+ "(?, ?, ?, ?, ?, ?, ?, now())";
 	
 	@Override
 	public Long add(final UserInfo userInfo) {
@@ -89,8 +90,9 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 				ps.setString(2, userInfo.getNickName());
 				ps.setString(3, userInfo.getPassword());
 				ps.setString(4, userInfo.getEmail());
-				ps.setString(5, userInfo.getConfirmKey());
-				ps.setBoolean(6, userInfo.isActive());
+				ps.setString(5, userInfo.getSex());
+				ps.setString(6, userInfo.getConfirmKey());
+				ps.setBoolean(7, userInfo.isActive());
 			}
 		});
 		// 在用户属性表中初始化属性值,TODO:这里的行列转换设计虽然灵活，但是如果因为保存属性出错，

@@ -1,54 +1,127 @@
 package com.zizibujuan.drip.server.tests.service;
 
-import java.util.Date;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.List;
 import java.util.Map;
-
-import javax.sql.DataSource;
 
 import junit.framework.Assert;
 
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;
 
-import com.zizibujuan.dbaccess.mysql.service.DataSourceHolder;
+import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.util.ApplicationPropertyKey;
+import com.zizibujuan.drip.server.util.Gender;
 import com.zizibujuan.drip.server.util.OAuthConstants;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 
 /**
  * 用户服务测试用例
+ * 
  * @author jzw
  * @since 0.0.1
  */
 public class UserServiceTests extends AbstractUserTests{
-	protected DataSource dataSource = DataSourceHolder.getDefault().getDataSourceService().getDataSource();
+	
+	private static final String SQL_GET_USER = "SELECT "
+			+ "LOGIN_PWD,"
+			+ "LOGIN_NAME,"
+			+ "NICK_NAME,"
+			+ "EMAIL,"
+			+ "MOBILE,"
+			+ "ACCESS_TOKEN,"
+			+ "EXPIRES_TIME,"
+			+ "REAL_NAME,"
+			+ "ID_CARD,"
+			+ "SEX,"
+			+ "BLOOD,"
+			+ "BIRTHDAY, "
+			+ "INTRODUCE,"
+			+ "LIVE_CITY_CODE,"
+			+ "HOME_CITY_CODE,"
+			+ "HOME_CITY,"
+			+ "CREATE_TIME,"
+			+ "UPDATE_TIME,"
+			+ "ACTIVITY "
+			+ "FROM "
+			+ "DRIP_USER_INFO "
+			+ "WHERE "
+			+ "DBID = ?";
+	
+	private static final String SQL_LIST_AVATAR = "SELECT "
+			+ "URL_NAME, "
+			+ "WIDTH, "
+			+ "HEIGHT, "
+			+ "URL, "
+			+ "CREATE_TIME, "
+			+ "UPDATE_TIME "
+			+ "FROM "
+			+ "DRIP_USER_AVATAR "
+			+ "WHERE "
+			+ "USER_ID = ? "
+			+ "ORDER BY WIDTH";
+	
+	private static final String SQL_GET_USER_STATISTICS = "SELECT "
+			+ "FAN_COUNT,"
+			+ "FOLLOW_COUNT,"
+			+ "EXER_DRAFT_COUNT,"
+			+ "EXER_PUBLISH_COUNT,"
+			+ "ANSWER_COUNT "
+			+ "FROM "
+			+ "DRIP_USER_STATISTICS "
+			+ "WHERE "
+			+ "USER_ID = ?";
+	
+	private static final String SQL_LIST_USER_ATTRIBUTES = "SELECT "
+			+ "ATTR_NAME,"
+			+ "ATTR_VALUE "
+			+ "FROM "
+			+ "DRIP_USER_ATTRIBUTES "
+			+ "WHERE "
+			+ "USER_ID = ? "
+			+ "ORDER BY ATTR_NAME";
+	
+	private static final String SQL_GET_USER_BIND = "SELECT "
+			+ "DBID,"
+			+ "USER_ID "
+			+ "FROM "
+			+ "DRIP_USER_BIND "
+			+ "WHERE "
+			+ "OPEN_ID = ? AND "
+			+ "SITE_ID = ?";
+	
+	private static final String SQL_GET_USER_RELATION = "SELECT "
+			+ "DBID, "
+			+ "CRT_TM "
+			+ "FROM "
+			+ "DRIP_USER_RELATION "
+			+ "WHERE "
+			+ "USER_ID = ? AND "
+			+ "WATCH_USER_ID = ?";
 	@Test
 	public void testImportUser(){
+		Long userId = null;
 		try{
-			importUser();
-			String sql = "";
-			// 在DRIP_GLOBAL_USER_INFO中新增本地用户信息
-			sql = "SELECT SITE_ID, OPEN_ID, DIGITAL_ID,LOGIN_PWD," +
-					"LOGIN_NAME,NICK_NAME,EMAIL,MOBILE,ACCESS_TOKEN,EXPIRES_TIME," +
-					"REAL_NAME,ID_CARD,SEX,BLOOD,BIRTHDAY, INTRODUCE,LIVE_CITY_CODE," +
-					"HOME_CITY_CODE,HOME_CITY,CREATE_TIME,UPDATE_TIME,ACTIVITY " +
-					"FROM DRIP_GLOBAL_USER_INFO WHERE DBID = ?";
-			Map<String,Object> localUserInfo = DatabaseUtil.queryForMap(dataSource, sql, localGlobalUserId);
-			Assert.assertEquals(OAuthConstants.ZIZIBUJUAN, Integer.valueOf(localUserInfo.get("SITE_ID").toString()).intValue());
-			Assert.assertNull(localUserInfo.get("OPEN_ID"));
-			Assert.assertTrue(Long.valueOf(localUserInfo.get("DIGITAL_ID").toString()) > 100000000l);
+			int siteId = OAuthConstants.QQ;
+			String openId = "a";
+			String nickName = "b";
+			String sex = Gender.MALE;
+					
+			userId = importUser(siteId, openId, nickName, sex);
+			
+			Map<String,Object> localUserInfo = DatabaseUtil.queryForMap(dataSource, SQL_GET_USER, userId);
+		
 			Assert.assertNull(localUserInfo.get("LOGIN_PWD"));
 			Assert.assertNull(localUserInfo.get("LOGIN_NAME"));
-			Assert.assertNull(localUserInfo.get("NICK_NAME"));
+			Assert.assertEquals(nickName, localUserInfo.get("NICK_NAME"));
 			Assert.assertNull(localUserInfo.get("EMAIL"));
 			Assert.assertNull(localUserInfo.get("MOBILE"));
 			Assert.assertNull(localUserInfo.get("ACCESS_TOKEN"));
 			Assert.assertNull(localUserInfo.get("EXPIRES_TIME"));
 			Assert.assertNull(localUserInfo.get("REAL_NAME"));
 			Assert.assertNull(localUserInfo.get("ID_CARD"));
-			Assert.assertNull(localUserInfo.get("SEX"));
+			Assert.assertEquals(sex, localUserInfo.get("SEX"));
 			Assert.assertNull(localUserInfo.get("BLOOD"));
 			Assert.assertNull(localUserInfo.get("BIRTHDAY"));
 			Assert.assertNull(localUserInfo.get("INTRODUCE"));
@@ -57,35 +130,11 @@ public class UserServiceTests extends AbstractUserTests{
 			Assert.assertNull(localUserInfo.get("HOME_CITY"));
 			Assert.assertNotNull(localUserInfo.get("CREATE_TIME"));
 			Assert.assertNull(localUserInfo.get("UPDATE_TIME"));
-			Assert.assertFalse(Boolean.valueOf(localUserInfo.get("ACTIVITY").toString()));
-			
-			// 在DRIP_GLOBAL_USER_INFO中插入第三方用户基本信息
-			Map<String,Object> connectUserInfo = DatabaseUtil.queryForMap(dataSource, sql, connectGlobalUserId);
-			Assert.assertEquals(siteId, Integer.valueOf(connectUserInfo.get("SITE_ID").toString()).intValue());
-			Assert.assertEquals(openId, connectUserInfo.get("OPEN_ID").toString());
-			Assert.assertNull(connectUserInfo.get("DIGITAL_ID"));
-			Assert.assertNull(connectUserInfo.get("LOGIN_PWD"));
-			Assert.assertEquals(loginName, connectUserInfo.get("LOGIN_NAME").toString());
-			Assert.assertEquals(nickName, connectUserInfo.get("NICK_NAME").toString());
-			Assert.assertNull(connectUserInfo.get("EMAIL"));
-			Assert.assertNull(connectUserInfo.get("MOBILE"));
-			Assert.assertNull(connectUserInfo.get("ACCESS_TOKEN"));
-			Assert.assertNull(connectUserInfo.get("EXPIRES_TIME"));
-			Assert.assertNull(connectUserInfo.get("REAL_NAME"));
-			Assert.assertNull(connectUserInfo.get("ID_CARD"));
-			Assert.assertEquals(sex, connectUserInfo.get("SEX").toString());
-			Assert.assertNull(connectUserInfo.get("BLOOD"));
-			Assert.assertTrue(DateUtils.isSameDay(birthday, (Date)connectUserInfo.get("BIRTHDAY")));
-			Assert.assertNull(connectUserInfo.get("INTRODUCE"));
-			Assert.assertNull(connectUserInfo.get("LIVE_CITY_CODE"));
-			Assert.assertEquals(homeCityCode, connectUserInfo.get("HOME_CITY_CODE").toString());
-			Assert.assertNotNull(connectUserInfo.get("CREATE_TIME"));
-			Assert.assertNull(connectUserInfo.get("UPDATE_TIME"));
-			Assert.assertTrue(Boolean.valueOf(connectUserInfo.get("ACTIVITY").toString()));
+			Assert.assertTrue(Boolean.valueOf(localUserInfo.get("ACTIVITY").toString()));
 			
 			// 在DRIP_USER_AVATAR中插入第三方用户的头像信息
-			sql = "SELECT URL_NAME, WIDTH, HEIGHT, URL, CREATE_TIME, UPDATE_TIME FROM DRIP_USER_AVATAR WHERE GLOBAL_USER_ID = ? ORDER BY WIDTH";
-			List<Map<String,Object>> avatars = DatabaseUtil.queryForList(dataSource, sql, connectGlobalUserId);
+			
+			List<Map<String,Object>> avatars = DatabaseUtil.queryForList(dataSource, SQL_LIST_AVATAR, userId);
 			Assert.assertTrue(avatars.size() == 3);
 			
 			Assert.assertEquals("tinyUrl", avatars.get(0).get("URL_NAME").toString());
@@ -104,8 +153,7 @@ public class UserServiceTests extends AbstractUserTests{
 			Assert.assertEquals("http://c", avatars.get(2).get("URL").toString());
 			
 			// 在DRIP_USER_ATTRIBUTES中插入第三方用户的其他属性信息。
-			sql = "SELECT ATTR_NAME,ATTR_VALUE FROM DRIP_USER_ATTRIBUTES WHERE GLOBAL_USER_ID = ? ORDER BY ATTR_NAME";
-			List<Map<String, Object>> attrs = DatabaseUtil.queryForList(dataSource, sql, connectGlobalUserId);
+			List<Map<String, Object>> attrs = DatabaseUtil.queryForList(dataSource, SQL_LIST_USER_ATTRIBUTES, userId);
 			Assert.assertTrue(attrs.size() == 3);
 			
 			Assert.assertEquals(ApplicationPropertyKey.INVALID_PASSWORD_ATTEMPTS, attrs.get(0).get("ATTR_NAME").toString());
@@ -118,8 +166,7 @@ public class UserServiceTests extends AbstractUserTests{
 			Assert.assertNotNull(attrs.get(2).get("ATTR_VALUE"));
 			  
 			// 在DRIP_LOCAL_USER_STATISTICS中插入本网站用户的初始统计信息，值都为0
-			sql = "SELECT FAN_COUNT,FOLLOW_COUNT,EXER_DRAFT_COUNT,EXER_PUBLISH_COUNT,ANSWER_COUNT FROM DRIP_LOCAL_USER_STATISTICS WHERE GLOBAL_USER_ID = ?";
-			Map<String,Object> statistics = DatabaseUtil.queryForMap(dataSource, sql, localGlobalUserId);
+			Map<String,Object> statistics = DatabaseUtil.queryForMap(dataSource, SQL_GET_USER_STATISTICS, userId);
 			Assert.assertEquals(0, Integer.valueOf(statistics.get("FAN_COUNT").toString()).intValue());
 			Assert.assertEquals(0, Integer.valueOf(statistics.get("FOLLOW_COUNT").toString()).intValue());
 			Assert.assertEquals(0, Integer.valueOf(statistics.get("EXER_DRAFT_COUNT").toString()).intValue());
@@ -127,28 +174,17 @@ public class UserServiceTests extends AbstractUserTests{
 			Assert.assertEquals(0, Integer.valueOf(statistics.get("ANSWER_COUNT").toString()).intValue());
 			
 			// 在DRIP_USER_BIND中绑定前面插入的两个帐号
-			sql = "SELECT DBID,REF_USER_INFO FROM DRIP_USER_BIND WHERE LOCAL_USER_ID = ? AND BIND_USER_ID = ?";
-			Map<String,Object> bindInfo = DatabaseUtil.queryForMap(dataSource, sql, localGlobalUserId, connectGlobalUserId);
+			
+			Map<String,Object> bindInfo = DatabaseUtil.queryForMap(dataSource, SQL_GET_USER_BIND, openId, siteId);
 			Assert.assertNotNull(bindInfo.get("DBID"));
-			Assert.assertEquals(1,Integer.valueOf(bindInfo.get("REF_USER_INFO").toString()).intValue());
+			Assert.assertEquals(userId, Long.valueOf(bindInfo.get("USER_ID").toString()));
 			
 			// 在DRIP_USER_RELATION中插入第三方用户自我关注信息
-			sql = "SELECT DBID, CRT_TM FROM DRIP_USER_RELATION WHERE USER_ID = ? AND WATCH_USER_ID = ?";
-			Map<String,Object> relationInfo = DatabaseUtil.queryForMap(dataSource, sql, connectGlobalUserId, connectGlobalUserId);
+			Map<String,Object> relationInfo = DatabaseUtil.queryForMap(dataSource, SQL_GET_USER_RELATION, userId, userId);
 			Assert.assertNotNull(relationInfo.get("DBID"));
 			Assert.assertNotNull(relationInfo.get("CRT_TM"));
-			
-			relationInfo = DatabaseUtil.queryForMap(dataSource, sql, localGlobalUserId, localGlobalUserId);
-			Assert.assertTrue(relationInfo.isEmpty());
-			
-			relationInfo = DatabaseUtil.queryForMap(dataSource, sql, localGlobalUserId, connectGlobalUserId);
-			Assert.assertTrue(relationInfo.isEmpty());
-			
-			relationInfo = DatabaseUtil.queryForMap(dataSource, sql, connectGlobalUserId, localGlobalUserId);
-			Assert.assertTrue(relationInfo.isEmpty());
-					
 		}finally{
-			this.deleteTestUser();
+			deleteTestUser(userId);
 		}
 	}
 	
@@ -174,20 +210,25 @@ delete from DRIP_LOCAL_USER_STATISTICS;
 	 */
 	@Test
 	public void testGetPublicInfo(){
+		Long userId = null;
 		try{
-			importUser();
+			int siteId = OAuthConstants.QQ;
+			String openId = "a";
+			String nickName = "b";
+			String sex = Gender.MALE;
+					
+			userId = importUser(siteId, openId, nickName, sex);
 			
-			Map<String,Object> result = userService.getPublicInfo(localGlobalUserId);
+			Map<String,Object> result = userService.getPublicInfo(userId);
 			
 			// 这里查出的是第三方用户的信息，因此无法获得digitalId的值
 			Assert.assertNull(result.get("digitalId"));
-			Assert.assertEquals(localGlobalUserId.longValue(), NumberUtils.toLong(result.get("localUserId").toString()));
+			Assert.assertEquals(userId.longValue(), NumberUtils.toLong(result.get("userId").toString()));
 			Assert.assertEquals(siteId, NumberUtils.toInt(result.get("siteId").toString()));
 			Assert.assertEquals(nickName, result.get("nickName").toString());
 			Assert.assertEquals(sex, result.get("sex").toString());
-			Assert.assertEquals(loginName, result.get("loginName").toString());
+			Assert.assertNull(result.get("loginName"));
 			
-			Assert.assertEquals(homeCityCode, result.get("homeCityCode").toString());
 			@SuppressWarnings("unchecked")
 			Map<String, Object> homeCity = (Map<String, Object>) result.get("homeCity");
 			Assert.assertEquals("中国", homeCity.get("country").toString());
@@ -206,7 +247,7 @@ delete from DRIP_LOCAL_USER_STATISTICS;
 			Assert.assertEquals(0, Integer.valueOf(result.get("exerPublishCount").toString()).intValue());
 			Assert.assertEquals(0, Integer.valueOf(result.get("answerCount").toString()).intValue());
 		}finally{
-			super.deleteTestUser();
+			super.deleteTestUser(userId);
 		}
 		
 	}
@@ -282,9 +323,14 @@ delete from DRIP_LOCAL_USER_STATISTICS;
 	 */
 	@Test
 	public void testLogin_Oauth(){
-		
+		Long userId = null;
 		try{
-			importUser();
+			int siteId = OAuthConstants.QQ;
+			String openId = "a";
+			String nickName = "b";
+			String sex = Gender.MALE;
+					
+			userId = importUser(siteId, openId, nickName, sex);
 			
 			/**
 			 * 用户登录，主要是记录使用第三方网站进行登录。注意第三方用户的所有信息都是从本地获取，每天晚上定时从第三方同步用户信息。
@@ -314,19 +360,20 @@ delete from DRIP_LOCAL_USER_STATISTICS;
 			 * 		answerCount： 习题总数 = 习题草稿数+发布的习题数
 			 * </pre>
 			 */
-			Map<String,Object> result = userService.login(localGlobalUserId, connectGlobalUserId);
+			UserInfo result = userService.login(userId);
+			assertNotNull(result);
 			
-			Assert.assertEquals(localGlobalUserId.longValue(), NumberUtils.toLong(result.get("localUserId").toString()));
-			Assert.assertEquals(siteId, NumberUtils.toInt(result.get("siteId").toString()));
-			Assert.assertNull(result.get("email"));
-			Assert.assertNull(result.get("mobile"));
-			Assert.assertEquals(nickName, result.get("nickName").toString());
-			Assert.assertNull(result.get("realName"));
-			
-			// 对比头像信息
-			Assert.assertEquals("http://a", result.get("smallImageUrl").toString());
-			Assert.assertEquals("http://b", result.get("largeImageUrl").toString());
-			Assert.assertEquals("http://c", result.get("largerImageUrl").toString());
+//			Assert.assertEquals(localGlobalUserId.longValue(), NumberUtils.toLong(result.get("localUserId").toString()));
+//			Assert.assertEquals(siteId, NumberUtils.toInt(result.get("siteId").toString()));
+//			Assert.assertNull(result.get("email"));
+//			Assert.assertNull(result.get("mobile"));
+//			Assert.assertEquals(nickName, result.get("nickName").toString());
+//			Assert.assertNull(result.get("realName"));
+//			
+//			// 对比头像信息
+//			Assert.assertEquals("http://a", result.get("smallImageUrl").toString());
+//			Assert.assertEquals("http://b", result.get("largeImageUrl").toString());
+//			Assert.assertEquals("http://c", result.get("largerImageUrl").toString());
 			
 			// 统计信息
 			// 最新版本的方法中没有返回用户统计信息
@@ -337,7 +384,7 @@ delete from DRIP_LOCAL_USER_STATISTICS;
 //			Assert.assertEquals(0, Integer.valueOf(result.get("answerCount").toString()).intValue());
 			
 		}finally{
-			super.deleteTestUser();
+			super.deleteTestUser(userId);
 		}
 	}
 }

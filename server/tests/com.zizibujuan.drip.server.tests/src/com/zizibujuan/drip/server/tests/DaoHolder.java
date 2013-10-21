@@ -1,5 +1,6 @@
 package com.zizibujuan.drip.server.tests;
 
+import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.dao.UserStatisticsDao;
 
 /**
@@ -37,6 +38,23 @@ public class DaoHolder {
 		System.out.println("注销userStatisticsDao");
 		if (this.userStatisticsDao == userStatisticsDao) {
 			this.userStatisticsDao = null;
+		}
+	}
+	
+	
+	private UserDao userDao;
+	public UserDao getUserDao() {
+		return userDao;
+	}
+	public void setUserDao(UserDao userDao) {
+		System.out.println("注入userDao");
+		this.userDao = userDao;
+	}
+
+	public void unsetUserDao(UserDao userDao) {
+		System.out.println("注销userDao");
+		if (this.userDao == userDao) {
+			this.userDao = null;
 		}
 	}
 }

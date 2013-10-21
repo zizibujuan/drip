@@ -69,7 +69,7 @@ public class UserInfo {
 	 * @return 用户登录名
 	 */
 	public String getLoginName() {
-		return loginName.trim();
+		return loginName == null ? null : loginName.trim();
 	}
 
 	/**
