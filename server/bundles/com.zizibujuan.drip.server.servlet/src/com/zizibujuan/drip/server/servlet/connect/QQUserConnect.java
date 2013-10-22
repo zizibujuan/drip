@@ -21,8 +21,10 @@ import com.zizibujuan.drip.server.model.UserBindInfo;
 import com.zizibujuan.drip.server.service.UserBindService;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.servlet.ServiceHolder;
+import com.zizibujuan.drip.server.util.CookieConstants;
 import com.zizibujuan.drip.server.util.Gender;
 import com.zizibujuan.drip.server.util.OAuthConstants;
+import com.zizibujuan.drip.server.util.servlet.CookieUtil;
 import com.zizibujuan.drip.server.util.servlet.UserSession;
 
 /**
@@ -116,6 +118,11 @@ public class QQUserConnect extends UserConnect {
 			// 是不是应该在每次登录时，都记录下token和过期时间呢?
 			com.zizibujuan.drip.server.model.UserInfo dripUserInfo = userService.login(dripUserId);
 			UserSession.setUser(req, dripUserInfo);
+			CookieUtil.set(resp, CookieConstants.LOGGED_IN, "1", null, -1);
+			// 防止同一台电脑先使用drip用户登录，然后使用qq用户登录，要删除本网站的token
+			// 这样就不会使用其他人的帐号自动登录
+			// 同时也可以设置第三方网站的token，这样可以使用这些token自动登录
+			CookieUtil.remove(req, resp, CookieConstants.ZZBJ_USER_TOKEN);
 		} catch (QQConnectException e) {
 			e.printStackTrace();
 		}
