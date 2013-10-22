@@ -42,7 +42,7 @@ public abstract class UserConnect {
 		avatar.setHeight(height);
 		avatar.setWidth(width);
 		avatar.setUrlName(urlName);
-		avatar.setUrl(urlName);
+		avatar.setUrl(url);
 		avatars.add(avatar);
 	}
 }
