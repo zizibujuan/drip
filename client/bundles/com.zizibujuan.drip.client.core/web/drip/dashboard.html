@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <link type="text/css" rel="stylesheet" href="/drip/resources/app.css" />
 <link type="text/css" rel="stylesheet" href="/drip/resources/font-awesome/css/font-awesome.css" />
-<title>我的首页 孜孜不倦 · 协作写笔记，快乐做习题。</title>
+<!-- 协作写笔记，快乐做习题 -->
+<title>我的首页 孜孜不倦 · 在线做数学题。</title>
 <script type="text/javascript" 
 	data-dojo-config="
 		async:true,
@@ -75,6 +76,7 @@ require(["dojo/ready",
 	
 	// 加载登录用户发起的项目列表
 	// 如果没有传递用户信息，则获取登录用户的项目列表
+	/*
 	var projectList = dom.byId("my_project_list");
 	xhr.get("/projects/",{handleAs:"json"}).then(function(data){
 		if(data.length == 0){
@@ -93,7 +95,7 @@ require(["dojo/ready",
 		}
 	}, function(error){
 		
-	});
+	});*/
 	
 	ready(function(){
 		/*
@@ -153,15 +155,15 @@ function sendRenrenRequest(){
 				<ul class="pageHeader-actions">
 
 					<li>
-						<!-- FIXME：需要提供选择项目的选项，将最近使用的项目放在最上面 -->
-						<a class="minibutton" href="#">写笔记</a>
+						<!-- FIXME：需要提供选择项目的选项，将最近使用的项目放在最上面 
+						<a class="minibutton" href="#">写笔记</a>-->
 					</li>
 
 					<li>
 					<!-- 录入习题 
 							<li><a  class="minibutton primary"><i class="icon-edit"></i> 录入习题</a></li>
 					-->
-						<a href="/exercises/new" title="录入新习题" class="minibutton"></i> 录数学题</a>
+						<a href="/exercises/new" title="录入新习题" class="minibutton"> 录数学题</a>
 					</li>
 
 
@@ -291,6 +293,7 @@ function sendRenrenRequest(){
 							 		 -->
 							 	</div>
 							 	
+							 	<!-- 
 							 	<div class="box box-small">
 							 		<div class="box-header">
 							 			<a href="/projects/new" class="minibutton primary new-project">发起新项目</a>
@@ -300,6 +303,7 @@ function sendRenrenRequest(){
 							 			<ul class="project-list" id="my_project_list"></ul>
 							 		</div>
 							 	</div>
+							 	 -->
 							</div>
 						</div>
 					
