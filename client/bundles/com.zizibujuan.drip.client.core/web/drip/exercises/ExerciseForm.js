@@ -188,7 +188,7 @@ define(["dojo/_base/declare",
 			//		只创建一次。
 			
 			if(this.exerContentEditor)return;
-			var editor = this.exerContentEditor = this._createMathInput("习题内容", 10, "必填");
+			var editor = this.exerContentEditor = this._createMathInput("内容", 10, "必填");
 			this.contentPane = editor.domNode.parentNode;
 		},
 		
@@ -232,7 +232,7 @@ define(["dojo/_base/declare",
 			//		只创建一次，为的是保留之前的内容
 			
 			if(this.guideEditor)return;
-			this.guideEditor = this._createMathInput("习题解析", 5);
+			this.guideEditor = this._createMathInput("解析", 5);
 		},
 		
 		_createMathInput: function(label, rowCount, requireLabel){

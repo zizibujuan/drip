@@ -25,6 +25,14 @@
    		interface="com.zizibujuan.drip.server.dao.UserStatisticsDao" 
    		name="userStatisticsDao" 
    		policy="dynamic"/>
+   	
+   	<reference 
+   		bind="setHistAnswerDao" 
+   		unbind="unsetHistAnswerDao" 
+   		cardinality="0..1" 
+   		interface="com.zizibujuan.drip.server.dao.HistAnswerDao" 
+   		name="histAnswerDao" 
+   		policy="dynamic"/>	
    		
    <service>
       <provide interface="com.zizibujuan.drip.server.dao.AnswerDao"/>

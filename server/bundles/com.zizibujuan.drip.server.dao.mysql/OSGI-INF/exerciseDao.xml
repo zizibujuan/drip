@@ -34,7 +34,14 @@
    		interface="com.zizibujuan.drip.server.dao.UserStatisticsDao" 
    		name="userStatisticsDao" 
    		policy="dynamic"/>
-   		
+
+   <reference 
+   		bind="setHistExerciseDao" 
+   		unbind="unsetHistExerciseDao" 
+   		cardinality="0..1" 
+   		interface="com.zizibujuan.drip.server.dao.HistExerciseDao" 
+   		name="histExerciseDao" 
+   		policy="dynamic"/>   		
    		
    <service>
       <provide interface="com.zizibujuan.drip.server.dao.ExerciseDao"/>

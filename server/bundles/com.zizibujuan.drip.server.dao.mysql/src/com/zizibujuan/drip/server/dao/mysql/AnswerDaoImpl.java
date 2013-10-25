@@ -13,13 +13,16 @@ import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.dao.ActivityDao;
 import com.zizibujuan.drip.server.dao.AnswerDao;
+import com.zizibujuan.drip.server.dao.HistAnswerDao;
 import com.zizibujuan.drip.server.dao.UserStatisticsDao;
 import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.exception.dao.DataAccessException;
 import com.zizibujuan.drip.server.model.Answer;
 import com.zizibujuan.drip.server.model.AnswerDetail;
 import com.zizibujuan.drip.server.util.ActionType;
+import com.zizibujuan.drip.server.util.DBAction;
 import com.zizibujuan.drip.server.util.dao.AbstractDao;
+import com.zizibujuan.drip.server.util.dao.BatchPreparedStatementSetter;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 import com.zizibujuan.drip.server.util.dao.PreparedStatementSetter;
 import com.zizibujuan.drip.server.util.dao.RowMapper;
@@ -35,6 +38,7 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 	private UserDao userDao;
 	private ActivityDao activityDao;
 	private UserStatisticsDao userStatisticsDao;
+	private HistAnswerDao histAnswerDao;
 	
 	private static final String SQL_GET_ANSWER = "SELECT "
 			+ "DBID,"
@@ -211,6 +215,8 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 			addAnswerDetail(con, answerId, answerDetail);
 		}
 		
+		histAnswerDao.insert(con, DBAction.CREATE, answer);
+		
 		// 答案回答完成后，在用户的“已回答的习题数”上加1
 		// 同时修改后端和session中缓存的该记录
 		Long userId = answer.getCreateUserId();
@@ -230,26 +236,32 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 	}
 
 
-	private void addAnswerDetail(Connection con, Long answerId, List<AnswerDetail> answerDetails) throws SQLException {
-		PreparedStatement pst = con.prepareStatement(SQL_INSERT_ANSWER_DETAIL);
-		for(AnswerDetail each : answerDetails){
-			pst.setLong(1, answerId);
-			Long optionId = each.getOptionId();
-			if(optionId == null){
-				pst.setNull(2, Types.NUMERIC);
-			}else{
-				pst.setLong(2, optionId);
+	private void addAnswerDetail(Connection con, final Long answerId, final List<AnswerDetail> answerDetails) throws SQLException {
+		DatabaseUtil.batchUpdate(con, SQL_INSERT_ANSWER_DETAIL, new BatchPreparedStatementSetter() {
+			
+			@Override
+			public void setValues(PreparedStatement ps, int index) throws SQLException {
+				AnswerDetail detail = answerDetails.get(index);
+				ps.setLong(1, answerId);
+				Long optionId = detail.getOptionId();
+				if(optionId == null){
+					ps.setNull(2, Types.NUMERIC);
+				}else{
+					ps.setLong(2, optionId);
+				}
+				String content = detail.getContent();
+				if(content == null || content.trim().isEmpty()){
+					ps.setNull(3, Types.VARCHAR);
+				}else{
+					ps.setString(3, content);
+				}
 			}
 			
-			String content = each.getContent();
-			if(content == null || content.trim().isEmpty()){
-				pst.setNull(3, Types.VARCHAR);
-			}else{
-				pst.setString(3, content);
+			@Override
+			public int getBatchSize() {
+				return answerDetails.size();
 			}
-			pst.addBatch();
-		}
-		pst.executeBatch();
+		});
 	}
 	
 
@@ -286,6 +298,18 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 		if (this.userStatisticsDao == userStatisticsDao) {
 			logger.info("注销userStatisticsDao");
 			this.userStatisticsDao = null;
+		}
+	}
+	
+	public void setHistAnswerDao(HistAnswerDao histAnswerDao) {
+		logger.info("注入histAnswerDao");
+		this.histAnswerDao = histAnswerDao;
+	}
+
+	public void unsetHistAnswerDao(HistAnswerDao histAnswerDao) {
+		if (this.histAnswerDao == histAnswerDao) {
+			logger.info("注销histAnswerDao");
+			this.histAnswerDao = null;
 		}
 	}
 }

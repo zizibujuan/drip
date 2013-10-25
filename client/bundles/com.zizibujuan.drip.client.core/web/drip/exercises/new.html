@@ -45,7 +45,29 @@ require(["drip/exercises/ExerciseForm",
 <body class="claro">
 	<div id="wrapper" class="drip_body">
 		<div id="header" style="min-height:43px"></div>
+		<div class="pageHeader clearfix ">
+		<!-- 放置操作按钮 -->
+		<div class="container">
+				<ul class="pageHeader-actions">
+					<li>
+						<!-- FIXME：需要提供选择项目的选项，将最近使用的项目放在最上面 
+						<a class="minibutton" href="#">写笔记</a>-->
+					</li>
+					<li>
+					<!-- 录入习题 
+							<li><a  class="minibutton primary"><i class="icon-edit"></i> 录入习题</a></li>
+					-->
+						<a href="#" title="录入新习题" class="minibutton"> 录数学题</a>
+					</li>
+				</ul>
+				<div>
+					<a href="#"><i class="icon-arrow-left"></i> 我录的习题 (10)</a>
+				</div>
+
+			</div>
+		</div>
 		<div id="main" class="container">
+			
 			<!-- <label style="font-size: 18px; font-weight: bold">录入新习题</label> -->
 			<div style="margin-top: 10px;" id="formContainer">
 			</div>

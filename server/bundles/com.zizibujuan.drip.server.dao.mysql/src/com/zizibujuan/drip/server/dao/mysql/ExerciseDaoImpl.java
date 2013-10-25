@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.zizibujuan.drip.server.dao.ActivityDao;
 import com.zizibujuan.drip.server.dao.AnswerDao;
 import com.zizibujuan.drip.server.dao.ExerciseDao;
+import com.zizibujuan.drip.server.dao.HistExerciseDao;
 import com.zizibujuan.drip.server.dao.UserStatisticsDao;
 import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.exception.dao.DataAccessException;
@@ -23,6 +24,7 @@ import com.zizibujuan.drip.server.model.Exercise;
 import com.zizibujuan.drip.server.model.ExerciseForm;
 import com.zizibujuan.drip.server.model.ExerciseOption;
 import com.zizibujuan.drip.server.util.ActionType;
+import com.zizibujuan.drip.server.util.DBAction;
 import com.zizibujuan.drip.server.util.ExerciseType;
 import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
@@ -40,6 +42,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 	private ActivityDao activityDao;
 	private AnswerDao answerDao;
 	private UserStatisticsDao userStatisticsDao;
+	private HistExerciseDao histExerciseDao;
 	
 	private static final String SQL_LIST_EXERCISE = 
 			"SELECT DBID, CONTENT, CRT_TM, CRT_USER_ID FROM DRIP_EXERCISE ORDER BY CRT_TM DESC";
@@ -92,7 +95,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 						}
 					}
 				}
-					
+				// 准备好数据之后，再保存
 				answerDao.save(con, answer);
 			}
 			
@@ -160,7 +163,6 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 						ps.setLong(1, exerId);
 						ps.setString(2, finalOption.getContent());
 						ps.setInt(3, seq);
-						
 					}
 				});
 				
@@ -169,6 +171,8 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			}
 		}
 		
+		// 在历史表中添加纪录
+		histExerciseDao.insert(con, DBAction.CREATE, exerciseInfo);
 		return exerId;
 	}
 	
@@ -303,5 +307,16 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 		}
 	}
 	
+	public void setHistExerciseDao(HistExerciseDao histExerciseDao) {
+		logger.info("注入histExerciseDao");
+		this.histExerciseDao = histExerciseDao;
+	}
+
+	public void unsetHistExerciseDao(HistExerciseDao histExerciseDao) {
+		if (this.histExerciseDao == histExerciseDao) {
+			logger.info("注销histExerciseDao");
+			this.histExerciseDao = null;
+		}
+	}
 	
 }
