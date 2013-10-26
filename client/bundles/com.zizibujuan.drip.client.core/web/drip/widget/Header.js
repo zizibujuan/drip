@@ -50,7 +50,7 @@ define(["dojo/_base/declare",
 			user.getLoggedUserInfo().then(lang.hitch(this,function(userInfo){
 				this.userLink.href  = "/users/" + userInfo.id;
 				var smallImageUrl = userInfo.smallImageUrl;
-				if(smallImageUrl != null || smallImageUrl != ""){
+				if(smallImageUrl != null && smallImageUrl != ""){
 					profileImage.src = userInfo.smallImageUrl;
 				}
 			}), function(error){
