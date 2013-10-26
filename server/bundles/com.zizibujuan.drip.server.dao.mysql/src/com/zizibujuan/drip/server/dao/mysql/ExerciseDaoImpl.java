@@ -82,7 +82,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 				// 在新增习题的同时保存答案，因为选项的值是刚加的，所以需要在detail中为选项标识赋值。
 				if(answerList != null && answerList.size() > 0){
 					
-					if(ExerciseType.SINGLE_OPTION.equals(exerciseType)){
+					if(ExerciseType.SINGLE_OPTION.equals(exerciseType) || ExerciseType.MULTI_OPTION.equals(exerciseType)){
 						List<ExerciseOption> options = exerciseInfo.getOptions();
 						// seq从1开始
 						if(options != null && !options.isEmpty()){
@@ -148,6 +148,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 				ps.setLong(4, finalExerciseInfo.getCreateUserId());
 			}
 		});
+		exerciseInfo.setId(exerId);
 		
 		// 如果存在选项，则添加习题选项
 		List<ExerciseOption> finalOptions = finalExerciseInfo.getOptions();

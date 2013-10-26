@@ -199,16 +199,18 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 			+ "VALUES "
 			+ "(?,?,?)";
 	@Override
-	public void save(Connection con, final Answer answer) throws SQLException {
+	public void save(Connection con, Answer answer) throws SQLException {
+		final Answer finalAnswer = answer;
 		Long answerId = DatabaseUtil.insert(con, SQL_INSERT_ANSWER, new PreparedStatementSetter() {
 			
 			@Override
 			public void setValues(PreparedStatement ps) throws SQLException {
-				ps.setLong(1, answer.getExerciseId());
-				ps.setString(2, answer.getGuide());
-				ps.setLong(3, answer.getCreateUserId());
+				ps.setLong(1, finalAnswer.getExerciseId());
+				ps.setString(2, finalAnswer.getGuide());
+				ps.setLong(3, finalAnswer.getCreateUserId());
 			}
 		});
+		answer.setId(answerId);
 		
 		List<AnswerDetail> answerDetail = answer.getDetail();
 		if(answerDetail != null && !answerDetail.isEmpty()){
