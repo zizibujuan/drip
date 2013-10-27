@@ -11,12 +11,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.core.runtime.IPath;
 
 import com.zizibujuan.drip.server.model.ExerciseForm;
+import com.zizibujuan.drip.server.model.ExerciseOption;
 import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.ExerciseService;
+import com.zizibujuan.drip.server.util.ExerciseType;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
 import com.zizibujuan.drip.server.util.servlet.UserSession;
+import com.zizibujuan.drip.server.util.servlet.Validator;
 
 /**
  * 习题,修改完习题后，需要对修改的内容进行审批。
@@ -50,6 +53,12 @@ public class ExerciseServlet extends BaseServlet{
 		IPath path = getPath(req);
 		if(path.segmentCount() == 0){
 			ExerciseForm exerciseForm = RequestUtil.fromJsonObject(req, ExerciseForm.class);
+			Validator validator = new Validator();
+			this.validate(validator, exerciseForm);
+			if(validator.hasFieldErrors()){
+				ResponseUtil.toJSON(req, resp, validator.getFieldErrors(), HttpServletResponse.SC_PRECONDITION_FAILED);
+				return;
+			}
 			UserInfo userInfo = (UserInfo) UserSession.getUser(req);
 			exerciseForm.getExercise().setCreateUserId(userInfo.getId());
 			Long dbid = exerciseService.add(exerciseForm);
@@ -57,5 +66,27 @@ public class ExerciseServlet extends BaseServlet{
 			return;
 		}
 		super.doPost(req, resp);
+	}
+
+	private void validate(Validator validator, ExerciseForm exerciseForm) {
+		String exerciseType = exerciseForm.getExercise().getExerciseType();
+		String content = exerciseForm.getExercise().getContent();
+		List<ExerciseOption> options = exerciseForm.getExercise().getOptions();
+		if(exerciseType.equals(ExerciseType.ESSAY_QUESTION)){
+			if(content == null || content.trim().isEmpty()){
+				validator.addFieldError("content", "请输入习题内容");
+			}
+			return;
+		}
+		
+		if(exerciseType.equals(ExerciseType.SINGLE_OPTION) || exerciseType.equals(ExerciseType.MULTI_OPTION)){
+			if(content == null || content.trim().isEmpty()){
+				validator.addFieldError("content", "请输入习题内容");
+			}
+			if(options == null || options.size() < 2){
+				validator.addFieldError("exerOption", "请输入至少两个选项");
+			}
+			return;
+		}
 	}
 }
