@@ -137,6 +137,7 @@ define(["dojo/_base/declare",
 			this._createCourseOptions();
 			
 			this._createAnswerInput();
+			
 			// 创建习题解析输入框
 			this._createGuideInput();
 			
@@ -227,8 +228,20 @@ define(["dojo/_base/declare",
 		},
 		
 		_createAnswerInput: function(){
-			if(this.answerEditor)return;
-			this.answerEditor = this._createMathInput("答案", 5);
+			var exerciseType = this._exerciseType;
+			if(exerciseType === classCode.ExerciseType.ESSAY_QUESTION){
+				if(this.answerEditor){
+					if(domStyle.get(this.answerEditor.domNode.parentNode, "display") == "none"){
+						domStyle.set(this.answerEditor.domNode.parentNode, "display", "");
+					}
+					return;
+				}
+				this.answerEditor = this._createMathInput("答案", 5);
+			}else{
+				if(this.answerEditor){
+					domStyle.set(this.answerEditor.domNode.parentNode, "display", "none");
+				}
+			}
 		},
 		
 		_createGuideInput: function(){
@@ -368,7 +381,7 @@ define(["dojo/_base/declare",
 					}
 				});
 			}
-			debugger;
+			
 			var answer = {};
 			if(this._exerciseType === classCode.ExerciseType.SINGLE_OPTION || this.exerciseType === classCode.ExerciseType.MULTI_OPTION){
 				var answerDetail = [];
