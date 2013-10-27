@@ -11,10 +11,17 @@
 	         </resource-mapping>
          </httpcontext>
          <httpcontext
-            id="com.zizibujuan.drip.client.httpcontext.fonts">
+            id="com.zizibujuan.drip.client.httpcontext.mathjax.fonts">
 	         <resource-mapping
 	               bundle="com.zizibujuan.drip.client.mathjax"
 	               path="/static/fonts">
+	         </resource-mapping>
+         </httpcontext>
+         <httpcontext
+            id="com.zizibujuan.drip.client.httpcontext.mathjax.images">
+	         <resource-mapping
+	               bundle="com.zizibujuan.drip.client.mathjax"
+	               path="/static/images">
 	         </resource-mapping>
          </httpcontext>
     </extension>
@@ -26,7 +33,11 @@
       </resource>
       <resource
             alias="/fonts"
-            httpcontextId="com.zizibujuan.drip.client.httpcontext.fonts">
+            httpcontextId="com.zizibujuan.drip.client.httpcontext.mathjax.fonts">
+      </resource>
+      <resource
+            alias="/images"
+            httpcontextId="com.zizibujuan.drip.client.httpcontext.mathjax.images">
       </resource>
      </extension>
 </plugin>

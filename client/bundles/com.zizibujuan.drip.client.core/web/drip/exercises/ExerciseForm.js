@@ -13,6 +13,7 @@ define(["dojo/_base/declare",
         "dojo/on",
         "dojo/query",
         "dojo/json",
+        "dojo/string",
         "mathEditor/Editor",
         "drip/classCode",
         "dojox/form/Uploader",
@@ -32,6 +33,7 @@ define(["dojo/_base/declare",
         		on,
         		query,
         		JSON,
+        		string,
         		Editor,
         		classCode,
         		Uploader,
@@ -61,6 +63,8 @@ define(["dojo/_base/declare",
 		_optionName:"exercise-option",
 		
 		_editors: [],
+		
+		_fieldErrors: {},
 		
 		postCreate: function(){
 			this.inherited(arguments);
@@ -173,6 +177,7 @@ define(["dojo/_base/declare",
 					if(target.id != this.data.exerType){
 						// 只有选中的节点发生变化的时候才触发，即如果该节点之前没有选中
 						this._createForm(target.id);
+						this.clearErrors();
 					}else{
 						// 如果之前已经选中，则什么也不做。
 					}
@@ -238,7 +243,7 @@ define(["dojo/_base/declare",
 		_createMathInput: function(label, rowCount, requireLabel){
 			// summary:
 			//		创建包含label的支持输入数学公式的输入框
-			var _requireLabel = requireLabel ? "(" + requireLabel + ")" : "";
+			var _requireLabel = requireLabel ? "<span>(" + requireLabel + ")</span>" : "";
 			var pane = domConstruct.create("div", {"class":"form"}, this.leftDiv);
 			domConstruct.place('<div><span class="drip-title">'+label+'</span>'+_requireLabel+'</div>', pane);
 			return this._createEditor(pane, rowCount, 550);
@@ -354,7 +359,11 @@ define(["dojo/_base/declare",
 				data.exercise.options = [];
 				registry.findWidgets(this.tblOption).forEach(function(widget, index){
 					console.log(widget, index, widget.get("value"));
-					data.exercise.options.push({content: widget.get("value")});
+					// 只有当有内容时，才加入进来
+					var val = widget.get("value");
+					if(string.trim(val) != ""){
+						data.exercise.options.push({content: val});
+					}
 				});
 			}
 			var answer = {};
@@ -382,13 +391,17 @@ define(["dojo/_base/declare",
 		
 		doSave: function(e){
 			// 保存之前要先校验
-			
-			// 失效保存按钮，防止重复提交
-			domAttr.set(this.btnSave,"disabled", true);
-			
 			var data = this._getFormData();
 			console.log("将要保存的习题数据为：",data);
 			
+			this.validate(data);
+			if(this.hasError()){
+				// 在每个label后面显示提示信息
+				this.showErrors();
+				return;
+			}
+			// 失效保存按钮，防止重复提交
+			domAttr.set(this.btnSave,"disabled", true);
 			xhr("/exercises/",{method:"POST", data:JSON.stringify(data)}).then(lang.hitch(this,function(response){
 				// 保存成功，在界面上清除用户输入数据，使处于新增状态。在页面给出保存成功的提示，在按钮旁边显示。
 				this._reset();
@@ -396,11 +409,74 @@ define(["dojo/_base/declare",
 			}),lang.hitch(this, function(error){
 				// 保存失败，不清除用户输入数据，并给出详尽的错误提示
 				domAttr.set(this.btnSave,"disabled", false);
+				
+				// 显示服务器端校验信息
+				if(error.response.data){
+					var errorJson = JSON.parse(error.response.data);
+					this._fieldErrors  = errorJson;
+					if(this.hasError()){
+						this.showErrors();
+					}
+				}
 			}));
+		},
+		
+		validate: function(data){
+			var exercise = data.exercise;
+			var exerciseType = exercise.exerciseType;
+			var content = exercise.content;
+			var options = exercise.options || [];
+			if(exerciseType == classCode.ExerciseType.SINGLE_OPTION || 
+			   exerciseType == classCode.ExerciseType.MULTI_OPTION){
+				if(string.trim(content) == ""){
+					this._fieldErrors["content"] = ["请输入习题内容"];
+				}
+				if(options.length < 2){
+					this._fieldErrors["exerOption"] = ["请输入至少两个选项"];
+				}
+			}else if(exerciseType == classCode.ExerciseType.ESSAY_QUESTION){
+				if(string.trim(content) == ""){
+					this._fieldErrors["content"] = ["请输入习题内容"];
+				}
+			}
+		},
+		
+		hasError: function(){
+			var errors = this._fieldErrors;
+			for (var name in errors ) {
+				return true;
+			}
+			return false;
+		},
+		
+		showErrors: function(){
+			var errors = this._fieldErrors;
+			var contentErrors = errors["content"];
+			if(contentErrors){
+				var target = this.exerContentEditor.domNode.previousSibling;
+				domConstruct.create("span", {style:{color:"red"}, innerHTML: contentErrors[0]}, target);
+			}
+			var exerOptionErrors = errors["exerOption"];
+			if(exerOptionErrors){
+				var target = this.tblOption.parentNode.previousSibling;
+				domConstruct.create("span", {style:{color:"red"}, innerHTML: exerOptionErrors[0]}, target);
+			}
+		},
+		
+		clearErrors: function(){
+			var errors = this._fieldErrors;
+			if(errors.content){
+				domConstruct.destroy(this.exerContentEditor.domNode.previousSibling.lastChild);
+			}
+			if(errors.exerOption){
+				domConstruct.destroy(this.tblOption.parentNode.previousSibling.lastChild);
+			}
+			this._fieldErrors = {};
 		},
 		
 		_reset: function(){
 			this.data = {};
+			this.clearErrors();
 			this.exerContentEditor.set("value", "");
 			this.answerEditor.set("value", "");
 			this.guideEditor.set("value", "");

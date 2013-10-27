@@ -185,7 +185,7 @@ public class LoginServlet extends BaseServlet {
 		}
 	}
 	
-	private boolean hasErrors(){
+	protected boolean hasErrors(){
 		return errors != null && errors.size() > 0;
 	}
 }
