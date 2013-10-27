@@ -106,7 +106,7 @@ define(["dojo/_base/declare",
 			//		创建习题输入界面
 			// exerciseType: String
 			//		题型
-			this.data.exercise.exerciseType = exerciseType;
+			this._exerciseType = exerciseType;
 			// 创建题型
 			this._createExerciseTypeOptions(exerciseType);
 			
@@ -348,6 +348,7 @@ define(["dojo/_base/declare",
 		
 		_getFormData: function(){
 			var data = this.data;
+			data.exercise.exerciseType = this._exerciseType;
 			data.exercise.content = this.exerContentEditor.get("value");
 			// TODO:获取题型和科目
 			query("[name=" + this._courseOptionName + "]:checked", this.coursePane).forEach(function(inputEl, index){
@@ -394,6 +395,8 @@ define(["dojo/_base/declare",
 			var data = this._getFormData();
 			console.log("将要保存的习题数据为：",data);
 			
+			// 每次校验之前，先清除上一次的错误信息
+			this.clearErrors();
 			this.validate(data);
 			if(this.hasError()){
 				// 在每个label后面显示提示信息
@@ -409,6 +412,7 @@ define(["dojo/_base/declare",
 			}),lang.hitch(this, function(error){
 				// 保存失败，不清除用户输入数据，并给出详尽的错误提示
 				domAttr.set(this.btnSave,"disabled", false);
+				this.data = {};
 				
 				// 显示服务器端校验信息
 				if(error.response.data){
