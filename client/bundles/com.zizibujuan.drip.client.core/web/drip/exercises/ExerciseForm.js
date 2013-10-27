@@ -363,14 +363,16 @@ define(["dojo/_base/declare",
 					// 只有当有内容时，才加入进来
 					var val = widget.get("value");
 					if(string.trim(val) != ""){
+						// 如果在内容两边保留了空格，则不要删除
 						data.exercise.options.push({content: val});
 					}
 				});
 			}
 			debugger;
 			var answer = {};
-			if(this.tblOption){
+			if(this._exerciseType === classCode.ExerciseType.SINGLE_OPTION || this.exerciseType === classCode.ExerciseType.MULTI_OPTION){
 				var answerDetail = [];
+				// 选择题
 				query("[name="+this._optionName+"]:checked", this.tblOption).forEach(function(inputEl, index){
 					console.log(inputEl, index);
 					answerDetail.push({seq: inputEl.value});
@@ -379,10 +381,16 @@ define(["dojo/_base/declare",
 				if(answerDetail.length > 0){
 					answer.detail = answerDetail;
 				}
+			}else if(this._exerciseType == classCode.ExerciseType.ESSAY_QUESTION){
+				var content = this.answerEditor.get("value");
+				if(string.trim(content) != ""){
+					// 如果在内容两边有空格，则不要删除
+					answer.detail = [{content: content}];
+				}
 			}
 			
 			var guide = this.guideEditor.get("value");
-			if(guide!= null && guide.length > 0){
+			if(guide != null && guide.length > 0){
 				answer.guide = guide;
 			}
 			if(answer.detail || answer.guide){

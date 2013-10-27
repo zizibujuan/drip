@@ -3,6 +3,7 @@ package com.zizibujuan.drip.server.dao.mysql;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 
 import com.zizibujuan.drip.server.dao.HistAnswerDao;
@@ -64,7 +65,11 @@ public class HistAnswerDaoImpl implements HistAnswerDao {
 				public void setValues(PreparedStatement ps, int index) throws SQLException {
 					AnswerDetail detail = details.get(index);
 					ps.setLong(1, finalHistAnswerId);
-					ps.setLong(2, detail.getOptionId());
+					if(detail.getOptionId() == null){
+						ps.setNull(2, Types.INTEGER);
+					}else{
+						ps.setLong(2, detail.getOptionId());
+					}
 					ps.setString(3, detail.getContent());
 				}
 				
