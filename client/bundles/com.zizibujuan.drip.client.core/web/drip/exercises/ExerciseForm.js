@@ -48,7 +48,7 @@ define(["dojo/_base/declare",
 	
 	return declare("drip.exercises.ExerciseForm", [_WidgetBase], {
 		// summary:
-		//		数据
+		//		数据, 如果用户输入了答案，才提供answer的值
 		//		exercise
 		//			exerciseType:
 		//			content:
@@ -56,7 +56,7 @@ define(["dojo/_base/declare",
 		//		answer
 		//			guide:
 		//			answers:[]
-		data:{exercise: {}, answer: {}},
+		data:{exercise: {}},
 		
 		optionLength: 4,
 		
@@ -367,6 +367,7 @@ define(["dojo/_base/declare",
 					}
 				});
 			}
+			debugger;
 			var answer = {};
 			if(this.tblOption){
 				var answerDetail = [];
