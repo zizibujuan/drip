@@ -67,7 +67,7 @@ define(["dojo/_base/declare",
 			this._createExercise(exerciseInfo);
 			// 针对不同的题型，有不同的渲染方式
 			
-			var exerType = exerciseInfo.exerType;
+			var exerType = exerciseInfo.exerciseType;
 			var answerInfo = this.data.answer;
 			if(answerInfo){
 				if(this._isOptionExercise(exerType)){
@@ -75,13 +75,15 @@ define(["dojo/_base/declare",
 					array.forEach(answerInfo.detail, lang.hitch(this,this._setOptionAnswer));
 					// 即使是选择题，也要在答案面板中回答
 					
-					var answerDiv = this.answerDiv = domConstruct.create("div",{"class":"answer"}, this.exerciseNode,"after");
+					var answerDiv = this.answerDiv = domConstruct.create("div",{"class":"answer"}, this.exerciseNode);
 					if(this._optionLabels.length > 0){
 						answerDiv.innerHTML = "答案是："+"<span>"+ this._optionLabels.join(",") +"</span>";
 					}else{
 						answerDiv.innerHTML = "答案是："+"<span>您还没有作答。	</span>";
 					}
-					
+				}else if(exerType == classCode.ExerciseType.ESSAY_QUESTION){
+					var answerDiv = this.answerDiv = domConstruct.create("div",{"class":"answer"}, this.exerciseNode);
+					answerDiv.innerHTML = "答案:" + dataUtil.xmlStringToHtml(answerInfo.detail[0].content);
 				}
 				// 如果用户为该题添加了习题解析，则显示出来，如果没有则不显示
 				var guide = answerInfo.guide;
