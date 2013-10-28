@@ -24,24 +24,26 @@ define(["dojo/_base/declare",
         		classCode){
 	
 	var MiniCardBody = declare("drip.MiniCardBody",[_WidgetBase,_TemplatedMixin],{
-		templateString:miniCardTemplate,
+		
+		templateString: miniCardTemplate,
+		
 		postCreate: function(){
 			this.inherited(arguments);
 		},
 		
-		update: function(digitalId){
+		update: function(userId){
 			// summary:
 			//		更新用户信息
-			// digitalId:[String]
-			//		用户数字帐号
+			// userId:[Long]
+			//		用户标识
 			
 			// 注意返回deferred对象
-			return xhr("/users/"+digitalId,{handleAs:"json"}).then(lang.hitch(this,function(userInfo){
+			return xhr("/users/" + userId,{handleAs:"json"}).then(lang.hitch(this,function(userInfo){
 				// 设置用户名片
 				debugger;
 				console.log("userInfo:", userInfo);
-				var userLinkSubfix = userInfo.id+"?mapUserId="+userInfo.mapUserId;
-				var displayName = userInfo.nickName || "";
+				var userLinkSubfix = userInfo.id;
+				var displayName = userInfo.loginName || userInfo.nickName;
 				var userActionLink = "/actions/"+ userLinkSubfix
 				
 				this.userImgLinkNode.href =  userActionLink;
@@ -61,20 +63,20 @@ define(["dojo/_base/declare",
 					this.userAddrNode.innerHTML =  "";
 				}
 				
-				
+				var statistics = userInfo.statistics;
 				this.followNode.href = "/follows/"+userLinkSubfix;
 				// 在后面查找text节点，如果没有则添加
-				this._appendCount(this.followNode, userInfo.followCount||0);
+				this._appendCount(this.followNode, statistics.followCount || 0);
 				
 				this.fanNode.href = "/fans/"+userLinkSubfix;
-				this._appendCount(this.fanNode, userInfo.fanCount||0);
+				this._appendCount(this.fanNode, statistics.fanCount || 0);
 				
 				// FIXME：链接冲突。
 				this.exerciseNode.href = "/exercises/"+userLinkSubfix;
-				this._appendCount(this.exerciseNode, userInfo.exerCount||0);
+				this._appendCount(this.exerciseNode, statistics.exerPublishCount || 0);
 				
 				this.answerNode.href = "/answers/"+userLinkSubfix;
-				this._appendCount(this.answerNode, userInfo.answerCount||0);
+				this._appendCount(this.answerNode, statistics.answerCount || 0);
 				
 				this.introNode.innerHTML = userInfo.introduce || "";
 				

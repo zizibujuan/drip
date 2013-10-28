@@ -234,13 +234,14 @@ define(["dojo/_base/declare",
 				this._showAnswerArea(false);
 			}));
 			console.log("activity node data:",this.data);
-			var digitalId = this.data.userInfo.digitalId;
+			debugger;
+			var watchUserId = this.data.userInfo.userId;
 			// 为头像和用户名绑定mouseover事件
 			on(this.userLinkNode,"mouseover", lang.hitch(this, function(e){
-				this.miniCard.show(e.target, digitalId);
+				this.miniCard.show(e.target, watchUserId);
 			}));
 			on(this.userInfo,"mouseover", lang.hitch(this, function(e){
-				this.miniCard.show(e.target, digitalId);
+				this.miniCard.show(e.target, watchUserId);
 			}));
 			
 			// TODO：如果鼠标往弹出面板的方向移动，则不要关闭弹出面板，如何实现呢？

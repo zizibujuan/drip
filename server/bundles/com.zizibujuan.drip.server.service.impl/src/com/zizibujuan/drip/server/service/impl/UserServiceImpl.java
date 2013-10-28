@@ -123,7 +123,7 @@ public class UserServiceImpl implements UserService {
 		setAvatars(userInfo);
 		return userInfo;
 	}
-	
+
 	@Override
 	public void active(Long userId) {
 		userDao.active(userId);
@@ -151,30 +151,6 @@ public class UserServiceImpl implements UserService {
 		return userInfo;
 	}	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	
-	private UserAttributesDao userAttributesDao;
-	private UserAvatarDao userAvatarDao;
-	private ConnectUserDao connectUserDao;
-	private ApplicationPropertyService applicationPropertyService;
-	private UserBindDao userBindDao;
-	private UserStatisticsDao userStatisticsDao;
-	
-	
-	
 	// 获取基本信息
 	// 获取统计信息
 	// 获取头像信息
@@ -198,6 +174,29 @@ public class UserServiceImpl implements UserService {
 		userInfo.putAll(avatarInfo);
 		return userInfo;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	
+	private UserAttributesDao userAttributesDao;
+	private UserAvatarDao userAvatarDao;
+	private ConnectUserDao connectUserDao;
+	private ApplicationPropertyService applicationPropertyService;
+	private UserBindDao userBindDao;
+	private UserStatisticsDao userStatisticsDao;
+	
+	
+	
 	
 	@Override
 	public Map<String, Object> getSimpleInfo(Long digitalId) {

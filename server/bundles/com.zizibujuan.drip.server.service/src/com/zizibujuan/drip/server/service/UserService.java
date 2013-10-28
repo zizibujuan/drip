@@ -89,12 +89,14 @@ public interface UserService {
 	 UserInfo getByToken(String token);
 	
 	/**
-	 * 根据登录名获取用户的基本信息
+	 * 根据登录名获取用户的基本信息。
+	 * 这个方法不是通用的，因为获取不到第三方网站用户的登录名
 	 * 
 	 * @param loginName 登录名
 	 * @return 用户的基本信息，如果没有查到，返回null
 	 */
 	UserInfo getByLoginName(String loginName);
+
 	
 	/**
 	 * 根据confirmKey值获取用户的基本信息，其中不包含用户头像信息，主要是通过邮件激活帐号时，
@@ -131,7 +133,46 @@ public interface UserService {
 	 */
 	UserInfo login(Long userId);
 	
-	
+	/**
+	 * 获取可以公开的用户信息，这些信息会在其他用户的页面上显示，剔除掉了用户的隐私信息。
+	 * 因为用户信息存储在多个表中，这里将一些基本的可公开的用户信息组合在一起。<br/>
+	 * 返回的信息包含三类信息:
+	 * <ul>
+	 * 	<li>基本信息</li>
+	 * 	<li>统计信息</li>
+	 *  <li>头像信息</li>
+	 * </ul>
+	 * 
+	 * @param userId 本网站为本网站用户产生的全局用户标识
+	 * @return 可以公开的用户信息。如果系统中存在该用户信息则返回，否则返回空的map对象。
+	 * <pre>
+	 * 	map结构为：
+	 * 		userId: 本网站用户标识
+	 * 		nickName: 用户昵称
+	 * 		loginName: 登录名
+	 * 		digitalId: 数字帐号，暂时没有启用。
+	 * 		sex: 性别代码
+	 * 		siteId:网站标识
+	 * 		homeCityCode:家乡所在地代码
+	 * 		homeCity：家乡所在地
+	 * 			country：国家
+	 * 			province：省
+	 * 			city：市
+	 * 			county：县
+	 * 		statistics
+	 * 			fanCount：粉丝数
+	 * 			followCount: 关注人数
+	 * 			//exerDraftCount： 习题草稿数
+	 * 			exerPublishCount：发布的习题数
+	 * 			answerCount： 习题总数 = 习题草稿数+发布的习题数
+	 * 
+	 * 		smallImageUrl: 小头像
+	 * 		largeImageUrl: 
+	 * 		largerImageUrl:
+	 * 		xLargeImageUrl:
+	 * </pre>
+	 */
+	Map<String, Object> getPublicInfo(Long userId);
 	
 	
 	
@@ -161,46 +202,6 @@ public interface UserService {
 	 */
 	Map<String,Object> syncUserInfo(Map<String, Object> userInfo);
 
-	/**
-	 * 获取可以公开的用户信息，这些信息会在其他用户的页面上显示，剔除掉了用户的隐私信息。
-	 * 因为用户信息存储在多个表中，这里将一些基本的可公开的用户信息组合在一起。<br/>
-	 * 返回的信息包含三类信息:
-	 * <ul>
-	 * 	<li>基本信息</li>
-	 * 	<li>统计信息</li>
-	 *  <li>头像信息</li>
-	 * </ul>
-	 * 
-	 * @param userId 本网站为本网站用户产生的全局用户标识
-	 * @return 可以公开的用户信息。如果系统中存在该用户信息则返回，否则返回空的map对象。
-	 * <pre>
-	 * 	map结构为：
-	 * 		userId: 本网站用户标识
-	 * 		nickName: 用户昵称
-	 * 		loginName: 登录名
-	 * 		digitalId: 为本网站用户分配的数字帐号,任何来自第三方网站的用户，本网站都会分配一个数字帐号。
-	 * 		sex: 性别代码
-	 * 		siteId:网站标识
-	 * 		homeCityCode:家乡所在地代码
-	 * 		homeCity：家乡所在地
-	 * 			country：国家
-	 * 			province：省
-	 * 			city：市
-	 * 			county：县
-	 * 
-	 * 		fanCount：粉丝数
-	 * 		followCount: 关注人数
-	 * 		exerDraftCount： 习题草稿数
-	 * 		exerPublishCount：发布的习题数
-	 * 		answerCount： 习题总数 = 习题草稿数+发布的习题数
-	 * 
-	 * 		smallImageUrl: 小头像
-	 * 		largeImageUrl: 
-	 * 		largerImageUrl:
-	 * 		xLargeImageUrl:
-	 * </pre>
-	 */
-	Map<String, Object> getPublicInfo(Long userId);
 
 	/**
 	 * 获取简化的用户信息
