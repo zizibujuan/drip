@@ -16,6 +16,7 @@ define(["dojo/_base/declare",
         "dojo/string",
         "mathEditor/Editor",
         "drip/classCode",
+        "drip/tip",
         "dojox/form/Uploader",
         "drip/widget/form/uploader/FileList"], function(
         		declare,
@@ -36,6 +37,7 @@ define(["dojo/_base/declare",
         		string,
         		Editor,
         		classCode,
+        		tip,
         		Uploader,
         		FileList){
 	
@@ -425,10 +427,12 @@ define(["dojo/_base/declare",
 				this.showErrors();
 				return;
 			}
+			// icon-refresh icon-spin icon-large
 			// 失效保存按钮，防止重复提交
 			domAttr.set(this.btnSave,"disabled", true);
 			xhr("/exercises/",{method:"POST", data:JSON.stringify(data)}).then(lang.hitch(this,function(response){
 				// 保存成功，在界面上清除用户输入数据，使处于新增状态。在页面给出保存成功的提示，在按钮旁边显示。
+				tip.ok("保存成功！", this.btnSave, "before");
 				this._reset();
 				domAttr.set(this.btnSave,"disabled", false);
 			}),lang.hitch(this, function(error){

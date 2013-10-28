@@ -7,11 +7,19 @@ define(["dojo/_base/window",
 	
 	var tip = {};
 	
-	tip.quiet = function(msg){
-		var tipDiv = domConstruct.create("div");
+	tip.ok = function(msg, dom, position){
+		var tipDiv = domConstruct.create("span", {style:{color:"green"}}, dom, position);
+		tipDiv.innerHTML = "<i class='icon-ok'></i> " + msg;
+		coreFx.wipeOut({
+			node: tipDiv,
+			duration: 1000,
+			onEnd: function(){
+				domConstruct.destroy(tipDiv);
+			}
+		}).play();
 	};
 	
-	tip.block = function(msg){
+	tip.error = function(msg){
 		
 	};
 	
