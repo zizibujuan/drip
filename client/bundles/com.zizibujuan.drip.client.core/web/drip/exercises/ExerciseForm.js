@@ -501,7 +501,7 @@ define(["dojo/_base/declare",
 		},
 		
 		_reset: function(){
-			this.data = {};
+			this.data = {exercise: {}};
 			this.clearErrors();
 			this.exerContentEditor.set("value", "");
 			this.answerEditor.set("value", "");
