@@ -97,7 +97,7 @@ define(["dojo/_base/declare",
 			
 			// 创建保存按钮
 			var actionContainer = domConstruct.create("div",{"class":"drip_form_actions"},this.leftDiv);
-			var btnSave = this.btnSave = domConstruct.place("<button class=\"minibutton primary\"><i class=\"icon-save icon-large\"></i> 保存</button>", actionContainer);
+			var btnSave = this.btnSave = domConstruct.place("<button class=\"button primary\"><i class=\"icon-save icon-large\"></i> 保存</button>", actionContainer);
 			on(btnSave,"click",lang.hitch(this, this.doSave));
 		},
 		

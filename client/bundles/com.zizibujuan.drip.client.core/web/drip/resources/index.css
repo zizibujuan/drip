@@ -328,6 +328,17 @@ img{
 	box-shadow: none;
 }
 
+.button:disabled, .button:disabled:hover, .button.disabled, .button.disabled:hover, .minibutton:disabled, .minibutton:disabled:hover, .minibutton.disabled, .minibutton.disabled:hover {
+opacity: .5;
+color: #666;
+text-shadow: 0 1px 0 rgba(255,255,255,0.9);
+background-image: none;
+background-color: #e5e5e5;
+border-color: #c5c5c5;
+cursor: default;
+box-shadow: none;
+}
+
 
 .button.primary, .minibutton.primary {
 	color: #fff;
@@ -348,6 +359,36 @@ img{
 	border-color: #686868;
 	box-shadow: inset 0 3px 5px rgba(0,0,0,0.15);
 }
+
+.button.primary:disabled, 
+.button.primary:disabled:hover, 
+.button.primary.disabled, 
+.button.primary.disabled:hover, 
+.minibutton.primary:disabled, 
+.minibutton.primary:disabled:hover, 
+.minibutton.primary.disabled, 
+.minibutton.primary.disabled:hover {
+	color: #fff;
+	text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+	background-color: #60b044;
+	background-image: -moz-linear-gradient(#8add6d, #60b044);
+	background-image: -webkit-linear-gradient(#8add6d, #60b044);
+	background-image: linear-gradient(#8add6d, #60b044);
+	background-repeat: repeat-x;
+	border-color: #74bb5a #74bb5a #509338;
+}
+
+.button.primary:hover, 
+.minibutton.primary:hover {
+	color: #fff;
+	background-color: #569e3d;
+	background-image: -moz-linear-gradient(#79d858, #569e3d);
+	background-image: -webkit-linear-gradient(#79d858, #569e3d);
+	background-image: linear-gradient(#79d858, #569e3d);
+	background-repeat: repeat-x;
+	border-color: #4a993e;
+}
+
 
 /* 个人首页样式 */
 .drip_body{
@@ -563,6 +604,8 @@ margin-left: 25px;
 
 .drip_form_actions{
 	margin-top: 10px;
+	text-align: right;
+	margin-right: 40px; /*应该统一设置父的padding-right*/
 }
 
 .drip_form_actions input{
