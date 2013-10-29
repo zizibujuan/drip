@@ -1,5 +1,7 @@
 package com.zizibujuan.drip.server.model;
 
+import java.util.Date;
+
 
 /**
  * 用户信息
@@ -24,6 +26,10 @@ public class UserInfo {
 	private String largeImageUrl;
 	private String largerImageUrl;
 	private String xLargeImageUrl;
+	
+	private Date birthday;
+	private String homeCityCode;
+	private String homeCity;
 	
 	// 这两个字段是用户登录的时候赋值的
 	private int siteId;
@@ -207,6 +213,30 @@ public class UserInfo {
 
 	public void setxLargeImageUrl(String xLargeImageUrl) {
 		this.xLargeImageUrl = xLargeImageUrl;
+	}
+
+	public Date getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
+
+	public String getHomeCityCode() {
+		return homeCityCode;
+	}
+
+	public void setHomeCityCode(String homeCityCode) {
+		this.homeCityCode = homeCityCode;
+	}
+
+	public String getHomeCity() {
+		return homeCity;
+	}
+
+	public void setHomeCity(String homeCity) {
+		this.homeCity = homeCity;
 	}
 
 	/**

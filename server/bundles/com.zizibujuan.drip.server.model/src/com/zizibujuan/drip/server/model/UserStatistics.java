@@ -11,6 +11,7 @@ public class UserStatistics {
 	private Long id;
 	private Long fanCount;
 	private Long followCount;
+	@Deprecated
 	private Long exerDraftCount;
 	private Long exerPublishCount;
 	private Long answerCount;

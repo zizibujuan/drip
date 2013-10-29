@@ -19,13 +19,9 @@ import com.qq.connect.javabeans.qzone.UserInfoBean;
 import com.qq.connect.oauth.Oauth;
 import com.zizibujuan.drip.server.model.UserBindInfo;
 import com.zizibujuan.drip.server.service.UserBindService;
-import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.servlet.ServiceHolder;
-import com.zizibujuan.drip.server.util.CookieConstants;
 import com.zizibujuan.drip.server.util.Gender;
 import com.zizibujuan.drip.server.util.OAuthConstants;
-import com.zizibujuan.drip.server.util.servlet.CookieUtil;
-import com.zizibujuan.drip.server.util.servlet.UserSession;
 
 /**
  * qq用户登录
@@ -36,21 +32,15 @@ import com.zizibujuan.drip.server.util.servlet.UserSession;
 public class QQUserConnect extends UserConnect {
 	
 	private static final Logger logger = LoggerFactory.getLogger(QQUserConnect.class);
-	private UserService userService = ServiceHolder.getDefault().getUserService();
 	private UserBindService userBindService = ServiceHolder.getDefault().getUserBindService();
 
 	@Override
-	protected void toLoginPage(HttpServletRequest req, HttpServletResponse resp) {
+	protected void toLoginPage(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		try {
         	resp.sendRedirect(new Oauth().getAuthorizeURL(req));
         } catch (QQConnectException e) {
             logger.error("获取qq登录页面失败", e);
-            
-        } catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+        }
 	}
 
 	@Override
@@ -114,22 +104,7 @@ public class QQUserConnect extends UserConnect {
 				dripUserId = userBindInfo.getUserId();
 			}
 			
-			// FIXME:注意，暂时不支持第三方用户自动登录
-			// 是不是应该在每次登录时，都记录下token和过期时间呢?
-			com.zizibujuan.drip.server.model.UserInfo dripUserInfo = userService.login(dripUserId);
-			UserSession.setUser(req, dripUserInfo);
-			String userName = null;
-			if(dripUserInfo.getLoginName() != null){
-				userName = dripUserInfo.getLoginName();
-			}else{
-				userName = dripUserInfo.getNickName();
-			}
-			CookieUtil.set(resp, CookieConstants.LOGIN_NAME, userName, null, 365*24*60*60/*一年有效*/);
-			CookieUtil.set(resp, CookieConstants.LOGGED_IN, "1", null, -1);
-			// 防止同一台电脑先使用drip用户登录，然后使用qq用户登录，要删除本网站的token
-			// 这样就不会使用其他人的帐号自动登录
-			// 同时也可以设置第三方网站的token，这样可以使用这些token自动登录
-			CookieUtil.remove(req, resp, CookieConstants.ZZBJ_USER_TOKEN);
+			internLogin(req, resp, dripUserId);
 		} catch (QQConnectException e) {
 			e.printStackTrace();
 		}

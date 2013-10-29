@@ -19,9 +19,8 @@ import weibo4j.model.WeiboException;
 
 import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.UserService;
-import com.zizibujuan.drip.server.servlet.connect.Oauth2Exception;
 import com.zizibujuan.drip.server.servlet.connect.QQUserConnect;
-import com.zizibujuan.drip.server.servlet.connect.RenrenHelper;
+import com.zizibujuan.drip.server.servlet.connect.RenrenUserConnect;
 import com.zizibujuan.drip.server.servlet.connect.UserConnect;
 import com.zizibujuan.drip.server.util.CookieConstants;
 import com.zizibujuan.drip.server.util.OAuthConstants;
@@ -71,21 +70,13 @@ public class LoginServlet extends BaseServlet {
 				return;
 			}
 			
-			
-			
 			if (site.equals("renren")) {
-				String code = req.getParameter("code");
-				if(code != null && !code.isEmpty()){
-					try{
-						RenrenHelper.handleOauthReturnAndLogin(req, resp, code);
-					}catch(Oauth2Exception e){
-						// TODO：处理解析失败的返回值 displayError
-					}
-				}else{
-					RenrenHelper.redirectToOauthProvider(req, resp);
-				}
+				connect = new RenrenUserConnect();
+				connect.manager(req, resp);
 				return;
-			} else if(site.equals("sinaWeibo")){
+			}
+			
+			if(site.equals("sinaWeibo")){
 				String code = req.getParameter("code");
 				if(code != null && !code.isEmpty()){
 					processSinaWeiboLogin(req, resp, code);

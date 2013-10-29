@@ -1,18 +1,18 @@
 echo off
 
-BASEDIR=$(cd $(dirname $0) && pwd)
-#dev source dir
-DEVDIR="/home/jzw/git/private/aliyun/com.zizibujuan.drip/client/bundles/"
+set BASEDIR=D:\git\repo\com.zizibujuan.drip\client\bundles\com.zizibujuan.drip.client.release
+rem dev source dir
+DEVDIR=D:\git\repo\com.zizibujuan.drip\client\bundles
 
-SRCDIR="$BASEDIR/src"
-TOOLSDIR="$SRCDIR/util/buildscripts"
-DISTDIR="$BASEDIR/release"
-#LOADERMID=""
-#LOADERCONF=""
-PROFILE="$BASEDIR/profiles/drip.profile.js"
+set SRCDIR=%BASEDIR%\src
+set TOOLSDIR=%SRCDIR%\util\buildscripts
+set DISTDIR=%BASEDIR%\release
+rem LOADERMID=""
+rem LOADERCONF=""
+set PROFILE=%BASEDIR%\profiles\drip.profile.js"
 
 
-echo -n "copy files to $SRCDIR..."
+echo "copy files to %SRCDIR%..."
 cd $BASEDIR
 #cp $DEVDIR/com.zizibujuan.drip.client.core/web/drip/index.html $DISTDIR/index.html
 cp $DEVDIR/com.zizibujuan.drip.client.core/web/favicon.ico $DISTDIR/favicon.ico

@@ -25,7 +25,7 @@ public class UserBindServiceImpl implements UserBindService {
 	}
 
 	@Override
-	public UserBindInfo getUserMapperInfo(int siteId, int openId) {
+	public UserBindInfo get(int siteId, long openId) {
 		String sUserId = String.valueOf(openId);
 		return userBindDao.get(siteId, sUserId);
 	}

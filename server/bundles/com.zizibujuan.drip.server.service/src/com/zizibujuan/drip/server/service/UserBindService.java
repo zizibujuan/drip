@@ -29,6 +29,6 @@ public interface UserBindService {
 	 * 所以这里一律使用字符串类型。
 	 * @return 本网站用户与第三方网站用户映射信息
 	 */
-	UserBindInfo getUserMapperInfo(int siteId, int openId);
+	UserBindInfo get(int siteId, long openId);
 
 }
