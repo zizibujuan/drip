@@ -279,7 +279,7 @@ define(["dojo/_base/declare",
 			}
 			var editor = new Editor(params);
 			editor.placeAt(parentNode);
-			editor.startup();
+			editor.startup(); // 
 			this._editors.push(editor);
 			return editor;
 		},
