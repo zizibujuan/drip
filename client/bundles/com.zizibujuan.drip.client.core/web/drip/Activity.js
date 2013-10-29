@@ -133,6 +133,15 @@ define(["dojo/_base/declare",
 				
 				
 				var doAnswerPane = this.doAnswerPane = domConstruct.create("div",null, this.exerciseNode, "after");
+				
+				var answerEditor = null;
+				if(exerType == classCode.ExerciseType.ESSAY_QUESTION){
+					var answerDiv = domConstruct.create("div",{"class":"answer"}, doAnswerPane);
+					var answerLabel = domConstruct.create("div",{innerHTML:"答案"}, answerDiv);
+					answerEditor = new Editor({rows: 5, width: 650});
+					answerEditor.placeAt(answerDiv);
+					answerEditor.startup();
+				}
 				var guideDiv = domConstruct.create("div",{"class":"guide"}, doAnswerPane);
 				var guideLabel = domConstruct.create("div",{innerHTML:"习题解析"},guideDiv);
 				var editor = new Editor({rows:5, width:650});
@@ -227,6 +236,10 @@ define(["dojo/_base/declare",
 					}
 					if(data.detail && data.detail.length > 0){
 						array.forEach(data.detail, lang.hitch(this,this._setOptionAnswer));
+					}
+					if(answerEditor){
+						// 处理问答题逻辑
+						answerEditor.set("value", data.detail[0].content);
 					}
 					
 				}));
