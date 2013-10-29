@@ -23,5 +23,9 @@ define({
 	site:{
 		"1":"孜孜不倦",
 		"101":"人人网"
+	},
+	
+	avatar:{
+		smallImageUrl: "/drip/resources/images/profile_50_50.gif"
 	}
 });

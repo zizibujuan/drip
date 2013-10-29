@@ -307,22 +307,20 @@ define(["dojo/_base/declare",
 		_showActionLabel: function(){
 			var data = this.data;
 			console.log("单条活动记录：",data);
-			
-			var userName = data.userInfo.nickName;
+			var userName = data.userInfo.nickName || data.userInfo.loginName;
 			this.userInfo.innerHTML = userName;
 			this.action.innerHTML = classCode.ActionTypeMap[data.actionType];
 			this.time.innerHTML = prettyDate.prettyForNumber(data.createTime);
 			var _createTime = new Date(data.createTime);
 			this.time.title = locale.format(_createTime, {
 				selector: "date", 
-				//datePattern: "yyyy-MM-d h:m:s.SSS"
 				formatLength: "full"
 			});
 			this.time.datetime = data.createTime;
 			// 用户头像
 			// TODO:每天晚上到人人上同步一下用户信息
 			//this.userLinkNode.href = "/users/"+data.userId;
-			this.userImageNode.src = data.userInfo.smallImageUrl || "/drip/resources/images/profile_50_50.gif";
+			this.userImageNode.src = data.userInfo.smallImageUrl || classCode.avatar.smallImageUrl;
 		},
 		
 		_createExercise: function(exerciseInfo){
