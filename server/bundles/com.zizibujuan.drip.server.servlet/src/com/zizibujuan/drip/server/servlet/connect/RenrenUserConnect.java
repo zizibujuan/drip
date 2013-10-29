@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.renren.api.AuthorizationException;
 import com.renren.api.RennClient;
 import com.renren.api.RennException;
+import com.renren.api.service.BasicInformation;
 import com.renren.api.service.HomeTown;
 import com.renren.api.service.Image;
 import com.renren.api.service.ImageSize;
@@ -93,28 +94,35 @@ public class RenrenUserConnect extends UserConnect {
 			
 			UserInfo dripUser = new UserInfo();
 			dripUser.setNickName(user.getName());
-			Sex sex = user.getBasicInformation().getSex();
-			String sexString = null;
-			if(sex.equals(Sex.MALE)){
-				sexString = Gender.MALE;
-			}else if(sex.equals(Sex.FEMALE)){
-				sexString = Gender.FEMALE;
-			}else{
-				sexString = Gender.UNKNOWN;
+			BasicInformation basicInformation = user.getBasicInformation();
+			if(basicInformation != null){
+				Sex sex = basicInformation.getSex();
+				String sexString = null;
+				if(sex == null){
+					sexString = Gender.UNKNOWN;
+				}else if(sex.equals(Sex.MALE)){
+					sexString = Gender.MALE;
+				}else if(sex.equals(Sex.FEMALE)){
+					sexString = Gender.FEMALE;
+				}else{
+					sexString = Gender.UNKNOWN;
+				}
+				dripUser.setSex(sexString);
+				
+				String birthday = basicInformation.getBirthday();
+				dripUser.setBirthday(convertBirthdayOfRenren(birthday));
+				HomeTown homeTown = basicInformation.getHomeTown();
+				if(homeTown != null){
+					dripUser.setHomeCityCode(getLocalCityCodeByRenren(null, homeTown.getProvince(), homeTown.getCity()));
+					String homeCity = homeTown.getProvince()+ " " +homeTown.getCity();
+					if(homeCity.trim().isEmpty()){
+						homeCity = null;
+					}else{
+						homeCity = "中国 " + homeCity;
+					}
+					dripUser.setHomeCity(homeCity);
+				}
 			}
-			dripUser.setSex(sexString);
-			
-			String birthday = user.getBasicInformation().getBirthday();
-			dripUser.setBirthday(convertBirthdayOfRenren(birthday));
-			HomeTown homeTown = user.getBasicInformation().getHomeTown();
-			dripUser.setHomeCityCode(getLocalCityCodeByRenren(null, homeTown.getProvince(), homeTown.getCity()));
-			String homeCity = homeTown.getProvince()+ " " +homeTown.getCity();
-			if(homeCity.trim().isEmpty()){
-				homeCity = null;
-			}else{
-				homeCity = "中国 " + homeCity;
-			}
-			dripUser.setHomeCity(homeCity);
 
 			List<Avatar> avatars = new ArrayList<Avatar>();
 			List<Image> rennAvatars = user.getAvatar();
