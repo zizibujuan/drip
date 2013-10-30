@@ -7,6 +7,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.core.runtime.IPath;
+
 import com.zizibujuan.drip.server.model.Answer;
 import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.AnswerService;
@@ -53,16 +55,14 @@ public class AnswerServlet extends BaseServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		traceRequest(req);
-		
-		String pathInfo = req.getPathInfo();
-		if(pathInfo == null || pathInfo.equals("/")){
-			Map<String,Object> data = RequestUtil.fromJsonObject(req);
+		IPath path = getPath(req);
+		if(path.segmentCount() == 0){
+			Answer data = RequestUtil.fromJsonObject(req, Answer.class);
 			// FIXME:修改这段逻辑，不再使用映射标识
 			UserInfo userInfo = (UserInfo) UserSession.getUser(req);
 			Long userId = userInfo.getId();
-			Long localUserId = userId;
-			Long mapUserId = userId;
-			answerService.save(localUserId,mapUserId, data);
+			data.setCreateUserId(userId);
+			answerService.insert(data);
 			return;
 		}
 		super.doPost(req, resp);

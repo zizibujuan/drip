@@ -74,6 +74,7 @@ public interface AnswerDao {
 	 * 			optionId：选项标识
 	 * 			content: 答案内容
 	 * </pre>
+	 * @deprecated
 	 */
 	void save(Long localGlobalUserId, Long connectGlobalUserId, Map<String, Object> answerInfo);
 	
@@ -82,8 +83,17 @@ public interface AnswerDao {
 	 * 
 	 * @param con 数据库链接
 	 * @param answer 答案信息
+	 * @return 答案标识
 	 * @throws SQLException 
 	 */
-	void save(Connection con, Answer answer) throws SQLException;
+	Long insert(Connection con, Answer answer) throws SQLException;
+	
+	/**
+	 * 新增习题答案和习题解析
+	 * 
+	 * @param answer 答案信息
+	 * @return 答案标识
+	 */
+	Long insert(Answer answer);
 
 }

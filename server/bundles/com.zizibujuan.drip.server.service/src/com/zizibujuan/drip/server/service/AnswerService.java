@@ -29,19 +29,11 @@ public interface AnswerService {
 
 	/**
 	 * 新增习题答案和习题解析
-	 * @param localUserId 本网站用户标识
-	 * @param mapUserId 与第三方网站用户映射的关联标识
-	 * @param answerInfo 答案信息
-	 * <pre>
-	 * map结构：
-	 * 		exerId: 习题标识
-	 * 		guide: 习题解析
-	 * 		detail：答案详情 Array
-	 * 			optionId：选项标识
-	 * 			content: 答案内容
-	 * </pre>
+	 * 
+	 * @param answer 答案信息
+	 * @return 答案标识
 	 */
-	void save(Long localUserId, Long mapUserId, Map<String, Object> answerInfo);
+	Long insert(Answer answer);
 
 	/**
 	 * 编辑习题答案和习题解析

@@ -10,6 +10,7 @@ define(["dojo/_base/declare",
         "dojo/query",
         "dojo/on",
         "dojo/json",
+        "dojo/string",
         "dojo/date/locale",
         "dijit/_WidgetBase",
         "dijit/_TemplatedMixin",
@@ -33,6 +34,7 @@ define(["dojo/_base/declare",
         		query,
         		on,
         		JSON,
+        		string,
         		locale,
         		_WidgetBase,
         		_TemplatedMixin,
@@ -95,7 +97,7 @@ define(["dojo/_base/declare",
 					// 添加习题解析，只读的
 					var guideHtml = dataUtil.xmlStringToHtml(guide);
 					var guideContainerDiv = this.guideContainerDiv = domConstruct.create("div",{"class":"guide"}, this.exerciseNode);
-					var guideLabel = domConstruct.create("div",{innerHTML:"习题解析"}, guideContainerDiv);
+					var guideLabel = domConstruct.create("div",{innerHTML:"解析"}, guideContainerDiv);
 					var guideContentDiv = domConstruct.create("div",{innerHTML:guideHtml}, guideContainerDiv);
 				}
 			}
@@ -161,7 +163,7 @@ define(["dojo/_base/declare",
 				//btnCancel.placeAt(btnContainer);
 				on(btnSave, "click", lang.hitch(this,function(e){
 					var answerData = {};
-					answerData.exerId = exerciseInfo.id;
+					answerData.exerciseId = exerciseInfo.id;
 					answerData.detail = [];
 					if(this._isOptionExercise(exerType)){
 						this._getOptionEls().forEach(lang.hitch(this,function(optionEl, index){
@@ -180,7 +182,14 @@ define(["dojo/_base/declare",
 						 	content
 						 	optionId
 						 */
+					}else if(exerType == classCode.ExerciseType.ESSAY_QUESTION){
+						var a = answerEditor.get("value");
+						// 不清除答案两边的空格，只要不是全为空格
+						if(string.trim(a) != ""){
+							answerData.detail.push({content: a});
+						}
 					}
+					
 					// 习题解析
 					var guide = editor.get("value");
 					if(guide != ""){
@@ -231,7 +240,8 @@ define(["dojo/_base/declare",
 				xhr.get("/answers/",{query:{exerId:exerciseId},handleAs:"json"}).then(lang.hitch(this,function(data){
 					this._currentUserAnswer = data;
 					console.log("answer:",data);
-					// 如果已经作答过了，则之前做过的答案显示出来，并标出这是用户何时作答的答案，并提醒用户可以继续完善答案。
+					// 如果已经作答过了，则之前做过的答案显示出来，
+					// 并标出这是用户何时作答的答案，并提醒用户可以继续完善答案。
 					// 如果没有作答，则这里什么也不做。
 					if(data.guide){
 						editor.set("value",data.guide);
@@ -241,8 +251,10 @@ define(["dojo/_base/declare",
 					if(data.detail && data.detail.length > 0){
 						array.forEach(data.detail, lang.hitch(this,this._setOptionAnswer));
 					}
-					if(answerEditor){
-						// 处理问答题逻辑
+					
+					
+					if(exerType == classCode.ExerciseType.ESSAY_QUESTION && data.detail && data.detail.length == 1){
+						// 如果是问答题，则必有一个answerEditor
 						answerEditor.set("value", data.detail[0].content);
 					}
 					

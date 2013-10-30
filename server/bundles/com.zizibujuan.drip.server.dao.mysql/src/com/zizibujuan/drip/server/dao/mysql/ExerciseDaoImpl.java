@@ -96,7 +96,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 					}
 				}
 				// 准备好数据之后，再保存
-				answerDao.save(con, answer);
+				answerDao.insert(con, answer);
 			}
 			
 			con.commit();

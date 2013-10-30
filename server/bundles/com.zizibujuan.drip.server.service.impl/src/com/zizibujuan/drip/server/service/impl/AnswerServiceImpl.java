@@ -26,8 +26,8 @@ public class AnswerServiceImpl implements AnswerService {
 	}
 
 	@Override
-	public void save(Long userId, Long mapUserId, Map<String, Object> answerInfo) {
-		answerDao.save(userId, mapUserId, answerInfo);
+	public Long insert(Answer answer) {
+		return answerDao.insert(answer);
 	}
 
 	@Override

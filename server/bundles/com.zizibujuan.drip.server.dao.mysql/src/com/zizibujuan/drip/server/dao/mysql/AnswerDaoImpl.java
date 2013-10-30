@@ -198,7 +198,7 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 			+ "VALUES "
 			+ "(?,?,?)";
 	@Override
-	public void save(Connection con, Answer answer) throws SQLException {
+	public Long insert(Connection con, Answer answer) throws SQLException {
 		final Answer finalAnswer = answer;
 		Long answerId = DatabaseUtil.insert(con, SQL_INSERT_ANSWER, new PreparedStatementSetter() {
 			
@@ -234,8 +234,28 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 		
 		// TODO：exerciseDao中的插入答案的方法要使用这里的接口。
 		// 保持接口一致。
+		
+		return answerId;
 	}
 
+	@Override
+	public Long insert(Answer answer) {
+		Connection con = null;
+		Long id = null;
+		try {
+			con = getDataSource().getConnection();
+			con.setAutoCommit(false);
+			id = insert(con, answer);
+			con.commit();
+		} catch (SQLException e) {
+			DatabaseUtil.safeRollback(con);
+			throw new DataAccessException(e);
+		}
+		finally{
+			DatabaseUtil.closeConnection(con);
+		}
+		return id;
+	}
 
 	private void addAnswerDetail(Connection con, final Long answerId, final List<AnswerDetail> answerDetails) throws SQLException {
 		DatabaseUtil.batchUpdate(con, SQL_INSERT_ANSWER_DETAIL, new BatchPreparedStatementSetter() {
