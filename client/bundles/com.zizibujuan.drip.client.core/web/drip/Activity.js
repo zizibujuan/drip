@@ -82,8 +82,12 @@ define(["dojo/_base/declare",
 						answerDiv.innerHTML = "答案是："+"<span>您还没有作答。	</span>";
 					}
 				}else if(exerType == classCode.ExerciseType.ESSAY_QUESTION){
-					var answerDiv = this.answerDiv = domConstruct.create("div",{"class":"answer"}, this.exerciseNode);
-					answerDiv.innerHTML = "答案:" + dataUtil.xmlStringToHtml(answerInfo.detail[0].content);
+					// 会出现只录入习题解析，但是没有录入答案的情况
+					// 并且问答题只支持录入一个答案
+					if(answerInfo.detail.length == 1){
+						var answerDiv = this.answerDiv = domConstruct.create("div",{"class":"answer"}, this.exerciseNode);
+						answerDiv.innerHTML = "答案:" + dataUtil.xmlStringToHtml(answerInfo.detail[0].content);
+					}
 				}
 				// 如果用户为该题添加了习题解析，则显示出来，如果没有则不显示
 				var guide = answerInfo.guide;

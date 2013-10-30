@@ -80,7 +80,6 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 			}
 		}, answerId);
 		
-		
 		List<AnswerDetail> detail = DatabaseUtil.query(getDataSource(), SQL_LIST_ANSWER_DETAIL, new PreparedStatementSetter() {
 			@Override
 			public void setValues(PreparedStatement ps) throws SQLException {
