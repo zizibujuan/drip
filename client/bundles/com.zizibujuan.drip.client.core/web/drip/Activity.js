@@ -149,7 +149,7 @@ define(["dojo/_base/declare",
 					answerEditor.startup();
 				}
 				var guideDiv = domConstruct.create("div",{"class":"guide"}, doAnswerPane);
-				var guideLabel = domConstruct.create("div",{innerHTML:"习题解析"},guideDiv);
+				var guideLabel = domConstruct.create("div",{innerHTML:"解析"},guideDiv);
 				var editor = new Editor({rows:5, width:650});
 				editor.placeAt(guideDiv);
 				editor.startup();
@@ -199,7 +199,22 @@ define(["dojo/_base/declare",
 					// 在post中执行新增或更新操作，确保每个人对每道习题的最终答案只有一个。
 					// 但是在答案历史记录中要记录
 					// TODO：保存的时候进行判断，如果answerId已经存在，则执行put;如果不存在，则执行post
-					xhr.post("/answers/",{handleAs:"json",data:JSON.stringify(answerData)}).then(lang.hitch(this,function(response){
+					
+					var method = null;
+					debugger;
+					var target = "/answers/";
+					if(this._currentUserAnswer){
+						method = "PUT";
+						target += this._currentUserAnswer.id;
+					}else{
+						method = "POST";
+					}
+					
+					xhr(target,{
+						method: method, 
+						handleAs:"json",
+						data:JSON.stringify(answerData)
+					}).then(lang.hitch(this,function(response){
 						this._destroyAnswerPane();
 						// TODO：保存成功的时候，要从后台获取回答的次数，然后刷新答案个数
 						this._showAnswerArea(true);
@@ -238,6 +253,12 @@ define(["dojo/_base/declare",
 				
 				// 把加载数据放在最后
 				xhr.get("/answers/",{query:{exerId:exerciseId},handleAs:"json"}).then(lang.hitch(this,function(data){
+					// 这里应该将"null"解析为null
+					if(data == null || data == "null"){
+						// 说明没有获得答案
+						return;
+					}
+					
 					this._currentUserAnswer = data;
 					console.log("answer:",data);
 					// 如果已经作答过了，则之前做过的答案显示出来，

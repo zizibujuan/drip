@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import com.zizibujuan.drip.server.model.Answer;
+import com.zizibujuan.drip.server.model.HistAnswer;
 import com.zizibujuan.drip.server.util.DBAction;
 
 /**
@@ -19,9 +20,12 @@ public interface HistAnswerDao {
 	 * 
 	 * @param con 数据库连接
 	 * @param dbAction 数据库操作类型，参见{@link DBAction}
+	 * @param histExerciseId 历史习题标识
 	 * @param answer 答案信息
 	 * @return 历史记录标识
 	 * @throws SQLException 
 	 */
-	Long insert(Connection con, String dbAction, Answer answer) throws SQLException;
+	Long insert(Connection con, String dbAction, Long histExerciseId, Answer answer) throws SQLException;
+
+	HistAnswer get(Long histAnswerId);
 }

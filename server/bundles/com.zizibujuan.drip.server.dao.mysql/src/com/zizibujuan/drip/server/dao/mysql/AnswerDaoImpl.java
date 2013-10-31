@@ -97,6 +97,7 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 				return d;
 			}
 		});
+		System.out.println(answerId);
 		result.setDetail(detail);
 		return result;
 	}
@@ -115,6 +116,47 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 		//Connection con = null;
 		
 		
+	}
+	
+	private static final String SQL_UPDATE_ANSWER = "UPDATE "
+			+ "DRIP_ANSWER "
+			+ "SET "
+			+ "GUIDE = ?,"
+			+ "UPT_TM = now(),"
+			+ "UPT_USER_ID = ? "
+			+ "WHERE DBID = ?";
+	private static final String SQL_DELETE_ANSWER_DETAIL = "DELETE FROM "
+			+ "DRIP_ANSWER_DETAIL "
+			+ "WHERE "
+			+ "ANSWER_ID = ?";
+	@Override
+	public void update(Long answerId, Answer newAnswer) {
+		// 习题基本信息是更新，习题详情是删除了，重新加入
+		Connection con = null;
+		
+		try {
+			con = getDataSource().getConnection();
+			con.setAutoCommit(false);
+			// 更新答案基本信息，主要是习题解析
+			DatabaseUtil.update(con, SQL_UPDATE_ANSWER, newAnswer.getGuide(), newAnswer.getLastUpdateUserId(), answerId);
+			// 删除之前的答案详情
+			DatabaseUtil.update(con, SQL_DELETE_ANSWER_DETAIL, answerId);
+			// 插入新的答案详情
+			this.addAnswerDetail(con, answerId, newAnswer.getDetail());
+			// 在答案历史和答案详情历史表中插入记录
+			histAnswerDao.insert(con, DBAction.UPDATE, newAnswer);// FIXME:信息缺失不
+			Long userId = newAnswer.getLastUpdateUserId();
+			// 在用户活动中添加活动
+			userStatisticsDao.increaseAnswerCount(con, userId);
+			// 增加用户活动数
+			activityDao.add(con, userId, answerId, ActionType.EDIT_ANSWER, true);
+			con.commit();
+		} catch (SQLException e) {
+			DatabaseUtil.safeRollback(con);
+			throw new DataAccessException(e);
+		}finally{
+			DatabaseUtil.closeConnection(con);
+		}
 	}
 
 
@@ -333,4 +375,5 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 			this.histAnswerDao = null;
 		}
 	}
+	
 }

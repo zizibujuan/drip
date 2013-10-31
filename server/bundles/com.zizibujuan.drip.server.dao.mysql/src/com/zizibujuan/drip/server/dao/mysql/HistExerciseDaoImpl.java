@@ -2,16 +2,21 @@ package com.zizibujuan.drip.server.dao.mysql;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
 import com.zizibujuan.drip.server.dao.HistExerciseDao;
 import com.zizibujuan.drip.server.model.Exercise;
 import com.zizibujuan.drip.server.model.ExerciseOption;
+import com.zizibujuan.drip.server.model.HistExercise;
 import com.zizibujuan.drip.server.util.DBAction;
+import com.zizibujuan.drip.server.util.ExerciseType;
+import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.BatchPreparedStatementSetter;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 import com.zizibujuan.drip.server.util.dao.PreparedStatementSetter;
+import com.zizibujuan.drip.server.util.dao.RowMapper;
 
 /**
  * 记录更新习题的历史的数据访问实现类
@@ -19,7 +24,7 @@ import com.zizibujuan.drip.server.util.dao.PreparedStatementSetter;
  * @author jzw
  * @since 0.0.1
  */
-public class HistExerciseDaoImpl implements HistExerciseDao {
+public class HistExerciseDaoImpl extends AbstractDao implements HistExerciseDao {
 
 	private static final String SQL_INSERT_HIST_EXERCISE = "INSERT INTO "
 			+ "DRIP_HIST_EXERCISE "
@@ -79,6 +84,82 @@ public class HistExerciseDaoImpl implements HistExerciseDao {
 		}
 		
 		return histExerId;
+	}
+	
+	private static final String SQL_GET_HIST_EXERCISE = "SELECT "
+			+ "DBID,"
+			+ "CONTENT,"
+			+ "EXER_TYPE,"
+			+ "EXER_COURSE,"
+			+ "UPT_TM,"
+			+ "UPT_USER_ID,"
+			+ "EXER_ID,"
+			+ "ACTION "
+			+ "FROM "
+			+ "DRIP_HIST_EXERCISE "
+			+ "WHERE "
+			+ "DBID=?";
+	@Override
+	public HistExercise get(Long histExerciseId) {
+
+		HistExercise result = DatabaseUtil.queryForObject(getDataSource(), SQL_GET_HIST_EXERCISE, new RowMapper<HistExercise>() {
+			@Override
+			public HistExercise mapRow(ResultSet rs, int rowNum)
+					throws SQLException {
+				HistExercise exercise = new HistExercise();
+				exercise.setId(rs.getLong(1));
+				exercise.setContent(rs.getString(2));
+				exercise.setExerciseType(rs.getString(3));
+				exercise.setCourse(rs.getString(4));
+				exercise.setCreateTime(rs.getTimestamp(5));
+				exercise.setCreateUserId(rs.getLong(6));
+				exercise.setOriginId(rs.getLong(7));
+				exercise.setAction(rs.getString(8));
+				return exercise;
+			}
+		}, histExerciseId);
+				
+		if(result == null){
+			return result;
+		}
+		
+		String exerType = result.getExerciseType();
+		if (ExerciseType.SINGLE_OPTION.equals(exerType)
+				|| ExerciseType.MULTI_OPTION.equals(exerType)
+				|| ExerciseType.FILL.equals(exerType)) {
+			List<ExerciseOption> options = this.getHistExerciseOptions(histExerciseId);
+			result.setOptions(options);
+		}
+		
+		return result;
+	}
+	
+	private final static String SQL_LIST_HIST_EXERCISE_OPTION = "SELECT "
+			+ "DBID,"
+			+ "HIST_EXER_ID,"
+			+ "CONTENT,"
+			+ "OPT_SEQ "
+			+ "FROM "
+			+ "DRIP_HIST_EXER_OPTION "
+			+ "WHERE "
+			+ "HIST_EXER_ID=? "
+			+ "ORDER BY OPT_SEQ";
+	private List<ExerciseOption> getHistExerciseOptions(final Long histExerciseId) {
+		return DatabaseUtil.query(getDataSource(), SQL_LIST_HIST_EXERCISE_OPTION, new PreparedStatementSetter() {
+			@Override
+			public void setValues(PreparedStatement ps) throws SQLException {
+				ps.setLong(1, histExerciseId);
+			}
+		}, new RowMapper<ExerciseOption>() {
+			@Override
+			public ExerciseOption mapRow(ResultSet rs, int rowNum) throws SQLException {
+				ExerciseOption option = new ExerciseOption();
+				option.setId(rs.getLong(1));
+				option.setContent(rs.getString(3));
+				// seq与list中元素的顺序相同
+				return option;
+			}
+		});
 	}
 
 }

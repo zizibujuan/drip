@@ -31,10 +31,8 @@ public class AnswerServiceImpl implements AnswerService {
 	}
 
 	@Override
-	public void update(Long answerId, Long userId,
-			Map<String, Object> answerInfo) {
-		// TODO Auto-generated method stub
-		
+	public void update(Long answerId, Answer newAnswer) {
+		answerDao.update(answerId, newAnswer);
 	}
 	
 	@Override

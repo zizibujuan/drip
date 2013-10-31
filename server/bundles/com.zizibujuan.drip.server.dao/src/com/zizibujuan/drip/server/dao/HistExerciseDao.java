@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import com.zizibujuan.drip.server.model.Exercise;
+import com.zizibujuan.drip.server.model.HistExercise;
 import com.zizibujuan.drip.server.util.DBAction;
 
 /**
@@ -24,4 +25,6 @@ public interface HistExerciseDao {
 	 * @throws SQLException 
 	 */
 	Long insert(Connection con, String dbAction, Exercise exercise) throws SQLException;
+
+	HistExercise get(Long histExerciseId);
 }

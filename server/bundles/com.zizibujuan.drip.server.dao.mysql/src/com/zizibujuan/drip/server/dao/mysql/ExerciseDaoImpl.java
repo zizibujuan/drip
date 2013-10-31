@@ -60,14 +60,16 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			con.setAutoCommit(false);
 			// 添加习题
 			Exercise exercise = exerciseForm.getExercise();
-			exerId = this.addExercise(con, exercise);
+			exerId = this.addExercise(con, exercise); // 注意：在addExercise中队exercise的值有加工
+			// 在历史表中添加纪录
+			Long histExerId = histExerciseDao.insert(con, DBAction.CREATE, exercise);
 			
 			Long userId = exercise.getCreateUserId();
 			// 习题添加成功后，在用户的“创建的习题数”上加1
 			// 同时修改后端和session中缓存的该记录
 			userStatisticsDao.increaseExerciseCount(con, userId);
 			// 在活动表中插入一条记录
-			addActivity(con, userId, exerId, ActionType.SAVE_EXERCISE);
+			addActivity(con, userId, histExerId, ActionType.SAVE_EXERCISE); // 往活动表中插入历史记录
 			
 			// 如果存在答案，则添加答案
 			Answer answer = exerciseForm.getAnswer();
@@ -81,7 +83,6 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 				List<AnswerDetail> answerList = answer.getDetail();
 				// 在新增习题的同时保存答案，因为选项的值是刚加的，所以需要在detail中为选项标识赋值。
 				if(answerList != null && answerList.size() > 0){
-					
 					if(ExerciseType.SINGLE_OPTION.equals(exerciseType) || ExerciseType.MULTI_OPTION.equals(exerciseType)){
 						List<ExerciseOption> options = exerciseInfo.getOptions();
 						// seq从1开始
@@ -171,9 +172,6 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 				option.setId(optionId);
 			}
 		}
-		
-		// 在历史表中添加纪录
-		histExerciseDao.insert(con, DBAction.CREATE, exerciseInfo);
 		return exerId;
 	}
 	

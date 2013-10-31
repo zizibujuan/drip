@@ -11,9 +11,13 @@ import org.slf4j.LoggerFactory;
 import com.zizibujuan.drip.server.dao.ActivityDao;
 import com.zizibujuan.drip.server.dao.AnswerDao;
 import com.zizibujuan.drip.server.dao.ExerciseDao;
+import com.zizibujuan.drip.server.dao.HistAnswerDao;
+import com.zizibujuan.drip.server.dao.HistExerciseDao;
 import com.zizibujuan.drip.server.model.Activity;
 import com.zizibujuan.drip.server.model.Answer;
 import com.zizibujuan.drip.server.model.Exercise;
+import com.zizibujuan.drip.server.model.HistAnswer;
+import com.zizibujuan.drip.server.model.HistExercise;
 import com.zizibujuan.drip.server.service.ActivityService;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.util.ActionType;
@@ -28,9 +32,16 @@ public class ActivityServiceImpl implements ActivityService {
 
 	private static final Logger logger = LoggerFactory.getLogger(ActivityServiceImpl.class);
 	private ActivityDao activityDao;
+	private UserService userService;
+	private HistExerciseDao histExerciseDao;
+	private HistAnswerDao histAnswerDao; 
+	
+	
+	
+	
 	private ExerciseDao exerciseDao;
 	private AnswerDao answerDao;
-	private UserService userService;
+	
 	
 	@Override
 	public List<Map<String, Object>> getFollowing(PageInfo pageInfo, Long userId) {
@@ -58,20 +69,21 @@ public class ActivityServiceImpl implements ActivityService {
 			Map<String,Object> userInfo = userService.getPublicInfo(watchUserId);
 			map.put("userInfo", userInfo);
 			
-			if(actionType.equals(ActionType.SAVE_EXERCISE)){
+			if(actionType.equals(ActionType.SAVE_EXERCISE) || actionType.equals(ActionType.EDIT_EXERCISE)){
 				Exercise exercise = getExercise(contentId);
 				map.put("exercise", exercise);
-			}else if(actionType.equals(ActionType.ANSWER_EXERCISE)){
+			}else if(actionType.equals(ActionType.ANSWER_EXERCISE) || actionType.equals(ActionType.EDIT_ANSWER)){
+				// 活动表中，记录的是历史表中的答案或习题标识
+				
 				// 将答案和习题解析看作一体，是用户在答题时写下的做题思路
-				Answer answer = getAnswer(contentId);
-				Long exerciseId = answer.getExerciseId();
-				Exercise exercise = getExercise(exerciseId);
+				HistAnswer answer = getHistAnswer(contentId);
+				Long histExerciseId = answer.getExerciseId();
+				HistExercise exercise = getHistExercise(histExerciseId);
 				map.put("exercise", exercise);
 				map.put("answer", answer);
+			}else{
+				throw new UnsupportedOperationException("不支持的操作类型");
 			}
-			// 如果是新增项目（主题）
-			// 如果是维护日志呢
-			
 			result.add(map);
 		}
 		return result;
@@ -114,21 +126,33 @@ public class ActivityServiceImpl implements ActivityService {
 			each.put("userInfo", userInfo);
 			
 			Long contentId = Long.valueOf(each.get("contentId").toString());
-			Exercise exercise = getExercise(contentId);
+			Exercise exercise = getExercise(contentId);// 获取当前状态的
 			each.put("exercise", exercise);
 		}
 		return list;
 	}
 	
-	private Exercise getExercise(Long dbid){
+	private Exercise getExercise(Long exerciseId){
 		// TODO: 改为从缓存中获取。
-		Exercise result = exerciseDao.get(dbid);
+		Exercise result = exerciseDao.get(exerciseId);
 		return result;
 	}
 	
 	private Answer getAnswer(Long answerId){
 		// TODO: 改为从缓存中获取
 		Answer result = answerDao.get(answerId);
+		return result;
+	}
+	
+	private HistExercise getHistExercise(Long histExerciseId){
+		// TODO: 改为从缓存中获取。
+		HistExercise result = histExerciseDao.get(histExerciseId);
+		return result;
+	}
+	
+	private HistAnswer getHistAnswer(Long histAnswerId){
+		// TODO: 改为从缓存中获取
+		HistAnswer result = histAnswerDao.get(histAnswerId);
 		return result;
 	}
 

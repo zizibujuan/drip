@@ -37,11 +37,11 @@ public interface AnswerService {
 
 	/**
 	 * 编辑习题答案和习题解析
+	 * 
 	 * @param answerId 答案标识
-	 * @param userId 用户标识
-	 * @param answerInfo 答案信息
+	 * @param newAnswer 答案信息
 	 */
-	void update(Long answerId, Long userId, Map<String, Object> answerInfo);
+	void update(Long answerId, Answer newAnswer);
 
 	/**
 	 * 获取某用户对某道习题的答案

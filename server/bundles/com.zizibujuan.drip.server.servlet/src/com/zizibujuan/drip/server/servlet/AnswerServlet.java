@@ -1,7 +1,6 @@
 package com.zizibujuan.drip.server.servlet;
 
 import java.io.IOException;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -37,8 +36,8 @@ public class AnswerServlet extends BaseServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		traceRequest(req);
-		String pathInfo = req.getPathInfo();
-		if(pathInfo == null || pathInfo.equals("/")){
+		IPath path = getPath(req);
+		if(path.segmentCount() == 0){
 			// TODO:从query parameters中获取参数
 			String sExerId = req.getParameter("exerId");
 			Long exerciseId = Long.valueOf(sExerId);
@@ -72,13 +71,16 @@ public class AnswerServlet extends BaseServlet {
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		traceRequest(req);
-		String pathInfo = req.getPathInfo();
-		if(pathInfo != null && !pathInfo.equals("/")){
-			Long answerId = Long.valueOf(pathInfo.split("/")[1]);
-			Map<String,Object> data = RequestUtil.fromJsonObject(req);
+		IPath path = getPath(req);
+		if(path.segmentCount() == 1){
+			Long answerId = Long.valueOf(path.segment(0));
+			Answer newAnswer = RequestUtil.fromJsonObject(req, Answer.class);
 			UserInfo userInfo = (UserInfo) UserSession.getUser(req);
 			Long userId = userInfo.getId();
-			answerService.update(answerId,userId, data);
+			newAnswer.setLastUpdateUserId(userId);
+			newAnswer.setId(answerId);
+			answerService.update(answerId, newAnswer);
+			// TODO:显示返回
 			return;
 		}
 		super.doPut(req, resp);

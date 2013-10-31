@@ -58,6 +58,7 @@ public interface AnswerDao {
 	 * 			content：答案内容
 	 * 			optionId:选项标识
 	 * </pre>
+	 * @deprecated
 	 */
 	void saveOpUpdate(Long userId, Map<String, Object> answer);
 
@@ -95,5 +96,13 @@ public interface AnswerDao {
 	 * @return 答案标识
 	 */
 	Long insert(Answer answer);
+	
+	/**
+	 * 编辑习题答案和习题解析
+	 * 
+	 * @param answerId 答案标识
+	 * @param newAnswer 答案信息
+	 */
+	void update(Long answerId, Answer newAnswer);
 
 }

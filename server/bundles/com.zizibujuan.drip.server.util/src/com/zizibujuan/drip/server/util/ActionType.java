@@ -18,6 +18,16 @@ public abstract class ActionType {
 	 * 回答习题
 	 */
 	public static final String ANSWER_EXERCISE = "0002";
+
+	/**
+	 * 编辑习题
+	 */
+	public static final String EDIT_EXERCISE = "0021";
+	
+	/**
+	 * 编辑答案
+	 */
+	public static final String EDIT_ANSWER = "0022";
 	
 	
 }
