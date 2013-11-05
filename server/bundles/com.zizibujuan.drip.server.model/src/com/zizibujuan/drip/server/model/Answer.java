@@ -13,7 +13,9 @@ import com.zizibujuan.drip.server.util.model.LogModel;
 public class Answer extends LogModel{
 
 	private Long id;
+	private Integer answerVersion;
 	private Long exerciseId;
+	private Integer exerVersion;
 	private String guide;
 	private List<AnswerDetail> detail;
 	
@@ -89,4 +91,41 @@ public class Answer extends LogModel{
 	public void setDetail(List<AnswerDetail> detail) {
 		this.detail = detail;
 	}
+
+	/**
+	 * 获取答案的最新版本号，版本号从1开始，用户每修改一次，就加1
+	 * 
+	 * @return 最新的答案版本号
+	 */
+	public Integer getAnswerVersion() {
+		return answerVersion;
+	}
+
+	/**
+	 * 设置答案的最新版本号，版本号从1开始，用户每修改一次，就加1
+	 * 
+	 * @param answerVersion 答案的最新版本号
+	 */
+	public void setAnswerVersion(Integer answerVersion) {
+		this.answerVersion = answerVersion;
+	}
+
+	/**
+	 * 获取习题版本号，这里指最后一次修改的答案，做的是哪一个版本的习题
+	 * 
+	 * @return 最新答案对应的习题版本号
+	 */
+	public Integer getExerVersion() {
+		return exerVersion;
+	}
+
+	/**
+	 * 设置习题版本号，这里指最后一次修改的答案，做的是哪一个版本的习题
+	 * 
+	 * @param exerVersion 最新答案对应的习题版本号
+	 */
+	public void setExerVersion(Integer exerVersion) {
+		this.exerVersion = exerVersion;
+	}
+
 }

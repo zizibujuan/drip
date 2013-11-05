@@ -29,14 +29,15 @@ public class HistExerciseDaoImpl extends AbstractDao implements HistExerciseDao 
 	private static final String SQL_INSERT_HIST_EXERCISE = "INSERT INTO "
 			+ "DRIP_HIST_EXERCISE "
 			+ "(EXER_ID,"
+			+ "VERSION,"
 			+ "CONTENT,"
 			+ "EXER_TYPE,"
-			+ "EXER_CATEGORY,"
+			+ "EXER_COURSE,"
 			+ "ACTION,"
 			+ "UPT_TM,"
 			+ "UPT_USER_ID) "
 			+ "VALUES "
-			+ "(?, ?, ?, ?, ?, now(), ?)";
+			+ "(?, ?, ?, ?, ?, ?, now(), ?)";
 	private static final String SQL_INSERT_HIST_EXER_OPTION = "INSERT INTO "
 			+ "DRIP_HIST_EXER_OPTION "
 			+ "(HIST_EXER_ID,"
@@ -50,15 +51,16 @@ public class HistExerciseDaoImpl extends AbstractDao implements HistExerciseDao 
 			@Override
 			public void setValues(PreparedStatement ps) throws SQLException {
 				ps.setLong(1, exercise.getId());
-				ps.setString(2, exercise.getContent());
-				ps.setString(3, exercise.getExerciseType());
-				ps.setString(4, exercise.getCourse());
-				ps.setString(5, dbAction);
+				ps.setInt(2, exercise.getVersion());
+				ps.setString(3, exercise.getContent());
+				ps.setString(4, exercise.getExerciseType());
+				ps.setString(5, exercise.getCourse());
+				ps.setString(6, dbAction);
 				if(dbAction.equals(DBAction.CREATE)){
-					ps.setLong(6, exercise.getCreateUserId());
+					ps.setLong(7, exercise.getCreateUserId());
 				}else{
 					// 删除操作完成后，把操作人记录在更新用户里
-					ps.setLong(6, exercise.getLastUpdateUserId());
+					ps.setLong(7, exercise.getLastUpdateUserId());
 				}
 			}
 		});
@@ -88,13 +90,14 @@ public class HistExerciseDaoImpl extends AbstractDao implements HistExerciseDao 
 	
 	private static final String SQL_GET_HIST_EXERCISE = "SELECT "
 			+ "DBID,"
+			+ "EXER_ID, "
+			+ "VERSION,"
 			+ "CONTENT,"
 			+ "EXER_TYPE,"
 			+ "EXER_COURSE,"
+			+ "ACTION,"
 			+ "UPT_TM,"
-			+ "UPT_USER_ID,"
-			+ "EXER_ID,"
-			+ "ACTION "
+			+ "UPT_USER_ID "
 			+ "FROM "
 			+ "DRIP_HIST_EXERCISE "
 			+ "WHERE "
@@ -107,14 +110,15 @@ public class HistExerciseDaoImpl extends AbstractDao implements HistExerciseDao 
 			public HistExercise mapRow(ResultSet rs, int rowNum)
 					throws SQLException {
 				HistExercise exercise = new HistExercise();
-				exercise.setId(rs.getLong(1));
-				exercise.setContent(rs.getString(2));
-				exercise.setExerciseType(rs.getString(3));
-				exercise.setCourse(rs.getString(4));
-				exercise.setCreateTime(rs.getTimestamp(5));
-				exercise.setCreateUserId(rs.getLong(6));
-				exercise.setOriginId(rs.getLong(7));
-				exercise.setAction(rs.getString(8));
+				exercise.setHistId(rs.getLong(1));
+				exercise.setId(rs.getLong(2));
+				exercise.setVersion(rs.getInt(3));
+				exercise.setContent(rs.getString(4));
+				exercise.setExerciseType(rs.getString(5));
+				exercise.setCourse(rs.getString(6));
+				exercise.setAction(rs.getString(7));
+				exercise.setCreateTime(rs.getTimestamp(8));
+				exercise.setCreateUserId(rs.getLong(9));
 				return exercise;
 			}
 		}, histExerciseId);

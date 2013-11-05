@@ -17,9 +17,9 @@ import com.zizibujuan.drip.server.tests.service.UserServiceTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-	UserServiceTests.class
+//	UserServiceTests.class
 //	UserBindServiceTests.class,
-//	ActivityServiceTests.class,
+	ActivityServiceTests.class
 //	UserRelationTests.class
 //	EmailServiceTests.class
 })

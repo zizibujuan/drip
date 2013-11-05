@@ -70,7 +70,7 @@ public class ActivityServiceImpl implements ActivityService {
 			map.put("userInfo", userInfo);
 			
 			if(actionType.equals(ActionType.SAVE_EXERCISE) || actionType.equals(ActionType.EDIT_EXERCISE)){
-				Exercise exercise = getExercise(contentId);
+				HistExercise exercise = getHistExercise(contentId);
 				map.put("exercise", exercise);
 			}else if(actionType.equals(ActionType.ANSWER_EXERCISE) || actionType.equals(ActionType.EDIT_ANSWER)){
 				// 活动表中，记录的是历史表中的答案或习题标识
@@ -204,5 +204,27 @@ public class ActivityServiceImpl implements ActivityService {
 		}
 	}
 
+	public void setHistExerciseDao(HistExerciseDao histExerciseDao) {
+		logger.info("注入histExerciseDao");
+		this.histExerciseDao = histExerciseDao;
+	}
+
+	public void unsetHistExerciseDao(HistExerciseDao histExerciseDao) {
+		if (this.histExerciseDao == histExerciseDao) {
+			logger.info("注销histExerciseDao");
+			this.histExerciseDao = null;
+		}
+	}
 	
+	public void setHistAnswerDao(HistAnswerDao histAnswerDao) {
+		logger.info("注入histAnswerDao");
+		this.histAnswerDao = histAnswerDao;
+	}
+
+	public void unsetHistAnswerDao(HistAnswerDao histAnswerDao) {
+		if (this.histAnswerDao == histAnswerDao) {
+			logger.info("注销histAnswerDao");
+			this.histAnswerDao = null;
+		}
+	}
 }

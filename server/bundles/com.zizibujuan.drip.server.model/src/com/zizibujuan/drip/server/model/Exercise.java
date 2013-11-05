@@ -13,11 +13,12 @@ import com.zizibujuan.drip.server.util.model.LogModel;
 public class Exercise extends LogModel{
 
 	private Long id;
+	private Integer version;
 	private String exerciseType;
 	private String content;
 	private String course;
 	
-	private String imageId; // 一个习题只能有一个附图
+	private String imageName; // 一个习题只能有一个附图
 	private List<ExerciseOption> options; // 支持随机模式,按照seq排序
 	
 	/**
@@ -34,6 +35,24 @@ public class Exercise extends LogModel{
 	 */
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	/**
+	 * 获取习题当前的版本号，版本号从1开始，用户每修改一次，就加1
+	 * 
+	 * @return 习题当前的版本号
+	 */
+	public Integer getVersion() {
+		return version;
+	}
+
+	/**
+	 * 设置习题当前的版本号，版本号从1开始，用户每修改一次，就加1
+	 * 
+	 * @param version 习题版本号
+	 */
+	public void setVersion(Integer version) {
+		this.version = version;
 	}
 
 	/**
@@ -91,22 +110,22 @@ public class Exercise extends LogModel{
 	}
 
 	/**
-	 * 获取附图标识，附图存在文件系统中，这个id对应文件系统的文件名，
-	 * 文件名是动态生成的唯一标识。
+	 * 获取附图v，附图存在文件系统中，这个id对应文件系统的文件名，
+	 * 文件名是动态生成的唯一标识+文件之前的扩展名。
 	 * 
-	 * @return 附图标识
+	 * @return 附图名称
 	 */
-	public String getImageId() {
-		return imageId;
+	public String getImageName() {
+		return imageName;
 	}
 
 	/**
-	 * 设置附图标识
+	 * 设置附图名称
 	 * 
-	 * @param imageId 附图标识
+	 * @param imageName 附图名称
 	 */
-	public void setImageId(String imageId) {
-		this.imageId = imageId;
+	public void setImageName(String imageName) {
+		this.imageName = imageName;
 	}
 
 	/**

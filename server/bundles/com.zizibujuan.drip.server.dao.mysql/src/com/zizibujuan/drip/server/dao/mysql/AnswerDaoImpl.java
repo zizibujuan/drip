@@ -130,7 +130,7 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 			+ "WHERE "
 			+ "ANSWER_ID = ?";
 	@Override
-	public void update(Long answerId, Answer newAnswer) {
+	public void update(Long histExerciseId, Long answerId, Answer newAnswer) {
 		// 习题基本信息是更新，习题详情是删除了，重新加入
 		Connection con = null;
 		
@@ -144,7 +144,7 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 			// 插入新的答案详情
 			this.addAnswerDetail(con, answerId, newAnswer.getDetail());
 			// 在答案历史和答案详情历史表中插入记录
-			histAnswerDao.insert(con, DBAction.UPDATE, newAnswer);// FIXME:信息缺失不
+			histAnswerDao.insert(con, DBAction.UPDATE, histExerciseId, newAnswer);
 			Long userId = newAnswer.getLastUpdateUserId();
 			// 在用户活动中添加活动
 			userStatisticsDao.increaseAnswerCount(con, userId);
@@ -226,12 +226,14 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 
 	private static final String SQL_INSERT_ANSWER = "INSERT INTO "
 			+ "DRIP_ANSWER "
-			+ "(EXER_ID,"
+			+ "(ANSWER_VERSION,"
+			+ "EXER_ID,"
+			+ "EXER_VERSION,"
 			+ "GUIDE,"
 			+ "CRT_TM,"
 			+ "CRT_USER_ID) "
 			+ "VALUES "
-			+ "(?,?,now(),?)";
+			+ "(?,?,?,?,now(),?)";
 	private static final String SQL_INSERT_ANSWER_DETAIL = "INSERT INTO "
 			+ "DRIP_ANSWER_DETAIL "
 			+ "(ANSWER_ID,"
@@ -240,15 +242,17 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 			+ "VALUES "
 			+ "(?,?,?)";
 	@Override
-	public Long insert(Connection con, Answer answer) throws SQLException {
+	public Long insert(Connection con, Long histExerciseId, Answer answer) throws SQLException {
 		final Answer finalAnswer = answer;
 		Long answerId = DatabaseUtil.insert(con, SQL_INSERT_ANSWER, new PreparedStatementSetter() {
 			
 			@Override
 			public void setValues(PreparedStatement ps) throws SQLException {
-				ps.setLong(1, finalAnswer.getExerciseId());
-				ps.setString(2, finalAnswer.getGuide());
-				ps.setLong(3, finalAnswer.getCreateUserId());
+				ps.setInt(1, finalAnswer.getAnswerVersion());
+				ps.setLong(2, finalAnswer.getExerciseId());
+				ps.setInt(3, finalAnswer.getExerVersion());
+				ps.setString(4, finalAnswer.getGuide());
+				ps.setLong(5, finalAnswer.getCreateUserId());
 			}
 		});
 		answer.setId(answerId);
@@ -258,14 +262,14 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 			addAnswerDetail(con, answerId, answerDetail);
 		}
 		
-		histAnswerDao.insert(con, DBAction.CREATE, answer);
+		Long histAnswerId = histAnswerDao.insert(con, DBAction.CREATE, histExerciseId, answer);
 		
 		// 答案回答完成后，在用户的“已回答的习题数”上加1
 		// 同时修改后端和session中缓存的该记录
 		Long userId = answer.getCreateUserId();
 		userStatisticsDao.increaseAnswerCount(con, userId);
 		// 在活动表中插入一条记录
-		activityDao.add(con, userId, answerId, ActionType.ANSWER_EXERCISE, true);
+		activityDao.add(con, userId, histAnswerId, ActionType.ANSWER_EXERCISE, true);
 		// 插入答案概述
 		
 		// 插入答案详情
@@ -281,13 +285,13 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 	}
 
 	@Override
-	public Long insert(Answer answer) {
+	public Long insert(Long histExerciseId, Answer answer) {
 		Connection con = null;
 		Long id = null;
 		try {
 			con = getDataSource().getConnection();
 			con.setAutoCommit(false);
-			id = insert(con, answer);
+			id = insert(con, histExerciseId, answer);
 			con.commit();
 		} catch (SQLException e) {
 			DatabaseUtil.safeRollback(con);

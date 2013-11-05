@@ -10,26 +10,16 @@ import com.zizibujuan.drip.server.util.DBAction;
  */
 public class HistAnswer extends Answer{
 
-	private Long originId;
+	private Long histId; // 历史答案的代理主键
 	private String action;
-	private Long histExerciseId;
 
-	/**
-	 * 获取答案的原标识
-	 * 
-	 * @return 答案原标识
-	 */
-	public Long getOriginId() {
-		return originId;
+	
+	public Long getHistId() {
+		return histId;
 	}
 
-	/**
-	 * 设置答案的原标识
-	 * 
-	 * @param originId 答案原标识
-	 */
-	public void setOriginId(Long originId) {
-		this.originId = originId;
+	public void setHistId(Long histId) {
+		this.histId = histId;
 	}
 
 	/**
@@ -50,23 +40,4 @@ public class HistAnswer extends Answer{
 		this.action = action;
 	}
 
-	/**
-	 * 获取习题历史标识
-	 * 
-	 * @return 习题历史标识
-	 */
-	public Long getHistExerciseId() {
-		return histExerciseId;
-	}
-
-	/**
-	 * 设置习题历史标识
-	 * 
-	 * @param histExerciseId 习题历史标识
-	 */
-	public void setHistExerciseId(Long histExerciseId) {
-		this.histExerciseId = histExerciseId;
-	}
-	
-	
 }

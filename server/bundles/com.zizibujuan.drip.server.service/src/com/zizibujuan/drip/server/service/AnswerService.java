@@ -30,10 +30,11 @@ public interface AnswerService {
 	/**
 	 * 新增习题答案和习题解析
 	 * 
+	 * @param histExerciseId 历史版本的习题标识
 	 * @param answer 答案信息
 	 * @return 答案标识
 	 */
-	Long insert(Answer answer);
+	Long insert(Long histExerciseId, Answer answer);
 
 	/**
 	 * 编辑习题答案和习题解析

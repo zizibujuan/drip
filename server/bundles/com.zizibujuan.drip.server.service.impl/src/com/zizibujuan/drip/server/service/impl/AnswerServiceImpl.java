@@ -26,8 +26,8 @@ public class AnswerServiceImpl implements AnswerService {
 	}
 
 	@Override
-	public Long insert(Answer answer) {
-		return answerDao.insert(answer);
+	public Long insert(Long histExerciseId, Answer answer) {
+		return answerDao.insert(histExerciseId, answer);
 	}
 
 	@Override

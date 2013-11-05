@@ -1,7 +1,6 @@
 package com.zizibujuan.drip.server.tests.service;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -24,18 +23,8 @@ public abstract class AbstractUserTests{
 	protected UserService userService = ServiceHolder.getDefault().getUserService();
 	protected DataSource dataSource = DataSourceHolder.getDefault().getDataSourceService().getDataSource();
 	
-//	protected int siteId = OAuthConstants.RENREN;
-//	protected String openId = "X1234567890";
-//	protected String nickName = "xman_nickName";
-//	protected String loginName = "xman_loginName";
-//	protected String sex = "1";
-//	protected String homeCityCode = "156130100";
-//	protected Date birthday = null;
 	
 	public AbstractUserTests() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(2013, 1, 1);
-		//birthday = calendar.getTime();
 	}
 	
 	protected Long importUser(int siteId, String openId, String nickName, String sex) {

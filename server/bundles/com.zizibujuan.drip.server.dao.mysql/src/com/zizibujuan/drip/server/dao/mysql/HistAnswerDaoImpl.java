@@ -29,13 +29,14 @@ public class HistAnswerDaoImpl extends AbstractDao implements HistAnswerDao {
 	private static final String SQL_INSERT_HIST_ANSWER = "INSERT INTO "
 			+ "DRIP_HIST_ANSWER "
 			+ "(ANSWER_ID, "
+			+ "ANSWER_VERSION,"
 			+ "HIST_EXER_ID,"
 			+ "GUIDE,"
 			+ "ACTION,"
 			+ "UPT_TM,"
 			+ "UPT_USER_ID) "
 			+ "VALUES "
-			+ "(?, ?, ?, ?, now(), ?)";
+			+ "(?, ?, ?, ?, ?, now(), ?)";
 	private static final String SQL_INSERT_HIST_ANSWER_DETAIL = "INSERT INTO "
 			+ "DRIP_HIST_ANSWER_DETAIL "
 			+ "(HIST_ANSWER_ID, "
@@ -51,13 +52,14 @@ public class HistAnswerDaoImpl extends AbstractDao implements HistAnswerDao {
 			@Override
 			public void setValues(PreparedStatement ps) throws SQLException {
 				ps.setLong(1, answer.getId());
-				ps.setLong(2, histExerciseId);
-				ps.setString(3, answer.getGuide());
-				ps.setString(4, dbAction);
+				ps.setInt(2, answer.getAnswerVersion());
+				ps.setLong(3, histExerciseId);
+				ps.setString(4, answer.getGuide());
+				ps.setString(5, dbAction);
 				if(dbAction.equals(DBAction.CREATE)){
-					ps.setLong(5, answer.getCreateUserId());
+					ps.setLong(6, answer.getCreateUserId());
 				}else{
-					ps.setLong(5, answer.getLastUpdateUserId());
+					ps.setLong(6, answer.getLastUpdateUserId());
 				}
 			}
 		});
@@ -92,6 +94,7 @@ public class HistAnswerDaoImpl extends AbstractDao implements HistAnswerDao {
 	private static final String SQL_GET_HIST_ANSWER_BY_ID = "SELECT "
 			+ "DBID,"
 			+ "ANSWER_ID,"
+			+ "ANSWER_VERSION,"
 			+ "HIST_EXER_ID,"
 			+ "GUIDE,"
 			+ "ACTION,"
@@ -100,7 +103,6 @@ public class HistAnswerDaoImpl extends AbstractDao implements HistAnswerDao {
 			+ "FROM "
 			+ "DRIP_HIST_ANSWER "
 			+ "WHERE DBID=? ";
-	
 	private static final String SQL_LIST_HIST_ANSWER_DETAIL = "SELECT "
 			+ "DBID,"
 			+ "HIST_ANSWER_ID,"
@@ -110,7 +112,6 @@ public class HistAnswerDaoImpl extends AbstractDao implements HistAnswerDao {
 			+ "DRIP_HIST_ANSWER_DETAIL "
 			+ "WHERE "
 			+ "HIST_ANSWER_ID=?";
-
 	@Override
 	public HistAnswer get(final Long histAnswerId) {
 
@@ -118,13 +119,14 @@ public class HistAnswerDaoImpl extends AbstractDao implements HistAnswerDao {
 			@Override
 			public HistAnswer mapRow(ResultSet rs, int rowNum) throws SQLException {
 				HistAnswer answer = new HistAnswer();
-				answer.setId(rs.getLong(1));
-				answer.setOriginId(rs.getLong(2));
-				answer.setHistExerciseId(rs.getLong(3));
-				answer.setGuide(rs.getString(4));
-				answer.setAction(rs.getString(5));
-				answer.setCreateTime(rs.getTimestamp(5)); 
-				answer.setCreateUserId(rs.getLong(6));
+				answer.setHistId(rs.getLong(1));
+				answer.setId(rs.getLong(2));
+				answer.setAnswerVersion(rs.getInt(3));
+				answer.setExerciseId(rs.getLong(4)); // 这里存储的习题标识，是历史习题的标识
+				answer.setGuide(rs.getString(5));
+				answer.setAction(rs.getString(6));
+				answer.setCreateTime(rs.getTimestamp(7)); 
+				answer.setCreateUserId(rs.getLong(8));
 				return answer;
 			}
 		}, histAnswerId);

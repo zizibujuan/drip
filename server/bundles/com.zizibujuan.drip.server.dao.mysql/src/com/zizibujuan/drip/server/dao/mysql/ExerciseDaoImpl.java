@@ -60,6 +60,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			con.setAutoCommit(false);
 			// 添加习题
 			Exercise exercise = exerciseForm.getExercise();
+			exercise.setVersion(1);
 			exerId = this.addExercise(con, exercise); // 注意：在addExercise中队exercise的值有加工
 			// 在历史表中添加纪录
 			Long histExerId = histExerciseDao.insert(con, DBAction.CREATE, exercise);
@@ -74,10 +75,11 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			// 如果存在答案，则添加答案
 			Answer answer = exerciseForm.getAnswer();
 			if(answer != null){
-				
 				Exercise exerciseInfo = exerciseForm.getExercise();
 				String exerciseType = exerciseInfo.getExerciseType();
 				answer.setExerciseId(exerId);
+				answer.setExerVersion(exerciseInfo.getVersion());
+				answer.setAnswerVersion(1);
 				answer.setCreateUserId(exerciseInfo.getCreateUserId());
 				
 				List<AnswerDetail> answerList = answer.getDetail();
@@ -97,7 +99,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 					}
 				}
 				// 准备好数据之后，再保存
-				answerDao.insert(con, answer);
+				answerDao.insert(con, histExerId, answer);
 			}
 			
 			con.commit();
@@ -122,12 +124,13 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 	private static final String SQL_INSERT_EXERCISE = "INSERT INTO "
 			+ "DRIP_EXERCISE "
 			+ "(CONTENT,"
+			+ "VERSION,"
 			+ "EXER_TYPE, "
 			+ "EXER_COURSE, "
 			+ "CRT_TM, "
 			+ "CRT_USER_ID) "
 			+ "VALUES "
-			+ "(?,?,?,now(),?)";
+			+ "(?,?,?,?,now(),?)";
 
 	private static final String SQL_INSERT_EXER_OPTION = "INSERT INTO "
 			+ "DRIP_EXER_OPTION "
@@ -144,9 +147,10 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			@Override
 			public void setValues(PreparedStatement ps) throws SQLException {
 				ps.setString(1, finalExerciseInfo.getContent());
-				ps.setString(2, finalExerciseInfo.getExerciseType());
-				ps.setString(3, finalExerciseInfo.getCourse());
-				ps.setLong(4, finalExerciseInfo.getCreateUserId());
+				ps.setInt(2, finalExerciseInfo.getVersion());
+				ps.setString(3, finalExerciseInfo.getExerciseType());
+				ps.setString(4, finalExerciseInfo.getCourse());
+				ps.setLong(5, finalExerciseInfo.getCreateUserId());
 			}
 		});
 		exerciseInfo.setId(exerId);
