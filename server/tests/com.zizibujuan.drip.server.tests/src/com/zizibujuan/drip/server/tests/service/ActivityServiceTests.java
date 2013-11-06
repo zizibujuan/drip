@@ -16,6 +16,7 @@ import com.zizibujuan.drip.server.model.ExerciseForm;
 import com.zizibujuan.drip.server.model.HistAnswer;
 import com.zizibujuan.drip.server.model.HistExercise;
 import com.zizibujuan.drip.server.service.ActivityService;
+import com.zizibujuan.drip.server.service.AnswerService;
 import com.zizibujuan.drip.server.service.ExerciseService;
 import com.zizibujuan.drip.server.servlet.ServiceHolder;
 import com.zizibujuan.drip.server.util.ExerciseType;
@@ -30,15 +31,15 @@ import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
  * @since 0.0.1
  */
 public class ActivityServiceTests extends AbstractUserTests{
+	private ActivityService activityService = ServiceHolder.getDefault().getActivityService();
+	private ExerciseService exerciseService = ServiceHolder.getDefault().getExerciseService();
+	private AnswerService answerService = ServiceHolder.getDefault().getAnswerService();
 	
 	@Test
 	public void test_insert_exercise_then_get_activity(){
 		Long userId = null;
 		Long exerciseId = null;
 		try{
-			ActivityService activityService = ServiceHolder.getDefault().getActivityService();
-			ExerciseService exerciseService = ServiceHolder.getDefault().getExerciseService();
-			
 			userId = importUser(OAuthConstants.RENREN, "a", "b", Gender.MALE);
 			List<Map<String,Object>> activities = activityService.getFollowing(null, userId);
 			assertEquals(0, activities.size());
@@ -162,15 +163,69 @@ public class ActivityServiceTests extends AbstractUserTests{
 			deleteTestUser(userId);
 		}
 	}
+	
+	@Test
+	public void test_insert_exercise_then_answer_then_get_activity(){
+		Long userId = null;
+		Long exerciseId = null;
+		try{
+			userId = importUser(OAuthConstants.RENREN, "a", "b", Gender.MALE);
+			List<Map<String,Object>> activities = activityService.getFollowing(null, userId);
+			assertEquals(0, activities.size());
+			
+			ExerciseForm exerciseForm = new ExerciseForm();
+			Exercise exercise = new Exercise();
+			exercise.setContent("a");
+			exercise.setExerciseType(ExerciseType.ESSAY_QUESTION);
+			exercise.setVersion(1);
+			exercise.setCreateUserId(userId);
+			exerciseForm.setExercise(exercise);
+			exerciseId = exerciseService.add(exerciseForm);
+			// 历史习题id如何获取呢?
+			Long histExerciseId = DatabaseUtil.queryForLong(dataSource, "SELECT DBID FROM DRIP_HIST_EXERCISE WHERE EXER_ID=? AND VERSION=?", exerciseId, 1);
+			
+			Answer answer = new Answer();
+			answer.setCreateUserId(userId);
+			answer.setExerciseId(histExerciseId);
+			answer.setGuide("guide");
+			AnswerDetail detail = new AnswerDetail();
+			detail.setContent("answer");
+			List<AnswerDetail> details = new ArrayList<AnswerDetail>();
+			details.add(detail);
+			answer.setDetail(details);
+			Long answerId = answerService.insert(answer);
+			
+			activities = activityService.getFollowing(null, userId);
+			assertEquals(2, activities.size());
+			Map<String, Object> activity = activities.get(0);
+			HistAnswer result = (HistAnswer) activity.get("answer");
+			assertNotNull(result.getHistId());
+			assertEquals("guide", result.getGuide());
+			assertEquals("answer", result.getDetail().get(0).getContent());
+			assertEquals(histExerciseId, result.getExerciseId());
+			assertEquals(answerId, result.getId());
+			assertEquals(1, result.getAnswerVersion().intValue());
+		}finally{
+			// 删除添加的习题和活动
+			deleteExercise(exerciseId);
+			
+			String sql = "UPDATE DRIP_USER_STATISTICS SET " +
+					"EXER_PUBLISH_COUNT=EXER_PUBLISH_COUNT-1 " +
+					"WHERE USER_ID=?";
+			DatabaseUtil.update(dataSource, sql, userId);
+			
+			sql = "DELETE FROM DRIP_ACTIVITY WHERE USER_ID = ?"; // 删除用户的所有活动
+			DatabaseUtil.update(dataSource, sql, userId);
+			
+			deleteTestUser(userId);
+		}
+	}
 
 	@Test
 	public void test_insert_exercise_with_answer_then_get_activity(){
 		Long userId = null;
 		Long exerciseId = null;
 		try{
-			ActivityService activityService = ServiceHolder.getDefault().getActivityService();
-			ExerciseService exerciseService = ServiceHolder.getDefault().getExerciseService();
-			
 			userId = importUser(OAuthConstants.RENREN, "a", "b", Gender.MALE);
 			List<Map<String,Object>> activities = activityService.getFollowing(null, userId);
 			assertEquals(0, activities.size());
@@ -184,7 +239,6 @@ public class ActivityServiceTests extends AbstractUserTests{
 			exerciseForm.setExercise(exercise);
 			
 			Answer answer = new Answer();
-			answer.setAnswerVersion(1);
 			answer.setCreateUserId(userId);
 			answer.setExerciseId(exerciseId);
 			answer.setExerVersion(1);
@@ -214,6 +268,92 @@ public class ActivityServiceTests extends AbstractUserTests{
 			assertNotNull(histAnswer.getExerciseId()); // 存的是习题历史版本标识
 			assertEquals("guide", histAnswer.getGuide());
 			assertEquals("answer", histAnswer.getDetail().get(0).getContent());
+		}finally{
+			deleteAnswer(exerciseId);
+			deleteExercise(exerciseId);
+			
+			String sql = "UPDATE DRIP_USER_STATISTICS SET " +
+					"EXER_PUBLISH_COUNT=EXER_PUBLISH_COUNT-1 " +
+					"WHERE USER_ID=?";
+			DatabaseUtil.update(dataSource, sql, userId);
+			
+			sql = "UPDATE DRIP_USER_STATISTICS SET " +
+					"ANSWER_COUNT=ANSWER_COUNT-1 " +
+					"where USER_ID=?";
+			DatabaseUtil.update(dataSource, sql, userId);
+			
+			sql = "DELETE FROM DRIP_ACTIVITY WHERE USER_ID = ?"; // 删除用户的所有活动
+			DatabaseUtil.update(dataSource, sql, userId);
+			
+			deleteTestUser(userId);
+		}
+	}
+	
+	@Test
+	public void test_update_answer_then_get_activity(){
+		//XXXXXXXXXXX: 还没有修改
+		Long userId = null;
+		Long exerciseId = null;
+		try{
+			userId = importUser(OAuthConstants.RENREN, "a", "b", Gender.MALE);
+			List<Map<String,Object>> activities = activityService.getFollowing(null, userId);
+			assertEquals(0, activities.size());
+			
+			ExerciseForm exerciseForm = new ExerciseForm();
+			Exercise exercise = new Exercise();
+			exercise.setContent("a");
+			exercise.setExerciseType(ExerciseType.ESSAY_QUESTION);
+			exercise.setVersion(1);
+			exercise.setCreateUserId(userId);
+			exerciseForm.setExercise(exercise);
+			
+			Answer answer = new Answer();
+			answer.setCreateUserId(userId);
+			answer.setExerciseId(exerciseId);
+			answer.setExerVersion(1);
+			answer.setGuide("guide");
+			List<AnswerDetail> answerDetails = new ArrayList<AnswerDetail>();
+			AnswerDetail detail = new AnswerDetail();
+			detail.setContent("answer");
+			answerDetails.add(detail);
+			answer.setDetail(answerDetails);
+			exerciseForm.setAnswer(answer);
+			
+			exerciseId = exerciseService.add(exerciseForm);
+			
+			Long histExerciseId = DatabaseUtil.queryForLong(dataSource, "SELECT DBID FROM DRIP_HIST_EXERCISE WHERE EXER_ID=? AND VERSION=?", exerciseId, 1);
+			Long answerId = DatabaseUtil.queryForLong(dataSource, "SELECT DBID FROM DRIP_ANSWER WHERE EXER_ID=? AND EXER_VERSION=?", exerciseId, 1);
+			
+			// 更新习题
+			Answer newAnswer = new Answer();
+			newAnswer.setId(answerId);
+			newAnswer.setAnswerVersion(1);
+			newAnswer.setExerciseId(histExerciseId);
+			newAnswer.setGuide("guide1");
+			List<AnswerDetail> answerDetails1 = new ArrayList<AnswerDetail>();
+			AnswerDetail detail1 = new AnswerDetail();
+			detail1.setContent("answer1");
+			answerDetails1.add(detail1);
+			newAnswer.setDetail(answerDetails1);
+			newAnswer.setLastUpdateUserId(userId);
+			answerService.update(answerId, newAnswer);
+			
+			activities = activityService.getFollowing(null, userId);
+			assertEquals(3, activities.size());
+			Map<String, Object> activity = activities.get(0);
+			// 活动列表中显示的是历史习题中的信息
+			HistExercise result = (HistExercise) activity.get("exercise");
+			assertEquals("a", result.getContent());
+			assertEquals(1, result.getVersion().intValue());
+			assertEquals(ExerciseType.ESSAY_QUESTION, result.getExerciseType());
+			assertNotNull(result.getHistId());
+			// 显示习题信息
+			HistAnswer histAnswer = (HistAnswer) activity.get("answer");
+			assertNotNull(histAnswer.getHistId());
+			assertEquals(2, histAnswer.getAnswerVersion().intValue());
+			assertNotNull(histAnswer.getExerciseId()); // 存的是习题历史版本标识
+			assertEquals("guide1", histAnswer.getGuide());
+			assertEquals("answer1", histAnswer.getDetail().get(0).getContent());
 		}finally{
 			deleteAnswer(exerciseId);
 			deleteExercise(exerciseId);

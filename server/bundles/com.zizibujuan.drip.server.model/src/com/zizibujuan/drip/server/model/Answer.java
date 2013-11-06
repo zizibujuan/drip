@@ -114,6 +114,7 @@ public class Answer extends LogModel{
 	 * 获取习题版本号，这里指最后一次修改的答案，做的是哪一个版本的习题
 	 * 
 	 * @return 最新答案对应的习题版本号
+	 * @deprecated FIXME:待确认exerVersion有没有存在的必要
 	 */
 	public Integer getExerVersion() {
 		return exerVersion;
@@ -123,6 +124,7 @@ public class Answer extends LogModel{
 	 * 设置习题版本号，这里指最后一次修改的答案，做的是哪一个版本的习题
 	 * 
 	 * @param exerVersion 最新答案对应的习题版本号
+	 * @deprecated FIXME:待确认exerVersion有没有存在的必要
 	 */
 	public void setExerVersion(Integer exerVersion) {
 		this.exerVersion = exerVersion;

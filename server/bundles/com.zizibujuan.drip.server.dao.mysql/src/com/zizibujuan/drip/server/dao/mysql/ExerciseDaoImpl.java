@@ -77,8 +77,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			if(answer != null){
 				Exercise exerciseInfo = exerciseForm.getExercise();
 				String exerciseType = exerciseInfo.getExerciseType();
-				answer.setExerciseId(exerId);
-				answer.setExerVersion(exerciseInfo.getVersion());
+				answer.setExerciseId(histExerId); // 注意，这里保存的是历史习题标识
 				answer.setAnswerVersion(1);
 				answer.setCreateUserId(exerciseInfo.getCreateUserId());
 				
@@ -99,7 +98,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 					}
 				}
 				// 准备好数据之后，再保存
-				answerDao.insert(con, histExerId, answer);
+				answerDao.insert(con, answer);
 			}
 			
 			con.commit();

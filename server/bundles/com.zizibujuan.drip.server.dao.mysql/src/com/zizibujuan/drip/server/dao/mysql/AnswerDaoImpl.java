@@ -122,6 +122,7 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 			+ "DRIP_ANSWER "
 			+ "SET "
 			+ "GUIDE = ?,"
+			+ "ANSWER_VERSION = ?, "
 			+ "UPT_TM = now(),"
 			+ "UPT_USER_ID = ? "
 			+ "WHERE DBID = ?";
@@ -130,7 +131,7 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 			+ "WHERE "
 			+ "ANSWER_ID = ?";
 	@Override
-	public void update(Long histExerciseId, Long answerId, Answer newAnswer) {
+	public void update(Long answerId, Answer newAnswer) {
 		// 习题基本信息是更新，习题详情是删除了，重新加入
 		Connection con = null;
 		
@@ -138,18 +139,22 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 			con = getDataSource().getConnection();
 			con.setAutoCommit(false);
 			// 更新答案基本信息，主要是习题解析
-			DatabaseUtil.update(con, SQL_UPDATE_ANSWER, newAnswer.getGuide(), newAnswer.getLastUpdateUserId(), answerId);
+			Integer answerVersion = newAnswer.getAnswerVersion() + 1;
+			DatabaseUtil.update(con, SQL_UPDATE_ANSWER, newAnswer.getGuide(), answerVersion, newAnswer.getLastUpdateUserId(), answerId);
 			// 删除之前的答案详情
 			DatabaseUtil.update(con, SQL_DELETE_ANSWER_DETAIL, answerId);
 			// 插入新的答案详情
 			this.addAnswerDetail(con, answerId, newAnswer.getDetail());
 			// 在答案历史和答案详情历史表中插入记录
-			histAnswerDao.insert(con, DBAction.UPDATE, histExerciseId, newAnswer);
+			Long histExerciseId = newAnswer.getExerciseId(); // 注意，这个是历史习题标识
+			
+			newAnswer.setAnswerVersion(answerVersion);
+			Long histAnswerId = histAnswerDao.insert(con, DBAction.UPDATE, histExerciseId, newAnswer);
 			Long userId = newAnswer.getLastUpdateUserId();
 			// 在用户活动中添加活动
 			userStatisticsDao.increaseAnswerCount(con, userId);
 			// 增加用户活动数
-			activityDao.add(con, userId, answerId, ActionType.EDIT_ANSWER, true);
+			activityDao.add(con, userId, histAnswerId, ActionType.EDIT_ANSWER, true);
 			con.commit();
 		} catch (SQLException e) {
 			DatabaseUtil.safeRollback(con);
@@ -224,6 +229,7 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 		}
 	}
 
+	private static final String SQL_GET_EXERCISE_ID_AND_VERSION = "SELECT EXER_ID, VERSION FROM DRIP_HIST_EXERCISE WHERE DBID = ?";
 	private static final String SQL_INSERT_ANSWER = "INSERT INTO "
 			+ "DRIP_ANSWER "
 			+ "(ANSWER_VERSION,"
@@ -242,15 +248,22 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 			+ "VALUES "
 			+ "(?,?,?)";
 	@Override
-	public Long insert(Connection con, Long histExerciseId, Answer answer) throws SQLException {
+	public Long insert(Connection con, Answer answer) throws SQLException {
+		// 此时answer中的exerciseId是历史习题标识
+		Long histExerciseId = answer.getExerciseId();
+		Map<String, Object> exer = DatabaseUtil.queryForMap(con, SQL_GET_EXERCISE_ID_AND_VERSION, histExerciseId);
+		final Long exerId = Long.valueOf(exer.get("EXER_ID").toString());
+		final Integer version = Integer.valueOf(exer.get("VERSION").toString());
+		
+		answer.setAnswerVersion(1);
 		final Answer finalAnswer = answer;
 		Long answerId = DatabaseUtil.insert(con, SQL_INSERT_ANSWER, new PreparedStatementSetter() {
 			
 			@Override
 			public void setValues(PreparedStatement ps) throws SQLException {
 				ps.setInt(1, finalAnswer.getAnswerVersion());
-				ps.setLong(2, finalAnswer.getExerciseId());
-				ps.setInt(3, finalAnswer.getExerVersion());
+				ps.setLong(2, exerId);
+				ps.setInt(3, version);
 				ps.setString(4, finalAnswer.getGuide());
 				ps.setLong(5, finalAnswer.getCreateUserId());
 			}
@@ -285,13 +298,13 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 	}
 
 	@Override
-	public Long insert(Long histExerciseId, Answer answer) {
+	public Long insert(Answer answer) {
 		Connection con = null;
 		Long id = null;
 		try {
 			con = getDataSource().getConnection();
 			con.setAutoCommit(false);
-			id = insert(con, histExerciseId, answer);
+			id = insert(con, answer);
 			con.commit();
 		} catch (SQLException e) {
 			DatabaseUtil.safeRollback(con);

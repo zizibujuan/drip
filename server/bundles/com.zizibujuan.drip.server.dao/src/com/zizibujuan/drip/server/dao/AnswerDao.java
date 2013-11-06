@@ -83,31 +83,28 @@ public interface AnswerDao {
 	 * 新增习题答案和习题解析
 	 * 
 	 * @param con 数据库链接
-	 * @param histExerciseId 新增的答案对应习题的历史版本标识，
 	 * 		因为允许用户编辑习题(这样会不会出现很多错误的习题？或许大家在回答问题前会给出很多反馈)
 	 * 		TODO: 提供用户对习题质量打分的功能。
 	 * @param answer 答案信息
 	 * @return 答案标识
 	 * @throws SQLException 
 	 */
-	Long insert(Connection con, Long histExerciseId, Answer answer) throws SQLException;
+	Long insert(Connection con, Answer answer) throws SQLException;
 	
 	/**
 	 * 新增习题答案和习题解析
 	 * 
-	 * @param histExerciseId 新增的答案对应习题的历史版本标识
 	 * @param answer 答案信息
 	 * @return 答案标识
 	 */
-	Long insert(Long histExerciseId, Answer answer);
+	Long insert(Answer answer);
 	
 	/**
 	 * 编辑习题答案和习题解析
 	 * 
-	 * @param histExerciseId 新增的答案对应习题的历史版本标识
 	 * @param answerId 答案标识
 	 * @param newAnswer 答案信息
 	 */
-	void update(Long histExerciseId, Long answerId, Answer newAnswer);
+	void update(Long answerId, Answer newAnswer);
 
 }

@@ -33,6 +33,39 @@ public abstract class DatabaseUtil {
 	private static String SQL_DELETE_BY_IDENTITY = "DELETE FROM %s WHERE %s=?";
 	private static String SQL_GET_BY_IDENTITY = "SELECT * FROM %s WHERE %s=?";
 	
+	public static List<Map<String, Object>> queryForList(Connection con, String sql, Object...params){
+		List<Map<String,Object>> result = new ArrayList<Map<String,Object>>();
+		PreparedStatement stmt = null;
+		ResultSet rst = null;
+		try {
+			stmt = con.prepareStatement(sql);
+			addParams(stmt, params);
+			
+			rst = stmt.executeQuery();
+			ResultSetMetaData meta = rst.getMetaData();
+			int columnCount = meta.getColumnCount();
+			while(rst.next())
+			{
+				Map<String,Object> map = new HashMap<String, Object>();
+				for(int i = 0; i < columnCount; i++){
+					int index = i + 1;
+					String key = meta.getColumnLabel(index);
+					Object value = getResultSetValue(rst, index);
+					map.put(key, value);
+				}
+				result.add(map);
+			}
+		} catch (SQLException e) {
+			throw new DataAccessException("执行失败：sql语句为:"+sql,e);
+		}
+		finally
+		{
+			DatabaseUtil.closeResultSet(rst);
+			DatabaseUtil.closeStatement(stmt);
+		}
+		return result;
+	}
+	
 	public static List<Map<String, Object>> queryForList(DataSource ds, String sql, Object... params) {
 		
 		List<Map<String,Object>> result = new ArrayList<Map<String,Object>>();
@@ -345,6 +378,18 @@ public abstract class DatabaseUtil {
 			} catch (SQLException e) {
 				throw new DataAccessException(e);
 			}
+		}
+	}
+	
+	public static Map<String, Object> queryForMap(Connection con,String sql, Object... params){
+		List<Map<String,Object>> list = queryForList(con,sql, params);
+		int count = list.size();
+		if(count==1){
+			return list.get(0);
+		}else if(count==0){
+			return new HashMap<String, Object>();
+		}else{
+			throw new IllegalStateException("查询出来的记录数不允许大于1，结果却为"+count);
 		}
 	}
 
