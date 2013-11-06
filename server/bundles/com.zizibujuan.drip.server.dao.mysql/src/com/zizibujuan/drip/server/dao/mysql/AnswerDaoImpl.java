@@ -42,6 +42,7 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 	
 	private static final String SQL_GET_ANSWER = "SELECT "
 			+ "DBID,"
+			+ "ANSWER_VERSION,"
 			+ "EXER_ID,"
 			+ "GUIDE,"
 			+ "CRT_TM,"
@@ -70,12 +71,13 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 			public Answer mapRow(ResultSet rs, int rowNum) throws SQLException {
 				Answer answer = new Answer();
 				answer.setId(rs.getLong(1));
-				answer.setExerciseId(rs.getLong(2));
-				answer.setGuide(rs.getString(3));
-				answer.setCreateTime(rs.getTimestamp(4));
-				answer.setCreateUserId(rs.getLong(5));
-				answer.setLastUpdateTime(rs.getTimestamp(6));
-				answer.setLastUpdateUserId(rs.getLong(7));
+				answer.setAnswerVersion(rs.getInt(2));
+				answer.setExerciseId(rs.getLong(3));
+				answer.setGuide(rs.getString(4));
+				answer.setCreateTime(rs.getTimestamp(5));
+				answer.setCreateUserId(rs.getLong(6));
+				answer.setLastUpdateTime(rs.getTimestamp(7));
+				answer.setLastUpdateUserId(rs.getLong(8));
 				return answer;
 			}
 		}, answerId);
@@ -140,6 +142,7 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 			con.setAutoCommit(false);
 			// 更新答案基本信息，主要是习题解析
 			Integer answerVersion = newAnswer.getAnswerVersion() + 1;
+			// TODO: 如果允许编辑习题，则需要同步习题最新版本，因为用户只回答最新版本的习题
 			DatabaseUtil.update(con, SQL_UPDATE_ANSWER, newAnswer.getGuide(), answerVersion, newAnswer.getLastUpdateUserId(), answerId);
 			// 删除之前的答案详情
 			DatabaseUtil.update(con, SQL_DELETE_ANSWER_DETAIL, answerId);
@@ -176,12 +179,13 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 			public Answer mapRow(ResultSet rs, int rowNum) throws SQLException {
 				Answer answer = new Answer();
 				answer.setId(rs.getLong(1));
-				answer.setExerciseId(rs.getLong(2));
-				answer.setGuide(rs.getString(3));
-				answer.setCreateTime(rs.getTimestamp(4));
-				answer.setCreateUserId(rs.getLong(5));
-				answer.setLastUpdateTime(rs.getTimestamp(6));
-				answer.setLastUpdateUserId(rs.getLong(7));
+				answer.setAnswerVersion(rs.getInt(2));
+				answer.setExerciseId(rs.getLong(3));
+				answer.setGuide(rs.getString(4));
+				answer.setCreateTime(rs.getTimestamp(5));
+				answer.setCreateUserId(rs.getLong(6));
+				answer.setLastUpdateTime(rs.getTimestamp(7));
+				answer.setLastUpdateUserId(rs.getLong(8));
 				return answer;
 			}
 		}, userId, exerciseId);

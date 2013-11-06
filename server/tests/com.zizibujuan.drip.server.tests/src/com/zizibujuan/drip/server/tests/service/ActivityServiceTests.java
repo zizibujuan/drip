@@ -48,7 +48,6 @@ public class ActivityServiceTests extends AbstractUserTests{
 			Exercise exercise = new Exercise();
 			exercise.setContent("a");
 			exercise.setExerciseType(ExerciseType.ESSAY_QUESTION);
-			exercise.setVersion(1);
 			exercise.setCreateUserId(userId);
 			exerciseForm.setExercise(exercise);
 			exerciseService.add(exerciseForm);
@@ -163,63 +162,6 @@ public class ActivityServiceTests extends AbstractUserTests{
 			deleteTestUser(userId);
 		}
 	}
-	
-	@Test
-	public void test_insert_exercise_then_answer_then_get_activity(){
-		Long userId = null;
-		Long exerciseId = null;
-		try{
-			userId = importUser(OAuthConstants.RENREN, "a", "b", Gender.MALE);
-			List<Map<String,Object>> activities = activityService.getFollowing(null, userId);
-			assertEquals(0, activities.size());
-			
-			ExerciseForm exerciseForm = new ExerciseForm();
-			Exercise exercise = new Exercise();
-			exercise.setContent("a");
-			exercise.setExerciseType(ExerciseType.ESSAY_QUESTION);
-			exercise.setVersion(1);
-			exercise.setCreateUserId(userId);
-			exerciseForm.setExercise(exercise);
-			exerciseId = exerciseService.add(exerciseForm);
-			// 历史习题id如何获取呢?
-			Long histExerciseId = DatabaseUtil.queryForLong(dataSource, "SELECT DBID FROM DRIP_HIST_EXERCISE WHERE EXER_ID=? AND VERSION=?", exerciseId, 1);
-			
-			Answer answer = new Answer();
-			answer.setCreateUserId(userId);
-			answer.setExerciseId(histExerciseId);
-			answer.setGuide("guide");
-			AnswerDetail detail = new AnswerDetail();
-			detail.setContent("answer");
-			List<AnswerDetail> details = new ArrayList<AnswerDetail>();
-			details.add(detail);
-			answer.setDetail(details);
-			Long answerId = answerService.insert(answer);
-			
-			activities = activityService.getFollowing(null, userId);
-			assertEquals(2, activities.size());
-			Map<String, Object> activity = activities.get(0);
-			HistAnswer result = (HistAnswer) activity.get("answer");
-			assertNotNull(result.getHistId());
-			assertEquals("guide", result.getGuide());
-			assertEquals("answer", result.getDetail().get(0).getContent());
-			assertEquals(histExerciseId, result.getExerciseId());
-			assertEquals(answerId, result.getId());
-			assertEquals(1, result.getAnswerVersion().intValue());
-		}finally{
-			// 删除添加的习题和活动
-			deleteExercise(exerciseId);
-			
-			String sql = "UPDATE DRIP_USER_STATISTICS SET " +
-					"EXER_PUBLISH_COUNT=EXER_PUBLISH_COUNT-1 " +
-					"WHERE USER_ID=?";
-			DatabaseUtil.update(dataSource, sql, userId);
-			
-			sql = "DELETE FROM DRIP_ACTIVITY WHERE USER_ID = ?"; // 删除用户的所有活动
-			DatabaseUtil.update(dataSource, sql, userId);
-			
-			deleteTestUser(userId);
-		}
-	}
 
 	@Test
 	public void test_insert_exercise_with_answer_then_get_activity(){
@@ -234,14 +176,11 @@ public class ActivityServiceTests extends AbstractUserTests{
 			Exercise exercise = new Exercise();
 			exercise.setContent("a");
 			exercise.setExerciseType(ExerciseType.ESSAY_QUESTION);
-			exercise.setVersion(1);
 			exercise.setCreateUserId(userId);
 			exerciseForm.setExercise(exercise);
 			
 			Answer answer = new Answer();
 			answer.setCreateUserId(userId);
-			answer.setExerciseId(exerciseId);
-			answer.setExerVersion(1);
 			answer.setGuide("guide");
 			List<AnswerDetail> answerDetails = new ArrayList<AnswerDetail>();
 			AnswerDetail detail = new AnswerDetail();
@@ -289,9 +228,66 @@ public class ActivityServiceTests extends AbstractUserTests{
 		}
 	}
 	
+	
+	@Test
+	public void test_insert_exercise_then_answer_then_get_activity(){
+		Long userId = null;
+		Long exerciseId = null;
+		try{
+			userId = importUser(OAuthConstants.RENREN, "a", "b", Gender.MALE);
+			List<Map<String,Object>> activities = activityService.getFollowing(null, userId);
+			assertEquals(0, activities.size());
+			
+			ExerciseForm exerciseForm = new ExerciseForm();
+			Exercise exercise = new Exercise();
+			exercise.setContent("a");
+			exercise.setExerciseType(ExerciseType.ESSAY_QUESTION);
+			exercise.setVersion(1);
+			exercise.setCreateUserId(userId);
+			exerciseForm.setExercise(exercise);
+			exerciseId = exerciseService.add(exerciseForm);
+			// 历史习题id如何获取呢?
+			Long histExerciseId = DatabaseUtil.queryForLong(dataSource, "SELECT DBID FROM DRIP_HIST_EXERCISE WHERE EXER_ID=? AND VERSION=?", exerciseId, 1);
+			
+			Answer answer = new Answer();
+			answer.setCreateUserId(userId);
+			answer.setExerciseId(histExerciseId); // 特别注意的是，这里需要传入历史习题标识
+			answer.setGuide("guide");
+			AnswerDetail detail = new AnswerDetail();
+			detail.setContent("answer");
+			List<AnswerDetail> details = new ArrayList<AnswerDetail>();
+			details.add(detail);
+			answer.setDetail(details);
+			Long answerId = answerService.insert(answer);
+			
+			activities = activityService.getFollowing(null, userId);
+			assertEquals(2, activities.size());
+			Map<String, Object> activity = activities.get(0);
+			HistAnswer result = (HistAnswer) activity.get("answer");
+			assertNotNull(result.getHistId());
+			assertEquals("guide", result.getGuide());
+			assertEquals("answer", result.getDetail().get(0).getContent());
+			assertEquals(histExerciseId, result.getExerciseId());
+			assertEquals(answerId, result.getId());
+			assertEquals(1, result.getAnswerVersion().intValue());
+		}finally{
+			// 删除添加的习题和活动
+			deleteExercise(exerciseId);
+			
+			String sql = "UPDATE DRIP_USER_STATISTICS SET " +
+					"EXER_PUBLISH_COUNT=EXER_PUBLISH_COUNT-1 " +
+					"WHERE USER_ID=?";
+			DatabaseUtil.update(dataSource, sql, userId);
+			
+			sql = "DELETE FROM DRIP_ACTIVITY WHERE USER_ID = ?"; // 删除用户的所有活动
+			DatabaseUtil.update(dataSource, sql, userId);
+			
+			deleteTestUser(userId);
+		}
+	}
+
 	@Test
 	public void test_update_answer_then_get_activity(){
-		//XXXXXXXXXXX: 还没有修改
 		Long userId = null;
 		Long exerciseId = null;
 		try{
@@ -310,7 +306,6 @@ public class ActivityServiceTests extends AbstractUserTests{
 			Answer answer = new Answer();
 			answer.setCreateUserId(userId);
 			answer.setExerciseId(exerciseId);
-			answer.setExerVersion(1);
 			answer.setGuide("guide");
 			List<AnswerDetail> answerDetails = new ArrayList<AnswerDetail>();
 			AnswerDetail detail = new AnswerDetail();
@@ -326,9 +321,9 @@ public class ActivityServiceTests extends AbstractUserTests{
 			
 			// 更新习题
 			Answer newAnswer = new Answer();
-			newAnswer.setId(answerId);
-			newAnswer.setAnswerVersion(1);
-			newAnswer.setExerciseId(histExerciseId);
+			newAnswer.setId(answerId); // 这里需要额外传入答案标识
+			newAnswer.setAnswerVersion(1); // 这里需要额外传入当前答案版本号
+			newAnswer.setExerciseId(histExerciseId); // 这里需要额外传入历史习题标识
 			newAnswer.setGuide("guide1");
 			List<AnswerDetail> answerDetails1 = new ArrayList<AnswerDetail>();
 			AnswerDetail detail1 = new AnswerDetail();

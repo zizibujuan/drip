@@ -162,8 +162,10 @@ define(["dojo/_base/declare",
 				//var btnCancel = new Button({"label":"取消",style:"float:right"});
 				//btnCancel.placeAt(btnContainer);
 				on(btnSave, "click", lang.hitch(this,function(e){
+					debugger;
 					var answerData = {};
-					answerData.exerciseId = exerciseInfo.id;
+					// FIXME:answerInfo的exerciseId中存的应该是稳定的习题标识,即不是历史习题标识。
+					answerData.exerciseId = this._currentUserAnswer.exerciseId;
 					answerData.detail = [];
 					if(this._isOptionExercise(exerType)){
 						this._getOptionEls().forEach(lang.hitch(this,function(optionEl, index){
@@ -205,7 +207,10 @@ define(["dojo/_base/declare",
 					var target = "/answers/";
 					if(this._currentUserAnswer){
 						method = "PUT";
-						target += this._currentUserAnswer.id;
+						target += this._currentUserAnswer.id; // 是当前答案表中的标识，不是历史答案表中的标识
+						answerData.id = this._currentUserAnswer.id;
+						answerData.answerVersion = this._currentUserAnswer.answerVersion;
+						
 					}else{
 						method = "POST";
 					}
@@ -252,6 +257,7 @@ define(["dojo/_base/declare",
 				//answerWidget.push(btnCancel);
 				
 				// 把加载数据放在最后
+				// 查出最新版本的答案，用户回答问题时，只对最新版本的习题作答。
 				xhr.get("/answers/",{query:{exerId:exerciseId},handleAs:"json"}).then(lang.hitch(this,function(data){
 					// 这里应该将"null"解析为null
 					if(data == null || data == "null"){
