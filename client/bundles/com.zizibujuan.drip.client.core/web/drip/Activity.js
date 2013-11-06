@@ -164,8 +164,6 @@ define(["dojo/_base/declare",
 				on(btnSave, "click", lang.hitch(this,function(e){
 					debugger;
 					var answerData = {};
-					// FIXME:answerInfo的exerciseId中存的应该是稳定的习题标识,即不是历史习题标识。
-					answerData.exerciseId = this._currentUserAnswer.exerciseId;
 					answerData.detail = [];
 					if(this._isOptionExercise(exerType)){
 						this._getOptionEls().forEach(lang.hitch(this,function(optionEl, index){
@@ -210,9 +208,11 @@ define(["dojo/_base/declare",
 						target += this._currentUserAnswer.id; // 是当前答案表中的标识，不是历史答案表中的标识
 						answerData.id = this._currentUserAnswer.id;
 						answerData.answerVersion = this._currentUserAnswer.answerVersion;
-						
+						// FIXME:answerInfo的exerciseId中存的应该是稳定的习题标识,即不是历史习题标识。
+						answerData.exerciseId = this._currentUserAnswer.exerciseId;
 					}else{
 						method = "POST";
+						answerData.exerciseId = exerciseInfo.id;
 					}
 					
 					xhr(target,{
@@ -281,6 +281,7 @@ define(["dojo/_base/declare",
 					
 					
 					if(exerType == classCode.ExerciseType.ESSAY_QUESTION && data.detail && data.detail.length == 1){
+						debugger;
 						// 如果是问答题，则必有一个answerEditor
 						answerEditor.set("value", data.detail[0].content);
 					}
