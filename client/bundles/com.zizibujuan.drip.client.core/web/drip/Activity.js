@@ -122,7 +122,9 @@ define(["dojo/_base/declare",
 			// TODO:需要将mathEditor中model的格式转换为html格式
 			var html = dataUtil.xmlStringToHtml(exerciseInfo.content);
 			var _contentDiv = domConstruct.create("div", {innerHTML: html, "class": "content"}, this.exerciseNode);
-			var _imageDiv = domConstruct.create("img", {src: "/userImages/" + userInfo.userId + "/" + exerciseInfo.imageName}, this.exerciseNode);
+			if(exerciseInfo.imageName){
+				var _imageDiv = domConstruct.create("img", {src: "/userImages/" + userInfo.userId + "/" + exerciseInfo.imageName}, this.exerciseNode);
+			}
 			var options = exerciseInfo.options;
 			if(options && options.length > 0){
 				var inputType = "radio";
