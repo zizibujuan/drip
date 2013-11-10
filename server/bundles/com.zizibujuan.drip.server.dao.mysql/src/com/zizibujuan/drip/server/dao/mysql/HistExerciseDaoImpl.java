@@ -33,11 +33,12 @@ public class HistExerciseDaoImpl extends AbstractDao implements HistExerciseDao 
 			+ "CONTENT,"
 			+ "EXER_TYPE,"
 			+ "EXER_COURSE,"
+			+ "IMAGE_NAME,"
 			+ "ACTION,"
 			+ "UPT_TM,"
 			+ "UPT_USER_ID) "
 			+ "VALUES "
-			+ "(?, ?, ?, ?, ?, ?, now(), ?)";
+			+ "(?, ?, ?, ?, ?, ?, ?, now(), ?)";
 	private static final String SQL_INSERT_HIST_EXER_OPTION = "INSERT INTO "
 			+ "DRIP_HIST_EXER_OPTION "
 			+ "(HIST_EXER_ID,"
@@ -55,12 +56,13 @@ public class HistExerciseDaoImpl extends AbstractDao implements HistExerciseDao 
 				ps.setString(3, exercise.getContent());
 				ps.setString(4, exercise.getExerciseType());
 				ps.setString(5, exercise.getCourse());
-				ps.setString(6, dbAction);
+				ps.setString(6, exercise.getImageName());
+				ps.setString(7, dbAction);
 				if(dbAction.equals(DBAction.CREATE)){
-					ps.setLong(7, exercise.getCreateUserId());
+					ps.setLong(8, exercise.getCreateUserId());
 				}else{
 					// 删除操作完成后，把操作人记录在更新用户里
-					ps.setLong(7, exercise.getLastUpdateUserId());
+					ps.setLong(8, exercise.getLastUpdateUserId());
 				}
 			}
 		});
@@ -95,6 +97,7 @@ public class HistExerciseDaoImpl extends AbstractDao implements HistExerciseDao 
 			+ "CONTENT,"
 			+ "EXER_TYPE,"
 			+ "EXER_COURSE,"
+			+ "IMAGE_NAME,"
 			+ "ACTION,"
 			+ "UPT_TM,"
 			+ "UPT_USER_ID "
@@ -116,9 +119,10 @@ public class HistExerciseDaoImpl extends AbstractDao implements HistExerciseDao 
 				exercise.setContent(rs.getString(4));
 				exercise.setExerciseType(rs.getString(5));
 				exercise.setCourse(rs.getString(6));
-				exercise.setAction(rs.getString(7));
-				exercise.setCreateTime(rs.getTimestamp(8));
-				exercise.setCreateUserId(rs.getLong(9));
+				exercise.setImageName(rs.getString(7));
+				exercise.setAction(rs.getString(8));
+				exercise.setCreateTime(rs.getTimestamp(9));
+				exercise.setCreateUserId(rs.getLong(10));
 				return exercise;
 			}
 		}, histExerciseId);

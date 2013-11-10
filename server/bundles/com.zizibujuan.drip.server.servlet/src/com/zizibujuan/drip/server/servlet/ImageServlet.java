@@ -9,7 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.eclipse.core.runtime.IPath;
 
+import com.zizibujuan.drip.server.service.ApplicationPropertyService;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 
 /**
@@ -20,21 +22,24 @@ import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 public class ImageServlet extends BaseServlet {
 
 	private static final long serialVersionUID = 8065790517880160407L;
+	
+	private ApplicationPropertyService applicationPropertyService;
+	
+	public ImageServlet(){
+		applicationPropertyService = ServiceHolder.getDefault().getApplicationPropertyService();
+	}
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		traceRequest(req);
-		String pathInfo = req.getPathInfo();
-		if(pathInfo != null && !pathInfo.equals("/")){
-			String[] imageInfos = pathInfo.split("/");
-			// TODO:重复放置了，提取到配置文件中
+		IPath path = getPath(req);
+		if(path.segmentCount() == 2){
+			String userId = path.segment(0);
+			String imageName = path.segment(1);
 			// 根目录
-			String dataFilePath = "/home/jzw/drip/";
-			// 放置习题配图
-			String exercisePath = "exercise/users/";
-			
-			File file = new File(dataFilePath+exercisePath+imageInfos[2]+"/"+imageInfos[3]);
+			String exerImgRootPath = applicationPropertyService.getForString("exercise.image.path.root");
+			File file = new File(exerImgRootPath + userId + "/" + imageName);
 			IOUtils.copy(new FileInputStream(file), resp.getOutputStream());
 			return;
 		}

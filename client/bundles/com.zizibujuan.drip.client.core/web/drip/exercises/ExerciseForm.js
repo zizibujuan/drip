@@ -312,7 +312,7 @@ define(["dojo/_base/declare",
 			u.placeAt(title);
 			u.startup();
 			
-			var list = new drip.widget.form.uploader.FileList({uploader:u});
+			var list = this.image = new drip.widget.form.uploader.FileList({uploader:u});
 			list.placeAt(title);
 			//list.startup();
 			this._imageInput = true;
@@ -364,6 +364,7 @@ define(["dojo/_base/declare",
 		_getFormData: function(){
 			var data = this.data;
 			data.exercise.exerciseType = this._exerciseType;
+			data.exercise.imageName = this.image.fileId;
 			data.exercise.content = this.exerContentEditor.get("value");
 			// TODO:获取题型和科目
 			query("[name=" + this._courseOptionName + "]:checked", this.coursePane).forEach(function(inputEl, index){

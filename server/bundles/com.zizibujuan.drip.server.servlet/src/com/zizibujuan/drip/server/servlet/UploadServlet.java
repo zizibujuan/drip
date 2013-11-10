@@ -17,8 +17,10 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.eclipse.core.runtime.IPath;
 
 import com.zizibujuan.drip.server.model.UserInfo;
+import com.zizibujuan.drip.server.service.ApplicationPropertyService;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
 import com.zizibujuan.drip.server.util.servlet.UserSession;
@@ -33,6 +35,12 @@ import com.zizibujuan.drip.server.util.servlet.UserSession;
 public class UploadServlet extends BaseServlet {
 
 	private static final long serialVersionUID = 8688828330683061302L;
+	
+	private ApplicationPropertyService applicationPropertyService;
+	
+	public UploadServlet(){
+		applicationPropertyService = ServiceHolder.getDefault().getApplicationPropertyService();
+	}
 
 	/**
 	 * items.length=5
@@ -61,10 +69,10 @@ public class UploadServlet extends BaseServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		traceRequest(req);
-		String pathInfo = req.getPathInfo();
-		if(pathInfo != null && !pathInfo.equals("/")){
-			System.out.println(pathInfo);
-			if(pathInfo.equals("/exerciseImage")){
+		IPath path = getPath(req);
+		if(path.segmentCount() == 1){
+			String action = path.segment(0);
+			if(action.equals("exerciseImage")){
 				List<Map<String,Object>> result = new ArrayList<Map<String,Object>>();
 				
 				// 图片都存在一个ApplicationData的目录中,该目录放在部署根目录的外面。
@@ -78,16 +86,15 @@ public class UploadServlet extends BaseServlet {
 					// 如果没有赋值，默认放在workspace下。
 					
 					// 根目录 TODO:改为可配置
-					String dataFilePath = "/home/jzw/drip/";
+					String dataFilePath = applicationPropertyService.getForString("exercise.image.path.root");
 					// 放置习题配图 FIXME：是否需要在路径中再加一层，mapUserId
 					UserInfo userInfo = (UserInfo) UserSession.getUser(req);
 					Long curUserId = userInfo.getId();
-					String exercisePath = "exercise/users/" + curUserId + "/";
 					// TODO：用profile放置用户上传的头像
 					// FIXME：是否使用用户标识分组图像，如果使用的话，便于管理；但是不利于底层共享。
 					// 因为在检索图片时，还需要在路径中增加上传用户的信息。
 					
-					File dir = new File(dataFilePath+ exercisePath);
+					File dir = new File(dataFilePath + curUserId + "/");
 					if(!dir.exists()){
 						dir.mkdirs();
 					}
@@ -116,7 +123,7 @@ public class UploadServlet extends BaseServlet {
 							map.put("type", ext != null?ext.substring(1).toUpperCase():null);
 							map.put("size", item.getSize());
 							map.put("fieldName", item.getFieldName());
-							map.put("url", "/userImages/exercise/" + curUserId + "/"+newFileName);
+							map.put("url", "/userImages/" + curUserId + "/"+newFileName);
 							map.put("fileId", newFileName);
 							result.add(map);
 							File file = new File(dir, newFileName);

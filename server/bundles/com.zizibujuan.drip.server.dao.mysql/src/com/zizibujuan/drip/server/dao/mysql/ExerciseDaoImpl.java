@@ -126,10 +126,11 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			+ "VERSION,"
 			+ "EXER_TYPE, "
 			+ "EXER_COURSE, "
+			+ "IMAGE_NAME, "
 			+ "CRT_TM, "
 			+ "CRT_USER_ID) "
 			+ "VALUES "
-			+ "(?,?,?,?,now(),?)";
+			+ "(?,?,?,?,?,now(),?)";
 
 	private static final String SQL_INSERT_EXER_OPTION = "INSERT INTO "
 			+ "DRIP_EXER_OPTION "
@@ -149,7 +150,8 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 				ps.setInt(2, finalExerciseInfo.getVersion());
 				ps.setString(3, finalExerciseInfo.getExerciseType());
 				ps.setString(4, finalExerciseInfo.getCourse());
-				ps.setLong(5, finalExerciseInfo.getCreateUserId());
+				ps.setString(5, finalExerciseInfo.getImageName());
+				ps.setLong(6, finalExerciseInfo.getCreateUserId());
 			}
 		});
 		exerciseInfo.setId(exerId);
@@ -187,6 +189,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			+ "CONTENT,"
 			+ "EXER_TYPE,"
 			+ "EXER_COURSE,"
+			+ "IMAGE_NAME,"
 			+ "CRT_TM,"
 			+ "CRT_USER_ID,"
 			+ "UPT_TM,"
@@ -206,10 +209,11 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 				exercise.setContent(rs.getString(2));
 				exercise.setExerciseType(rs.getString(3));
 				exercise.setCourse(rs.getString(4));
-				exercise.setCreateTime(rs.getTimestamp(5));
-				exercise.setCreateUserId(rs.getLong(6));
-				exercise.setLastUpdateTime(rs.getTimestamp(7));
-				exercise.setLastUpdateUserId(rs.getLong(8));
+				exercise.setImageName(rs.getString(5));
+				exercise.setCreateTime(rs.getTimestamp(6));
+				exercise.setCreateUserId(rs.getLong(7));
+				exercise.setLastUpdateTime(rs.getTimestamp(8));
+				exercise.setLastUpdateUserId(rs.getLong(9));
 				return exercise;
 			}
 		}, exerciseId);

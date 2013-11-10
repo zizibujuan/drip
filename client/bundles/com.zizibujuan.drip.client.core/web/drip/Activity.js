@@ -77,7 +77,6 @@ define(["dojo/_base/declare",
 			
 			// 解答按钮
 			on(this.btnAnswer,"click", lang.hitch(this, this._loadAnswerHandler));
-			debugger;
 			var watchUserId = this.data.userInfo.userId;
 			// 为头像和用户名绑定mouseover事件
 			on(this.userLinkNode,"mouseover", lang.hitch(this, function(e){
@@ -119,10 +118,11 @@ define(["dojo/_base/declare",
 		
 		_createExercise: function(){
 			var exerciseInfo = this.data.exercise;
+			var userInfo = this.data.userInfo;
 			// TODO:需要将mathEditor中model的格式转换为html格式
 			var html = dataUtil.xmlStringToHtml(exerciseInfo.content);
 			var _contentDiv = domConstruct.create("div", {innerHTML: html, "class": "content"}, this.exerciseNode);
-			
+			var _imageDiv = domConstruct.create("img", {src: "/userImages/" + userInfo.userId + "/" + exerciseInfo.imageName}, this.exerciseNode);
 			var options = exerciseInfo.options;
 			if(options && options.length > 0){
 				var inputType = "radio";

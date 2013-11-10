@@ -15,11 +15,16 @@ insert into DRIP_PROPERTY_VALUE_NUMBER (KEY_ID, PROPERTY_VALUE) VALUES (1, 0);
 -- git仓库的根目录
 insert into DRIP_PROPERTY_KEY (DBID,PROPERTY_KEY,GROUP_ID,PROPERTY_TYPE) VALUES (60, 'git.repo.root', 1, 1);
 -- 本地测试目录是/home/jzw/drip_data/
-insert into DRIP_PROPERTY_VALUE_STRING (KEY_ID, PROPERTY_VALUE,I18n_ID) VALUES (60, '/mnt/drip_data/','zh_cn');
+insert into DRIP_PROPERTY_VALUE_STRING (KEY_ID, PROPERTY_VALUE,I18n_ID) VALUES (60, '/mnt/drip_data/doc/','zh_cn');
 
 -- 是否允许自动发送激活邮件，默认是允许
 insert into DRIP_PROPERTY_KEY (DBID,PROPERTY_KEY,GROUP_ID,PROPERTY_TYPE) VALUES (61, 'email.active.user.auto', 1, 1);
 insert into DRIP_PROPERTY_VALUE_STRING (KEY_ID, PROPERTY_VALUE,I18n_ID) VALUES (61, '1','zh_cn');
+
+-- 存放习题图片的根目录
+insert into DRIP_PROPERTY_KEY (DBID,PROPERTY_KEY,GROUP_ID,PROPERTY_TYPE) VALUES (62, 'exercise.image.path.root', 1, 1);
+insert into DRIP_PROPERTY_VALUE_STRING (KEY_ID, PROPERTY_VALUE,I18n_ID) VALUES (62, '/mnt/drip_data/exer_img/','zh_cn');
+
 
 -- renren连接信息
 insert into DRIP_PROPERTY_GROUP (DBID, GROUP_NAME, DISPLAY_NAME,I18N_ID) VALUES (2,'renren','人人网','zh_cn');
