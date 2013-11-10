@@ -348,6 +348,12 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 		});
 	}
 	
+	private static final String SQL_GET_EXER_ANSWER_COUNT = "SELECT COUNT(*) FROM DRIP_ANSWER WHERE EXER_ID = ?";
+	@Override
+	public Integer getAnswerCount(Long exerciseId) {
+		return DatabaseUtil.queryForInt(getDataSource(), SQL_GET_EXER_ANSWER_COUNT, exerciseId);
+	}
+	
 
 	public void setUserDao(UserDao userDao) {
 		logger.info("注入userDao");
@@ -396,5 +402,5 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 			this.histAnswerDao = null;
 		}
 	}
-	
+
 }

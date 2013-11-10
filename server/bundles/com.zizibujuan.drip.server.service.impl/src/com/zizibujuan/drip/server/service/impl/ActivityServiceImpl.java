@@ -72,6 +72,7 @@ public class ActivityServiceImpl implements ActivityService {
 			if(actionType.equals(ActionType.SAVE_EXERCISE) || actionType.equals(ActionType.EDIT_EXERCISE)){
 				HistExercise exercise = getHistExercise(contentId);
 				map.put("exercise", exercise);
+				map.put("exerAnswerCount", answerDao.getAnswerCount(exercise.getId()));
 			}else if(actionType.equals(ActionType.ANSWER_EXERCISE) || actionType.equals(ActionType.EDIT_ANSWER)){
 				// 活动表中，记录的是历史表中的答案或习题标识
 				
@@ -81,6 +82,7 @@ public class ActivityServiceImpl implements ActivityService {
 				HistExercise exercise = getHistExercise(histExerciseId);
 				map.put("exercise", exercise);
 				map.put("answer", answer);
+				map.put("exerAnswerCount", answerDao.getAnswerCount(exercise.getId()));
 			}else{
 				throw new UnsupportedOperationException("不支持的操作类型");
 			}

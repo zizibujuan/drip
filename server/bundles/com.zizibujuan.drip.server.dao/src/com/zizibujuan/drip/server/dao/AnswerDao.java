@@ -107,4 +107,12 @@ public interface AnswerDao {
 	 */
 	void update(Long answerId, Answer newAnswer);
 
+	/**
+	 * 获取习题的回答人次
+	 * 
+	 * @param exerciseId 习题标识，注意不是历史习题标识
+	 * @return 回答人次，如果没有人回答则返回0
+	 */
+	Integer getAnswerCount(Long exerciseId);
+
 }

@@ -74,6 +74,8 @@ define(["dojo/_base/declare",
 			this._createExercise();
 			this._createAnswer();
 			
+			// TODO: 每回答一次+1
+			this.drip_answer_count.innerHTML = this.data.exerAnswerCount;
 			
 			// 解答按钮
 			on(this.btnAnswer,"click", lang.hitch(this, this._loadAnswerHandler));
@@ -321,7 +323,6 @@ define(["dojo/_base/declare",
 			// TODO：保存的时候进行判断，如果answerId已经存在，则执行put;如果不存在，则执行post
 			
 			var method = null;
-			debugger;
 			var target = "/answers/";
 			if(this._currentUserAnswer){
 				method = "PUT";
@@ -332,7 +333,8 @@ define(["dojo/_base/declare",
 				answerData.exerciseId = this._currentUserAnswer.exerciseId;
 			}else{
 				method = "POST";
-				answerData.exerciseId = exerciseInfo.id;
+				// 这里存放的是历史习题标识
+				answerData.exerciseId = this.data.exercise.histId;
 			}
 			
 			xhr(target,{
