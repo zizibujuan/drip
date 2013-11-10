@@ -9,6 +9,7 @@ define(["dojo/_base/declare",
         "dojo/dom-style",
         "dojo/query",
         "dojo/on",
+        "dojo/fx",
         "dojo/json",
         "dojo/string",
         "dojo/date/locale",
@@ -22,7 +23,8 @@ define(["dojo/_base/declare",
         "mathEditor/dataUtil",
         "dojo/text!./templates/ActivityNode.html",
         "dojo/text!./templates/ActivityList.html",
-        "drip/MiniCard"], function(
+        "drip/MiniCard",
+        "drip/tip"], function(
         		declare,
         		array,
         		lang,
@@ -33,6 +35,7 @@ define(["dojo/_base/declare",
         		domStyle,
         		query,
         		on,
+        		coreFx,
         		JSON,
         		string,
         		locale,
@@ -46,7 +49,8 @@ define(["dojo/_base/declare",
         		dataUtil,
         		nodeTemplate,
         		listTemplate,
-        		MiniCard){
+        		MiniCard,
+        		tip){
 	
 	// TODO：用户答题前，确保没有显示答案
 	// TODO：“不做了”，恢复到答题前的状态
@@ -250,7 +254,7 @@ define(["dojo/_base/declare",
 			// FIXME：当div中有float元素时，怎么让div的高度根据其中元素的高度自适应
 			var btnContainer = domConstruct.create("div",{style:"width:98%;margin-top:5px;text-align:right"},doAnswerPane);
 			// TODO:i18n
-			var aCancel = domConstruct.create("a",{"class":"drip_op_cancel",innerHTML:"取消",href:"#"},btnContainer);
+			var aCancel = this._aCancel = domConstruct.create("a",{"class":"drip_op_cancel",innerHTML:"取消",href:"#"},btnContainer);
 			var btnSave = domConstruct.place("<button class=\"minibutton\"><i class=\"icon-save\"></i> 保存</button>",btnContainer);
 			//var btnCancel = new Button({"label":"取消",style:"float:right"});
 			//btnCancel.placeAt(btnContainer);
@@ -334,9 +338,26 @@ define(["dojo/_base/declare",
 				handleAs:"json",
 				data:JSON.stringify(answerData)
 			}).then(lang.hitch(this,function(response){
-				this._destroyAnswerPane();
+				tip.ok("保存成功", this._aCancel, "before");
+				
+				var hideEditAnswerPane = coreFx.wipeOut({
+					node: this.doAnswerPane,
+					duration: 2000,
+					onEnd: lang.hitch(this,function(){
+						this._destroyAnswerPane();
+					})
+				});
+				var showReadOnlyAnswerPane = coreFx.wipeIn({
+					node: this.answerNode,
+					onEnd: lang.hitch(this, function(){
+						this._showAnswerArea(true);
+					})
+				});
+				coreFx.chain([hideEditAnswerPane, showReadOnlyAnswerPane]).play();
+				
+				//
 				// TODO：保存成功的时候，要从后台获取回答的次数，然后刷新答案个数
-				this._showAnswerArea(true);
+				//
 			}),lang.hitch(this,function(error){
 				// 出错时
 			}));
