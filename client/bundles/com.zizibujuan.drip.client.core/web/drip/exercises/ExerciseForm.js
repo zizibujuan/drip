@@ -524,6 +524,8 @@ define(["dojo/_base/declare",
 					widget.set("value","");
 				});
 			}
+			
+			this.image.reset();
 		},
 		
 		empty: function(){

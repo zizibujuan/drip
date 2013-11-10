@@ -68,11 +68,11 @@ return declare("drip.widget.form.uploader.FileList", [formUploaderBase], {
 		return fileId;
 	},
 
-	reset: function(){
+	_reset: function(){
 		// summary:
 		//		清除domNode节点下的所有内容
 
-		console.log("reset");
+		console.log("_reset");
 		
 		this.fileId = "";
 	},
@@ -91,7 +91,7 @@ return declare("drip.widget.form.uploader.FileList", [formUploaderBase], {
 		}
 		if(this.uploader){
 			this.connect(this.uploader, "onChange", "_onUploaderChange");
-			this.connect(this.uploader, "reset", "reset");
+			this.connect(this.uploader, "reset", "_reset");
 			this.connect(this.uploader, "onBegin", function(){
 				console.log("upload begin");
 				this.showProgressBar();
@@ -254,10 +254,14 @@ return declare("drip.widget.form.uploader.FileList", [formUploaderBase], {
 	_addDeleteNode: function(parentNode){
 		var deleteNode = domConstruct.place("<div class='drip_upload_delete_icon'></div>", parentNode);
 		on.once(deleteNode,"click", lang.hitch(this,function(e){
-			domConstruct.empty(this.domNode);
-			this.fileInfo = null;
-			this.fileId = null;
+			this.reset();
 		}));
+	},
+	
+	reset: function(){
+		domConstruct.empty(this.domNode);
+		this.fileInfo = null;
+		this.fileId = null;
 	}
 	
 });
