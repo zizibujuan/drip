@@ -134,9 +134,10 @@ define(["dojo/_base/declare",
 			this._showOptionPane(optionType);
 			
 			// 创建科目course
+			// TODO: 通过用户自定义的科目label来添加科目
 			// 科目默认不选择（optional，甚至可以录完习题内容之后再设置，
 			// 因为这个页面的第一功能是录入习题，而科目是用来设置习题的类别关系）。
-			this._createCourseOptions();
+			//this._createCourseOptions();
 			
 			this._createAnswerInput();
 			
@@ -207,27 +208,27 @@ define(["dojo/_base/declare",
 			<li><input type="radio" name="course" id="probability"/><label for="probability">概率论与数理统计</label></li>
 		</ul>
 		 */
-		_createCourseOptions: function(){
-			// summary:
-			//		创建课程选项
-			//		只创建一次，为的是保留之前的输入内容
-			if(this.coursePane)return;
-			var row = domConstruct.create("div", {"class":"form clearfix"}, this.leftDiv);
-			
-			domConstruct.place('<div class="drip-title">科目</div>', row);
-			var name = this._courseOptionName = "course";
-			var cources = [{id:"01", label:"高等数学"},
-			               {id:"02", label:"线性代数"},
-			               {id:"03", label:"概率论与数理统计"}];
-			var ul = domConstruct.place("<ul class=\"radio-group\"></ul>", row);
-			for(var i = 0; i < cources.length; i++){
-				var cource = cources[i];
-				var li = domConstruct.create("li", null, ul);
-				var input = domConstruct.create("input", {type:"radio", name:name, id: "course_"+cource.id}, li);
-				var label = domConstruct.create("label", {"for":"course_"+cource.id, innerHTML: cource.label}, li);
-			}
-			this.coursePane = row;
-		},
+//		_createCourseOptions: function(){
+//			// summary:
+//			//		创建课程选项
+//			//		只创建一次，为的是保留之前的输入内容
+//			if(this.coursePane)return;
+//			var row = domConstruct.create("div", {"class":"form clearfix"}, this.leftDiv);
+//			
+//			domConstruct.place('<div class="drip-title">科目</div>', row);
+//			var name = this._courseOptionName = "course";
+//			var cources = [{id:"01", label:"高等数学"},
+//			               {id:"02", label:"线性代数"},
+//			               {id:"03", label:"概率论与数理统计"}];
+//			var ul = domConstruct.place("<ul class=\"radio-group\"></ul>", row);
+//			for(var i = 0; i < cources.length; i++){
+//				var cource = cources[i];
+//				var li = domConstruct.create("li", null, ul);
+//				var input = domConstruct.create("input", {type:"radio", name:name, id: "course_"+cource.id}, li);
+//				var label = domConstruct.create("label", {"for":"course_"+cource.id, innerHTML: cource.label}, li);
+//			}
+//			this.coursePane = row;
+//		},
 		
 		_createAnswerInput: function(){
 			var exerciseType = this._exerciseType;
@@ -366,11 +367,11 @@ define(["dojo/_base/declare",
 			data.exercise.exerciseType = this._exerciseType;
 			data.exercise.imageName = this.image.fileId;
 			data.exercise.content = this.exerContentEditor.get("value");
-			// TODO:获取题型和科目
-			query("[name=" + this._courseOptionName + "]:checked", this.coursePane).forEach(function(inputEl, index){
-				data.exercise.course = inputEl.id.split("_")[1];
-				return;
-			});
+
+//			query("[name=" + this._courseOptionName + "]:checked", this.coursePane).forEach(function(inputEl, index){
+//				data.exercise.course = inputEl.id.split("_")[1];
+//				return;
+//			});
 			
 			if(this.tblOption){
 				data.exercise.options = [];
@@ -515,9 +516,9 @@ define(["dojo/_base/declare",
 				domAttr.set(inputEl,"checked", false);
 			});
 			
-			query("[name="+this._courseOptionName+"]:checked", this.coursePane).forEach(function(inputEl, index){
-				domAttr.set(inputEl,"checked", false);
-			});
+//			query("[name="+this._courseOptionName+"]:checked", this.coursePane).forEach(function(inputEl, index){
+//				domAttr.set(inputEl,"checked", false);
+//			});
 			
 			if(this.tblOption){
 				registry.findWidgets(this.tblOption).forEach(function(widget, index){
