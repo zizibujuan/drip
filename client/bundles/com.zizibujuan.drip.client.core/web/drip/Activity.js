@@ -154,8 +154,8 @@ define(["dojo/_base/declare",
 			var tr = domConstruct.place('<tr></tr>', parentNode);
 			var td1 = domConstruct.place('<td></td>', tr);
 			
-			var input = domConstruct.create("input",{type:inputType,name:inputGroupName, id:inputId}, td1);
-			domProp.set(input,{"disabled":true,optionId:data.id});
+			var input = domConstruct.create("input",{type: inputType, name: inputGroupName, id: inputId}, td1);
+			domProp.set(input,{"disabled": true, optionId: data.id});
 			var td2 = domConstruct.place('<td></td>', tr);
 			var label = domConstruct.place('<label></label>',td2);
 			domProp.set(label,"for",inputId);
@@ -205,13 +205,10 @@ define(["dojo/_base/declare",
 		},
 		
 		_loadAnswerHandler: function(){
-
 			// TODO: 先查询用户是否已经回答过，如果已经回答过了，则将答案加载过来
 			// TODO：然后编辑答案，如果没有回答过，则直接新增
 			// 传递习题标识，然后在servlet中传递userId，注意，因为这里传过去的是习题标识，
 			// 不是答案标识，所以不能直接拼在url后面，而应该使用/?exerId=xxx的query的方式传递。
-			
-			
 			
 			// 需要 习题解析框， 习题答案框
 			
@@ -219,57 +216,69 @@ define(["dojo/_base/declare",
 			//		如果存在答案，则清空答案或删除答案面板
 			//		如果存在习题解析，则删除习题解析面板
 			
-			// 隐藏只读的答案
+			// 隐藏只读的答案区块
 			if(this.answerNode){
 				domStyle.set(this.answerNode,"display", "none");
 			}
-			// 清除答案
-			// 如果是选择题,因为可以直接在选项上作答，所以将所有选项置为有效
+			// 回答问题相关的dijit部件 
+			var answerWidgets = this._answerWidgets = [];
+			
+			var editAnswerPane = this.editAnswerPane = domConstruct.create("div",null, this.exerciseNode, "after");
+			
 			var exerType = this.data.exercise.exerciseType;
 			if(this._isOptionExercise(exerType)){
 				// 把所有option设置为有效
+				// 清除答案
+				// 如果是选择题,因为可以直接在选项上作答，所以将所有选项置为有效
 				this._getOptionEls().forEach(function(optEl,index){
 					domProp.set(optEl,"disabled",false);
 					if(domProp.get(optEl,"checked") == true){
 						domProp.set(optEl, "checked", false);
 					}
+					// 为选项添加change事件
+					on(optEl, "click", lang.hitch(this, this._onAnswerChangedHandler))
 				});
-			}else{
-				// TODO:删除答案面板
-			}
-			
-			
-			var doAnswerPane = this.doAnswerPane = domConstruct.create("div",null, this.exerciseNode, "after");
-			
-			var answerEditor = null;
-			if(exerType == classCode.ExerciseType.ESSAY_QUESTION){
-				var answerDiv = domConstruct.create("div",{"class":"answer"}, doAnswerPane);
+				
+			}else if(exerType == classCode.ExerciseType.ESSAY_QUESTION){
+				var answerDiv = domConstruct.create("div",{"class":"answer"}, editAnswerPane);
 				var answerLabel = domConstruct.create("div",{innerHTML:"答案"}, answerDiv);
-				answerEditor = this.answerEditor = new Editor({rows: 5, width: 650});
+				var answerEditor = this.answerEditor = new Editor({rows: 5, width: 650});
 				answerEditor.placeAt(answerDiv);
 				answerEditor.startup();
+				
+				answerEditor.on("change", lang.hitch(this, this._onAnswerChangedHandler));
+				
+				answerWidgets.push(answerEditor);
 			}
-			var guideDiv = domConstruct.create("div",{"class":"guide"}, doAnswerPane);
+			
+			
+			
+			
+
+			// 如果是选择题，则根据是否改变选项或者修改解析，来激活保存按钮
+			
+			var guideDiv = domConstruct.create("div",{"class":"guide"}, editAnswerPane);
 			var guideLabel = domConstruct.create("div",{innerHTML:"解析"},guideDiv);
 			var guideEditor = this.guideEditor = new Editor({rows:5, width:650});
 			guideEditor.placeAt(guideDiv);
 			guideEditor.startup();
+			guideEditor.on("change", lang.hitch(this, this._onGuideChangedHandler));
+			
 			
 			// FIXME：当div中有float元素时，怎么让div的高度根据其中元素的高度自适应
-			var btnContainer = domConstruct.create("div",{style:"width:98%;margin-top:5px;text-align:right"},doAnswerPane);
+			var btnContainer = domConstruct.create("div",{style:"width:98%;margin-top:5px;text-align:right"},editAnswerPane);
 			// TODO:i18n
 			var aCancel = this._aCancel = domConstruct.create("a",{"class":"drip_op_cancel",innerHTML:"取消",href:"#"},btnContainer);
-			var btnSave = domConstruct.place("<button class=\"minibutton\"><i class=\"icon-save\"></i> 保存</button>",btnContainer);
+			var btnSave = this._btnSave = domConstruct.place("<button class=\"minibutton\"><i class=\"icon-save\"></i> 保存</button>",btnContainer);
+			domProp.set(btnSave, "disabled", true);
 			//var btnCancel = new Button({"label":"取消",style:"float:right"});
 			//btnCancel.placeAt(btnContainer);
 			on(btnSave, "click", lang.hitch(this, this._saveOrUpdateAnswer));
 			on(aCancel,"click", lang.hitch(this, this._cancelAnswer));
 			
-			// 回答问题相关的dijit部件 
-			var answerWidget = this._answerWidget = [];
-			answerWidget.push(answerEditor);
-			answerWidget.push(guideEditor);
-			//answerWidget.push(btnCancel);
+			
+			answerWidgets.push(guideEditor);
+			//answerWidgets.push(btnCancel);
 			
 			// 把加载数据放在最后
 			// 查出最新版本的答案，用户回答问题时，只对最新版本的习题作答。
@@ -279,6 +288,107 @@ define(["dojo/_base/declare",
 			// 隐藏只读的解答区域
 			this._showAnswerArea(false);
 		
+		},
+		
+		_onAnswerChangedHandler: function(data){
+			// 如果是问答题，则根据答案的内容是否变化，来决定是否激活保存按钮
+			// 只有是问答题时，才有answerEditor
+			// 比较答案和习题解析的值，只要有一个发生变化，就激活保存按钮
+			// 如果是新增习题
+			var exerType = this.data.exercise.exerciseType;
+			var oldAnswer = this._oldAnswer;
+			if(oldAnswer){
+				// 必须发生改变。
+				// 答案或习题发生变化时,
+				// 问答题和选择题的判断逻辑不一样
+				// 如果答案发生了变化，则激活保存按钮
+				// 如果答案为空，则失效保存按钮
+				// 如果答案没有发生变化，则判断解析是否发生变化，如果发生了变化，则激活保存按钮；否则失效
+				
+				if(this._isOptionExercise(exerType)){
+					// 判断用户勾选的选项是否发生了变化
+					var options = oldAnswer.detail;
+					
+					return;
+				}
+				
+				if(exerType == classCode.ExerciseType.ESSAY_QUESTION){
+					var answerEditor = this.answerEditor;
+					if(answerEditor.isEmpty()){
+						// 答案为空，则不论guide的值为多少，都不允许保存
+						this._disableBtnSave(true);
+						return;
+					}
+					var answerContent = answerEditor.get("value");
+					if(oldAnswer.detail[0].content != answerContent){
+						// 答案的内容发生了变化
+						this._disableBtnSave(false);
+						return;
+					}
+					
+					// 如果答案的内容没有发生变化，则判断解析的内容有没有发生变化
+					var guideEditor = this.guideEditor;
+					var guideContent = guideEditor.get("value");
+					// 习题解析允许为空
+					if(guideContent != oldAnswer.guide){
+						this._disableBtnSave(false);
+						return;
+					}
+				}
+				
+				this._disableBtnSave(true);
+				return;
+			}
+			
+			if(this._isOptionExercise(exerType)){
+				
+				return;
+			}
+			
+			if(exerType == classCode.ExerciseType.ESSAY_QUESTION){
+				// 如果是第一次解答习题，只要答案的内容不为空，就可以保存
+				var answerEditor = this.answerEditor;
+				if(answerEditor.isEmpty()){
+					this._disableBtnSave(true);
+				}else{
+					this._disableBtnSave(false);
+				}
+			}
+		},
+		
+		_onGuideChangedHandler: function(data){
+			var exerType = this.data.exercise.exerciseType;
+			var oldAnswer = this._oldAnswer;
+			if(oldAnswer){
+				var guideEditor = this.guideEditor;
+				if(oldAnswer.guide != guideEditor.get("value")){
+					this._disableBtnSave(false);
+					return;
+				}
+				
+				if(this._isOptionExercise(exerType)){
+					
+					return;
+				}
+				
+				if(exerType == classCode.ExerciseType.ESSAY_QUESTION){
+					// 如果是第一次解答习题，只要答案的内容不为空，就可以保存
+					var answerEditor = this.answerEditor;
+					if(oldAnswer.detail[0].content == answerEditor.get("value")){
+						this._disableBtnSave(true);
+					}else{
+						this._disableBtnSave(false);
+					}
+				}
+				
+			}
+		},
+		
+		_disableBtnSave: function(disable/*boolean*/){
+			var btnSave = this._btnSave;
+			if(domProp.get(btnSave, "disabled") != disable){
+				domProp.set(btnSave, "disabled", disable);
+			}
 		},
 		
 		_saveOrUpdateAnswer: function(e){
@@ -324,13 +434,13 @@ define(["dojo/_base/declare",
 			
 			var method = null;
 			var target = "/answers/";
-			if(this._currentUserAnswer){
+			if(this._oldAnswer){
 				method = "PUT";
-				target += this._currentUserAnswer.id; // 是当前答案表中的标识，不是历史答案表中的标识
-				answerData.id = this._currentUserAnswer.id;
-				answerData.answerVersion = this._currentUserAnswer.answerVersion;
+				target += this._oldAnswer.id; // 是当前答案表中的标识，不是历史答案表中的标识
+				answerData.id = this._oldAnswer.id;
+				answerData.answerVersion = this._oldAnswer.answerVersion;
 				// FIXME:answerInfo的exerciseId中存的应该是稳定的习题标识,即不是历史习题标识。
-				answerData.exerciseId = this._currentUserAnswer.exerciseId;
+				answerData.exerciseId = this._oldAnswer.exerciseId;
 			}else{
 				method = "POST";
 				// 这里存放的是历史习题标识
@@ -345,7 +455,7 @@ define(["dojo/_base/declare",
 				tip.ok("保存成功", this._aCancel, "before");
 				
 				var hideEditAnswerPane = coreFx.wipeOut({
-					node: this.doAnswerPane,
+					node: this.editAnswerPane,
 					duration: 2000,
 					onEnd: lang.hitch(this,function(){
 						this._destroyAnswerPane();
@@ -399,7 +509,7 @@ define(["dojo/_base/declare",
 				return;
 			}
 			
-			this._currentUserAnswer = data;
+			this._oldAnswer = data;
 			console.log("answer:",data);
 			// 如果已经作答过了，则之前做过的答案显示出来，
 			// 并标出这是用户何时作答的答案，并提醒用户可以继续完善答案。
@@ -435,13 +545,13 @@ define(["dojo/_base/declare",
 			// summary
 			//		删除答题面板
 			
-			if(this._answerWidget){
-				array.forEach(this._answerWidget, function(widget,index){
+			if(this._answerWidgets){
+				array.forEach(this._answerWidgets, function(widget,index){
 					widget.destroyRecursive();
 				});
-				this._answerWidget = [];
+				this._answerWidgets = [];
 			}
-			domConstruct.destroy(this.doAnswerPane);
+			domConstruct.destroy(this.editAnswerPane);
 			
 			this.answerEditor = null;
 			this.guideEditor = null;
