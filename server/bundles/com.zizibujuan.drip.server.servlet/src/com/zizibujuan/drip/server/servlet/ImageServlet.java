@@ -40,6 +40,16 @@ public class ImageServlet extends BaseServlet {
 			// 根目录
 			String exerImgRootPath = applicationPropertyService.getForString("exercise.image.path.root");
 			File file = new File(exerImgRootPath + userId + "/" + imageName);
+//			String contentType = "image/";
+//			String imageType = imageName.split("\\.")[1].toLowerCase();
+//			if(imageType == "png"){
+//				contentType += "png";
+//			}else if(imageType == "gif"){
+//				contentType += "gif";
+//			}else{
+//				contentType += "jpeg";
+//			}
+//			resp.setContentType(contentType);
 			IOUtils.copy(new FileInputStream(file), resp.getOutputStream());
 			return;
 		}

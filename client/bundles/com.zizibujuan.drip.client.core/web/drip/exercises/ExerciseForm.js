@@ -389,7 +389,7 @@ define(["dojo/_base/declare",
 			var answer = {};
 			if(this._exerciseType === classCode.ExerciseType.SINGLE_OPTION || this.exerciseType === classCode.ExerciseType.MULTI_OPTION){
 				var answerDetail = [];
-				// 选择题
+				// 选择题,在录入习题的同时回答习题，则根据seq来定位，因为这个时候optionId还没有值
 				query("[name="+this._optionName+"]:checked", this.tblOption).forEach(function(inputEl, index){
 					console.log(inputEl, index);
 					answerDetail.push({seq: inputEl.value});

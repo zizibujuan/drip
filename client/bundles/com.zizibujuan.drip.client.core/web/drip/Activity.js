@@ -153,17 +153,17 @@ define(["dojo/_base/declare",
 			
 			var tr = domConstruct.place('<tr></tr>', parentNode);
 			var td1 = domConstruct.place('<td></td>', tr);
-			
 			var input = domConstruct.create("input",{type: inputType, name: inputGroupName, id: inputId}, td1);
 			domProp.set(input,{"disabled": true, optionId: data.id});
+			
 			var td2 = domConstruct.place('<td></td>', tr);
-			var label = domConstruct.place('<label></label>',td2);
+			var label = domConstruct.place('<label style="padding-right:5px">' + optionLabel.charAt(index) + '</label>',td2);
 			domProp.set(label,"for",inputId);
 			
-			domConstruct.place('<span style="padding-right:5px">'+optionLabel.charAt(index)+'</span>', label);
-			var divOptionContent = domConstruct.place("<span></span>",label);
+			// 不再选项内容上添加for属性，因为用户阅读内容时，用鼠标选中内容可能只是为了帮助理解，而不是选择答案
+			var td3 = domConstruct.place('<td></td>', tr);
 			var html = dataUtil.xmlStringToHtml(data.content);
-			divOptionContent.innerHTML = html;
+			td3.innerHTML = html;
 		},
 		
 		_createAnswer: function(){
@@ -235,10 +235,9 @@ define(["dojo/_base/declare",
 					if(domProp.get(optEl,"checked") == true){
 						domProp.set(optEl, "checked", false);
 					}
-					// 为选项添加change事件
-					on(optEl, "click", lang.hitch(this, this._onAnswerChangedHandler))
 				});
-				
+				// 为选项添加change事件
+				this._getOptionEls().on("click", lang.hitch(this, this._onAnswerChangedHandler));
 			}else if(exerType == classCode.ExerciseType.ESSAY_QUESTION){
 				var answerDiv = domConstruct.create("div",{"class":"answer"}, editAnswerPane);
 				var answerLabel = domConstruct.create("div",{innerHTML:"答案"}, answerDiv);
@@ -291,6 +290,7 @@ define(["dojo/_base/declare",
 		},
 		
 		_onAnswerChangedHandler: function(data){
+			debugger;
 			// 如果是问答题，则根据答案的内容是否变化，来决定是否激活保存按钮
 			// 只有是问答题时，才有answerEditor
 			// 比较答案和习题解析的值，只要有一个发生变化，就激活保存按钮
@@ -307,9 +307,28 @@ define(["dojo/_base/declare",
 				
 				if(this._isOptionExercise(exerType)){
 					// 判断用户勾选的选项是否发生了变化
-					var options = oldAnswer.detail;
+					var oldOptions = oldAnswer.detail;
+					var newOptions = this._getSelectExerciseAnswer();
+					if(newOptions.length == 0){
+						// 答案为空，则不论guide的值为多少，都不允许保存
+						this._disableBtnSave(true);
+						return;
+					}
+					// 判断选项有没有发生变化
+					if(!this._selectedAnswerOptionsEquals(oldOptions, newOptions)){
+						// 答案的内容发生了变化
+						this._disableBtnSave(false);
+						return;
+					}
 					
-					return;
+					// 如果答案的内容没有发生变化，则判断解析的内容有没有发生变化
+					var guideEditor = this.guideEditor;
+					var guideContent = guideEditor.get("value");
+					// 习题解析允许为空
+					if(guideContent != oldAnswer.guide){
+						this._disableBtnSave(false);
+						return;
+					}
 				}
 				
 				if(exerType == classCode.ExerciseType.ESSAY_QUESTION){
@@ -341,7 +360,12 @@ define(["dojo/_base/declare",
 			}
 			
 			if(this._isOptionExercise(exerType)){
-				
+				var newOptions = this._getSelectExerciseAnswer();
+				if(newOptions.length == 0){
+					this._disableBtnSave(true);
+				}else{
+					this._disableBtnSave(false);
+				}
 				return;
 			}
 			
@@ -354,6 +378,20 @@ define(["dojo/_base/declare",
 					this._disableBtnSave(false);
 				}
 			}
+		},
+		
+		_selectedAnswerOptionsEquals: function(oldOptions, newOptions){
+			if(oldOptions.length != newOptions.length){
+				return false;
+			}
+			for(var i = 0; i < oldOptions.length; i++){
+				var oldOption = oldOptions[i];
+				var newOption = newOptions[i];
+				if(oldOption.optionId != newOption.optionId){
+					return false;
+				}
+			}
+			return true;
 		},
 		
 		_onGuideChangedHandler: function(data){
@@ -391,6 +429,29 @@ define(["dojo/_base/declare",
 			}
 		},
 		
+		_getSelectExerciseAnswer: function(){
+			// summary:
+			//		获取选择题的答案
+			// 习题答案
+			/*
+			 guide
+			 
+			 exerId
+			 detail
+			 	content
+			 	optionId
+			 */
+			
+			var result = [];
+			this._getOptionEls().forEach(lang.hitch(this,function(optionEl, index){
+				if(domProp.get(optionEl, "checked") === true){
+					var optionData = {optionId: domProp.get(optionEl,"optionId")};
+					result.push(optionData);
+				}
+			}));
+			return result;
+		},
+		
 		_saveOrUpdateAnswer: function(e){
 
 			debugger;
@@ -398,22 +459,7 @@ define(["dojo/_base/declare",
 			answerData.detail = [];
 			var exerType = this.data.exercise.exerciseType;
 			if(this._isOptionExercise(exerType)){
-				this._getOptionEls().forEach(lang.hitch(this,function(optionEl, index){
-					if(domProp.get(optionEl, "checked") === true){
-						var optionData = {optionId: domProp.get(optionEl,"optionId")};
-						answerData.detail.push(optionData);
-					}
-				}));
-				
-				// 习题答案
-				/*
-				 guide
-				 
-				 exerId
-				 detail
-				 	content
-				 	optionId
-				 */
+				answerData.detail = this._getSelectExerciseAnswer();
 			}else if(exerType == classCode.ExerciseType.ESSAY_QUESTION){
 				var a = this.answerEditor.get("value");
 				// 不清除答案两边的空格，只要不是全为空格
@@ -459,6 +505,7 @@ define(["dojo/_base/declare",
 					duration: 2000,
 					onEnd: lang.hitch(this,function(){
 						this._destroyAnswerPane();
+						this._resetSelectOldAnswerPanel();
 					})
 				});
 				var showReadOnlyAnswerPane = coreFx.wipeIn({
@@ -490,15 +537,33 @@ define(["dojo/_base/declare",
 				domStyle.set(this.guideContainerDiv,"display","");
 			}
 			
+			this._resetSelectOldAnswerPanel();
+			
+			this._showAnswerArea(true);
+		},
+		
+		_resetSelectOldAnswerPanel: function(){
+			// summary:
+			//		恢复选择题的答案选项
+			
 			var answerInfo = this.data.answer;
 			if(answerInfo){
 				var exerType = this.data.exercise.exerciseType;
 				if(this._isOptionExercise(exerType)){
 					array.forEach(answerInfo.detail, lang.hitch(this,this._setOptionAnswer));
+					this._getOptionEls().forEach(function(el){
+						domProp.set(el, "disabled", true);
+					});
+				}
+			}else{
+				var exerType = this.data.exercise.exerciseType;
+				if(this._isOptionExercise(exerType)){
+					this._getOptionEls().forEach(function(el){
+						domProp.set(el, "checked", false);
+						domProp.set(el, "disabled", true);
+					});
 				}
 			}
-			
-			this._showAnswerArea(true);
 		},
 		
 		_loadLatestAnswer: function(e){
@@ -569,7 +634,7 @@ define(["dojo/_base/declare",
 					domProp.set(node,"checked", true);
 					// 要是放在这里的话，加载当前用户的答案时，会覆盖掉原有的值，虽然并不会改变页面上显示的值。
 					if(this._optionLabels){
-						this._optionLabels.push(node.parentNode.nextSibling.firstChild.firstChild.innerHTML);
+						this._optionLabels.push(node.parentNode.nextSibling.firstChild.innerHTML);
 					}
 					
 					return true;
@@ -580,7 +645,7 @@ define(["dojo/_base/declare",
 		
 		_getOptionEls: function(){
 			if(!this._optionEls){
-				this._optionEls = query("input[type=radio]",this.table);
+				this._optionEls = query("input[type=radio]", this.table);
 			}
 			return this._optionEls;
 		}
