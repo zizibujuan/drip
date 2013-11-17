@@ -599,7 +599,6 @@ define(["dojo/_base/declare",
 			var time = domConstruct.create("time", {innerHTML: prettyDate.prettyForNumber(data.createTime)}, info);
 			time.datetime = data.createTime;
 			var span2 = domConstruct.create("span", {innerHTML: "编辑该答案"}, info);
-			
 		},
 		
 		_showAnswerArea: function(show){
