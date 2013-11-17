@@ -290,7 +290,7 @@ define(["dojo/_base/declare",
 		},
 		
 		_onAnswerChangedHandler: function(data){
-			debugger;
+			
 			// 如果是问答题，则根据答案的内容是否变化，来决定是否激活保存按钮
 			// 只有是问答题时，才有answerEditor
 			// 比较答案和习题解析的值，只要有一个发生变化，就激活保存按钮
@@ -453,8 +453,6 @@ define(["dojo/_base/declare",
 		},
 		
 		_saveOrUpdateAnswer: function(e){
-
-			debugger;
 			var answerData = {};
 			answerData.detail = [];
 			var exerType = this.data.exercise.exerciseType;
@@ -584,16 +582,23 @@ define(["dojo/_base/declare",
 				console.log("guide:",data.guide);
 				// TODO:在label上显示出这是在什么时候解答的，绿色显示。
 			}
-			if(data.detail && data.detail.length > 0){
-				array.forEach(data.detail, lang.hitch(this,this._setOptionAnswer));
+			var exerType = this.data.exercise.exerciseType;
+			if(this._isOptionExercise(exerType)){
+				if(data.detail && data.detail.length > 0){
+					array.forEach(data.detail, lang.hitch(this,this._setOptionAnswer));
+				}
+			}else if(exerType == classCode.ExerciseType.ESSAY_QUESTION){
+				if(data.detail && data.detail.length == 1){
+					// 如果是问答题，则必有一个answerEditor
+					this.answerEditor.set("value", data.detail[0].content);
+				}
 			}
 			
-			var exerType = this.data.exercise.exerciseType;
-			if(exerType == classCode.ExerciseType.ESSAY_QUESTION && data.detail && data.detail.length == 1){
-				debugger;
-				// 如果是问答题，则必有一个answerEditor
-				this.answerEditor.set("value", data.detail[0].content);
-			}
+			var info = domConstruct.create("div", {style: {color:"gray", "font-style": "italic"}}, this.editAnswerPane);
+			var span1 = domConstruct.create("span", {innerHTML: "您上次于"}, info);
+			var time = domConstruct.create("time", {innerHTML: prettyDate.prettyForNumber(data.createTime)}, info);
+			time.datetime = data.createTime;
+			var span2 = domConstruct.create("span", {innerHTML: "编辑该答案"}, info);
 			
 		},
 		
