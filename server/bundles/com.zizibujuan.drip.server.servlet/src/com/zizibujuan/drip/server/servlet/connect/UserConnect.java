@@ -1,14 +1,10 @@
 package com.zizibujuan.drip.server.servlet.connect;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.drip.server.model.Avatar;
 import com.zizibujuan.drip.server.service.UserService;
@@ -24,7 +20,6 @@ import com.zizibujuan.drip.server.util.servlet.UserSession;
  * @since 0.0.1
  */
 public abstract class UserConnect {
-	private static final Logger logger = LoggerFactory.getLogger(UserConnect.class);
 	protected UserService userService = ServiceHolder.getDefault().getUserService();
 	/**
 	 * 登录功能被第三方网站托管
@@ -61,19 +56,7 @@ public abstract class UserConnect {
 		// 是不是应该在每次登录时，都记录下token和过期时间呢?
 		com.zizibujuan.drip.server.model.UserInfo dripUserInfo = userService.login(dripUserId);
 		UserSession.setUser(req, dripUserInfo);
-		String userName = null;
-		if(dripUserInfo.getLoginName() != null){
-			userName = dripUserInfo.getLoginName();
-		}else{
-			userName = dripUserInfo.getNickName();
-		}
-		logger.info("使用第三方帐号登录成功，用户名是：" + userName);
-		// userName可能为中文，为了防止cookie中的中文乱码，要进行编码
-		try {
-			userName = java.net.URLEncoder.encode(userName, "GBK");
-		} catch (UnsupportedEncodingException e) {
-		}
-		CookieUtil.set(resp, CookieConstants.LOGIN_NAME, userName, null, 365*24*60*60/*一年有效*/);
+		// 第三方网站不在loginName中缓存昵称
 		CookieUtil.set(resp, CookieConstants.LOGGED_IN, "1", null, -1);
 		// 防止同一台电脑先使用drip用户登录，然后使用qq用户登录，要删除本网站的token
 		// 这样就不会使用其他人的帐号自动登录

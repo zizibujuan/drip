@@ -33,7 +33,7 @@ define(["dojo/_base/declare",
 	var COOKIE_KEY_LOGIN_NAME = "zzbj_user";
 	
 	var loggedIn = cookie(COOKIE_KEY_LOGGED);
-	var loginName = cookie(COOKIE_KEY_LOGIN_NAME);
+	var loginName = cookie(COOKIE_KEY_LOGIN_NAME) || "";
 	
 	var LoggedInHeader = declare("drip.widget.LoggedInHeader", [_WidgetBase, _TemplatedMixin], {
 		templateString: headerLoggedInTemplate,
@@ -49,7 +49,8 @@ define(["dojo/_base/declare",
 			this.userName.innerHTML = loginName;
 			user.getLoggedUserInfo().then(lang.hitch(this,function(userInfo){
 				this.userLink.href  = "/users/" + userInfo.id;
-				this.userName.innerHTML = userInfo.loginName || userInfo.nickName;
+				this.userName.innerHTML = profileImage.alt = userInfo.loginName || userInfo.nickName;
+				
 				var smallImageUrl = userInfo.smallImageUrl;
 				if(smallImageUrl != null && smallImageUrl != ""){
 					profileImage.src = userInfo.smallImageUrl;
