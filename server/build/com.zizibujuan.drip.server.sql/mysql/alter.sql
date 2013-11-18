@@ -11,5 +11,6 @@ alter table DRIP_USER_INFO add column `ANSWER_COUNT` INT NULL DEFAULT 0 COMMENT 
 
 alter table DRIP_EXERCISE change column `EXER_CATEGORY` `EXER_COURSE` CHAR(3);
 
+alter table DRIP_USER_STATISTICS add column `DOC_COMMIT_COUNT` INT NULL DEFAULT 0 COMMENT '文档提交次数'
 
-alter table DRIP_USER_STATISTICS add column `DOC_COMMIT_COUNT` INT NULL DEFAULT 0 COMMENT '文档提交次数' 
+-- 前面的语句已在生产服务器上执行
