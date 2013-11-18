@@ -49,6 +49,7 @@ define(["dojo/_base/declare",
 			this.userName.innerHTML = loginName;
 			user.getLoggedUserInfo().then(lang.hitch(this,function(userInfo){
 				this.userLink.href  = "/users/" + userInfo.id;
+				this.userName.innerHTML = userInfo.loginName || userInfo.nickName;
 				var smallImageUrl = userInfo.smallImageUrl;
 				if(smallImageUrl != null && smallImageUrl != ""){
 					profileImage.src = userInfo.smallImageUrl;
