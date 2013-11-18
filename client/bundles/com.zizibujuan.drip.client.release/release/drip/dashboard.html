@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <link type="text/css" rel="stylesheet" href="/drip/resources/app.css" />
 <link type="text/css" rel="stylesheet" href="/drip/resources/font-awesome/css/font-awesome.css" />
-<title>我的首页 孜孜不倦 · 协作写笔记，快乐做习题。</title>
+<!-- 协作写笔记，快乐做习题 -->
+<title>我的首页 孜孜不倦 · 在线做数学题。</title>
 <script type="text/javascript" 
 	data-dojo-config="
 		async:true,
@@ -43,35 +44,23 @@ require(["dojo/ready",
 	
 	// 加载左侧栏目中的数据，因为左侧没有用dijit部件，所无需放在ready方法中
 	user.getLoggedUserInfo().then(function(userInfo){
-		console.log("登录用户信息:", userInfo);
-		// 在右侧用户信息区域显示
-		var profileImg = dom.byId("profileImage");
-		var displayName = userInfo.nickName;
-		profileImg.alt = displayName;
-		profileImg.src = userInfo.largeImageUrl || "/drip/resources/images/profile_180_180.gif";
-		dom.byId("userName").innerHTML = displayName;
-		
-		
-		// 在关注和粉丝的链接上加上登录者的用户标识
-		// 切记：出现在rest链接中的，只能是本地用户标识，而不是第三方网站或映射用户标识
-		dom.byId("following_link").href = "/following/" + userInfo.digitalId;
-		dom.byId("follower_link").href = "/followers/" + userInfo.digitalId;
 		
 	});
 	
-	user.getLoggedUserStatistics().then(function(statistics){
-		dom.byId("follow_count").innerHTML = statistics.followCount;
-		dom.byId("fan_count").innerHTML = statistics.fanCount;
-		// 在页面顶级tab中显示
-		dom.byId("my_answer_count").innerHTML = statistics.answerCount;
-		dom.byId("my_exer_count").innerHTML = statistics.exerciseCount;
+	// 因为统计信息变化比较频繁，所以没有保存在用户session中
+	user.getLoggedUserStatistics().then(function(stat){
+		dom.byId("follow_count").innerHTML = stat.followCount;
+		dom.byId("fan_count").innerHTML = stat.fanCount;
+		dom.byId("exer_publish_count").innerHTML = stat.exerPublishCount;
+		dom.byId("answer_count").innerHTML = stat.answerCount;
+		//dom.byId("doc_commit_count").innerHTML = stat.docCommitCount;
 	});
 	
 	var store = new JsonRest({
 		 target:"/activities/"
 	 });
 	
-	var followingNoDataMessage = "没有活动，快去录入新题目，或到题库中解答习题";
+	var followingNoDataMessage = "没有活动，快去<a href='/exercises/new' style='font-weight:bold'>录入习题</a>，或到<a href='/explore_exercises' style='font-weight:bold'>题库</a>中解答习题";
 	var myAnswerNoDataMessage = "还没有回答问题，快到题库中解答习题";
 	var myExerciseNoDataMessage = "您还没有录入过习题，快去录入新题目";
 	
@@ -84,64 +73,9 @@ require(["dojo/ready",
 	});
 	activities.placeAt("activitiesContainer");
 	
-	var following = dom.byId("following");
-	var myAnswer = dom.byId("myAnswer");
-	var myExercise = dom.byId("myExercise");
-	
-	// 两个动作，一个是刷新，一个是切换。
-	// 都使用一个store，然后传入不同的条件刷新
-	on(following, "click", function(e){
-		event.stop(e);
-		if(!domClass.contains(following,"selected")){
-			domClass.add(following,"selected");
-			// TODO:如何刷新tab上的统计数据呢？
-			// 或者在这个界面上有一个增加统计值的操作，就触发一个时间，从后台刷新一下，或者在前台更新一下
-			// 而不在切换时刷新。
-			activities.noDataMessage = followingNoDataMessage;
-			activities.setQuery({type:"following"});
-		}else{
-			// 刷新
-			activities.setQuery();
-		}
-		domClass.remove(myAnswer, "selected");
-		domClass.remove(myExercise, "selected");
-		
-		
-	});
-	
-	on(myAnswer, "click", function(e){
-		event.stop(e);
-		if(!domClass.contains(myAnswer,"selected")){
-			domClass.add(myAnswer,"selected");
-			
-			activities.noDataMessage = myAnswerNoDataMessage;
-			activities.setQuery({type:"myAnswer"});
-		}else{
-			// 刷新
-			activities.setQuery();
-		}
-		domClass.remove(following, "selected");
-		domClass.remove(myExercise, "selected");
-	});
-	
-	on(myExercise, "click", function(e){
-		event.stop(e);
-		if(!domClass.contains(myExercise,"selected")){
-			domClass.add(myExercise,"selected");
-			
-			activities.noDataMessage = myExerciseNoDataMessage;
-			activities.setQuery({type:"myExercise"});
-		}else{
-			// 刷新
-			activities.setQuery();
-		}
-		domClass.remove(following, "selected");
-		domClass.remove(myAnswer, "selected");
-	});
-	
-	
 	// 加载登录用户发起的项目列表
 	// 如果没有传递用户信息，则获取登录用户的项目列表
+	/*
 	var projectList = dom.byId("my_project_list");
 	xhr.get("/projects/",{handleAs:"json"}).then(function(data){
 		if(data.length == 0){
@@ -150,7 +84,7 @@ require(["dojo/ready",
 			array.forEach(data, function(item, index){
 				var li = domConstruct.create("li", null, projectList);
 				var projectUrl = "/projects/" + item.createUserName + "/" + item.name;
-				var a = domConstruct.create("a", {href:projectUrl}, li);
+				var a = domConstruct.create("a", {href: projectUrl}, li);
 				domConstruct.create("span", {innerHTML: item.createUserName}, a);
 				var textNode = document.createTextNode("/");
 				a.appendChild(textNode);
@@ -160,7 +94,7 @@ require(["dojo/ready",
 		}
 	}, function(error){
 		
-	});
+	});*/
 	
 	ready(function(){
 		/*
@@ -220,14 +154,15 @@ function sendRenrenRequest(){
 				<ul class="pageHeader-actions">
 
 					<li>
-						<a class="minibutton">写笔记</a>
+						<!-- FIXME：需要提供选择项目的选项，将最近使用的项目放在最上面 
+						<a class="minibutton" href="#">写笔记</a>-->
 					</li>
 
 					<li>
 					<!-- 录入习题 
 							<li><a  class="minibutton primary"><i class="icon-edit"></i> 录入习题</a></li>
 					-->
-						<a href="/exercises/new" title="录入新习题" class="minibutton"></i> 录数学题</a>
+						<a href="/exercises/new" title="录入新习题" class="minibutton"> 录数学题</a>
 					</li>
 
 
@@ -254,6 +189,7 @@ function sendRenrenRequest(){
 				<div class="clearfix">
 						<div class="drip_main_center">
 							<!-- 个人首页的链接tab -->
+							<!--
 							<div class="drip_tab_nav">
 								<ul class="drip_tab_nav_tabs">
 									<li>
@@ -265,15 +201,55 @@ function sendRenrenRequest(){
 									<li>
 										<a href="#" id="myExercise" class="drip_tab_nav_tab">我录的习题 <span class="counter" id="my_exer_count">0</span></a>
 									</li>
-									<!-- 添加一个我的作业 -->
+									<li>添加一个我的作业</li>
 								</ul>
 							</div>
+							-->
 							<div id="activitiesContainer" class="drip_activity_list" style="padding-top:20px">
 								
 							</div>
 						</div>
 						<div class="drip_main_right">
 							<div style="padding-left:20px">
+								<div class="clearfix">
+									<!-- 个人信息面板 -->
+									<ul style="list-style: none;padding-left: 0px; margin-top: 20px">
+										<li>
+											<a href="#" id="following_link" style="text-decoration: none;color:#333">
+												<span style="text-align: center;">关注</span>
+												<strong id="follow_count" style="font-size: 20px"></strong>
+											
+											</a>
+										</li>
+										<li>
+											<a href="#" id="follower_link" style="text-decoration: none;color:#333">
+												<span style="text-align: center;">粉丝</span>
+												<strong id="fan_count" style="font-size: 20px"></strong>
+											</a>
+										</li>
+										<li>
+											<a href="#" id="exer_publish_link" style="text-decoration: none;color:#333">
+												<span style="text-align: center;">发布习题数</span>
+												<strong id="exer_publish_count" style="font-size: 20px"></strong>
+											</a>
+										</li>
+										<li>
+											<a href="#" id="answer_link" style="text-decoration: none;color:#333">
+												<span style="text-align: center;">回答问题数</span>
+												<strong id="answer_count" style="font-size: 20px"></strong>
+											</a>
+										</li>
+										<!-- 
+										<li>
+											<a href="#" id="doc_commit_link" style="text-decoration: none;color:#333">
+												<span style="text-align: center;">笔记提交次数</span>
+												<strong id="doc_commit_count" style="font-size: 20px"></strong>
+											</a>
+										</li>
+										 -->
+									</ul>
+								</div>
+							<!-- 
 								<div class="profile" style="margin-top: 10px;">
 							 		<div class="clearfix">
 							 			<div style="float:left">
@@ -304,10 +280,15 @@ function sendRenrenRequest(){
 										</ul>
 							 		</div>
 								 </div>
+								 -->
 							 	<div style="margin-top: 20px;">
+							 		<!-- 根据第三方网站用户的来源，显示不同的邀请文本 -->
+							 		<!-- 
 							 		<button class="minibutton" onclick="sendRenrenRequest();"><i class="icon-bullhorn icon-large"></i> 邀请人人好友一起学习</button>
+							 		 -->
 							 	</div>
 							 	
+							 	<!-- 
 							 	<div class="box box-small">
 							 		<div class="box-header">
 							 			<a href="/projects/new" class="minibutton primary new-project">发起新项目</a>
@@ -317,6 +298,7 @@ function sendRenrenRequest(){
 							 			<ul class="project-list" id="my_project_list"></ul>
 							 		</div>
 							 	</div>
+							 	 -->
 							</div>
 						</div>
 					

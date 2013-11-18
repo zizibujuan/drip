@@ -2,7 +2,7 @@ echo off
 
 set BASEDIR=D:\git\repo\com.zizibujuan.drip\client\bundles\com.zizibujuan.drip.client.release
 rem dev source dir
-DEVDIR=D:\git\repo\com.zizibujuan.drip\client\bundles
+set DEVDIR=D:\git\repo\com.zizibujuan.drip\client\bundles
 
 set SRCDIR=%BASEDIR%\src
 set TOOLSDIR=%SRCDIR%\util\buildscripts
@@ -12,84 +12,69 @@ rem LOADERCONF=""
 set PROFILE=%BASEDIR%\profiles\drip.profile.js"
 
 
+
 echo "copy files to %SRCDIR%..."
-cd $BASEDIR
-#cp $DEVDIR/com.zizibujuan.drip.client.core/web/drip/index.html $DISTDIR/index.html
-cp $DEVDIR/com.zizibujuan.drip.client.core/web/favicon.ico $DISTDIR/favicon.ico
-cp $DEVDIR/com.zizibujuan.drip.client.core/web/robots.txt $DISTDIR/robots.txt
-cp $DEVDIR/com.zizibujuan.drip.client.core/web/baidu_verify_3Em7IPlFxO.html $DISTDIR/baidu_verify_3Em7IPlFxO.html
-cp $DEVDIR/com.zizibujuan.drip.client.core/web/google4361b96ddcf23ebc.html $DISTDIR/google4361b96ddcf23ebc.html
+cd %BASEDIR%
+xcopy %DEVDIR%\com.zizibujuan.drip.client.core\web\favicon.ico %DISTDIR%\favicon.ico /e /h /y /i /q
+xcopy %DEVDIR%\com.zizibujuan.drip.client.core\web\robots.txt %DISTDIR%\robots.txt /e /h /y /i /q
+xcopy %DEVDIR%\com.zizibujuan.drip.client.core\web\baidu_verify_3Em7IPlFxO.html %DISTDIR%\baidu_verify_3Em7IPlFxO.html /e /h /y /i /q
+xcopy %DEVDIR%\com.zizibujuan.drip.client.core\web\google4361b96ddcf23ebc.html %DISTDIR%\google4361b96ddcf23ebc.html /e /h /y /i /q
 
-# 如果版本没有变化，就不拷贝
-grep -q 1.10.0-pre $SRCDIR/dojo/package.json
-if [ $? -eq 0 ]
-then
-      echo "dojo 版本没有变化，因此不拷贝"
-else
-	rm -rf "$SRCDIR/dojo"
-	rm -rf "$SRCDIR/dijit"
-	rm -rf "$SRCDIR/dojox"
-	rm -rf "$SRCDIR/util"
+echo "delete dojo libs"
+rd /q /s "%SRCDIR%\dojo"
+rd /q /s "%SRCDIR%\dijit"
+rd /q /s "%SRCDIR%\dojox"
+rd /q /s "%SRCDIR%\util"
 	
-	cp -r $DEVDIR/com.zizibujuan.drip.client.dojo/static/dojo $SRCDIR
-	cp -r $DEVDIR/com.zizibujuan.drip.client.dojo/static/dijit $SRCDIR
-	cp -r $DEVDIR/com.zizibujuan.drip.client.dojo/static/dojox $SRCDIR
-	cp -r $DEVDIR/com.zizibujuan.drip.client.dojo/static/util $SRCDIR
-fi
+rem copy once
+echo "copy dojo libs"
+xcopy %DEVDIR%\com.zizibujuan.drip.client.dojo\static\dojo %SRCDIR%\dojo /e /h /y /i /q
+xcopy %DEVDIR%\com.zizibujuan.drip.client.dojo\static\dijit %SRCDIR%\dijit /e /h /y /i /q
+xcopy %DEVDIR%\com.zizibujuan.drip.client.dojo\static\dojox %SRCDIR%\dojox /e /h /y /i /q
+xcopy %DEVDIR%\com.zizibujuan.drip.client.dojo\static\util %SRCDIR%\util /e /h /y /i /q
 
-rm -rf "$SRCDIR/mathEditor"
-rm -rf "$SRCDIR/drip"
-rm -rf "$SRCDIR/doc"
-rm -rf "$SRCDIR/static"
+echo "delete mathEditor"
+rd /q /s "%SRCDIR%\mathEditor"
 
+echo "delete drip"
+rd /q /s "%SRCDIR%\drip"
 
-cp -r $DEVDIR/com.zizibujuan.drip.client.editor/static/mathEditor $SRCDIR
-cp -r $DEVDIR/com.zizibujuan.drip.client.core/web/drip $SRCDIR
-cp -r $DEVDIR/com.zizibujuan.drip.client.doc/web/doc $SRCDIR
-cp -r $DEVDIR/com.zizibujuan.drip.client.marked/static/marked $SRCDIR
+echo "delete doc"
+rd /q /s "%SRCDIR%\doc"
 
+echo "delete marked"
+rd /q /s "%SRCDIR%\marked"
 
-echo " Done"
+echo "copy mathEditor"
+xcopy %DEVDIR%\com.zizibujuan.drip.client.editor\static\mathEditor %SRCDIR%\mathEditor /e /h /y /i /q
 
-if [ ! -d "$TOOLSDIR" ]; then
-	echo "Can't find Dojo build tools -- did you initialise submodules? (git submodule update --init --recursive)"
-	exit 1
-fi
+echo "copy drip"
+xcopy %DEVDIR%\com.zizibujuan.drip.client.core\web\drip %SRCDIR%\drip /e /h /y /i /q
 
-echo "Building application with $PROFILE to $DISTDIR."
+echo "copy doc"
+xcopy %DEVDIR%\com.zizibujuan.drip.client.doc\web\doc %SRCDIR%\doc /e /h /y /i /q
 
-echo -n "Cleaning old files..."
-rm -rf "$DISTDIR/dijit"
-rm -rf "$DISTDIR/dojo"
-rm -rf "$DISTDIR/dojox"
-rm -rf "$DISTDIR/drip"
-rm -rf "$DISTDIR/mathEditor"
-rm -rf "$DISTDIR/doc"
-rm -rf "$DISTDIR/marked"
-
+echo "copy marked"
+xcopy %DEVDIR%\com.zizibujuan.drip.client.marked\static\marked %SRCDIR%\marked /e /h /y /i /q
 
 echo " Done"
 
-cd "$TOOLSDIR"
-
-#--require "$LOADERCONF"  --releaseDir "$DISTDIR" --check-args --check-discovery
-if which node >/dev/null; then
-	node ../../dojo/dojo.js load=build  --profile "$PROFILE" --releaseDir "$DISTDIR"  $@
-elif which java >/dev/null; then
-	java -Xms512m -Xmx512m  -cp ../shrinksafe/js.jar:../closureCompiler/compiler.jar:../shrinksafe/shrinksafe.jar org.mozilla.javascript.tools.shell.Main  ../../dojo/dojo.js baseUrl=../../dojo load=build  --profile "$PROFILE" $@
-else
-	echo "Need node.js or Java to build!"
-	exit 1
-fi
-
-# Copy & minify index.html to dist
-#cat "$BASEDIR/com.zizibujuan.drip.client.core/web/index.html" | tr '\n' ' ' | \
-#perl -pe "
-#  s/<\!--.*?-->//g;                          # Strip comments
-#  s/isDebug: *1/deps:['$LOADERMID']/;        # Remove isDebug, add deps
-#  s/<script src=\"$LOADERMID.*?\/script>//;  # Remove script app/run
-#  s/\s+/ /g; 
+echo "Cleaning old files..."
+rd /q /s "%DISTDIR%\dijit"
+rd /q /s "%DISTDIR%\dojo"
+rd /q /s "%DISTDIR%\dojox"
+rd /q /s "%DISTDIR%\drip"
+rd /q /s "%DISTDIR%\mathEditor"
+rd /q /s "%DISTDIR%\doc"
+rd /q /s "%DISTDIR%\marked"
 
 
+
+cd "%TOOLSDIR%"
+echo %PROFILE%
+echo %DISTDIR%
+node ../../dojo/dojo.js load=build --profile "D:\\git\\repo\\com.zizibujuan.drip\\client\\bundles\\com.zizibujuan.drip.client.release\\profiles\\drip.profile.js"
+
+rem  --releaseDir "%DISTDIR%"
 
 echo "Build complete"
