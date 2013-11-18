@@ -62,5 +62,6 @@ public abstract class UserConnect {
 		// 这样就不会使用其他人的帐号自动登录
 		// 同时也可以设置第三方网站的token，这样可以使用这些token自动登录
 		CookieUtil.remove(req, resp, CookieConstants.ZZBJ_USER_TOKEN);
+		CookieUtil.remove(req, resp, CookieConstants.LOGIN_NAME);
 	}
 }
