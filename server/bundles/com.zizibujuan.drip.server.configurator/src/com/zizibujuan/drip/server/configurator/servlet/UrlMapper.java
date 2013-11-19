@@ -36,9 +36,10 @@ public class UrlMapper {
 		listUrlMap = new HashMap<String, String>();
 		listUrlMap.put("/following", "/drip/relation.html");
 		listUrlMap.put("/followers", "/drip/relation.html");
-		listUrlMap.put("/users", "/drip/profile.html");
+		listUrlMap.put("/users", "/drip/myHome.html");
 		listUrlMap.put("/projects", "/doc/projects/list.html");
 		listUrlMap.put("/blob", "/doc/files/blob.html");
+		listUrlMap.put("/settings", "/drip/profile.html");
 				
 		// new的一个约定，就是最后一个字母是new，TODO：此时要确保用户不会使用这个关键字
 		newUrlMap = new HashMap<String, String>();

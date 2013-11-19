@@ -83,7 +83,10 @@
       		alias="/userImages"
       		class="com.zizibujuan.drip.server.servlet.ImageServlet">
       </servlet>
-      
+      <servlet 
+      		alias="/settings"
+      		class="com.zizibujuan.drip.server.servlet.UserSettingServlet">
+      </servlet>      
       
       <!-- admin -->
       <servlet 
