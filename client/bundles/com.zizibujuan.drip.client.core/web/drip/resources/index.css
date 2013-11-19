@@ -254,32 +254,37 @@ img{
 
 .drip_user_links {
 	float: right;
-	margin: 0;
+	margin: 7px 0 0;
 	padding: 0;
 	list-style: none;
 }
 
-.drip_user_links li {
+.drip_user_links > li {
+	position: relative;
 	float: left;
-	margin-left: 10px;
+	margin-left: 5px;
 }
 
-.drip_user_links a {
+.drip_user_links > li > a {
 	display: block;
-	color: #333;
-	
+	padding: 5px;
+	font-size: 13px;
+	color: #333333;
+	transition: all 0.1s ease-in;
+	-webkit-transition: all 0.1s ease-in 0;
 }
 
 .drip_user_links .drip_name{
-	margin: 12px 5px 10px;
-	padding: 0 10px;
+	font-weight: bold;
 	line-height: 16px;
+	white-space: nowrap;
 }
 
 .drip_user_links .drip_name img {
 	float: left;
 	margin: -2px 5px 0 0;
 	border-radius: 3px;
+	box-shadow: 0 1px 0 #fff;
 }
 
 .drip_user_links .drip_name span {
