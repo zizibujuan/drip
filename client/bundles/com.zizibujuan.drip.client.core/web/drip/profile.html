@@ -17,8 +17,10 @@
 <script type="text/javascript">
 require([ "dojo/dom",
           "dojo/on",
+          "dojo/json",
           "dojo/string",
           "dojo/dom-prop",
+          "dojo/dom-construct",
           "dojo/request/xhr",
           "drip/widget/Header",
           "drip/user",
@@ -26,8 +28,10 @@ require([ "dojo/dom",
           "dojo/domReady!"], function(
         		  dom,
         		  on,
+        		  JSON,
         		  string,
         		  domProp,
+        		  domConstruct,
         		  xhr,
         		  Header,
         		  user,
@@ -59,7 +63,40 @@ require([ "dojo/dom",
 		var data = {};
 		data.nickName = string.trim(nickName.value);
 		// TODO:校验邮箱地址
-		data.email = string.trim()
+		data.email = string.trim(email.value);
+		var sex = null;
+		if(domProp.get(male, "checked")){
+			sex = male.value;
+		}else if(domProp.get(female, "checked")){
+			sex = female.value;
+		}
+		if(sex != null){
+			data.sex = sex;
+		}
+		
+		if(!/[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}/.test(data.email)){
+			tip.error("邮箱格式不正确", email,"after");
+			return;
+		}
+		
+		if(email.nextSibling){
+			domConstruct.destroy(email.nextSibling);
+		}
+		
+		xhr.put("/settings/profile", {
+			data: JSON.stringify(data), 
+			handleAs: "json"
+		}).then(function(response){
+			
+		}, function(error){
+			console.error(error);
+		});
+		
+		
+		
+		
+		
+		
 	});
 	
 });
@@ -80,12 +117,12 @@ require([ "dojo/dom",
 				<div class="boxed-group-inner">
 					<div>
 						<label>昵称
-							<input type="text" id="nickName" style="width: 300px">
+							<input type="text" id="nickName" style="width: 300px" maxlength="25">
 						</label>
 					</div>
 					<div>
 						<label>邮箱
-							<input type="email" id="email"  style="width: 300px">
+							<input type="email" id="email"  style="width: 300px" maxlength="50">
 						</label>
 					</div>
 					<div>

@@ -103,6 +103,17 @@ public class UserServiceImpl implements UserService {
 		userInfo.setAccessToken(token);
 		return userInfo;
 	}
+	
+	@Override
+	public UserInfo getById(Long userId) {
+		UserInfo userInfo = userDao.getById(userId);
+		if(userInfo == null){
+			return null;
+		}
+		// 添加用户头像
+		setAvatars(userInfo);
+		return userInfo;
+	}
 
 	private void setAvatars(UserInfo userInfo) {
 		Map<String, String> avatars = userAvatarDao.get(userInfo.getId());
@@ -175,6 +186,11 @@ public class UserServiceImpl implements UserService {
 		return userInfo;
 	}
 	
+	@Override
+	public void update(UserInfo userInfo) {
+		userDao.update(userInfo);
+	}
+
 	
 	
 	

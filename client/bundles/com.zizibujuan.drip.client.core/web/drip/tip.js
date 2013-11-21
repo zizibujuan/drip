@@ -19,8 +19,12 @@ define(["dojo/_base/window",
 		}).play();
 	};
 	
-	tip.error = function(msg){
-		
+	tip.error = function(msg, dom, position){
+		if(email.nextSibling){
+			domConstruct.destroy(email.nextSibling);
+		}
+		var tipDiv = domConstruct.create("span", {style:{color:"red"}}, dom, position);
+		tipDiv.innerHTML = "<i class='icon-remove-sign'></i> " + msg;
 	};
 	
 	return tip;

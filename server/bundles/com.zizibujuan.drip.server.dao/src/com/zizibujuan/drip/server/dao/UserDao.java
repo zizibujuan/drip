@@ -134,7 +134,12 @@ public interface UserDao {
 	 */
 	Long importUser(UserInfo userInfo, UserBindInfo userBindInfo, List<Avatar> avatars);
 	
-	
+	/**
+	 * 更新用户信息，当前版本，只允许更新用户的昵称，用户的邮箱与用户的性别
+	 * 
+	 * @param userInfo 用户信息
+	 */
+	void update(UserInfo userInfo);
 	
 	
 	

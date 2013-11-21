@@ -192,7 +192,8 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			+ "DBID,"
 			+ "LOGIN_NAME,"
 			+ "EMAIL, "
-			+ "NICK_NAME "
+			+ "NICK_NAME,"
+			+ "SEX "
 			+ "FROM "
 			+ "DRIP_USER_INFO ";
 	private static final String SQL_GET_USER_FOR_SESSION_BY_EMAIL = SQL_GET_USER_INFO_FOR_SELF
@@ -216,6 +217,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 				userInfo.setLoginName(rs.getString(2));
 				userInfo.setEmail(rs.getString(3));
 				userInfo.setNickName(rs.getString(4));
+				userInfo.setSex(rs.getString(5));
 				return userInfo;
 			}
 		}, login, md5Password);
@@ -232,6 +234,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 				userInfo.setLoginName(rs.getString(2));
 				userInfo.setEmail(rs.getString(3));
 				userInfo.setNickName(rs.getString(4));
+				userInfo.setSex(rs.getString(5));
 				return userInfo;
 			}
 		}, login, md5Password);
@@ -252,6 +255,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 				userInfo.setLoginName(rs.getString(2));
 				userInfo.setEmail(rs.getString(3));
 				userInfo.setNickName(rs.getString(4));
+				userInfo.setSex(rs.getString(5));
 				return userInfo;
 			}
 		}, userId);
@@ -309,6 +313,18 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		return userId;
 	}
 	
+	private static final String SQL_UPDATE_USER = "UPDATE "
+			+ "DRIP_USER_INFO "
+			+ "SET "
+			+ "NICK_NAME=?, "
+			+ "EMAIL=?, "
+			+ "SEX=? "
+			+ "WHERE DBID=?";
+	@Override
+	public void update(UserInfo userInfo) {
+		DatabaseUtil.update(getDataSource(), SQL_UPDATE_USER, userInfo.getNickName(), userInfo.getEmail(), userInfo.getSex(), userInfo.getId());
+	}
+
 	
 	
 	
@@ -434,5 +450,5 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			this.userStatisticsDao = null;
 		}
 	}
-
+	
 }

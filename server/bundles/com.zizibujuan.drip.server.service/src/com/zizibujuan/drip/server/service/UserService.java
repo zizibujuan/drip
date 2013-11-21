@@ -81,6 +81,15 @@ public interface UserService {
 	UserInfo login(String login, String password);
 	
 	/**
+	 * 根据用户标识，获取用户信息。注意包含用户的一些不允许公开的信息，如邮箱等。
+	 * 即会有一些隐私数据，如果需要公开显示用户信息，则请使用{@link #getPublicInfo(Long)}
+	 * 
+	 * @param userId
+	 * @return 用户信息，包含隐私数据
+	 */
+	UserInfo getById(Long userId);
+	
+	/**
 	 * 根据token获取用户信息
 	 * 
 	 * @param token
@@ -174,7 +183,12 @@ public interface UserService {
 	 */
 	Map<String, Object> getPublicInfo(Long userId);
 	
-	
+	/**
+	 * 更新用户信息，当前版本，只允许更新用户的昵称，用户的邮箱与用户的性别
+	 * 
+	 * @param userInfo 用户信息
+	 */
+	void update(UserInfo userInfo);
 	
 	
 	
@@ -237,6 +251,5 @@ public interface UserService {
 	 * </pre>
 	 */
 	UserStatistics getUserStatistics(Long userId);
-
 
 }
