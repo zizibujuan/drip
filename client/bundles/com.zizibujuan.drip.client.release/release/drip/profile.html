@@ -2,36 +2,106 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title> 孜孜不倦 · 协作写笔记，快乐做习题。</title>
-<!-- <link type="text/css" rel="stylesheet" href="/drip/resources/app.css" /> -->
-<!-- TODO：使用import合并样式 -->
-
+<title>帐号设置 · 孜孜不倦</title>
 <link type="text/css" rel="stylesheet" href="/drip/resources/common.css" />
-<link type="text/css" rel="stylesheet" href="/drip/resources/profile.css" />
 <link type="text/css" rel="stylesheet" href="/drip/resources/app.css" />
+<link type="text/css" rel="stylesheet" href="/drip/resources/profile.css" />
 <link type="text/css" rel="stylesheet" href="/drip/resources/font-awesome/css/font-awesome.css" />
-
 <script type="text/javascript" 
 	data-dojo-config="
 		async:true,
 		parseOnLoad:false,
 		isDebug:true" 
 	src="/dojo/dojo.js"></script>
+
 <script type="text/javascript">
-
-var splitPathName = window.location.pathname.split("/");
-var action = splitPathName[1];
-var userId = splitPathName[2];
-
 require([ "dojo/dom",
           "dojo/on",
+          "dojo/json",
+          "dojo/string",
+          "dojo/dom-prop",
+          "dojo/dom-construct",
+          "dojo/request/xhr",
           "drip/widget/Header",
+          "drip/user",
+          "drip/tip",
           "dojo/domReady!"], function(
         		  dom,
         		  on,
-        		  Header){
+        		  JSON,
+        		  string,
+        		  domProp,
+        		  domConstruct,
+        		  xhr,
+        		  Header,
+        		  user,
+        		  tip){
 	var header = new Header({}, "header");
+	
+	var nickName = dom.byId("nickName");
+	var email = dom.byId("email");
+	var male = dom.byId("male");
+	var female = dom.byId("female");
+	var btnSave = dom.byId("btnSave");
+	
+	// 加载数据
+	user.getLoggedUserInfo().then(function(userInfo){
+		nickName.value = userInfo.nickName;
+		email.value = userInfo.email;
+		var sex = userInfo.sex;
+		if(sex){
+			if(sex == "1"){
+				domProp.set(male, "checked", true);
+			}else{
+				domProp.set(female, "checked", true);
+			}
+		}
+	});
+	
+	// 提交修改后的数据
+	on(btnSave, "click", function(e){
+		var data = {};
+		data.nickName = string.trim(nickName.value);
+		// TODO:校验邮箱地址
+		data.email = string.trim(email.value);
+		var sex = null;
+		if(domProp.get(male, "checked")){
+			sex = male.value;
+		}else if(domProp.get(female, "checked")){
+			sex = female.value;
+		}
+		if(sex != null){
+			data.sex = sex;
+		}
+		
+		if(!/[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}/.test(data.email)){
+			tip.error("邮箱格式不正确", email,"after");
+			return;
+		}
+		
+		if(email.nextSibling){
+			domConstruct.destroy(email.nextSibling);
+		}
+		
+		xhr.put("/settings/profile", {
+			data: JSON.stringify(data), 
+			handleAs: "json"
+		}).then(function(response){
+			
+		}, function(error){
+			console.error(error);
+		});
+		
+		
+		
+		
+		
+		
+	});
+	
 });
+	
+	
 
 </script>
 
@@ -41,57 +111,32 @@ require([ "dojo/dom",
 		<div id="header" style="min-height:43px"></div>
 		
 		<div  class="container" style="padding-top: 60px;">
-			<div>
-				<div class="profile_side left">
-					<div class="drip_avatar">
-						<span>
-							<a><img src="/drip/resources/images/profile_180_180.gif" height="200px" width="200px"/></a>
-						</span>
-						<h1><span>显示名</span></h1>
-						<div class="drip_user_details">
-							<div>
-								<span class="male">男</span> <span>北京 海淀</span>
-							</div>
-							<div>(在读)当前所在学校/单位</div>
-							<div><span class="drip_join_date">2012年10月10日</span><span class="drip_join_label">加入</span></div>
-						</div>
-					</div>
-					<ul class="drip_user_stats">
-						<li><a><strong>0</strong><span>粉丝</span></a></li>
-						<li><a><strong>0</strong><span>关注</span></a></li>
-						<li><a><strong>0</strong><span>已答习题</span></a></li>
-						<li><a><strong>0</strong><span>已录习题</span></a></li>
-					</ul>
-				</div>
-				<div class="activity_side right">
-					<div class="drip_tab_nav">
-						<ul class="drip_tab_nav_tabs">
-							<!-- 
-							<li>
-								<a href="#"  class="drip_tab_nav_tab">贡献</a>
-							</li>
-							 -->
-							<li>
-								<a href="#"  class="drip_tab_nav_tab selected">我的活动</a>
-							</li>
-							<li>
-								<a href="#"  class="drip_tab_nav_tab">我答的习题</a>
-							</li>
-							<li>
-								<a href="#"  class="drip_tab_nav_tab">我录的习题</a>
-							</li>
-						</ul>
-						<div class="drip_tab_nav_right">
-							<a href="#">编辑个人资料</a>
-						</div>
+		
+			<div class="boxed-group" style="width:500px">
+				<h3>编辑帐号基本信息</h3>
+				<div class="boxed-group-inner">
+					<div>
+						<label>昵称
+							<input type="text" id="nickName" style="width: 300px" maxlength="25">
+						</label>
 					</div>
 					<div>
-						活动内容
+						<label>邮箱
+							<input type="email" id="email"  style="width: 300px" maxlength="50">
+						</label>
+					</div>
+					<div>
+						<label>性别
+						</label>
+						<label><input type="radio" id="male" value="1" name="sex">男</label>
+						<label><input type="radio" id="female" value="2" name="sex">女</label>
+					</div>
+					<div>
+						<button class="minibutton primary" id="btnSave">保存</button>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	
 </body>
 </html>
