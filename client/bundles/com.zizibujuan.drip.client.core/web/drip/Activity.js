@@ -180,9 +180,9 @@ define(["dojo/_base/declare",
 					
 					var answerDiv = this.answerDiv = domConstruct.create("div",{"class":"answer"}, this.answerNode);
 					if(this._optionLabels.length > 0){
-						answerDiv.innerHTML = "答案是："+"<span>"+ this._optionLabels.join(",") +"</span>";
+						answerDiv.innerHTML = "答案："+"<span>"+ this._optionLabels.join(",") +"</span>";
 					}else{
-						answerDiv.innerHTML = "答案是："+"<span>您还没有作答。</span>";
+						answerDiv.innerHTML = "答案："+"<span>您还没有作答。</span>";
 					}
 				}else if(exerType == classCode.ExerciseType.ESSAY_QUESTION){
 					// 会出现只录入习题解析，但是没有录入答案的情况

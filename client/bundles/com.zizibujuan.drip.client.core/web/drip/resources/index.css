@@ -406,7 +406,7 @@ box-shadow: none;
 }
 
 .drip_main{
-	background-color: #fafafa;
+	/*background-color: #fafafa;*/
 }
 
 
@@ -455,6 +455,10 @@ box-shadow: none;
 
 .drip_detail{
 	margin-left: 60px;
+}
+
+.drip_action{
+	margin-bottom: 5px;
 }
 
 .drip_tab_nav {
