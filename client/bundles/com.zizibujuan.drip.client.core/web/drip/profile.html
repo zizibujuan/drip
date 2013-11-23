@@ -74,7 +74,7 @@ require([ "dojo/dom",
 			data.sex = sex;
 		}
 		
-		if(!/[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}/.test(data.email)){
+		if(data.email != "" && !/[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}/.test(data.email)){
 			tip.error("邮箱格式不正确", email,"after");
 			return;
 		}
@@ -87,15 +87,11 @@ require([ "dojo/dom",
 			data: JSON.stringify(data), 
 			handleAs: "json"
 		}).then(function(response){
-			
+			tip.ok("保存成功", btnSave, "after");
 		}, function(error){
 			console.error(error);
+			tip.error("保存失败", btnSave, "after");
 		});
-		
-		
-		
-		
-		
 		
 	});
 	

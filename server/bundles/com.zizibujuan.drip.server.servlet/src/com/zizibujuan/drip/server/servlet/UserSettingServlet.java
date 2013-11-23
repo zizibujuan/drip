@@ -60,7 +60,8 @@ public class UserSettingServlet extends BaseServlet {
 				// TODO: 需不需要校验昵称的唯一性呢?
 				// 校验邮箱的有效性
 				Validator validator = new Validator();
-				if(!EmailValidator.getInstance().isValid(newUserInfo.getEmail())){
+				String email = newUserInfo.getEmail().trim();
+				if(!email.isEmpty() && !EmailValidator.getInstance().isValid(email)){
 					validator.addFieldError("email", "邮箱格式不正确");
 				}
 				if(validator.hasErrors()){

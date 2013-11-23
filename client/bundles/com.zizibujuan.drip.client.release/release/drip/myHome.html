@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title> </title>
+<!-- <link type="text/css" rel="stylesheet" href="/drip/resources/app.css" /> -->
+<!-- TODO：使用import合并样式 -->
+
+<link type="text/css" rel="stylesheet" href="/drip/resources/common.css" />
+<link type="text/css" rel="stylesheet" href="/drip/resources/profile.css" />
+<link type="text/css" rel="stylesheet" href="/drip/resources/app.css" />
+<link type="text/css" rel="stylesheet" href="/drip/resources/font-awesome/css/font-awesome.css" />
+
+<script type="text/javascript" 
+	data-dojo-config="
+		async:true,
+		parseOnLoad:false,
+		isDebug:true" 
+	src="/dojo/dojo.js"></script>
+<script type="text/javascript">
+
+var splitPathName = window.location.pathname.split("/");
+var action = splitPathName[1];
+var userId = splitPathName[2];
+
+require([ "dojo/dom",
+          "dojo/on",
+          "drip/widget/Header",
+          "drip/user",
+          "dojo/domReady!"], function(
+        		  dom,
+        		  on,
+        		  Header,
+        		  user){
+	var header = new Header({}, "header");
+	// TODO：下一个版本，这个页面不单单显示当前用户的信息，其他人还可以访问用户的这个页面，查看用户信息
+	user.getLoggedUserInfo().then(function(userInfo){
+		document.title = userInfo.loginName || userInfo.nickName;
+		if(userInfo.xLargeImageUrl){
+			dom.byId("avatar").innerHTML = userInfo.xLargeImageUrl
+		}
+		dom.byId("userName").innerHTML = userInfo.loginName || userInfo.nickName;
+		if(userInfo.sex){
+			dom.byId("sex").innerHTML = userInfo.sex == "1"? "男":"女";
+		}
+		if(userInfo.homeCity){
+			dom.byId("city").innerHTML = userInfo.homeCity;
+		}
+	});
+	
+	user.getLoggedUserStatistics().then(function(stat){
+		dom.byId("fanCount").innerHTML = stat.fanCount;
+		dom.byId("followCount").innerHTML = stat.followCount;
+		dom.byId("answerCount").innerHTML = stat.answerCount;
+		dom.byId("exerciseCount").innerHTML = stat.exerPublishCount;
+	});
+	
+});
+
+</script>
+
+</head>
+<body class="claro">
+	<div id="wrapper" class="drip_body">
+		<div id="header" style="min-height:43px"></div>
+		
+		<div  class="container" style="padding-top: 60px;">
+			<div>
+				<div class="profile_side left">
+					<div class="drip_avatar">
+						<span>
+							<a><img id="avatar" src="/drip/resources/images/profile_180_180.gif" height="200px" width="200px"/></a>
+						</span>
+						<h1><span id="userName">显示名</span></h1>
+						<div class="drip_user_details">
+							<div>
+								<span class="male" id="sex"></span> <span id="city"></span>
+							</div>
+							<!-- 
+							<div>(在读)当前所在学校/单位</div>
+							<div><span class="drip_join_date">2012年10月10日</span><span class="drip_join_label">加入</span></div>
+							 -->
+						</div>
+					</div>
+					<ul class="drip_user_stats">
+						<li><a><strong id="fanCount">0</strong><span>粉丝</span></a></li>
+						<li><a><strong id="followCount">0</strong><span>关注</span></a></li>
+						<li><a><strong id="answerCount">0</strong><span>已答习题</span></a></li>
+						<li><a><strong id="exerciseCount">0</strong><span>已录习题</span></a></li>
+					</ul>
+				</div>
+				<div class="activity_side right">
+					<div class="drip_tab_nav">
+						<ul class="drip_tab_nav_tabs">
+							<!-- 
+							<li>
+								<a href="#"  class="drip_tab_nav_tab">贡献</a>
+							</li>
+							 -->
+							<li>
+								<a href="#"  class="drip_tab_nav_tab selected">我的活动</a>
+							</li>
+							<li>
+								<a href="#"  class="drip_tab_nav_tab">我答的习题</a>
+							</li>
+							<li>
+								<a href="#"  class="drip_tab_nav_tab">我录的习题</a>
+							</li>
+						</ul>
+						<div class="drip_tab_nav_right">
+							<a href="/settings/profile" class="minibutton"><i class="icon-cog"> 编辑个人资料</i></a>
+						</div>
+					</div>
+					<div>
+						活动内容
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+</body>
+</html>

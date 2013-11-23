@@ -12,7 +12,7 @@ define(["dojo/_base/window",
 		tipDiv.innerHTML = "<i class='icon-ok'></i> " + msg;
 		coreFx.wipeOut({
 			node: tipDiv,
-			duration: 1000,
+			duration: 1500,
 			onEnd: function(){
 				domConstruct.destroy(tipDiv);
 			}
