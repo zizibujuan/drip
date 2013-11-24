@@ -8,7 +8,8 @@ define(["dojo/_base/declare",
         "dijit/_TemplatedMixin",
         "dojo/text!./templates/HeaderLoggedIn.html",
         "dojo/text!./templates/HeaderLoggedOut.html",
-        "drip/user"], function(
+        "drip/user",
+        "drip/browserSupport"], function(
 		declare,
 		lang,
 		notify,
@@ -76,6 +77,7 @@ define(["dojo/_base/declare",
 		
 		postCreate: function(){
 			this.inherited(arguments);
+			
 			var header = null;
 			// 虽然根据这个cookie判断用户是否登录，有一定的风险，但是却能加快header的渲染，值得承担。
 			if(loggedIn && loggedIn == "1"){

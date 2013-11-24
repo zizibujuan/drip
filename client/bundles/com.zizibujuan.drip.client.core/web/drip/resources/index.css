@@ -82,7 +82,7 @@ img{
 
 .container{
 	margin: 0 auto;
-	width: 920px;
+	width: 980px;
 }
 
 .divider-vertical {
@@ -179,6 +179,20 @@ img{
 	padding: 0px 2px 0px 2px;
 }
 
+.unsupported-browser{
+	border-bottom: #b3a569 1px solid;
+	padding-bottom: 15px;
+	background-color: #fae692;
+	padding-left: 0px;
+	padding-right: 0px;
+	background-repeat: repeat-x;
+	color: #211e14;
+	padding-top: 15px;
+}
+
+.unsupported-browser h5{
+	font-size: 13px;
+}
 
 .pageHeader{
 	position: relative;
