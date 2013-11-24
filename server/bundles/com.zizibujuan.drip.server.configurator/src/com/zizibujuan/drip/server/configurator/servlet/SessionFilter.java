@@ -45,7 +45,6 @@ public class SessionFilter implements Filter {
 		
 		if(!UserSession.isLogged(httpRequest)){
 			tryAutoLogin(httpRequest);
-			
 		}
 		
 		if(!UserSession.isLogged(httpRequest)){

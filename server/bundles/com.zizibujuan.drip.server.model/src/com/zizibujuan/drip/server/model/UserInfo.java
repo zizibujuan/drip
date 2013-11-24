@@ -19,6 +19,7 @@ public class UserInfo {
 	private String introduce;
 	private String confirmKey;
 	private String accessToken;
+	private Long expiresTime;
 	
 	private String sex;
 	private boolean active;
@@ -262,6 +263,24 @@ public class UserInfo {
 
 	public void setAccessToken(String accessToken) {
 		this.accessToken = accessToken;
+	}
+
+	/**
+	 * 获取access token的过期时间
+	 * 
+	 * @return access token的过期时间
+	 */
+	public Long getExpiresTime() {
+		return expiresTime;
+	}
+
+	/**
+	 * 设置access token的过期时间
+	 * 
+	 * @param expiresTime access token的过期时间
+	 */
+	public void setExpiresTime(Long expiresTime) {
+		this.expiresTime = expiresTime;
 	}
 	
 	

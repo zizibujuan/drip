@@ -81,6 +81,8 @@ public class QQUserConnect extends UserConnect {
 				userBindInfo.setSiteId(OAuthConstants.QQ);
 				com.zizibujuan.drip.server.model.UserInfo dripUser = new com.zizibujuan.drip.server.model.UserInfo();
 				dripUser.setNickName(qzoneUserInfoBean.getNickname());
+				dripUser.setAccessToken(accessToken);
+				dripUser.setExpiresTime(tokenExpireIn);
 				
 				String sex = "";
 				String qqGender = qzoneUserInfoBean.getGender();

@@ -45,19 +45,6 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 	private UserAttributesDao userAttributesDao;
 	private UserStatisticsDao userStatisticsDao;
 	
-	private static final String SQL_INSERT_USER_REGISTER = "INSERT INTO "
-			+ "DRIP_USER_INFO "
-			+ "(LOGIN_NAME,"
-			+ "NICK_NAME,"
-			+ "LOGIN_PWD,"
-			+ "EMAIL,"
-			+ "SEX,"
-			+ "CONFIRM_KEY,"
-			+ "ACTIVITY,"
-			+ "CREATE_TIME) " 
-			+ "VALUES "
-			+ "(?, ?, ?, ?, ?, ?, ?, now())";
-	
 	@Override
 	public Long add(final UserInfo userInfo) {
 		Long userId = null;
@@ -82,6 +69,20 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		return userId;
 	}
 	
+	private static final String SQL_INSERT_USER_REGISTER = "INSERT INTO "
+			+ "DRIP_USER_INFO "
+			+ "(LOGIN_NAME,"
+			+ "NICK_NAME,"
+			+ "LOGIN_PWD,"
+			+ "EMAIL,"
+			+ "SEX,"
+			+ "CONFIRM_KEY,"
+			+ "ACTIVITY,"
+			+ "CREATE_TIME,"
+			+ "ACCESS_TOKEN,"
+			+ "EXPIRES_TIME) " 
+			+ "VALUES "
+			+ "(?, ?, ?, ?, ?, ?, ?, now(),?,?)";
 	private Long add(Connection con, final UserInfo userInfo) throws SQLException{
 		Long userId = DatabaseUtil.insert(con, SQL_INSERT_USER_REGISTER, new PreparedStatementSetter() {
 			@Override
@@ -93,6 +94,8 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 				ps.setString(5, userInfo.getSex());
 				ps.setString(6, userInfo.getConfirmKey());
 				ps.setBoolean(7, userInfo.isActive());
+				ps.setString(8, userInfo.getAccessToken());
+				ps.setLong(9, userInfo.getExpiresTime());
 			}
 		});
 		// 在用户属性表中初始化属性值,TODO:这里的行列转换设计虽然灵活，但是如果因为保存属性出错，
