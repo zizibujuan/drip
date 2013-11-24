@@ -1,0 +1,3 @@
+//>>built
+define("drip/browserSupport",["dojo/_base/window","dojo/has","dojo/sniff","dojo/dom-construct"],function(a,c,d,b){8>=c("ie")&&(a=b.create("div",{"class":"unsupported-browser"},a.body(),"first"),a=b.create("div",{"class":"container clearfix"},a),b.create("h5",{},a).innerHTML="\x3ci class\x3d'icon-info-sign'\x3e\x3c/i\x3e \u5b5c\u5b5c\u4e0d\u5026\u4e0d\u518d\u652f\u6301IE7\u6216IE8\u3002",b.create("p",{},a).innerHTML="\u6211\u4eec\u5efa\u8bae\u60a8\u4f7f\u7528\u6700\u65b0\u7248\u7684\x3ca href\x3d'https://chrome.google.com'\x3eGoogle Chrome\x3c/a\x3e\u3001\x3ca href\x3d'https://mozilla.org/firefox/'\x3eFirefox\x3c/a\x3e\u6216\x3ca href\x3d'https://ie.microsoft.com/'\x3eInternet Explorer 9+\x3c/a\x3e,")});
+//@ sourceMappingURL=browserSupport.js.map

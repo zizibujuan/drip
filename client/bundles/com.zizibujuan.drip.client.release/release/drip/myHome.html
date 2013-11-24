@@ -36,8 +36,8 @@ require([ "dojo/dom",
 	// TODO：下一个版本，这个页面不单单显示当前用户的信息，其他人还可以访问用户的这个页面，查看用户信息
 	user.getLoggedUserInfo().then(function(userInfo){
 		document.title = userInfo.loginName || userInfo.nickName;
-		if(userInfo.xLargeImageUrl){
-			dom.byId("avatar").innerHTML = userInfo.xLargeImageUrl
+		if(userInfo.xLargeImageUrl || userInfo.largerImageUrl){
+			dom.byId("avatar").src = userInfo.xLargeImageUrl || userInfo.largerImageUrl;
 		}
 		dom.byId("userName").innerHTML = userInfo.loginName || userInfo.nickName;
 		if(userInfo.sex){
