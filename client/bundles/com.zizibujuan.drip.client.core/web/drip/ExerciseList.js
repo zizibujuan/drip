@@ -45,7 +45,7 @@ define(["dojo/_base/declare",
 		 }
 	});
 	
-	var Exercise = declare("drip.Exercise",[_WidgetBase, _TemplatedMixin],{
+	return declare("drip.ExerciseList",[_WidgetBase, _TemplatedMixin],{
 		 templateString: listTemplate,
 		 
 		 // 因为该部件是习题专用的，所以将store硬编码在部件里
@@ -79,5 +79,4 @@ define(["dojo/_base/declare",
 	
 	});
 	
-	return Exercise;
 });
