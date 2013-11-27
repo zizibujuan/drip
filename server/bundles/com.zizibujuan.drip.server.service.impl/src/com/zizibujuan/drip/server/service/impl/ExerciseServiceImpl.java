@@ -1,7 +1,6 @@
 package com.zizibujuan.drip.server.service.impl;
 
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +9,7 @@ import com.zizibujuan.drip.server.dao.ExerciseDao;
 import com.zizibujuan.drip.server.model.Exercise;
 import com.zizibujuan.drip.server.model.ExerciseForm;
 import com.zizibujuan.drip.server.service.ExerciseService;
+import com.zizibujuan.drip.server.util.PageInfo;
 
 /**
  * 维护习题 服务实现类
@@ -22,8 +22,8 @@ public class ExerciseServiceImpl implements ExerciseService {
 	private ExerciseDao exerciseDao;
 	
 	@Override
-	public List<Map<String, Object>> get() {
-		return exerciseDao.get();
+	public List<Exercise> get(PageInfo pageInfo) {
+		return exerciseDao.get(pageInfo);
 	}
 
 	@Override

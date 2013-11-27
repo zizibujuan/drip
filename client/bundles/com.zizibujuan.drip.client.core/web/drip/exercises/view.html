@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title></title>
+<link type="text/css" rel="stylesheet" href="/drip/resources/app.css" />
+<link type="text/css" rel="stylesheet" href="/drip/resources/font-awesome/css/font-awesome.css" />
+<script type="text/javascript" 
+	data-dojo-config="
+		async:true,
+		parseOnLoad:false,
+		isDebug:true" 
+	src="/dojo/dojo.js"></script>
+	
+<script type="text/javascript">
+var pathName = window.location.pathname;
+var exerId = pathName.split("/")[2];
+require(["drip/widget/Header",
+         "dojo/request/xhr",
+         "dojo/dom",
+         "dojo/domReady!"], function(
+        		 Header,
+        		 xhr,
+        		 dom){
+	var header = new Header({}, "header");
+	xhr.get(pathName).then(function(data){
+		dom.byId("exercise").innerHTML = data;
+	}, function(error){
+		if(error.response.status == 404){
+			window.location.href = "/drip/errors/404.html";
+		}
+	});
+});
+</script>
+</head>
+<body class="claro">
+<div id="wrapper" class="drip_body">
+	<div id="header" style="min-height:43px"></div>
+	<div class="container">
+		<div id="exercise" style="margin-top:20px">
+			
+		</div>
+	</div>
+</div>
+</body>
+</html>

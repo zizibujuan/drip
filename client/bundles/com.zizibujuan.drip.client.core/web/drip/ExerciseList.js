@@ -26,18 +26,17 @@ define(["dojo/_base/declare",
 	var ExerciseNode = declare("drip.ExerciseNode",[_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin],{
 		 templateString: nodeTemplate,
 		 
-		 // content: String
-		 //		使用html格式描述的习题
-		 content:"",
+		 exercise: null,
 		 
 		 postCreate : function(){
 			 // 将自定义的xml字符串转换为html格式的字符串。
-			 this.divContent.innerHTML = dataUtil.xmlStringToHtml(this.content);
+			 this.divContent.innerHTML = dataUtil.xmlStringToHtml(this.exercise.content);
 			 // TODO:取消注释
 			 /*
 			 this.buttonAnswer.value = common.buttonAnswer;
 			 on(this.buttonAnswer,"click",lang.hitch(this, this._btnAnswerHandler));
 			 */
+			 this.linkAnswer.href="/exercises/"+ this.exercise.id;
 		 },
 		 
 		 _btnAnswerHandler : function(e){
@@ -67,7 +66,7 @@ define(["dojo/_base/declare",
 			 }else{
 				 array.forEach(items, lang.hitch(this,function(item, index){
 					 var exerciseNode = new ExerciseNode({
-						 content : item.CONTENT
+						 exercise: item
 					 });
 					 this.domNode.appendChild(exerciseNode.domNode);
 					 //this.domNode.innerHTML+=this.domNode.innerHTML+item.CONTENT;

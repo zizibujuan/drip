@@ -10,11 +10,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.core.runtime.IPath;
 
+import com.zizibujuan.drip.server.model.Exercise;
 import com.zizibujuan.drip.server.model.ExerciseForm;
 import com.zizibujuan.drip.server.model.ExerciseOption;
 import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.ExerciseService;
 import com.zizibujuan.drip.server.util.ExerciseType;
+import com.zizibujuan.drip.server.util.PageInfo;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
@@ -39,8 +41,28 @@ public class ExerciseServlet extends BaseServlet{
 		traceRequest(req);
 		IPath path = getPath(req);
 		if(path.segmentCount() == 0){
-			List<Map<String,Object>> exercises = exerciseService.get();
+			PageInfo pageInfo = getPageInfo(req);
+			List<Exercise> exercises = exerciseService.get(pageInfo);
 			ResponseUtil.toJSON(req, resp, exercises);
+			return;
+		}
+		
+		if(path.segmentCount() == 1){
+			try{
+				// TODO: 返回的时候，返回到上一次访问的习题上。
+				Long exerciseId = Long.valueOf(path.segment(0));
+				Exercise exercise = exerciseService.get(exerciseId);
+				if(exercise == null){
+					// 习题不存在
+					ResponseUtil.toJSON(req, resp, null, HttpServletResponse.SC_NOT_FOUND);
+				}else{
+					ResponseUtil.toJSON(req, resp, exercise);
+				}
+			}catch(NumberFormatException e){
+				// 习题不存在
+				ResponseUtil.toJSON(req, resp, null, HttpServletResponse.SC_NOT_FOUND);
+			}
+			
 			return;
 		}
 		super.doGet(req, resp);

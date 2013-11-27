@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +13,8 @@ import com.zizibujuan.drip.server.dao.ActivityDao;
 import com.zizibujuan.drip.server.dao.AnswerDao;
 import com.zizibujuan.drip.server.dao.ExerciseDao;
 import com.zizibujuan.drip.server.dao.HistExerciseDao;
-import com.zizibujuan.drip.server.dao.UserStatisticsDao;
 import com.zizibujuan.drip.server.dao.UserDao;
+import com.zizibujuan.drip.server.dao.UserStatisticsDao;
 import com.zizibujuan.drip.server.exception.dao.DataAccessException;
 import com.zizibujuan.drip.server.model.Activity;
 import com.zizibujuan.drip.server.model.Answer;
@@ -26,6 +25,7 @@ import com.zizibujuan.drip.server.model.ExerciseOption;
 import com.zizibujuan.drip.server.util.ActionType;
 import com.zizibujuan.drip.server.util.DBAction;
 import com.zizibujuan.drip.server.util.ExerciseType;
+import com.zizibujuan.drip.server.util.PageInfo;
 import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 import com.zizibujuan.drip.server.util.dao.PreparedStatementSetter;
@@ -44,11 +44,50 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 	private UserStatisticsDao userStatisticsDao;
 	private HistExerciseDao histExerciseDao;
 	
-	private static final String SQL_LIST_EXERCISE = 
-			"SELECT DBID, CONTENT, CRT_TM, CRT_USER_ID FROM DRIP_EXERCISE ORDER BY CRT_TM DESC";
+	private static final String SQL_LIST_EXERCISE = "SELECT "
+			+ "DBID,"
+			+ "CONTENT,"
+			+ "EXER_TYPE,"
+			+ "EXER_COURSE,"
+			+ "IMAGE_NAME,"
+			+ "CRT_TM,"
+			+ "CRT_USER_ID,"
+			+ "UPT_TM,"
+			+ "UPT_USER_ID "
+			+ "FROM "
+			+ "DRIP_EXERCISE "
+			+ "ORDER BY CRT_TM DESC";
 	@Override
-	public List<Map<String, Object>> get() {
-		return DatabaseUtil.queryForList(getDataSource(), SQL_LIST_EXERCISE);
+	public List<Exercise> get(PageInfo pageInfo) {
+		List<Exercise> result = DatabaseUtil.query(getDataSource(), SQL_LIST_EXERCISE, new RowMapper<Exercise>() {
+			@Override
+			public Exercise mapRow(ResultSet rs, int rowNum)
+					throws SQLException {
+				Exercise exercise = new Exercise();
+				exercise.setId(rs.getLong(1));
+				exercise.setContent(rs.getString(2));
+				exercise.setExerciseType(rs.getString(3));
+				exercise.setCourse(rs.getString(4));
+				exercise.setImageName(rs.getString(5));
+				exercise.setCreateTime(rs.getTimestamp(6));
+				exercise.setCreateUserId(rs.getLong(7));
+				exercise.setLastUpdateTime(rs.getTimestamp(8));
+				exercise.setLastUpdateUserId(rs.getLong(9));
+				return exercise;
+			}
+		}, pageInfo);
+		
+		for(Exercise exer : result){
+			String exerType = exer.getExerciseType();
+			if (ExerciseType.SINGLE_OPTION.equals(exerType)
+					|| ExerciseType.MULTI_OPTION.equals(exerType)
+					|| ExerciseType.FILL.equals(exerType)) {
+				List<ExerciseOption> options = this.getExerciseOptions(exer.getId());
+				exer.setOptions(options);
+			}
+		}
+		
+		return result;
 	}
 	
 	@Override

@@ -25,6 +25,7 @@ public class UrlMapper {
 	private Map<String, String> listUrlMap; // 跳转到查询列表页面，如果是单条记录，则跳转到视图页面
 	private Map<String, String> newUrlMap; // 跳转到新建资源页面
 	private Map<String, String> editUrlMap; // 跳转到编辑页面
+	private Map<String, String> viewUrlMap; // 跳转到查看详情页面
 	
 	private Map<String, String> homeUrlMap; // 放置各种内容的内容首页链接，如题库首页，笔记项目首页等
 	
@@ -51,6 +52,10 @@ public class UrlMapper {
 		// edit
 		editUrlMap = new HashMap<String, String>();
 		editUrlMap.put("/files", "/doc/files/edit.html");
+		
+		viewUrlMap = new HashMap<String, String>();
+		// exercises/id
+		viewUrlMap.put("/exercises", "/drip/exercises/view.html");
 		
 		homeUrlMap = new HashMap<String, String>();
 		// 所有项目页面,项目首页， key为path segment
@@ -114,6 +119,15 @@ public class UrlMapper {
 		if(listUrlMap.containsKey(servletPath)){
 			return listUrlMap.get(servletPath);
 		}
+		
+		if(path.segmentCount() == 1){
+			if(viewUrlMap.containsKey(servletPath)){
+				return viewUrlMap.get(servletPath);
+			}
+		}
+		
+		
+		
 		
 		return null;
 	}
