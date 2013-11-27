@@ -19,6 +19,7 @@ define(["dojo/_base/declare",
         "drip/classCode",
         "drip/prettyDate",
         "drip/_StoreMixin",
+        "drip/exerciseHelper",
         "mathEditor/Editor",
         "mathEditor/dataUtil",
         "dojo/text!./templates/ActivityNode.html",
@@ -45,6 +46,7 @@ define(["dojo/_base/declare",
         		classCode,
         		prettyDate,
         		_StoreMixin,
+        		exerciseHelper,
         		Editor,
         		dataUtil,
         		nodeTemplate,
@@ -54,9 +56,6 @@ define(["dojo/_base/declare",
 	
 	// TODO：用户答题前，确保没有显示答案
 	// TODO：“不做了”，恢复到答题前的状态
-	
-	// TODO:重复存在，重构
-	var optionLabel = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	
 	var ActivityNode = declare("drip.ActivityNode", [_WidgetBase, _TemplatedMixin],{
 		
@@ -121,49 +120,7 @@ define(["dojo/_base/declare",
 		_createExercise: function(){
 			var exerciseInfo = this.data.exercise;
 			var userInfo = this.data.userInfo;
-			// TODO:需要将mathEditor中model的格式转换为html格式
-			var html = dataUtil.xmlStringToHtml(exerciseInfo.content);
-			var _contentDiv = domConstruct.create("div", {innerHTML: html, "class": "content"}, this.exerciseNode);
-			if(exerciseInfo.imageName){
-				var _imageDiv = domConstruct.create("img", {src: "/userImages/" + userInfo.userId + "/" + exerciseInfo.imageName}, this.exerciseNode);
-			}
-			var options = exerciseInfo.options;
-			if(options && options.length > 0){
-				var inputType = "radio";
-				if(exerciseInfo.exerType == classCode.ExerciseType.SINGLE_OPTION){
-					inputType = "radio";
-				}else if(exerciseInfo.exerType == classCode.ExerciseType.MULTI_OPTION){
-					inputType = "checkbox";
-				}
-					
-				var _optionsDiv = domConstruct.create("div",{"class":"option"},this.exerciseNode);
-				var table = this.table = domConstruct.create("table", null, _optionsDiv);
-				// 循环填写options节点
-				array.forEach(options,lang.hitch(this, this._createOption, table, inputType));
-			}
-			
-			// TODO:显示附图
-		},
-		
-		_createOption: function(parentNode,inputType, data, index){
-			console.log(parentNode, data, index);
-			// 因为选项的name必须要与其他习题的区分开，所以应该使用部件id
-			var inputId = this.id+"_"+data.id;
-			var inputGroupName = "opt_"+this.id;
-			
-			var tr = domConstruct.place('<tr></tr>', parentNode);
-			var td1 = domConstruct.place('<td></td>', tr);
-			var input = domConstruct.create("input",{type: inputType, name: inputGroupName, id: inputId}, td1);
-			domProp.set(input,{"disabled": true, optionId: data.id});
-			
-			var td2 = domConstruct.place('<td></td>', tr);
-			var label = domConstruct.place('<label style="padding-right:5px">' + optionLabel.charAt(index) + '</label>',td2);
-			domProp.set(label,"for",inputId);
-			
-			// 不再选项内容上添加for属性，因为用户阅读内容时，用鼠标选中内容可能只是为了帮助理解，而不是选择答案
-			var td3 = domConstruct.place('<td></td>', tr);
-			var html = dataUtil.xmlStringToHtml(data.content);
-			td3.innerHTML = html;
+			exerciseHelper.create(this.id, exerciseInfo, this.exerciseNode);
 		},
 		
 		_createAnswer: function(){
