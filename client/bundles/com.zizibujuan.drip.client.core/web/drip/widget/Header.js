@@ -39,6 +39,8 @@ define(["dojo/_base/declare",
 	var LoggedInHeader = declare("drip.widget.LoggedInHeader", [_WidgetBase, _TemplatedMixin], {
 		templateString: headerLoggedInTemplate,
 		
+		menuSelected: null,
+		
 		postCreate: function(){
 			this.inherited(arguments);
 			
@@ -60,20 +62,25 @@ define(["dojo/_base/declare",
 				// 获取登录用户信息失败后，要跳转到非登录header
 			});
 			on(this.logout,"click",user.logout);
+			domClass.add(this["menu_"+this.menuSelected], "current");
 		}
 	});
 	
 	var LoggedOutHeader = declare("drip.widget.LoggedOutHeader", [_WidgetBase, _TemplatedMixin], {
 		templateString: headerLoggedOutTemplate,
+		menuSelected: null,
 		postCreate: function(){
 			this.inherited(arguments);
 			
+			domClass.add(this["menu_"+this.menuSelected], "current");
 		}
 	});
 	
 	
 	
 	return declare("drip.widget.Header", [_WidgetBase], {
+		
+		menuSelected: "home",
 		
 		postCreate: function(){
 			this.inherited(arguments);
@@ -82,10 +89,10 @@ define(["dojo/_base/declare",
 			// 虽然根据这个cookie判断用户是否登录，有一定的风险，但是却能加快header的渲染，值得承担。
 			if(loggedIn && loggedIn == "1"){
 				domClass.add(this.domNode, "drip_header drip_header_logged_in");
-				header = new LoggedInHeader({});
+				header = new LoggedInHeader({menuSelected: this.menuSelected});
 			}else{
 				domClass.add(this.domNode, "drip_header drip_header_logged_out");
-				header = new LoggedOutHeader({});
+				header = new LoggedOutHeader({menuSelected: this.menuSelected});
 			}
 			header.placeAt(this.domNode);
 		}

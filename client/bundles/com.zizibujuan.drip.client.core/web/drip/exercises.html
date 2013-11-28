@@ -21,7 +21,9 @@ require(["drip/widget/Header",
          "dojo/domReady!"], function(
         		 Header,
         		 ExerciseList){
-	var header = new Header({}, "header");
+	var header = new Header({
+		menuSelected: "exercise"
+	}, "header");
 	new ExerciseList({
 		style: "margin-top:20px"
 	}, "exercises");
