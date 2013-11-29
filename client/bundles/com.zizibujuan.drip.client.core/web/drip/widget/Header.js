@@ -62,7 +62,9 @@ define(["dojo/_base/declare",
 				// 获取登录用户信息失败后，要跳转到非登录header
 			});
 			on(this.logout,"click",user.logout);
-			domClass.add(this["menu_"+this.menuSelected], "current");
+			if(this["menu_"+this.menuSelected]){
+				domClass.add(this["menu_"+this.menuSelected], "current");
+			}
 		}
 	});
 	
@@ -72,7 +74,9 @@ define(["dojo/_base/declare",
 		postCreate: function(){
 			this.inherited(arguments);
 			
-			domClass.add(this["menu_"+this.menuSelected], "current");
+			if(this["menu_"+this.menuSelected]){
+				domClass.add(this["menu_"+this.menuSelected], "current");
+			}
 		}
 	});
 	
