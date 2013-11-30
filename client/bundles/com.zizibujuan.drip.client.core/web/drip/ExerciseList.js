@@ -7,7 +7,7 @@ define(["dojo/_base/declare",
         "dijit/_WidgetsInTemplateMixin",
         "dojo/store/JsonRest",
         "mathEditor/dataUtil",
-        "drip/exerciseHelper",
+        "drip/view/ExerciseView",
         "dojo/text!./templates/ExerciseNode.html",
         "dojo/text!./templates/ExerciseList.html",
         "dojo/i18n!./nls/common"],function(
@@ -20,7 +20,7 @@ define(["dojo/_base/declare",
         		_WidgetsInTemplateMixin,
         		JsonRest,
         		dataUtil,
-        		exerciseHelper,
+        		ExerciseView,
         		nodeTemplate,
         		listTemplate,
         		common){
@@ -31,8 +31,12 @@ define(["dojo/_base/declare",
 		 exercise: null,
 		 
 		 postCreate : function(){
-			 // 将自定义的xml字符串转换为html格式的字符串。
-			 exerciseHelper.create(this.id, this.exercise, this.divContent);
+			 var exerciseView = this._exerciseView = new ExerciseView({
+				 parentWidgetId: this.id,
+				 exerciseInfo: this.exercise,
+				 parentNode: this.divContent
+			 });
+			 exerciseView.render();
 			 this.linkAnswer.href="/exercises/"+ this.exercise.id;
 		 },
 		 

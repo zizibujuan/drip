@@ -19,7 +19,7 @@ define(["dojo/_base/declare",
         "drip/classCode",
         "drip/prettyDate",
         "drip/_StoreMixin",
-        "drip/exerciseHelper",
+        "drip/view/ExerciseView",
         "mathEditor/Editor",
         "mathEditor/dataUtil",
         "dojo/text!./templates/ActivityNode.html",
@@ -46,7 +46,7 @@ define(["dojo/_base/declare",
         		classCode,
         		prettyDate,
         		_StoreMixin,
-        		exerciseHelper,
+        		ExerciseView,
         		Editor,
         		dataUtil,
         		nodeTemplate,
@@ -119,8 +119,13 @@ define(["dojo/_base/declare",
 		
 		_createExercise: function(){
 			var exerciseInfo = this.data.exercise;
-			var userInfo = this.data.userInfo;
-			exerciseHelper.create(this.id, exerciseInfo, this.exerciseNode);
+			//var userInfo = this.data.userInfo;
+			var exerciseView = this._exerciseView = new ExerciseView({
+				parentWidgetId: this.id,
+				exerciseInfo: exerciseInfo,
+				parentNode: this.exerciseNode
+			});
+			exerciseView.render();
 		},
 		
 		_createAnswer: function(){
@@ -606,7 +611,7 @@ define(["dojo/_base/declare",
 		
 		_getOptionEls: function(){
 			if(!this._optionEls){
-				this._optionEls = query("input[type=radio]", this.table);
+				this._optionEls = query("input[type=radio]", this._exerciseView.getOptionTable());
 			}
 			return this._optionEls;
 		}

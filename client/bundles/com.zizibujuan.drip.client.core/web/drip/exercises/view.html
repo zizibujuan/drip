@@ -18,16 +18,24 @@ var exerId = pathName.split("/")[2];
 require(["drip/widget/Header",
          "dojo/request/xhr",
          "dojo/dom",
-         "drip/exerciseHelper",
+         "drip/view/ExerciseView",
          "dojo/domReady!"], function(
         		 Header,
         		 xhr,
         		 dom,
-        		 exerciseHelper){
+        		 ExerciseView){
 	
-	var header = new Header({}, "header");
-	xhr.get(pathName, {handleAs: "json"}).then(function(data){
-		exerciseHelper.create(data.id, data, dom.byId("exercise"));
+	var header = new Header({
+		menuSelected: null
+	}, "header");
+	xhr.get(pathName, {handleAs: "json", preventCache: true}).then(function(data){
+		var exerciseView = this._exerciseView = new ExerciseView({
+			parentWidgetId: data.id,
+			exerciseInfo: data,
+			parentNode: dom.byId("exercise"),
+			readOnly: false
+		});
+		exerciseView.render();
 	}, function(error){
 		if(error.response.status == 404){
 			window.location.href = "/drip/errors/404.html";
