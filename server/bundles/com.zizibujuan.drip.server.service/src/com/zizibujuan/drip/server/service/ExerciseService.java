@@ -37,10 +37,11 @@ public interface ExerciseService {
 	Long add(ExerciseForm exerciseForm);
 
 	/**
-	 * 获取习题内容
+	 * 获取习题内容和用户的答案，如果userId为null，则不获取答案
 	 * 
+	 * @param userId 用户表示
 	 * @param exerciseId 习题标识
-	 * @return 习题内容
+	 * @return 习题内容和答案信息
 	 */
-	Exercise get(Long exerciseId);
+	ExerciseForm get(Long userId, Long exerciseId);
 }

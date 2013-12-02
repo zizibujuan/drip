@@ -32,8 +32,8 @@ public class ExerciseServiceImpl implements ExerciseService {
 	}
 	
 	@Override
-	public Exercise get(Long exerciseId) {
-		return exerciseDao.get(exerciseId);
+	public ExerciseForm get(Long userId, Long exerciseId) {
+		return exerciseDao.get(userId, exerciseId);
 	}
 
 	public void setExerciseDao(ExerciseDao exerciseDao) {

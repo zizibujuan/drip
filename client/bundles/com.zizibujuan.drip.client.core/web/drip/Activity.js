@@ -192,14 +192,9 @@ define(["dojo/_base/declare",
 				// 把所有option设置为有效
 				// 清除答案
 				// 如果是选择题,因为可以直接在选项上作答，所以将所有选项置为有效
-				this._getOptionEls().forEach(function(optEl,index){
-					domProp.set(optEl,"disabled",false);
-					if(domProp.get(optEl,"checked") == true){
-						domProp.set(optEl, "checked", false);
-					}
-				});
+				this._exerciseView.activeOptions();
 				// 为选项添加change事件
-				this._getOptionEls().on("click", lang.hitch(this, this._onAnswerChangedHandler));
+				this._exerciseView.getOptionEls().on("click", lang.hitch(this, this._onAnswerChangedHandler));
 			}else if(exerType == classCode.ExerciseType.ESSAY_QUESTION){
 				var answerDiv = domConstruct.create("div",{"class":"answer"}, editAnswerPane);
 				var answerLabel = domConstruct.create("div",{innerHTML:"答案"}, answerDiv);
@@ -405,7 +400,7 @@ define(["dojo/_base/declare",
 			 */
 			
 			var result = [];
-			this._getOptionEls().forEach(lang.hitch(this,function(optionEl, index){
+			this._exerciseView.getOptionEls().forEach(lang.hitch(this,function(optionEl, index){
 				if(domProp.get(optionEl, "checked") === true){
 					var optionData = {optionId: domProp.get(optionEl,"optionId")};
 					result.push(optionData);
@@ -511,14 +506,14 @@ define(["dojo/_base/declare",
 				var exerType = this.data.exercise.exerciseType;
 				if(this._isOptionExercise(exerType)){
 					array.forEach(answerInfo.detail, lang.hitch(this,this._setOptionAnswer));
-					this._getOptionEls().forEach(function(el){
+					this._exerciseView.getOptionEls().forEach(function(el){
 						domProp.set(el, "disabled", true);
 					});
 				}
 			}else{
 				var exerType = this.data.exercise.exerciseType;
 				if(this._isOptionExercise(exerType)){
-					this._getOptionEls().forEach(function(el){
+					this._exerciseView.getOptionEls().forEach(function(el){
 						domProp.set(el, "checked", false);
 						domProp.set(el, "disabled", true);
 					});
@@ -545,6 +540,7 @@ define(["dojo/_base/declare",
 				// TODO:在label上显示出这是在什么时候解答的，绿色显示。
 			}
 			var exerType = this.data.exercise.exerciseType;
+			// TODO: 调用exerciseView中的方法
 			if(this._isOptionExercise(exerType)){
 				if(data.detail && data.detail.length > 0){
 					array.forEach(data.detail, lang.hitch(this,this._setOptionAnswer));
@@ -588,14 +584,11 @@ define(["dojo/_base/declare",
 			this.guideEditor = null;
 		},
 		
-		_isOptionExercise: function(exerType){
-			return exerType == classCode.ExerciseType.SINGLE_OPTION || exerType == classCode.ExerciseType.MULTI_OPTION;
-		},
+		
 		
 		_setOptionAnswer: function(answer, index){
 			var optionId = answer.optionId;
-			// TODO:从性能角度上将，可先缓存这些radio
-			this._getOptionEls().some(lang.hitch(this,function(node,index){
+			this._exerciseView.getOptionEls().some(lang.hitch(this,function(node,index){
 				if(domProp.get(node,"optionId") == optionId){
 					domProp.set(node,"checked", true);
 					// 要是放在这里的话，加载当前用户的答案时，会覆盖掉原有的值，虽然并不会改变页面上显示的值。
@@ -607,14 +600,9 @@ define(["dojo/_base/declare",
 				}
 				return false;
 			}));
-		},
-		
-		_getOptionEls: function(){
-			if(!this._optionEls){
-				this._optionEls = query("input[type=radio]", this._exerciseView.getOptionTable());
-			}
-			return this._optionEls;
 		}
+		
+		
 		
 	});
 	

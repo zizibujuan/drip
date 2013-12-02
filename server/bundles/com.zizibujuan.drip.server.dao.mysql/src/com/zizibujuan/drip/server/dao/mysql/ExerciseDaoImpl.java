@@ -238,8 +238,9 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			+ "WHERE "
 			+ "DBID=?";
 	@Override
-	public Exercise get(Long exerciseId) {
-		Exercise result = DatabaseUtil.queryForObject(getDataSource(), SQL_GET_EXERCISE, new RowMapper<Exercise>() {
+	public ExerciseForm get(Long userId, Long exerciseId) {
+		ExerciseForm result = new ExerciseForm();
+		Exercise exercise = DatabaseUtil.queryForObject(getDataSource(), SQL_GET_EXERCISE, new RowMapper<Exercise>() {
 			@Override
 			public Exercise mapRow(ResultSet rs, int rowNum)
 					throws SQLException {
@@ -257,16 +258,23 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			}
 		}, exerciseId);
 				
-		if(result == null){
-			return result;
+		if(exercise == null){
+			return null;
 		}
 		
-		String exerType = result.getExerciseType();
+		String exerType = exercise.getExerciseType();
 		if (ExerciseType.SINGLE_OPTION.equals(exerType)
 				|| ExerciseType.MULTI_OPTION.equals(exerType)
 				|| ExerciseType.FILL.equals(exerType)) {
 			List<ExerciseOption> options = this.getExerciseOptions(exerciseId);
-			result.setOptions(options);
+			exercise.setOptions(options);
+		}
+		
+		result.setExercise(exercise);
+		
+		if(userId != null){
+			Answer answer = answerDao.get(userId, exerciseId);
+			result.setAnswer(answer);
 		}
 		
 		return result;

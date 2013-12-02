@@ -1,6 +1,7 @@
 define(["dojo/_base/declare",
         "dojo/_base/array",
         "dojo/_base/lang",
+        "dojo/query",
         "dojo/dom-prop",
         "dojo/dom-construct",
         "mathEditor/dataUtil",
@@ -8,6 +9,7 @@ define(["dojo/_base/declare",
         		declare,
         		array,
         		lang,
+        		query,
         		domProp,
         		domConstruct,
         		dataUtil,
@@ -52,7 +54,7 @@ define(["dojo/_base/declare",
 				}
 					
 				var _optionsDiv = domConstruct.create("div",{"class":"option"}, parentNode);
-				var table = this.table = domConstruct.create("table", null, _optionsDiv);
+				var table = this._table = domConstruct.create("table", null, _optionsDiv);
 				// 循环填写options节点
 				array.forEach(options, lang.hitch(this, function(option, index){
 					this._createOption(table, inputType, option, index)
@@ -60,8 +62,11 @@ define(["dojo/_base/declare",
 			}
 		},
 		
-		getOptionTable: function(){
-			return this.table;
+		getOptionEls: function(){
+			if(!this._optionEls){
+				this._optionEls = query("input[type=radio]", this._table);
+			}
+			return this._optionEls;
 		},
 		
 		_createOption: function(parentNode,inputType, data, index){
@@ -87,8 +92,33 @@ define(["dojo/_base/declare",
 			var td3 = domConstruct.place('<td></td>', tr);
 			var html = dataUtil.xmlStringToHtml(data.content);
 			td3.innerHTML = html;
-		}
+		},
+		
+		isOptionExercise: function(){
+			// summary:
+			//		判断题型是不是选择题，包括多选和单选
+			
+			var exerType = this.exerciseInfo.exerciseType;
+			return exerType == classCode.ExerciseType.SINGLE_OPTION || exerType == classCode.ExerciseType.MULTI_OPTION;
+		},
 	
+		isQuestionExercise: function(){
+			// summary:
+			//		判断题型是不是问答题
+			
+			var exerType = this.exerciseInfo.exerciseType;
+			return exerType == classCode.ExerciseType.ESSAY_QUESTION;
+		},
+		
+		activeOptions: function(){
+			this.getOptionEls().forEach(function(optEl, index){
+				domProp.set(optEl,"disabled",false);
+				if(domProp.get(optEl,"checked") == true){
+					domProp.set(optEl, "checked", false);
+				}
+			});
+		}
+		
 	});
 
 });

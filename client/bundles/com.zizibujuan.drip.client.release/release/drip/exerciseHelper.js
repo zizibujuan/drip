@@ -1,5 +1,0 @@
-//>>built
-define("drip/exerciseHelper","dojo/_base/array dojo/_base/lang dojo/dom-prop dojo/dom-construct mathEditor/dataUtil drip/classCode".split(" "),function(p,r,l,b,m,g){return{create:function(n,a,e){var d=m.xmlStringToHtml(a.content);b.create("div",{innerHTML:d,"class":"content"},e);a.imageName&&b.create("img",{src:"/userImages/"+a.createUserId+"/"+a.imageName},e);if((d=a.options)&&0<d.length){var k="radio";a.exerType==g.ExerciseType.SINGLE_OPTION?k="radio":a.exerType==g.ExerciseType.MULTI_OPTION&&(k=
-"checkbox");a=b.create("div",{"class":"option"},e);var q=this.table=b.create("table",null,a);p.forEach(d,function(a,d){var c=k,h=n+"_"+a.id,e="opt_"+n,f=b.place("\x3ctr\x3e\x3c/tr\x3e",q),g=b.place("\x3ctd\x3e\x3c/td\x3e",f),c=b.create("input",{type:c,name:e,id:h},g);l.set(c,{disabled:!0,optionId:a.id});c=b.place("\x3ctd\x3e\x3c/td\x3e",f);c=b.place('\x3clabel style\x3d"padding-right:5px"\x3e'+"ABCDEFGHIJKLMNOPQRSTUVWXYZ".charAt(d)+"\x3c/label\x3e",c);l.set(c,"for",h);h=b.place("\x3ctd\x3e\x3c/td\x3e",
-f);f=m.xmlStringToHtml(a.content);h.innerHTML=f})}}}});
-//@ sourceMappingURL=exerciseHelper.js.map

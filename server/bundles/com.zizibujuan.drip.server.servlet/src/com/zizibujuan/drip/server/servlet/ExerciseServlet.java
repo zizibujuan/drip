@@ -51,7 +51,14 @@ public class ExerciseServlet extends BaseServlet{
 			try{
 				// TODO: 返回的时候，返回到上一次访问的习题上。
 				Long exerciseId = Long.valueOf(path.segment(0));
-				Exercise exercise = exerciseService.get(exerciseId);
+				// 获取当前用户，如果用户登录，则获取用户做这道习题的最新答案，
+				// 如果用户没有登录，则不获取答案
+				Long userId = null;
+				UserInfo user = (UserInfo) UserSession.getUser(req);
+				if(user != null){
+					userId = user.getId();
+				}
+				ExerciseForm exercise = exerciseService.get(userId, exerciseId);
 				if(exercise == null){
 					// 习题不存在
 					ResponseUtil.toJSON(req, resp, null, HttpServletResponse.SC_NOT_FOUND);
