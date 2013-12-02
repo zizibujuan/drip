@@ -16,6 +16,7 @@ import com.zizibujuan.drip.server.dao.HistExerciseDao;
 import com.zizibujuan.drip.server.model.Activity;
 import com.zizibujuan.drip.server.model.Answer;
 import com.zizibujuan.drip.server.model.Exercise;
+import com.zizibujuan.drip.server.model.ExerciseForm;
 import com.zizibujuan.drip.server.model.HistAnswer;
 import com.zizibujuan.drip.server.model.HistExercise;
 import com.zizibujuan.drip.server.service.ActivityService;
@@ -136,8 +137,8 @@ public class ActivityServiceImpl implements ActivityService {
 	
 	private Exercise getExercise(Long exerciseId){
 		// TODO: 改为从缓存中获取。
-		Exercise result = exerciseDao.get(exerciseId);
-		return result;
+		ExerciseForm result = exerciseDao.get(null, exerciseId);
+		return result==null ? null : result.getExercise();
 	}
 	
 	private Answer getAnswer(Long answerId){
