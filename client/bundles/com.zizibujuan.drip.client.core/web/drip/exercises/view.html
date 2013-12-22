@@ -54,7 +54,7 @@ require(["drip/widget/Header",
 		answerView.render();
 		
 		on(dom.byId("btnSave"), "click", function(e){
-			alert("实现中")
+			answerView.save(e);
 		});
 		
 	}, function(error){

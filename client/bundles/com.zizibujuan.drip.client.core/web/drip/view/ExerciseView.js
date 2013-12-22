@@ -30,6 +30,10 @@ define(["dojo/_base/declare",
 			lang.mixin(this, args);
 		},
 		
+		getExerciseId: function(){
+			return this.exerciseInfo.id;
+		},
+		
 		render: function(){
 			var exerciseInfo = this.exerciseInfo;
 			var parentNode = this.parentNode;
@@ -67,6 +71,28 @@ define(["dojo/_base/declare",
 				this._optionEls = query("input[type=radio]", this._table);
 			}
 			return this._optionEls;
+		},
+		
+		getSelectedAnswers: function(){
+			var answers = [];
+			this.getOptionEls().forEach(function(opt, index){
+				if(domProp.get(opt, "checked") === true){
+					var optionData = {optionId: domProp.get(opt, "optionId")};
+					answers.push(optionData);
+				}
+			});
+			return answers;
+		},
+		
+		setOption: function(answerOption, index){
+			var optionId = answerOption.optionId;
+			this.getOptionEls().some(lang.hitch(this,function(node,index){
+				if(domProp.get(node,"optionId") == optionId){
+					domProp.set(node,"checked", true);
+					return true;
+				}
+				return false;
+			}));
 		},
 		
 		_createOption: function(parentNode,inputType, data, index){

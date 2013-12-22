@@ -584,8 +584,6 @@ define(["dojo/_base/declare",
 			this.guideEditor = null;
 		},
 		
-		
-		
 		_setOptionAnswer: function(answer, index){
 			var optionId = answer.optionId;
 			this._exerciseView.getOptionEls().some(lang.hitch(this,function(node,index){
@@ -601,8 +599,6 @@ define(["dojo/_base/declare",
 				return false;
 			}));
 		}
-		
-		
 		
 	});
 	
