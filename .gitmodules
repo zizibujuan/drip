@@ -10,3 +10,6 @@
 [submodule "client/bundles/com.zizibujuan.drip.client.dojo/static/util"]
 	path = client/bundles/com.zizibujuan.drip.client.dojo/static/util
 	url = https://github.com/dojo/util.git
+[submodule "client/bundles/com.zizibujuan.drip.client.mathjax/static"]
+	path = client/bundles/com.zizibujuan.drip.client.mathjax/static
+	url = https://github.com/mathjax/MathJax.git
