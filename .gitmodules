@@ -16,3 +16,6 @@
 [submodule "client/bundles/com.zizibujuan.drip.client.editor"]
 	path = client/bundles/com.zizibujuan.drip.client.editor
 	url = git@github.com:zizibujuan/mathEditor.git
+[submodule "server/bundles/com.zizibujuan.dbaccess.mysql"]
+	path = server/bundles/com.zizibujuan.dbaccess.mysql
+	url = git@github.com:zizibujuan/dbaccess.mysql.git
