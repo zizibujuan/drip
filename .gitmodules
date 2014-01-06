@@ -19,3 +19,6 @@
 [submodule "server/bundles/com.zizibujuan.dbaccess.mysql"]
 	path = server/bundles/com.zizibujuan.dbaccess.mysql
 	url = git@github.com:zizibujuan/dbaccess.mysql.git
+[submodule "server/build/com.zizibujuan.drip.server.dependences"]
+	path = server/build/com.zizibujuan.drip.server.dependences
+	url = git@github.com:zizibujuan/server.dependences.git
