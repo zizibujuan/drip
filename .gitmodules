@@ -22,3 +22,9 @@
 [submodule "server/build/com.zizibujuan.drip.server.dependences"]
 	path = server/build/com.zizibujuan.drip.server.dependences
 	url = git@github.com:zizibujuan/server.dependences.git
+[submodule "server/bundles/com.zizibujuan.drip.server.exception"]
+	path = server/bundles/com.zizibujuan.drip.server.exception
+	url = git@github.com:zizibujuan/server.exception.git
+[submodule "server/bundles/com.zizibujuan.drip.server.util"]
+	path = server/bundles/com.zizibujuan.drip.server.util
+	url = git@github.com:zizibujuan/server.util.git
