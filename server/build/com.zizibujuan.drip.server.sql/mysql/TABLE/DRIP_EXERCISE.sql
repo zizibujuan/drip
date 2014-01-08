@@ -8,6 +8,7 @@ CREATE  TABLE IF NOT EXISTS `DRIP_EXERCISE` (
   `VERSION` INT NOT NULL COMMENT '版本号，从1开始，每次加1, 记录当前版本号' ,
   `CONTENT` TEXT NULL COMMENT '习题内容' ,
   `EXER_TYPE` CHAR(2) NULL COMMENT '题型' ,
+  `STATUS` CHAR(2) NULL COMMENT '习题状态,草稿与发布',
   `EXER_COURSE` CHAR(3) NULL COMMENT '所属科目',
   `IMAGE_NAME` VARCHAR(64) NULL COMMENT '附图名称，这个名称是系统生成的uuid，加上文件之前的扩展名',
   `CRT_TM` DATETIME NULL COMMENT '创建时间/贡献时间' ,
