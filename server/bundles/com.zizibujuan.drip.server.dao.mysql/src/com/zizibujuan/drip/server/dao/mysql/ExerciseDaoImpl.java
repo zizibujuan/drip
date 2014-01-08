@@ -199,13 +199,14 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			+ "DRIP_EXERCISE "
 			+ "(CONTENT,"
 			+ "VERSION,"
-			+ "EXER_TYPE, "
-			+ "EXER_COURSE, "
-			+ "IMAGE_NAME, "
+			+ "EXER_TYPE,"
+			+ "STATUS,"
+			+ "EXER_COURSE,"
+			+ "IMAGE_NAME,"
 			+ "CRT_TM, "
 			+ "CRT_USER_ID) "
 			+ "VALUES "
-			+ "(?,?,?,?,?,now(),?)";
+			+ "(?,?,?,?,?,?,now(),?)";
 
 	private static final String SQL_INSERT_EXER_OPTION = "INSERT INTO "
 			+ "DRIP_EXER_OPTION "
@@ -224,9 +225,10 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 				ps.setString(1, finalExerciseInfo.getContent());
 				ps.setInt(2, finalExerciseInfo.getVersion());
 				ps.setString(3, finalExerciseInfo.getExerciseType());
-				ps.setString(4, finalExerciseInfo.getCourse());
-				ps.setString(5, finalExerciseInfo.getImageName());
-				ps.setLong(6, finalExerciseInfo.getCreateUserId());
+				ps.setString(4, finalExerciseInfo.getStatus());
+				ps.setString(5, finalExerciseInfo.getCourse());
+				ps.setString(6, finalExerciseInfo.getImageName());
+				ps.setLong(7, finalExerciseInfo.getCreateUserId());
 			}
 		});
 		exerciseInfo.setId(exerId);

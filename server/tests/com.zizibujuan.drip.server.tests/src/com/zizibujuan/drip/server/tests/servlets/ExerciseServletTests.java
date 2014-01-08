@@ -69,6 +69,7 @@ public class ExerciseServletTests extends AbstractServletTests {
 			assertEquals(ExerciseType.MULTI_OPTION, result.getExerciseType());
 			assertEquals("content_", result.getContent());
 			assertEquals(1, result.getVersion().intValue());
+			assertEquals(ExerciseStatus.DRAFT, result.getStatus());
 			assertEquals(2, result.getOptions().size());
 			assertNotNull(result.getOptions().get(0).getId());
 			assertEquals("option_1", result.getOptions().get(0).getContent());
