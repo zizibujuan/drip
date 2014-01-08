@@ -26,9 +26,17 @@ public class ExerciseServiceImpl implements ExerciseService {
 		return exerciseDao.get(pageInfo);
 	}
 
+	/**
+	 * @deprecated 不再提供录入习题时，给出习题答案的功能
+	 */
 	@Override
 	public Long add(ExerciseForm exerciseForm) {
 		return exerciseDao.add(exerciseForm);
+	}
+	
+	@Override
+	public Long add(Exercise exercise) {
+		return exerciseDao.add(exercise);
 	}
 	
 	@Override
@@ -36,6 +44,11 @@ public class ExerciseServiceImpl implements ExerciseService {
 		return exerciseDao.get(userId, exerciseId);
 	}
 
+	@Override
+	public Exercise get(Long exerciseId) {
+		return exerciseDao.get(exerciseId);
+	}
+	
 	public void setExerciseDao(ExerciseDao exerciseDao) {
 		logger.info("注入exerciseDao");
 		this.exerciseDao = exerciseDao;
@@ -47,4 +60,5 @@ public class ExerciseServiceImpl implements ExerciseService {
 			this.exerciseDao = null;
 		}
 	}
+
 }

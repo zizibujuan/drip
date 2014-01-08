@@ -2,6 +2,7 @@ package com.zizibujuan.drip.server.model;
 
 import java.util.List;
 
+import com.zizibujuan.drip.server.util.constant.ExerciseStatus;
 import com.zizibujuan.drip.server.util.model.LogModel;
 
 /**
@@ -16,6 +17,9 @@ public class Exercise extends LogModel{
 	private Integer version;
 	private String exerciseType;
 	private String content;
+	private String status;
+	
+	@Deprecated
 	private String course;
 	
 	private String imageName; // 一个习题只能有一个附图
@@ -95,6 +99,7 @@ public class Exercise extends LogModel{
 	 * 获取习题所属科目代码
 	 * 
 	 * @return 客户代码
+	 * @deprecated
 	 */
 	public String getCourse() {
 		return course;
@@ -104,6 +109,7 @@ public class Exercise extends LogModel{
 	 * 设置习题所属科目代码
 	 * 
 	 * @param course 客户代码
+	 * @deprecated
 	 */
 	public void setCourse(String course) {
 		this.course = course;
@@ -126,6 +132,22 @@ public class Exercise extends LogModel{
 	 */
 	public void setImageName(String imageName) {
 		this.imageName = imageName;
+	}
+
+	/**
+	 * 获取习题状态
+	 * @return 习题状态，请参考{@link ExerciseStatus}
+	 */
+	public String getStatus() {
+		return status;
+	}
+
+	/**
+	 * 设置习题状态
+	 * @param status 习题状态，请参考{@link ExerciseStatus}
+	 */
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	/**

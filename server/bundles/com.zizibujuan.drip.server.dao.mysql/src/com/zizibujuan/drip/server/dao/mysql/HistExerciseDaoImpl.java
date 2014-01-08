@@ -21,7 +21,7 @@ import com.zizibujuan.drip.server.util.dao.RowMapper;
 /**
  * 记录更新习题的历史的数据访问实现类
  * 
- * @author jzw
+ * @author jinzw
  * @since 0.0.1
  */
 public class HistExerciseDaoImpl extends AbstractDao implements HistExerciseDao {
@@ -102,44 +102,35 @@ public class HistExerciseDaoImpl extends AbstractDao implements HistExerciseDao 
 			+ "UPT_TM,"
 			+ "UPT_USER_ID "
 			+ "FROM "
-			+ "DRIP_HIST_EXERCISE "
+			+ "DRIP_HIST_EXERCISE ";
+			
+	private static final String SQL_GET_HIST_EXERCISE_BY_DBID = SQL_GET_HIST_EXERCISE
 			+ "WHERE "
 			+ "DBID=?";
 	@Override
 	public HistExercise get(Long histExerciseId) {
-
-		HistExercise result = DatabaseUtil.queryForObject(getDataSource(), SQL_GET_HIST_EXERCISE, new RowMapper<HistExercise>() {
-			@Override
-			public HistExercise mapRow(ResultSet rs, int rowNum)
-					throws SQLException {
-				HistExercise exercise = new HistExercise();
-				exercise.setHistId(rs.getLong(1));
-				exercise.setId(rs.getLong(2));
-				exercise.setVersion(rs.getInt(3));
-				exercise.setContent(rs.getString(4));
-				exercise.setExerciseType(rs.getString(5));
-				exercise.setCourse(rs.getString(6));
-				exercise.setImageName(rs.getString(7));
-				exercise.setAction(rs.getString(8));
-				exercise.setCreateTime(rs.getTimestamp(9));
-				exercise.setCreateUserId(rs.getLong(10));
-				return exercise;
-			}
-		}, histExerciseId);
+		HistExercise result = DatabaseUtil.queryForObject(
+				getDataSource(), 
+				SQL_GET_HIST_EXERCISE_BY_DBID, 
+				new HistExerciseRowMapper(), 
+				histExerciseId);
 				
 		if(result == null){
 			return result;
 		}
 		
-		String exerType = result.getExerciseType();
-		if (ExerciseType.SINGLE_OPTION.equals(exerType)
-				|| ExerciseType.MULTI_OPTION.equals(exerType)
-				|| ExerciseType.FILL.equals(exerType)) {
+		if (hasOption(result.getExerciseType())) {
 			List<ExerciseOption> options = this.getHistExerciseOptions(histExerciseId);
 			result.setOptions(options);
 		}
 		
 		return result;
+	}
+
+	private boolean hasOption(String exerType) {
+		return ExerciseType.SINGLE_OPTION.equals(exerType)
+				|| ExerciseType.MULTI_OPTION.equals(exerType)
+				|| ExerciseType.FILL.equals(exerType);
 	}
 	
 	private final static String SQL_LIST_HIST_EXERCISE_OPTION = "SELECT "
@@ -169,5 +160,49 @@ public class HistExerciseDaoImpl extends AbstractDao implements HistExerciseDao 
 			}
 		});
 	}
+	
+	private static final String SQL_GET_HIST_EXERCISE_BY_EXERID_AND_VERSION = SQL_GET_HIST_EXERCISE 
+			+ "WHERE "
+			+ "EXER_ID = ? AND "
+			+ "VERSION=?";
+	@Override
+	public HistExercise get(Long exerciseId, Integer version) {
+		HistExercise result = DatabaseUtil.queryForObject(
+				getDataSource(), 
+				SQL_GET_HIST_EXERCISE_BY_EXERID_AND_VERSION, 
+				new HistExerciseRowMapper(), 
+				exerciseId, version);
+				
+		if(result == null){
+			return result;
+		}
+		
+		if (hasOption(result.getExerciseType())) {
+			List<ExerciseOption> options = this.getHistExerciseOptions(result.getHistId());
+			result.setOptions(options);
+		}
+		
+		return result;
+	}
 
+	private class HistExerciseRowMapper implements RowMapper<HistExercise>{
+		
+		@Override
+		public HistExercise mapRow(ResultSet rs, int rowNum)
+				throws SQLException {
+			HistExercise exercise = new HistExercise();
+			exercise.setHistId(rs.getLong(1));
+			exercise.setId(rs.getLong(2));
+			exercise.setVersion(rs.getInt(3));
+			exercise.setContent(rs.getString(4));
+			exercise.setExerciseType(rs.getString(5));
+			exercise.setCourse(rs.getString(6));
+			exercise.setImageName(rs.getString(7));
+			exercise.setAction(rs.getString(8));
+			exercise.setCreateTime(rs.getTimestamp(9));
+			exercise.setCreateUserId(rs.getLong(10));
+			return exercise;
+		}
+	}
+	
 }

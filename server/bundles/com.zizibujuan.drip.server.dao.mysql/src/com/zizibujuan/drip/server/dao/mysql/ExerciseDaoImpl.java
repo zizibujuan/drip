@@ -38,6 +38,7 @@ import com.zizibujuan.drip.server.util.dao.RowMapper;
  */
 public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 	private static final Logger logger = LoggerFactory.getLogger(ExerciseDaoImpl.class);
+	
 	private UserDao userDao;
 	private ActivityDao activityDao;
 	private AnswerDao answerDao;
@@ -152,6 +153,41 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 		}
 		return exerId;
 	}
+	
+	@Override
+	public Long add(Exercise exercise) {
+		Long exerId = null;
+		Connection con = null;
+		try{
+			con = getDataSource().getConnection();
+			con.setAutoCommit(false);
+			// 添加习题
+			exercise.setVersion(1);
+			exerId = this.addExercise(con, exercise); // 注意：在addExercise中队exercise的值有加工
+			// 在历史表中添加纪录
+			Long histExerId = histExerciseDao.insert(con, DBAction.CREATE, exercise);
+			
+			Long userId = exercise.getCreateUserId();
+			// 习题添加成功后，在用户的“创建的习题数”上加1
+			// 同时修改后端和session中缓存的该记录
+			userStatisticsDao.increaseExerciseCount(con, userId);
+			// 在活动表中插入一条记录
+			addActivity(con, userId, histExerId, ActionType.SAVE_EXERCISE); // 往活动表中插入历史记录
+			
+			con.commit();
+		}catch(SQLException e){
+			DatabaseUtil.safeRollback(con);
+			logger.error("sql异常", e);
+			throw new DataAccessException(e);
+		}catch(DataAccessException e){
+			DatabaseUtil.safeRollback(con);
+			logger.error("sql异常", e);
+			throw e;
+		}finally{
+			DatabaseUtil.closeConnection(con);
+		}
+		return exerId;
+	}
 
 	private void addActivity(Connection con,Long userId, Long contentId, String actionType) throws SQLException {
 		Activity activityInfo = new Activity(userId, contentId, actionType);
@@ -224,11 +260,13 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 	
 	// TODO:不在sql中联合查询编码，而是从缓存中获取编码对应的文本信息
 	private static final String SQL_GET_EXERCISE = "SELECT "
-			+ "DBID,"
+			+ "DBID, "
+			+ "VERSION,"
 			+ "CONTENT,"
 			+ "EXER_TYPE,"
 			+ "EXER_COURSE,"
 			+ "IMAGE_NAME,"
+			+ "STATUS,"
 			+ "CRT_TM,"
 			+ "CRT_USER_ID,"
 			+ "UPT_TM,"
@@ -240,37 +278,8 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 	@Override
 	public ExerciseForm get(Long userId, Long exerciseId) {
 		ExerciseForm result = new ExerciseForm();
-		Exercise exercise = DatabaseUtil.queryForObject(getDataSource(), SQL_GET_EXERCISE, new RowMapper<Exercise>() {
-			@Override
-			public Exercise mapRow(ResultSet rs, int rowNum)
-					throws SQLException {
-				Exercise exercise = new Exercise();
-				exercise.setId(rs.getLong(1));
-				exercise.setContent(rs.getString(2));
-				exercise.setExerciseType(rs.getString(3));
-				exercise.setCourse(rs.getString(4));
-				exercise.setImageName(rs.getString(5));
-				exercise.setCreateTime(rs.getTimestamp(6));
-				exercise.setCreateUserId(rs.getLong(7));
-				exercise.setLastUpdateTime(rs.getTimestamp(8));
-				exercise.setLastUpdateUserId(rs.getLong(9));
-				return exercise;
-			}
-		}, exerciseId);
-				
-		if(exercise == null){
-			return null;
-		}
 		
-		String exerType = exercise.getExerciseType();
-		if (ExerciseType.SINGLE_OPTION.equals(exerType)
-				|| ExerciseType.MULTI_OPTION.equals(exerType)
-				|| ExerciseType.FILL.equals(exerType)) {
-			List<ExerciseOption> options = this.getExerciseOptions(exerciseId);
-			exercise.setOptions(options);
-		}
-		
-		result.setExercise(exercise);
+		result.setExercise(get(exerciseId));
 		
 		if(userId != null){
 			Answer answer = answerDao.get(userId, exerciseId);
@@ -310,6 +319,43 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 	
 	// 2. 回答习题
 	// 3. 新增习题的同时，回答习题，放在一个事务中。
+	
+	
+	@Override
+	public Exercise get(Long exerciseId) {
+		Exercise exercise = DatabaseUtil.queryForObject(getDataSource(), SQL_GET_EXERCISE, new RowMapper<Exercise>() {
+			@Override
+			public Exercise mapRow(ResultSet rs, int rowNum)
+					throws SQLException {
+				Exercise exercise = new Exercise();
+				exercise.setId(rs.getLong(1));
+				exercise.setVersion(rs.getInt(2));
+				exercise.setContent(rs.getString(3));
+				exercise.setExerciseType(rs.getString(4));
+				exercise.setCourse(rs.getString(5));
+				exercise.setImageName(rs.getString(6));
+				exercise.setStatus(rs.getString(7));
+				exercise.setCreateTime(rs.getTimestamp(8));
+				exercise.setCreateUserId(rs.getLong(9));
+				exercise.setLastUpdateTime(rs.getTimestamp(10));
+				exercise.setLastUpdateUserId(rs.getLong(11));
+				return exercise;
+			}
+		}, exerciseId);
+				
+		if(exercise == null){
+			return null;
+		}
+		
+		String exerType = exercise.getExerciseType();
+		if (ExerciseType.SINGLE_OPTION.equals(exerType)
+				|| ExerciseType.MULTI_OPTION.equals(exerType)
+				|| ExerciseType.FILL.equals(exerType)) {
+			List<ExerciseOption> options = this.getExerciseOptions(exerciseId);
+			exercise.setOptions(options);
+		}
+		return exercise;
+	}
 	
 	
 	public void setUserDao(UserDao userDao) {
@@ -371,5 +417,4 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			this.histExerciseDao = null;
 		}
 	}
-	
 }

@@ -26,5 +26,19 @@ public interface HistExerciseDao {
 	 */
 	Long insert(Connection con, String dbAction, Exercise exercise) throws SQLException;
 
+	/**
+	 * 获取习题的历史版本
+	 * @param histExerciseId 习题历史版本的标识
+	 * @return 习题信息，如果没有则返回null
+	 */
 	HistExercise get(Long histExerciseId);
+	
+	/**
+	 * 获取习题的历史版本
+	 * 
+	 * @param exerciseId 习题标识
+	 * @param version 习题版本号
+	 * @return 习题信息，如果没有则返回null
+	 */
+	HistExercise get(Long exerciseId, Integer version);
 }

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 import java.util.Map;
 
@@ -58,9 +59,11 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			con.commit();
 		}catch(SQLException e){
 			DatabaseUtil.safeRollback(con);
+			logger.error("sql异常", e);
 			throw new DataAccessException("用户注册失败", e);
 		}catch (Exception e) {
 			DatabaseUtil.safeRollback(con);
+			logger.error("普通异常", e);
 			throw new DataAccessException("用户注册失败", e);
 		}finally{
 			DatabaseUtil.closeConnection(con);
@@ -95,7 +98,12 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 				ps.setString(6, userInfo.getConfirmKey());
 				ps.setBoolean(7, userInfo.isActive());
 				ps.setString(8, userInfo.getAccessToken());
-				ps.setLong(9, userInfo.getExpiresTime());
+				if(userInfo.getExpiresTime() == null){
+					ps.setNull(9, Types.NUMERIC);
+				}else{
+					ps.setLong(9, userInfo.getExpiresTime());
+				}
+				
 			}
 		});
 		// 在用户属性表中初始化属性值,TODO:这里的行列转换设计虽然灵活，但是如果因为保存属性出错，

@@ -2,7 +2,6 @@ package com.zizibujuan.drip.server.servlet;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -81,26 +80,26 @@ public class ExerciseServlet extends BaseServlet{
 		traceRequest(req);
 		IPath path = getPath(req);
 		if(path.segmentCount() == 0){
-			ExerciseForm exerciseForm = RequestUtil.fromJsonObject(req, ExerciseForm.class);
+			Exercise exercise = RequestUtil.fromJsonObject(req, Exercise.class);
 			Validator validator = new Validator();
-			this.validate(validator, exerciseForm);
+			this.validate(validator, exercise);
 			if(validator.hasFieldErrors()){
 				ResponseUtil.toJSON(req, resp, validator.getFieldErrors(), HttpServletResponse.SC_PRECONDITION_FAILED);
 				return;
 			}
 			UserInfo userInfo = (UserInfo) UserSession.getUser(req);
-			exerciseForm.getExercise().setCreateUserId(userInfo.getId());
-			Long dbid = exerciseService.add(exerciseForm);
+			exercise.setCreateUserId(userInfo.getId());
+			Long dbid = exerciseService.add(exercise);
 			ResponseUtil.toHTML(req, resp, dbid.toString());
 			return;
 		}
 		super.doPost(req, resp);
 	}
 
-	private void validate(Validator validator, ExerciseForm exerciseForm) {
-		String exerciseType = exerciseForm.getExercise().getExerciseType();
-		String content = exerciseForm.getExercise().getContent();
-		List<ExerciseOption> options = exerciseForm.getExercise().getOptions();
+	private void validate(Validator validator, Exercise exercise) {
+		String exerciseType = exercise.getExerciseType();
+		String content = exercise.getContent();
+		List<ExerciseOption> options = exercise.getOptions();
 		if(exerciseType.equals(ExerciseType.ESSAY_QUESTION)){
 			if(content == null || content.trim().isEmpty()){
 				validator.addFieldError("content", "请输入习题内容");

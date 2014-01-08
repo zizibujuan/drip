@@ -26,8 +26,17 @@ public interface ExerciseDao {
 	 * 
 	 * @param exerciseForm 包含习题信息和录入习题人提供的答案信息
 	 * @return 新增习题的标识, 如果新增习题失败，则返回null
+	 * @deprecated 暂时不支持在新增习题的同时，录入习题答案
 	 */
 	Long add(ExerciseForm exerciseForm);
+	
+	/**
+	 * 新增习题。
+	 * 
+	 * @param exercise 习题信息
+	 * @return 新增习题的标识
+	 */
+	Long add(Exercise exercise);
 	
 	/**
 	 * 获取习题内容
@@ -37,4 +46,12 @@ public interface ExerciseDao {
 	 * @return 习题内容和答案信息
 	 */
 	ExerciseForm get(Long userId, Long exerciseId);
+	
+	/**
+	 * 获取习题信息
+	 * 
+	 * @param exerciseId 习题标识
+	 * @return 习题信息，如果没有则返回null
+	 */
+	Exercise get(Long exerciseId);
 }

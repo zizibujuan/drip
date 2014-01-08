@@ -8,6 +8,7 @@ import com.zizibujuan.drip.server.service.ActivityService;
 import com.zizibujuan.drip.server.service.AnswerService;
 import com.zizibujuan.drip.server.service.ApplicationPropertyService;
 import com.zizibujuan.drip.server.service.ExerciseService;
+import com.zizibujuan.drip.server.service.HistExerciseService;
 import com.zizibujuan.drip.server.service.UserBindService;
 import com.zizibujuan.drip.server.service.UserRelationService;
 import com.zizibujuan.drip.server.service.UserService;
@@ -176,4 +177,19 @@ public class ServiceHolder {
 		return userRelationService;
 	}
 
+	private HistExerciseService histExerciseService;
+	public void setHistExerciseService(HistExerciseService histExerciseService) {
+		logger.info("注入histExerciseService");
+		this.histExerciseService = histExerciseService;
+	}
+
+	public void unsetHistExerciseService(HistExerciseService histExerciseService) {
+		logger.info("注销histExerciseService");
+		if (this.histExerciseService == histExerciseService) {
+			this.histExerciseService = null;
+		}
+	}
+	public HistExerciseService getHistExerciseService() {
+		return histExerciseService;
+	}
 }

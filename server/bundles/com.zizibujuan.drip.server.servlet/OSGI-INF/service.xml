@@ -70,4 +70,12 @@
 		name="userRelationService" 
 		policy="dynamic" />		
 		
+	<reference 
+		bind="setHistExerciseService" 
+		unbind="unsetHistExerciseService" 
+		cardinality="0..1" 
+		interface="com.zizibujuan.drip.server.service.HistExerciseService" 
+		name="histExerciseService" 
+		policy="dynamic" />			
+		
 </scr:component>
