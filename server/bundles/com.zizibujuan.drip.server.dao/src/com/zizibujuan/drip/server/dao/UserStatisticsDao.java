@@ -8,7 +8,7 @@ import com.zizibujuan.drip.server.model.UserStatistics;
 /**
  * 本地用户的统计信息 数据访问接口
  * 
- * @author jzw
+ * @author jinzw
  * @since 0.0.1
  */
 public interface UserStatisticsDao {
@@ -23,22 +23,40 @@ public interface UserStatisticsDao {
 	void init(Connection con, Long userId) throws SQLException;
 
 	/**
-	 * 添加一道习题后，在用户的添加习题数上加1
+	 * 发布一道习题后，在用户的发布习题数上加1
 	 * 
 	 * @param con 数据库链接
 	 * @param userId 本网站用户标识
 	 * @throws SQLException 
 	 */
-	void increaseExerciseCount(Connection con, Long userId) throws SQLException;
+	void increasePublishExerciseCount(Connection con, Long userId) throws SQLException;
 	
 	/**
-	 * 添加一道习题后，在用户的添加习题数上减1
+	 * 取消发布一道习题后，在用户的发布习题数上减1
 	 * 
 	 * @param con 数据库链接
 	 * @param userId 本网站用户标识
 	 * @throws SQLException 
 	 */
-	void decreaseExerciseCount(Connection con, Long userId) throws SQLException;
+	void decreasePublishExerciseCount(Connection con, Long userId) throws SQLException;
+	
+	/**
+	 * 保存一道习题草稿后，在用户的习题草稿数上加1
+	 * 
+	 * @param con 数据库链接
+	 * @param userId 本网站用户标识
+	 * @throws SQLException 
+	 */
+	void increaseDraftExerciseCount(Connection con, Long userId) throws SQLException;
+	
+	/**
+	 * 删除一道习题草稿后，在用户的习题草稿数上减1
+	 * 
+	 * @param con 数据库链接
+	 * @param userId 本网站用户标识
+	 * @throws SQLException 
+	 */
+	void decreaseDraftExerciseCount(Connection con, Long userId) throws SQLException;
 	
 	/**
 	 * 用户回答了一套习题后，在用户回答的习题数上加1

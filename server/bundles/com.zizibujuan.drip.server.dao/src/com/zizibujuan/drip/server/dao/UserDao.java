@@ -17,7 +17,7 @@ import com.zizibujuan.drip.server.util.OAuthConstants;
 public interface UserDao {
 
 	/**
-	 * 新增用户。
+	 * 新增用户，用户添加成功后就添加初始化统计信息和自我关注
 	 * 
 	 * <pre>
 	 * 用户信息的格式为:

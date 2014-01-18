@@ -35,7 +35,7 @@ public class UserStatisticsDaoImpl extends AbstractDao implements
 			+ "WHERE "
 			+ "USER_ID = ?";
 	@Override
-	public void increaseExerciseCount(Connection con, Long userId) throws SQLException {
+	public void increasePublishExerciseCount(Connection con, Long userId) throws SQLException {
 		DatabaseUtil.update(con, SQL_UPDATE_INCREASE_EXERCISE_COUNT, userId);
 	}
 	
@@ -57,7 +57,7 @@ public class UserStatisticsDaoImpl extends AbstractDao implements
 			+ "WHERE "
 			+ "USER_ID=?";
 	@Override
-	public void decreaseExerciseCount(Connection con, Long userId) throws SQLException {
+	public void decreasePublishExerciseCount(Connection con, Long userId) throws SQLException {
 		DatabaseUtil.update(con, SQL_UPDATE_DECREASE_EXERCISE_COUNT, userId);
 	}
 	
@@ -149,5 +149,31 @@ public class UserStatisticsDaoImpl extends AbstractDao implements
 	@Override
 	public void decreaseFollowingCount(Connection con, Long userId) throws SQLException {
 		DatabaseUtil.update(con, SQL_UPDATE_DECREASE_FOLLOWING_COUNT, userId);
+	}
+	
+	private static final String SQL_UPDATE_INCREASE_EXERCISE_DRAFT_COUNT = "UPDATE "
+			+ "DRIP_USER_STATISTICS "
+			+ "SET "
+			+ "EXER_DRAFT_COUNT = EXER_DRAFT_COUNT + 1 "
+			+ "WHERE "
+			+ "USER_ID = ?";
+	@Override
+	public void increaseDraftExerciseCount(Connection con, Long userId)
+			throws SQLException {
+		DatabaseUtil.update(con, SQL_UPDATE_INCREASE_EXERCISE_DRAFT_COUNT, userId);
+		
+	}
+	
+	private static final String SQL_UPDATE_DECREASE_EXERCISE_DRAFT_COUNT = "UPDATE "
+			+ "DRIP_USER_STATISTICS "
+			+ "SET "
+			+ "EXER_DRAFT_COUNT = EXER_DRAFT_COUNT - 1 "
+			+ "WHERE "
+			+ "USER_ID = ?";
+	@Override
+	public void decreaseDraftExerciseCount(Connection con, Long userId)
+			throws SQLException {
+		DatabaseUtil.update(con, SQL_UPDATE_DECREASE_EXERCISE_DRAFT_COUNT, userId);
+		
 	}
 }

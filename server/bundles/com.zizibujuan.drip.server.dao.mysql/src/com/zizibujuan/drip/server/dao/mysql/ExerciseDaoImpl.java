@@ -26,6 +26,7 @@ import com.zizibujuan.drip.server.util.ActionType;
 import com.zizibujuan.drip.server.util.DBAction;
 import com.zizibujuan.drip.server.util.ExerciseType;
 import com.zizibujuan.drip.server.util.PageInfo;
+import com.zizibujuan.drip.server.util.constant.ExerciseStatus;
 import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 import com.zizibujuan.drip.server.util.dao.PreparedStatementSetter;
@@ -108,7 +109,12 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			Long userId = exercise.getCreateUserId();
 			// 习题添加成功后，在用户的“创建的习题数”上加1
 			// 同时修改后端和session中缓存的该记录
-			userStatisticsDao.increaseExerciseCount(con, userId);
+			if(exercise.getStatus().equals(ExerciseStatus.DRAFT)){
+				userStatisticsDao.increaseDraftExerciseCount(con, userId);
+			}else{
+				userStatisticsDao.increasePublishExerciseCount(con, userId);
+			}
+			
 			// 在活动表中插入一条记录
 			addActivity(con, userId, histExerId, ActionType.SAVE_EXERCISE); // 往活动表中插入历史记录
 			
@@ -170,7 +176,12 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			Long userId = exercise.getCreateUserId();
 			// 习题添加成功后，在用户的“创建的习题数”上加1
 			// 同时修改后端和session中缓存的该记录
-			userStatisticsDao.increaseExerciseCount(con, userId);
+			if(exercise.getStatus().equals(ExerciseStatus.DRAFT)){
+				userStatisticsDao.increaseDraftExerciseCount(con, userId);
+			}else{
+				userStatisticsDao.increasePublishExerciseCount(con, userId);
+			}
+			
 			// 在活动表中插入一条记录
 			addActivity(con, userId, histExerId, ActionType.SAVE_EXERCISE); // 往活动表中插入历史记录
 			

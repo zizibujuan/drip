@@ -51,6 +51,7 @@ require(["dojo/ready",
 	user.getLoggedUserStatistics().then(function(stat){
 		dom.byId("follow_count").innerHTML = stat.followCount;
 		dom.byId("fan_count").innerHTML = stat.fanCount;
+		dom.byId("exer_draft_count").innerHTML = stat.exerDraftCount;
 		dom.byId("exer_publish_count").innerHTML = stat.exerPublishCount;
 		dom.byId("answer_count").innerHTML = stat.answerCount;
 		//dom.byId("doc_commit_count").innerHTML = stat.docCommitCount;
@@ -225,6 +226,12 @@ function sendRenrenRequest(){
 											<a href="#" id="follower_link" style="text-decoration: none;color:#333">
 												<span style="text-align: center;">粉丝</span>
 												<strong id="fan_count" style="font-size: 20px"></strong>
+											</a>
+										</li>
+										<li>
+											<a href="#" id="exer_draft_link" style="text-decoration: none;color:#333">
+												<span style="text-align: center;">习题草稿数</span>
+												<strong id="exer_draft_count" style="font-size: 20px"></strong>
 											</a>
 										</li>
 										<li>

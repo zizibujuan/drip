@@ -55,7 +55,12 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 		try{
 			con = getDataSource().getConnection();
 			con.setAutoCommit(false);
-			this.add(con, userInfo);
+			userId = this.add(con, userInfo);
+			
+			// 关注自己
+			userRelationDao.watch(con, userId, userId);
+			// 添加一条值都为0的统计记录
+			userStatisticsDao.init(con, userId);
 			con.commit();
 		}catch(SQLException e){
 			DatabaseUtil.safeRollback(con);
@@ -173,27 +178,9 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
 			+ "ACTIVE_TIME=now() "
 			+ "WHERE "
 			+ "DBID=?";
-	/**
-	 * 激活成功之后，要自我关注
-	 */
 	@Override
 	public void active(Long userId) {
-		Connection con = null;
-		try{
-			con = getDataSource().getConnection();
-			con.setAutoCommit(false);
-			DatabaseUtil.update(con, SQL_UPDATE_ACTIVE_USER, userId);
-			// 关注自己
-			userRelationDao.watch(con, userId, userId);
-			// 添加一条值都为0的统计记录
-			userStatisticsDao.init(con, userId);
-			con.commit();
-		}catch (Exception e) {
-			DatabaseUtil.safeRollback(con);
-			throw new DataAccessException(e);
-		}finally{
-			DatabaseUtil.closeConnection(con);
-		}
+		DatabaseUtil.update(getDataSource(), SQL_UPDATE_ACTIVE_USER, userId);
 	}
 	
 	// 这里只查询出需要在界面上显示的用户信息，主要存储在当前用户的session中。
