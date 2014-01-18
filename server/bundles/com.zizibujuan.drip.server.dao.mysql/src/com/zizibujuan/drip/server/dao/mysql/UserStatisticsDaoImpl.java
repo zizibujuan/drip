@@ -73,20 +73,20 @@ public class UserStatisticsDaoImpl extends AbstractDao implements
 	}
 	
 	private static final String SQL_GET_USER_STATISTICS = "SELECT "
-			+ "DBID,"
-			+ "FAN_COUNT,"
-			+ "FOLLOW_COUNT,"
-			+ "EXER_DRAFT_COUNT,"
-			+ "EXER_PUBLISH_COUNT, "
-			+ "ANSWER_COUNT,"
-			+ "DOC_COMMIT_COUNT "
-			+ "FROM "
-			+ "DRIP_USER_STATISTICS "
-			+ "WHERE "
-			+ "USER_ID=?";
+		+ "DBID,"
+		+ "FAN_COUNT,"
+		+ "FOLLOW_COUNT,"
+		+ "EXER_DRAFT_COUNT,"
+		+ "EXER_PUBLISH_COUNT, "
+		+ "ANSWER_COUNT,"
+		+ "DOC_COMMIT_COUNT "
+		+ "FROM "
+		+ "DRIP_USER_STATISTICS "
+		+ "WHERE "
+		+ "USER_ID=?";
 	@Override
 	public UserStatistics getUserStatistics(Long userId) {
-		return DatabaseUtil.queryForObject(getDataSource(), SQL_GET_USER_STATISTICS,new RowMapper<UserStatistics>() {
+		UserStatistics result =  DatabaseUtil.queryForObject(getDataSource(), SQL_GET_USER_STATISTICS,new RowMapper<UserStatistics>() {
 			@Override
 			public UserStatistics mapRow(ResultSet rs, int rowNum) throws SQLException {
 				UserStatistics statistics = new UserStatistics();
@@ -100,6 +100,10 @@ public class UserStatisticsDaoImpl extends AbstractDao implements
 				return statistics;
 			}
 		}, userId);
+		if(result == null){
+			result = new UserStatistics();
+		}
+		return result;
 	}
 	
 	private static final String SQL_UPDATE_INCREASE_FOLLOWER_COUNT = "UPDATE "

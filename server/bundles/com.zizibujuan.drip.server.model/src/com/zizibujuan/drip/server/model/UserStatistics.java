@@ -9,13 +9,12 @@ package com.zizibujuan.drip.server.model;
 public class UserStatistics {
 
 	private Long id;
-	private Long fanCount;
-	private Long followCount;
-	@Deprecated
-	private Long exerDraftCount;
-	private Long exerPublishCount;
-	private Long answerCount;
-	private Long docCommitCount;
+	private Long fanCount = 0l;
+	private Long followCount = 0l;
+	private Long exerDraftCount = 0l;
+	private Long exerPublishCount = 0l;
+	private Long answerCount = 0l;
+	private Long docCommitCount = 0l;
 	
 	private Long userId;
 	
