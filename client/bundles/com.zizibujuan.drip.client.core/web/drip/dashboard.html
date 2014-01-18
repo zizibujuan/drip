@@ -49,7 +49,6 @@ require(["dojo/ready",
 	
 	// 因为统计信息变化比较频繁，所以没有保存在用户session中
 	user.getLoggedUserStatistics().then(function(stat){
-		debugger;
 		dom.byId("follow_count").innerHTML = stat.followCount;
 		dom.byId("fan_count").innerHTML = stat.fanCount;
 		dom.byId("exer_publish_count").innerHTML = stat.exerPublishCount;
