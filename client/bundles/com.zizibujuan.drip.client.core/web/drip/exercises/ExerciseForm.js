@@ -49,16 +49,14 @@ define(["dojo/_base/declare",
 	               {id:"fill", label:"填空题"}*/];
 	
 	return declare("drip.exercises.ExerciseForm", [_WidgetBase], {
-		// summary:
-		//		数据, 如果用户输入了答案，才提供answer的值
-		//		exercise
+		
+		
+		// data: Object
+		//		习题数据
 		//			exerciseType:
 		//			content:
 		//			options:[]
-		//		answer
-		//			guide:
-		//			answers:[]
-		data:{exercise: {}},
+		data:{},
 		
 		optionLength: 4,
 		
@@ -99,8 +97,12 @@ define(["dojo/_base/declare",
 			
 			// 创建保存按钮
 			var actionContainer = domConstruct.create("div",{"class":"drip_form_actions"},this.leftDiv);
-			var btnSave = this.btnSave = domConstruct.place("<button class=\"button primary\"><i class=\"icon-save icon-large\"></i> 保存</button>", actionContainer);
-			on(btnSave,"click",lang.hitch(this, this.doSave));
+			var btnSaveDraft = this.btnSaveDraft = domConstruct.place("<button class='button'>保存草稿</button>", actionContainer);
+			var btnPublish = this.btnPublish = domConstruct.place("<button class=\"button primary\">发布</button>", actionContainer);
+			domConstruct.place('<div class="drip_form_actions">发布后不能再编辑习题</div>', this.leftDiv);
+			
+			on(btnSaveDraft, "click", lang.hitch(this, this.doSaveDraft));
+			on(btnPublish, "click", lang.hitch(this, this.doPublish));
 		},
 		
 		_createForm: function(exerciseType){
@@ -133,16 +135,7 @@ define(["dojo/_base/declare",
 			}
 			this._showOptionPane(optionType);
 			
-			// 创建科目course
 			// TODO: 通过用户自定义的科目label来添加科目
-			// 科目默认不选择（optional，甚至可以录完习题内容之后再设置，
-			// 因为这个页面的第一功能是录入习题，而科目是用来设置习题的类别关系）。
-			//this._createCourseOptions();
-			
-			this._createAnswerInput();
-			
-			// 创建习题解析输入框
-			this._createGuideInput();
 			
 			this._createImageInput();
 			
@@ -230,32 +223,6 @@ define(["dojo/_base/declare",
 //			this.coursePane = row;
 //		},
 		
-		_createAnswerInput: function(){
-			var exerciseType = this._exerciseType;
-			if(exerciseType === classCode.ExerciseType.ESSAY_QUESTION){
-				if(this.answerEditor){
-					if(domStyle.get(this.answerEditor.domNode.parentNode, "display") == "none"){
-						domStyle.set(this.answerEditor.domNode.parentNode, "display", "");
-					}
-					return;
-				}
-				this.answerEditor = this._createMathInput("答案", 5);
-			}else{
-				if(this.answerEditor){
-					domStyle.set(this.answerEditor.domNode.parentNode, "display", "none");
-				}
-			}
-		},
-		
-		_createGuideInput: function(){
-			// summary:
-			//		创建习题解析输入框
-			//		只创建一次，为的是保留之前的内容
-			
-			if(this.guideEditor)return;
-			this.guideEditor = this._createMathInput("解析", 5);
-		},
-		
 		_createMathInput: function(label, rowCount, requireLabel){
 			// summary:
 			//		创建包含label的支持输入数学公式的输入框
@@ -300,7 +267,7 @@ define(["dojo/_base/declare",
 			
 			if(this._imageInput)return;
 			
-			var imagePane = domConstruct.create("div", {"class":"form"}, this.rightDiv);
+			var imagePane = domConstruct.create("div", {"class":"form"}, this.leftDiv);
 			var title = domConstruct.place('<div class="drip-title" style="margin-bottom: 5px;"></div>', imagePane);
 			
 			var u = new dojox.form.Uploader({
@@ -364,9 +331,9 @@ define(["dojo/_base/declare",
 		
 		_getFormData: function(){
 			var data = this.data;
-			data.exercise.exerciseType = this._exerciseType;
-			data.exercise.imageName = this.image.fileId;
-			data.exercise.content = this.exerContentEditor.get("value");
+			data.exerciseType = this._exerciseType;
+			data.imageName = this.image.fileId;
+			data.content = this.exerContentEditor.get("value");
 
 //			query("[name=" + this._courseOptionName + "]:checked", this.coursePane).forEach(function(inputEl, index){
 //				data.exercise.course = inputEl.id.split("_")[1];
@@ -374,53 +341,40 @@ define(["dojo/_base/declare",
 //			});
 			
 			if(this.tblOption){
-				data.exercise.options = [];
+				data.options = [];
 				registry.findWidgets(this.tblOption).forEach(function(widget, index){
 					console.log(widget, index, widget.get("value"));
 					// 只有当有内容时，才加入进来
 					var val = widget.get("value");
 					if(string.trim(val) != ""){
 						// 如果在内容两边保留了空格，则不要删除
-						data.exercise.options.push({content: val});
+						data.options.push({content: val});
 					}
 				});
 			}
 			
-			var answer = {};
-			if(this._exerciseType === classCode.ExerciseType.SINGLE_OPTION || this.exerciseType === classCode.ExerciseType.MULTI_OPTION){
-				var answerDetail = [];
-				// 选择题,在录入习题的同时回答习题，则根据seq来定位，因为这个时候optionId还没有值
-				query("[name="+this._optionName+"]:checked", this.tblOption).forEach(function(inputEl, index){
-					console.log(inputEl, index);
-					answerDetail.push({seq: inputEl.value});
-				});
-				
-				if(answerDetail.length > 0){
-					answer.detail = answerDetail;
-				}
-			}else if(this._exerciseType == classCode.ExerciseType.ESSAY_QUESTION){
-				var content = this.answerEditor.get("value");
-				if(string.trim(content) != ""){
-					// 如果在内容两边有空格，则不要删除
-					answer.detail = [{content: content}];
-				}
-			}
-			
-			var guide = this.guideEditor.get("value");
-			if(guide != null && guide.length > 0){
-				answer.guide = guide;
-			}
-			if(answer.detail || answer.guide){
-				data.answer = answer;
-			}
 			return data;
 		},
 		
-		doSave: function(e){
+		doSaveDraft: function(e){
 			// 保存之前要先校验
 			var data = this._getFormData();
+			data.status = classCode.exerciseStatus.DRAFT;
+			
+			this._doSave(data, e);
+		},
+		
+		doPublish: function(e){
+			var data = this._getFormData();
+			data.status = classCode.exerciseStatus.PUBLISH;
+			
+			this._doSave(data, e);
+		},
+		
+		_doSave: function(data, e){
 			console.log("将要保存的习题数据为：",data);
 			
+			var button = e.target;
 			// 每次校验之前，先清除上一次的错误信息
 			this.clearErrors();
 			this.validate(data);
@@ -431,15 +385,19 @@ define(["dojo/_base/declare",
 			}
 			// icon-refresh icon-spin icon-large
 			// 失效保存按钮，防止重复提交
-			domAttr.set(this.btnSave,"disabled", true);
-			xhr("/exercises/",{method:"POST", data:JSON.stringify(data)}).then(lang.hitch(this,function(response){
+			domAttr.set(button,"disabled", true);
+			
+			xhr.post("/exercises/",{
+				handleAs: "json", 
+				data: JSON.stringify(data)
+			}).then(lang.hitch(this,function(response){
 				// 保存成功，在界面上清除用户输入数据，使处于新增状态。在页面给出保存成功的提示，在按钮旁边显示。
-				tip.ok("保存成功！", this.btnSave, "before");
+				tip.ok("保存成功！", button.parentNode, "first");
 				this._reset();
-				domAttr.set(this.btnSave,"disabled", false);
+				domAttr.set(button,"disabled", false);
 			}),lang.hitch(this, function(error){
 				// 保存失败，不清除用户输入数据，并给出详尽的错误提示
-				domAttr.set(this.btnSave,"disabled", false);
+				domAttr.set(button,"disabled", false);
 				this.data = {};
 				
 				// 显示服务器端校验信息
@@ -454,7 +412,7 @@ define(["dojo/_base/declare",
 		},
 		
 		validate: function(data){
-			var exercise = data.exercise;
+			var exercise = data;
 			var exerciseType = exercise.exerciseType;
 			var content = exercise.content;
 			var options = exercise.options || [];
@@ -507,11 +465,9 @@ define(["dojo/_base/declare",
 		},
 		
 		_reset: function(){
-			this.data = {exercise: {}};
+			this.data = {};
 			this.clearErrors();
 			this.exerContentEditor.set("value", "");
-			this.answerEditor.set("value", "");
-			this.guideEditor.set("value", "");
 			query("[name="+this._optionName+"]:checked", this.tblOption).forEach(function(inputEl, index){
 				domAttr.set(inputEl,"checked", false);
 			});
