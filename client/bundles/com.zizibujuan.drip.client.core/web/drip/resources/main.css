@@ -321,3 +321,10 @@ display: table;
 	margin-right: 4px;
 	font-size: 11px;
 }
+
+.tag_draft{
+	background-color: green;
+	color: white;
+	padding: 3px 3px 3px 3px;
+	border-radius: 3px;
+}

@@ -32,13 +32,14 @@ public class HistExerciseDaoImpl extends AbstractDao implements HistExerciseDao 
 			+ "VERSION,"
 			+ "CONTENT,"
 			+ "EXER_TYPE,"
+			+ "STATUS,"
 			+ "EXER_COURSE,"
 			+ "IMAGE_NAME,"
 			+ "ACTION,"
 			+ "UPT_TM,"
 			+ "UPT_USER_ID) "
 			+ "VALUES "
-			+ "(?, ?, ?, ?, ?, ?, ?, now(), ?)";
+			+ "(?, ?, ?, ?, ?, ?, ?, ?, now(), ?)";
 	private static final String SQL_INSERT_HIST_EXER_OPTION = "INSERT INTO "
 			+ "DRIP_HIST_EXER_OPTION "
 			+ "(HIST_EXER_ID,"
@@ -55,14 +56,15 @@ public class HistExerciseDaoImpl extends AbstractDao implements HistExerciseDao 
 				ps.setInt(2, exercise.getVersion());
 				ps.setString(3, exercise.getContent());
 				ps.setString(4, exercise.getExerciseType());
-				ps.setString(5, exercise.getCourse());
-				ps.setString(6, exercise.getImageName());
-				ps.setString(7, dbAction);
+				ps.setString(5, exercise.getStatus());
+				ps.setString(6, exercise.getCourse());
+				ps.setString(7, exercise.getImageName());
+				ps.setString(8, dbAction);
 				if(dbAction.equals(DBAction.CREATE)){
-					ps.setLong(8, exercise.getCreateUserId());
+					ps.setLong(9, exercise.getCreateUserId());
 				}else{
 					// 删除操作完成后，把操作人记录在更新用户里
-					ps.setLong(8, exercise.getLastUpdateUserId());
+					ps.setLong(9, exercise.getLastUpdateUserId());
 				}
 			}
 		});
@@ -96,6 +98,7 @@ public class HistExerciseDaoImpl extends AbstractDao implements HistExerciseDao 
 			+ "VERSION,"
 			+ "CONTENT,"
 			+ "EXER_TYPE,"
+			+ "STATUS,"
 			+ "EXER_COURSE,"
 			+ "IMAGE_NAME,"
 			+ "ACTION,"
@@ -196,11 +199,12 @@ public class HistExerciseDaoImpl extends AbstractDao implements HistExerciseDao 
 			exercise.setVersion(rs.getInt(3));
 			exercise.setContent(rs.getString(4));
 			exercise.setExerciseType(rs.getString(5));
-			exercise.setCourse(rs.getString(6));
-			exercise.setImageName(rs.getString(7));
-			exercise.setAction(rs.getString(8));
-			exercise.setCreateTime(rs.getTimestamp(9));
-			exercise.setCreateUserId(rs.getLong(10));
+			exercise.setStatus(rs.getString(6));
+			exercise.setCourse(rs.getString(7));
+			exercise.setImageName(rs.getString(8));
+			exercise.setAction(rs.getString(9));
+			exercise.setCreateTime(rs.getTimestamp(10));
+			exercise.setCreateUserId(rs.getLong(11));
 			return exercise;
 		}
 	}

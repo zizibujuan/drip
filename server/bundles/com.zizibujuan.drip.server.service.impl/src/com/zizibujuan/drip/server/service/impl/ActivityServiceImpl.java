@@ -26,6 +26,7 @@ import com.zizibujuan.drip.server.util.PageInfo;
 
 /**
  * 活动列表实现类
+ * 
  * @author jinzw
  * @since 0.0.1
  */
@@ -37,12 +38,8 @@ public class ActivityServiceImpl implements ActivityService {
 	private HistExerciseDao histExerciseDao;
 	private HistAnswerDao histAnswerDao; 
 	
-	
-	
-	
 	private ExerciseDao exerciseDao;
 	private AnswerDao answerDao;
-	
 	
 	@Override
 	public List<Map<String, Object>> getFollowing(PageInfo pageInfo, Long userId) {
@@ -71,6 +68,7 @@ public class ActivityServiceImpl implements ActivityService {
 			map.put("userInfo", userInfo);
 			
 			if(actionType.equals(ActionType.SAVE_EXERCISE) || actionType.equals(ActionType.EDIT_EXERCISE)){
+				// 因为处于草稿状态的习题需要加载历史信息，所以从历史表中获取
 				HistExercise exercise = getHistExercise(contentId);
 				map.put("exercise", exercise);
 				map.put("exerAnswerCount", answerDao.getAnswerCount(exercise.getId()));
@@ -78,11 +76,11 @@ public class ActivityServiceImpl implements ActivityService {
 				// 活动表中，记录的是历史表中的答案或习题标识
 				
 				// 将答案和习题解析看作一体，是用户在答题时写下的做题思路
-				HistAnswer answer = getHistAnswer(contentId);
-				Long histExerciseId = answer.getExerciseId();
+				HistAnswer latestAnswer = getHistAnswer(contentId);
+				Long histExerciseId = latestAnswer.getExerciseId();
 				HistExercise exercise = getHistExercise(histExerciseId);
 				map.put("exercise", exercise);
-				map.put("answer", answer);
+				map.put("answer", latestAnswer);
 				map.put("exerAnswerCount", answerDao.getAnswerCount(exercise.getId()));
 			}else{
 				throw new UnsupportedOperationException("不支持的操作类型");

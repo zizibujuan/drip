@@ -59,13 +59,17 @@ define(["dojo/_base/declare",
 	
 	var ActivityNode = declare("drip.ActivityNode", [_WidgetBase, _TemplatedMixin],{
 		
+		loggedUserId: null,
+		
 		templateString: nodeTemplate,
 		
 		data:{},
 		
 		postCreate : function(){
-			console.log("activity node data:",this.data);
 			this.inherited(arguments);
+			
+			console.log("activity node data:",this.data);
+			
 			this._showActionLabel();
 			
 			this.miniCard = new MiniCard();
@@ -76,9 +80,26 @@ define(["dojo/_base/declare",
 			// TODO: 每回答一次+1
 			this.drip_answer_count.innerHTML = this.data.exerAnswerCount;
 			
-			// 解答按钮
-			on(this.btnAnswer,"click", lang.hitch(this, this._loadAnswerHandler));
 			var watchUserId = this.data.userInfo.userId;
+			
+			// TODO: 如果是自己录入的习题，并且处于草稿状态，则允许编辑
+			var exerciseInfo = this.data.exercise;
+			if(exerciseInfo.status == classCode.exerciseStatus.DRAFT && watchUserId == this.loggedUserId){
+				var btnEdit = domConstruct.create("a", {
+					innerHTML: "编辑", 
+					"class": "minibutton",
+					href: "#"
+				}, this.btnAnswer, "before");
+				//on(btnEdit, "click", )
+			}
+			// 处于草稿状态的习题不允许回答
+			if(exerciseInfo.status == classCode.exerciseStatus.DRAFT){
+				domStyle.set(this.btnAnswer, "display", "none");
+				// 解答按钮
+				on(this.btnAnswer,"click", lang.hitch(this, this._loadAnswerHandler));
+			}
+			
+			
 			// 为头像和用户名绑定mouseover事件
 			on(this.userLinkNode,"mouseover", lang.hitch(this, function(e){
 				this.miniCard.show(e.target, watchUserId);
@@ -135,7 +156,7 @@ define(["dojo/_base/declare",
 				var exerType = exerciseInfo.exerciseType;
 				
 				// 针对不同的题型，有不同的渲染方式
-				if(this._isOptionExercise(exerType)){
+				if(this._exerciseView.isOptionExercise(exerType)){
 					this._optionLabels = [];
 					array.forEach(answerInfo.detail, lang.hitch(this,this._setOptionAnswer));
 					// 即使是选择题，也要在答案面板中回答
@@ -188,7 +209,7 @@ define(["dojo/_base/declare",
 			var editAnswerPane = this.editAnswerPane = domConstruct.create("div",null, this.exerciseNode, "after");
 			
 			var exerType = this.data.exercise.exerciseType;
-			if(this._isOptionExercise(exerType)){
+			if(this._exerciseView.isOptionExercise(exerType)){
 				// 把所有option设置为有效
 				// 清除答案
 				// 如果是选择题,因为可以直接在选项上作答，所以将所有选项置为有效
@@ -262,7 +283,7 @@ define(["dojo/_base/declare",
 				// 如果答案为空，则失效保存按钮
 				// 如果答案没有发生变化，则判断解析是否发生变化，如果发生了变化，则激活保存按钮；否则失效
 				
-				if(this._isOptionExercise(exerType)){
+				if(this._exerciseView.isOptionExercise(exerType)){
 					// 判断用户勾选的选项是否发生了变化
 					var oldOptions = oldAnswer.detail;
 					var newOptions = this._getSelectExerciseAnswer();
@@ -316,7 +337,7 @@ define(["dojo/_base/declare",
 				return;
 			}
 			
-			if(this._isOptionExercise(exerType)){
+			if(this._exerciseView.isOptionExercise(exerType)){
 				var newOptions = this._getSelectExerciseAnswer();
 				if(newOptions.length == 0){
 					this._disableBtnSave(true);
@@ -361,7 +382,7 @@ define(["dojo/_base/declare",
 					return;
 				}
 				
-				if(this._isOptionExercise(exerType)){
+				if(this._exerciseView.isOptionExercise(exerType)){
 					
 					return;
 				}
@@ -413,7 +434,7 @@ define(["dojo/_base/declare",
 			var answerData = {};
 			answerData.detail = [];
 			var exerType = this.data.exercise.exerciseType;
-			if(this._isOptionExercise(exerType)){
+			if(this._exerciseView.isOptionExercise(exerType)){
 				answerData.detail = this._getSelectExerciseAnswer();
 			}else if(exerType == classCode.ExerciseType.ESSAY_QUESTION){
 				var a = this.answerEditor.get("value");
@@ -504,7 +525,7 @@ define(["dojo/_base/declare",
 			var answerInfo = this.data.answer;
 			if(answerInfo){
 				var exerType = this.data.exercise.exerciseType;
-				if(this._isOptionExercise(exerType)){
+				if(this._exerciseView.isOptionExercise(exerType)){
 					array.forEach(answerInfo.detail, lang.hitch(this,this._setOptionAnswer));
 					this._exerciseView.getOptionEls().forEach(function(el){
 						domProp.set(el, "disabled", true);
@@ -512,7 +533,7 @@ define(["dojo/_base/declare",
 				}
 			}else{
 				var exerType = this.data.exercise.exerciseType;
-				if(this._isOptionExercise(exerType)){
+				if(this._exerciseView.isOptionExercise(exerType)){
 					this._exerciseView.getOptionEls().forEach(function(el){
 						domProp.set(el, "checked", false);
 						domProp.set(el, "disabled", true);
@@ -541,7 +562,7 @@ define(["dojo/_base/declare",
 			}
 			var exerType = this.data.exercise.exerciseType;
 			// TODO: 调用exerciseView中的方法
-			if(this._isOptionExercise(exerType)){
+			if(this._exerciseView.isOptionExercise(exerType)){
 				if(data.detail && data.detail.length > 0){
 					array.forEach(data.detail, lang.hitch(this,this._setOptionAnswer));
 				}
@@ -603,6 +624,9 @@ define(["dojo/_base/declare",
 	});
 	
 	var Activity = declare("Activity",[_WidgetBase, _TemplatedMixin, _StoreMixin],{
+		
+		loggedUserId: null,
+		
 		templateString: listTemplate,
 		 
 		 // 如果没有习题，则显示没有习题，
@@ -622,6 +646,7 @@ define(["dojo/_base/declare",
 				 array.forEach(items, lang.hitch(this,function(item, index){
 					 
 					 var node = new ActivityNode({
+						 loggedUserId: this.loggedUserId,
 						 data : item
 					 });
 					 this.domNode.appendChild(node.domNode);

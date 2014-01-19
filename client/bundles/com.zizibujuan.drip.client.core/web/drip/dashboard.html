@@ -44,7 +44,23 @@ require(["dojo/ready",
 	
 	// 加载左侧栏目中的数据，因为左侧没有用dijit部件，所无需放在ready方法中
 	user.getLoggedUserInfo().then(function(userInfo){
+		var store = new JsonRest({
+			 target:"/activities/"
+		 });
 		
+		var followingNoDataMessage = "没有活动，快去<a href='/exercises/new' style='font-weight:bold'>录入习题</a>，或到<a href='/explore_exercises' style='font-weight:bold'>题库</a>中解答习题";
+		var myAnswerNoDataMessage = "还没有回答问题，快到题库中解答习题";
+		var myExerciseNoDataMessage = "您还没有录入过习题，快去录入新题目";
+		
+		var activities = new Activity({
+			loggedUserId: userInfo.id,
+			store: store,
+			query: {type:"following"},
+			// <i class="icon-spinner icon-spin icon-large"></i>
+			loadingMessage:"<i class=\"icon-refresh icon-spin icon-large\"></i>  加载中...", 
+			noDataMessage:followingNoDataMessage
+		});
+		activities.placeAt("activitiesContainer");
 	});
 	
 	// 因为统计信息变化比较频繁，所以没有保存在用户session中
@@ -57,22 +73,7 @@ require(["dojo/ready",
 		//dom.byId("doc_commit_count").innerHTML = stat.docCommitCount;
 	});
 	
-	var store = new JsonRest({
-		 target:"/activities/"
-	 });
 	
-	var followingNoDataMessage = "没有活动，快去<a href='/exercises/new' style='font-weight:bold'>录入习题</a>，或到<a href='/explore_exercises' style='font-weight:bold'>题库</a>中解答习题";
-	var myAnswerNoDataMessage = "还没有回答问题，快到题库中解答习题";
-	var myExerciseNoDataMessage = "您还没有录入过习题，快去录入新题目";
-	
-	var activities = new Activity({
-		store: store,
-		query: {type:"following"},
-		// <i class="icon-spinner icon-spin icon-large"></i>
-		loadingMessage:"<i class=\"icon-refresh icon-spin icon-large\"></i>  加载中...", 
-		noDataMessage:followingNoDataMessage
-	});
-	activities.placeAt("activitiesContainer");
 	
 	// 加载登录用户发起的项目列表
 	// 如果没有传递用户信息，则获取登录用户的项目列表

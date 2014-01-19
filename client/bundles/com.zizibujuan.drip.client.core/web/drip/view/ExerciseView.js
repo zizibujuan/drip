@@ -64,6 +64,12 @@ define(["dojo/_base/declare",
 					this._createOption(table, inputType, option, index)
 				}));
 			}
+			
+			// 如果习题处于草稿状态，则添加草稿标签
+			if(exerciseInfo.status == classCode.exerciseStatus.DRAFT){
+				var span = domConstruct.create("span", {"class": "tag_draft"}, parentNode);
+				span.innerHTML = "草稿";
+			}
 		},
 		
 		getOptionEls: function(){
