@@ -475,17 +475,10 @@ box-shadow: none;
 }
 
 
-.drip_face{
-	float:left;
-}
 
-.drip_detail{
-	margin-left: 60px;
-}
 
-.drip_action{
-	margin-bottom: 5px;
-}
+
+
 
 .drip_tab_nav {
 	margin-top:10px;
@@ -537,12 +530,9 @@ box-shadow: none;
 	line-height: 1.4
 }
 
-.drip_activity_list{
-	/*border-top:1px solid #DDD;
-	border-right: 1px solid #DDD;*/
-	/*border-top-right-radius:5px;*/
-	min-height: 500px;
-}
+
+
+
 
 .drip_answer_count {
 	border: 1px solid #D4D4D4;

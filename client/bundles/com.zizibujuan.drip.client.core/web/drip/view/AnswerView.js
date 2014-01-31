@@ -103,7 +103,7 @@ define(["dojo/_base/declare",
 			xhr(target, {
 				method: method,
 				handleAs: "json",
-				data: JSON.stringify(answerData);
+				data: JSON.stringify(answerData)
 			}).then(
 				lang.hitch(this, this.afterSaveSuccess, button),
 				lang.hitch(this, this.afterSaveError)	

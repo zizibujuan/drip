@@ -196,7 +196,7 @@ public class HistExerciseDaoImpl extends AbstractDao implements HistExerciseDao 
 			HistExercise exercise = new HistExercise();
 			exercise.setHistId(rs.getLong(1));
 			exercise.setId(rs.getLong(2));
-			exercise.setVersion(rs.getInt(3));
+			exercise.setHistVersion(rs.getInt(3));
 			exercise.setContent(rs.getString(4));
 			exercise.setExerciseType(rs.getString(5));
 			exercise.setStatus(rs.getString(6));

@@ -39,10 +39,11 @@ define(["dojo/_base/declare",
 			var parentNode = this.parentNode;
 			
 			var html = dataUtil.xmlStringToHtml(exerciseInfo.content);
-			var _contentDiv = domConstruct.create("div", {innerHTML: html, "class": "content"}, parentNode);
+			var _contentDiv = this.contentDiv = domConstruct.create("div", {innerHTML: html, "class": "content"}, parentNode);
 			if(exerciseInfo.imageName){
 				//  FIXME:这个图，放在创建人的用户名下，作为修改人，用户下是没有这个图的,
 				// 保存的时候，把用户标识也保存进去？
+				// TODO：可编辑
 				var _imageDiv = domConstruct.create("img", {src: "/userImages/" + exerciseInfo.createUserId + "/" + exerciseInfo.imageName}, parentNode);
 			}
 			var options = exerciseInfo.options;
@@ -57,7 +58,7 @@ define(["dojo/_base/declare",
 					throw "不支持的习题类型："+exerType;
 				}
 					
-				var _optionsDiv = domConstruct.create("div",{"class":"option"}, parentNode);
+				var _optionsDiv  = this.optionsDiv= domConstruct.create("div",{"class":"option"}, parentNode);
 				var table = this._table = domConstruct.create("table", null, _optionsDiv);
 				// 循环填写options节点
 				array.forEach(options, lang.hitch(this, function(option, index){
@@ -69,6 +70,11 @@ define(["dojo/_base/declare",
 			if(exerciseInfo.status == classCode.exerciseStatus.DRAFT){
 				var span = domConstruct.create("span", {"class": "tag_draft"}, parentNode);
 				span.innerHTML = "草稿";
+				
+				if(exerciseInfo.histVersion != exerciseInfo.version){
+					var span = domConstruct.create("span", {"class": "tag_updated"}, parentNode);
+					span.innerHTML = "已修订";
+				}
 			}
 		},
 		
@@ -149,6 +155,20 @@ define(["dojo/_base/declare",
 					domProp.set(optEl, "checked", false);
 				}
 			});
+		},
+		
+		editable: function(){
+			// 删除并隐藏习题内容面板
+			domConstruct.empty(this.contentDiv);
+			if(this.optionsDiv){
+				domConstruct.empty(this.optionsDiv);
+			}
+			
+			// 显示可编辑的习题输入框
+			var exerciseInfo = this.exerciseInfo;
+			
+			// 显示保存按钮
+			
 		}
 		
 	});

@@ -12,6 +12,7 @@ public class HistExercise extends Exercise{
 
 	private Long histId; // 历史答案的代理主键
 	private String action;
+	private Integer histVersion; // 历史版本号
 
 	public Long getHistId() {
 		return histId;
@@ -21,6 +22,24 @@ public class HistExercise extends Exercise{
 		this.histId = histId;
 	}
 	
+	/**
+	 * 获取习题的历史版本号注意{@link Exercise#getVersion()}获取的是最新版本号。
+	 * 
+	 * @return 当前历史版本习题的历史版本号
+	 */
+	public Integer getHistVersion() {
+		return histVersion;
+	}
+
+	/**
+	 * 设置习题的历史版本号，注意{@link Exercise#setVersion(Integer)}设置的是最新版本号。
+	 * 
+	 * @param histVersion 当前历史版本习题的历史版本号
+	 */
+	public void setHistVersion(Integer histVersion) {
+		this.histVersion = histVersion;
+	}
+
 	/**
 	 * 获取数据库操作 {@link DBAction}
 	 * 

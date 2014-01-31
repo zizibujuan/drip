@@ -148,6 +148,8 @@ public class ActivityServiceImpl implements ActivityService {
 	private HistExercise getHistExercise(Long histExerciseId){
 		// TODO: 改为从缓存中获取。
 		HistExercise result = histExerciseDao.get(histExerciseId);
+		// TODO: 需要获取习题的最新版本号
+		result.setVersion(exerciseDao.get(result.getId()).getVersion());
 		return result;
 	}
 	

@@ -84,18 +84,28 @@ define(["dojo/_base/declare",
 			
 			// TODO: 如果是自己录入的习题，并且处于草稿状态，则允许编辑
 			var exerciseInfo = this.data.exercise;
-			if(exerciseInfo.status == classCode.exerciseStatus.DRAFT && watchUserId == this.loggedUserId){
-				var btnEdit = domConstruct.create("a", {
+			if(exerciseInfo.status == classCode.exerciseStatus.DRAFT && 
+					watchUserId == this.loggedUserId &&
+					exerciseInfo.version == exerciseInfo.histVersion){
+				// 改为不跳转，直接在本地编辑
+				var btnEdit = domConstruct.create("button", {
 					innerHTML: "编辑", 
-					"class": "minibutton",
-					href: "#"
+					"class": "minibutton"
 				}, this.btnAnswer, "before");
-				//on(btnEdit, "click", )
+				var btnPublish = domConstruct.create("button", {
+					innerHTML: "发布",
+					"class": "minibutton"
+				}, this.btnAnswer, "before");
+				// href: "/exercises/edit/" + exerciseInfo.id
+				on(btnEdit, "click", lang.hitch(this, this._toEditExerciseHandler))
+				on(btnPublish, "click", lang.hitch(this, this._publishExerciseHandler));
+				
 			}
 			// 处于草稿状态的习题不允许回答
 			if(exerciseInfo.status == classCode.exerciseStatus.DRAFT){
 				domStyle.set(this.btnAnswer, "display", "none");
-				// 解答按钮
+				domStyle.set(this.drip_answer_count, "display", "none");
+			}else{
 				on(this.btnAnswer,"click", lang.hitch(this, this._loadAnswerHandler));
 			}
 			
@@ -398,6 +408,20 @@ define(["dojo/_base/declare",
 				}
 				
 			}
+		},
+		
+		_toEditExerciseHandler: function(e){
+			// summary:
+			//		将习题改为可编辑状态
+			
+			this._exerciseView.editable();
+		},
+		
+		_publishExerciseHandler: function(e){
+			// summary:
+			//		发布习题
+			
+			// TODO: 发布习题
 		},
 		
 		_disableBtnSave: function(disable/*boolean*/){

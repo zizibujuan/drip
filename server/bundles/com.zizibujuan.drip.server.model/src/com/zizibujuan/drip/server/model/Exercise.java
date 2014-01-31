@@ -42,18 +42,18 @@ public class Exercise extends LogModel{
 	}
 
 	/**
-	 * 获取习题当前的版本号，版本号从1开始，用户每修改一次，就加1
+	 * 获取习题最新版本号，版本号从1开始，用户每修改一次，就加1。
 	 * 
-	 * @return 习题当前的版本号
+	 * @return 习题最新的版本号
 	 */
 	public Integer getVersion() {
 		return version;
 	}
 
 	/**
-	 * 设置习题当前的版本号，版本号从1开始，用户每修改一次，就加1
+	 * 设置习题最新版本号，版本号从1开始，用户每修改一次，就加1
 	 * 
-	 * @param version 习题版本号
+	 * @param version 习题最新版本号
 	 */
 	public void setVersion(Integer version) {
 		this.version = version;

@@ -17,6 +17,7 @@ define(["dojo/_base/declare",
         "mathEditor/Editor",
         "drip/classCode",
         "drip/tip",
+        "drip/editorHelper",
         "dojox/form/Uploader",
         "drip/widget/form/uploader/FileList"], function(
         		declare,
@@ -38,6 +39,7 @@ define(["dojo/_base/declare",
         		Editor,
         		classCode,
         		tip,
+        		editorHelper,
         		Uploader,
         		FileList){
 	
@@ -142,6 +144,14 @@ define(["dojo/_base/declare",
 			this._createMathEditorHelper();
 		},
 		
+		_createContentInput: function(){
+			// summary:
+			//		创建习题内容输入框。
+			//		只创建一次。
+			
+			var editor = this.exerContentEditor = this._createMathInput("内容", 10, "必填");
+			//editor.set("value", content);
+		},
 		/*
 		 <ul class="radio-group">
 			<li><input type="radio" name="questionType" id="essayQuestion"/><label for="essayQuestion">问答题</label></li>
@@ -184,15 +194,6 @@ define(["dojo/_base/declare",
 			this.exerciseTypePane = row;
 		},
 		
-		_createContentInput: function(){
-			// summary:
-			//		创建习题内容输入框。
-			//		只创建一次。
-			
-			if(this.exerContentEditor)return;
-			var editor = this.exerContentEditor = this._createMathInput("内容", 10, "必填");
-			this.contentPane = editor.domNode.parentNode;
-		},
 		
 		/*
 		<ul class="radio-group">
@@ -230,26 +231,14 @@ define(["dojo/_base/declare",
 			var pane = domConstruct.create("div", {"class":"form"}, this.leftDiv);
 			domConstruct.place('<div><span class="drip-title">'+label+'</span>'+_requireLabel+'</div>', pane);
 			return this._createEditor(pane, rowCount, 550);
+			
 		},
 		
 		_createEditor: function(parentNode, rowCount, width){
-			// summary:
-			//		创建数学编辑器
-			// parentNode: dom node
-			// rowCount: int
-			// width: int
-			var params = {};
-			// TODO:在mathEditor中增加rows参数，但是不增加columns参数，而是依然使用width参数，
-			// 因为输入数学公式之后，列数是无法确定的。
-			params.rows = rowCount;
-			if(width){
-				params.width = width;
-			}
-			var editor = new Editor(params);
-			editor.placeAt(parentNode);
-			editor.startup(); // 
+			// rowCount支持auto，即适配内容的高度
+			
+			var editor = editorHelper.createEditor(parentNode, rowCount, width)
 			this._editors.push(editor);
-			return editor;
 		},
 		
 		/*
@@ -297,6 +286,7 @@ define(["dojo/_base/declare",
 			this._editorHelper = true;
 		},
 		
+		// FIXME: 这段代码在ExerciseEditor重复存在，待重构。
 		_showOptionPane: function(optionType){
 			// summary: 显示/创建/隐藏选项面板
 			//		如果optionType不为null
@@ -502,6 +492,8 @@ define(["dojo/_base/declare",
 					
 			
 		 */
+		
+		// TODO: 重构，在ExerciseEditor中重复存在
 		_createOptionPane: function(type){
 			// summary:
 			//		创建习题选项面板

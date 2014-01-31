@@ -1,9 +1,10 @@
-@import url('../../drip/resources/main.css');
-@import url('../../drip/resources/index.css');
-@import url('../../drip/resources/UploaderFileList.css');
-@import url('../../mathEditor/resources/editor.css');
-
 @import url("../../dijit/themes/dijit.css");
 @import url('../../dijit/themes/claro/form/Common.css');
 @import url('../../dijit/themes/claro/form/Button.css');
 @import url('../../dijit/themes/claro/Dialog.css');
+
+@import url('../../drip/resources/main.css');
+@import url('../../drip/resources/index.css');
+@import url('../../drip/resources/UploaderFileList.css');
+@import url('../../mathEditor/resources/editor.css');
+@import url('../../drip/resources/dashboard.css');
