@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.util.Map;
 
 import com.zizibujuan.drip.server.model.UserBindInfo;
-import com.zizibujuan.drip.server.util.OAuthConstants;
+import com.zizibujuan.drip.server.util.constant.OAuthConstants;
 
 /**
  * 用户帐号绑定 数据访问接口

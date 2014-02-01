@@ -6,7 +6,7 @@ import java.util.Map;
 import com.zizibujuan.drip.server.model.Avatar;
 import com.zizibujuan.drip.server.model.UserBindInfo;
 import com.zizibujuan.drip.server.model.UserInfo;
-import com.zizibujuan.drip.server.util.OAuthConstants;
+import com.zizibujuan.drip.server.util.constant.OAuthConstants;
 
 /**
  * 用户数据访问接口

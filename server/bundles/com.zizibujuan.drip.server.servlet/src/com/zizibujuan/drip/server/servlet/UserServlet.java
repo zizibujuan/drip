@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.model.UserStatistics;
 import com.zizibujuan.drip.server.service.UserService;
-import com.zizibujuan.drip.server.util.CookieConstants;
+import com.zizibujuan.drip.server.util.constant.CookieConstants;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.CookieUtil;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;

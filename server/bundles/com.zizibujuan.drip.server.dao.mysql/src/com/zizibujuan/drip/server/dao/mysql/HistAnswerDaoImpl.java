@@ -11,7 +11,7 @@ import com.zizibujuan.drip.server.dao.HistAnswerDao;
 import com.zizibujuan.drip.server.model.Answer;
 import com.zizibujuan.drip.server.model.AnswerDetail;
 import com.zizibujuan.drip.server.model.HistAnswer;
-import com.zizibujuan.drip.server.util.DBAction;
+import com.zizibujuan.drip.server.util.constant.DBAction;
 import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.BatchPreparedStatementSetter;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;

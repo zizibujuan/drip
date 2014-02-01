@@ -7,7 +7,7 @@ import com.zizibujuan.drip.server.model.Avatar;
 import com.zizibujuan.drip.server.model.UserBindInfo;
 import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.model.UserStatistics;
-import com.zizibujuan.drip.server.util.OAuthConstants;
+import com.zizibujuan.drip.server.util.constant.OAuthConstants;
 
 /**
  * 用户 服务接口

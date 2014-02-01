@@ -21,8 +21,8 @@ import com.zizibujuan.drip.server.model.HistAnswer;
 import com.zizibujuan.drip.server.model.HistExercise;
 import com.zizibujuan.drip.server.service.ActivityService;
 import com.zizibujuan.drip.server.service.UserService;
-import com.zizibujuan.drip.server.util.ActionType;
 import com.zizibujuan.drip.server.util.PageInfo;
+import com.zizibujuan.drip.server.util.constant.ActionType;
 
 /**
  * 活动列表实现类

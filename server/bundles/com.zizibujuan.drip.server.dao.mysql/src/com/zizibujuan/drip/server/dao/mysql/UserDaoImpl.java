@@ -23,7 +23,7 @@ import com.zizibujuan.drip.server.exception.dao.DataAccessException;
 import com.zizibujuan.drip.server.model.Avatar;
 import com.zizibujuan.drip.server.model.UserBindInfo;
 import com.zizibujuan.drip.server.model.UserInfo;
-import com.zizibujuan.drip.server.util.OAuthConstants;
+import com.zizibujuan.drip.server.util.constant.OAuthConstants;
 import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 import com.zizibujuan.drip.server.util.dao.PreparedStatementSetter;

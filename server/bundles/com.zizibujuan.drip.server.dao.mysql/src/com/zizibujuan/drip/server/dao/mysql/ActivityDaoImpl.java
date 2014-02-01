@@ -9,8 +9,8 @@ import java.util.Map;
 
 import com.zizibujuan.drip.server.dao.ActivityDao;
 import com.zizibujuan.drip.server.model.Activity;
-import com.zizibujuan.drip.server.util.ActionType;
 import com.zizibujuan.drip.server.util.PageInfo;
+import com.zizibujuan.drip.server.util.constant.ActionType;
 import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 import com.zizibujuan.drip.server.util.dao.PreparedStatementSetter;

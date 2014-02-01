@@ -8,6 +8,7 @@ Bundle-Vendor: zizibujuan.com
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.zizibujuan.drip.server.model,
  com.zizibujuan.drip.server.util,
+ com.zizibujuan.drip.server.util.constant,
  org.osgi.framework;version="1.3.0"
 Export-Package: com.zizibujuan.drip.server.service
 Bundle-ActivationPolicy: lazy

@@ -13,11 +13,8 @@ import org.apache.commons.validator.routines.RegexValidator;
 
 import com.zizibujuan.drip.server.service.UserRelationService;
 import com.zizibujuan.drip.server.service.UserService;
-import com.zizibujuan.drip.server.util.OAuthConstants;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
-import com.zizibujuan.drip.server.util.servlet.RequestUtil;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
-import com.zizibujuan.drip.server.util.servlet.UserSession;
 
 /**
  * 用户

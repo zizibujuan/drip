@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 import com.zizibujuan.drip.server.model.Answer;
 import com.zizibujuan.drip.server.model.HistAnswer;
-import com.zizibujuan.drip.server.util.DBAction;
+import com.zizibujuan.drip.server.util.constant.DBAction;
 
 /**
  * 记录答案更新历史的数据访问接口

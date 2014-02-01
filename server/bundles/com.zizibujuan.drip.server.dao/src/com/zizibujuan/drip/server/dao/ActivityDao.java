@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.zizibujuan.drip.server.model.Activity;
-import com.zizibujuan.drip.server.util.ActionType;
 import com.zizibujuan.drip.server.util.PageInfo;
+import com.zizibujuan.drip.server.util.constant.ActionType;
 
 /**
  * 活动列表 数据访问接口

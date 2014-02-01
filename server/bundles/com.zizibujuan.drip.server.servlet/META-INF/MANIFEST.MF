@@ -9,6 +9,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.zizibujuan.drip.server.model,
  com.zizibujuan.drip.server.service,
  com.zizibujuan.drip.server.util,
+ com.zizibujuan.drip.server.util.constant,
  com.zizibujuan.drip.server.util.io,
  com.zizibujuan.drip.server.util.model,
  com.zizibujuan.drip.server.util.servlet,

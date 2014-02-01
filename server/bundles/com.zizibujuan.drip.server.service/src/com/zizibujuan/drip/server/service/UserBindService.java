@@ -1,7 +1,7 @@
 package com.zizibujuan.drip.server.service;
 
 import com.zizibujuan.drip.server.model.UserBindInfo;
-import com.zizibujuan.drip.server.util.OAuthConstants;
+import com.zizibujuan.drip.server.util.constant.OAuthConstants;
 
 /**
  * 获取与OAuth授权网站关联的用户，不同站点可能使用不同的类型来表示用户标识，因此多个方法

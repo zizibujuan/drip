@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.core.runtime.IPath;
 
-import com.zizibujuan.drip.server.util.CookieConstants;
+import com.zizibujuan.drip.server.util.constant.CookieConstants;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.CookieUtil;
 

@@ -21,7 +21,7 @@ import com.zizibujuan.drip.server.model.UserBindInfo;
 import com.zizibujuan.drip.server.service.UserBindService;
 import com.zizibujuan.drip.server.servlet.ServiceHolder;
 import com.zizibujuan.drip.server.util.Gender;
-import com.zizibujuan.drip.server.util.OAuthConstants;
+import com.zizibujuan.drip.server.util.constant.OAuthConstants;
 
 /**
  * qq用户登录

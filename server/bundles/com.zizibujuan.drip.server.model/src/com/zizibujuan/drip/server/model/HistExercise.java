@@ -1,6 +1,6 @@
 package com.zizibujuan.drip.server.model;
 
-import com.zizibujuan.drip.server.util.DBAction;
+import com.zizibujuan.drip.server.util.constant.DBAction;
 
 /**
  * 习题历史记录， FIXME:添加一个historyable父类怎样?

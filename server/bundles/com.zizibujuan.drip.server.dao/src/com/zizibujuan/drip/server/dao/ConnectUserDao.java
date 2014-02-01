@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 
-import com.zizibujuan.drip.server.util.OAuthConstants;
+import com.zizibujuan.drip.server.util.constant.OAuthConstants;
 
 /**
  * 通过第三方网站提供的connect功能，接入的用户。

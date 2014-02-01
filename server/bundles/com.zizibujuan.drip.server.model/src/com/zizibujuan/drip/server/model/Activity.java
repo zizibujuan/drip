@@ -2,7 +2,7 @@ package com.zizibujuan.drip.server.model;
 
 import java.util.Date;
 
-import com.zizibujuan.drip.server.util.ActionType;
+import com.zizibujuan.drip.server.util.constant.ActionType;
 
 /**
  * 用户活动

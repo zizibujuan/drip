@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.zizibujuan.drip.server.model.Avatar;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.servlet.ServiceHolder;
-import com.zizibujuan.drip.server.util.CookieConstants;
+import com.zizibujuan.drip.server.util.constant.CookieConstants;
 import com.zizibujuan.drip.server.util.servlet.CookieUtil;
 import com.zizibujuan.drip.server.util.servlet.UserSession;
 

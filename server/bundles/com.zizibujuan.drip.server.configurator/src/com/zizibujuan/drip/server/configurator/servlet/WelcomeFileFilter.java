@@ -11,7 +11,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.zizibujuan.drip.server.util.WebConstants;
+import com.zizibujuan.drip.server.util.constant.WebConstants;
 import com.zizibujuan.drip.server.util.servlet.UserSession;
 
 /**

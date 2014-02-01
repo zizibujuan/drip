@@ -32,7 +32,7 @@ import com.zizibujuan.drip.server.service.UserBindService;
 import com.zizibujuan.drip.server.service.UserService;
 import com.zizibujuan.drip.server.servlet.ServiceHolder;
 import com.zizibujuan.drip.server.util.Gender;
-import com.zizibujuan.drip.server.util.OAuthConstants;
+import com.zizibujuan.drip.server.util.constant.OAuthConstants;
 
 /**
  * 使用人人帐号登录

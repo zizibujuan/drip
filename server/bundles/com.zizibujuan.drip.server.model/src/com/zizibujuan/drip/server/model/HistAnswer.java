@@ -1,6 +1,6 @@
 package com.zizibujuan.drip.server.model;
 
-import com.zizibujuan.drip.server.util.DBAction;
+import com.zizibujuan.drip.server.util.constant.DBAction;
 
 /**
  * 答案历史信息

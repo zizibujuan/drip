@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.AccessLogService;
 import com.zizibujuan.drip.server.service.ApplicationPropertyService;
-import com.zizibujuan.drip.server.util.WebConstants;
+import com.zizibujuan.drip.server.util.constant.WebConstants;
 import com.zizibujuan.drip.server.util.servlet.UserSession;
 
 import eu.bitwalker.useragentutils.Browser;
