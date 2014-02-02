@@ -89,10 +89,12 @@ public class ActivityDaoImpl extends AbstractDao implements ActivityDao {
 				SQL_LIST_MY_ACTIVITY_FILTER_BY_TYPE, pageInfo, localUserId, ActionType.ANSWER_EXERCISE);
 	}
 
+	// TODO: 将获取习题草稿和发布的习题分开
+	// TODO: 重命名该方法
 	@Override
 	public List<Map<String, Object>> getMyExercises(PageInfo pageInfo, Long localUserId) {
 		return DatabaseUtil.queryForList(getDataSource(),
-				SQL_LIST_MY_ACTIVITY_FILTER_BY_TYPE, pageInfo, localUserId, ActionType.SAVE_EXERCISE);
+				SQL_LIST_MY_ACTIVITY_FILTER_BY_TYPE, pageInfo, localUserId, ActionType.SAVE_EXERCISE_DRAFT);
 	}
 	
 	private static final String SQL_INSERT_ACTIVITY = "INSERT INTO "

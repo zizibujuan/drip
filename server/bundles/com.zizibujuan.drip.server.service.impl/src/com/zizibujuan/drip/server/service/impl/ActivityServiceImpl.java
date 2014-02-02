@@ -67,12 +67,14 @@ public class ActivityServiceImpl implements ActivityService {
 			Map<String,Object> userInfo = userService.getPublicInfo(watchUserId);
 			map.put("userInfo", userInfo);
 			
-			if(actionType.equals(ActionType.SAVE_EXERCISE) || actionType.equals(ActionType.EDIT_EXERCISE)){
+			if(actionType.equals(ActionType.SAVE_EXERCISE_DRAFT) || 
+					actionType.equals(ActionType.EDIT_EXERCISE_DRAFT) || 
+					actionType.equals(ActionType.PUBLISH_EXERCISE)){
 				// 因为处于草稿状态的习题需要加载历史信息，所以从历史表中获取
 				HistExercise exercise = getHistExercise(contentId);
 				map.put("exercise", exercise);
 				map.put("exerAnswerCount", answerDao.getAnswerCount(exercise.getId()));
-			}else if(actionType.equals(ActionType.ANSWER_EXERCISE) || actionType.equals(ActionType.EDIT_ANSWER)){
+			}else if(actionType.equals(ActionType.ANSWER_EXERCISE) || actionType.equals(ActionType.EDIT_EXERCISE_ANSWER)){
 				// 活动表中，记录的是历史表中的答案或习题标识
 				
 				// 将答案和习题解析看作一体，是用户在答题时写下的做题思路

@@ -110,14 +110,17 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			Long userId = exercise.getCreateUserId();
 			// 习题添加成功后，在用户的“创建的习题数”上加1
 			// 同时修改后端和session中缓存的该记录
+			String actionType = null;
 			if(exercise.getStatus().equals(ExerciseStatus.DRAFT)){
 				userStatisticsDao.increaseDraftExerciseCount(con, userId);
+				actionType = ActionType.SAVE_EXERCISE_DRAFT;
 			}else{
 				userStatisticsDao.increasePublishExerciseCount(con, userId);
+				actionType = ActionType.PUBLISH_EXERCISE;
 			}
 			
 			// 在活动表中插入一条记录
-			addActivity(con, userId, histExerId, ActionType.SAVE_EXERCISE); // 往活动表中插入历史记录
+			addActivity(con, userId, histExerId, actionType); // 往活动表中插入历史记录
 			
 			// 如果存在答案，则添加答案
 			Answer answer = exerciseForm.getAnswer();
@@ -177,14 +180,17 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			Long userId = exercise.getCreateUserId();
 			// 习题添加成功后，在用户的“创建的习题数”上加1
 			// 同时修改后端和session中缓存的该记录
+			String actionType = null;
 			if(exercise.getStatus().equals(ExerciseStatus.DRAFT)){
 				userStatisticsDao.increaseDraftExerciseCount(con, userId);
+				actionType = ActionType.SAVE_EXERCISE_DRAFT;
 			}else{
 				userStatisticsDao.increasePublishExerciseCount(con, userId);
+				actionType = ActionType.PUBLISH_EXERCISE;
 			}
 			
 			// 在活动表中插入一条记录
-			addActivity(con, userId, histExerId, ActionType.SAVE_EXERCISE); // 往活动表中插入历史记录
+			addActivity(con, userId, histExerId, actionType); // 往活动表中插入历史记录
 			
 			con.commit();
 		}catch(SQLException e){

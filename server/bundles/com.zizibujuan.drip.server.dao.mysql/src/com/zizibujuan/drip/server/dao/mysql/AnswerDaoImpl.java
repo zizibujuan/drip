@@ -157,7 +157,7 @@ public class AnswerDaoImpl extends AbstractDao implements AnswerDao {
 			// 在用户活动中添加活动
 			userStatisticsDao.increaseAnswerCount(con, userId);
 			// 增加用户活动数
-			activityDao.add(con, userId, histAnswerId, ActionType.EDIT_ANSWER, true);
+			activityDao.add(con, userId, histAnswerId, ActionType.EDIT_EXERCISE_ANSWER, true);
 			con.commit();
 		} catch (SQLException e) {
 			DatabaseUtil.safeRollback(con);
