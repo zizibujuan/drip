@@ -19,7 +19,8 @@ define(["dojo/_base/declare",
         "drip/tip",
         "drip/editorHelper",
         "dojox/form/Uploader",
-        "drip/widget/form/uploader/FileList"], function(
+        "drip/widget/form/uploader/FileList",
+        "dojo/i18n!./nls/ExerciseForm"], function(
         		declare,
         		lang,
         		array,
@@ -41,13 +42,14 @@ define(["dojo/_base/declare",
         		tip,
         		editorHelper,
         		Uploader,
-        		FileList){
+        		FileList,
+        		ExerciseFormMessages){
 	
 	var optionLabel = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	
-	var courses = [{id: "essayQuestion", label: "问答题", type: classCode.ExerciseType.ESSAY_QUESTION},
-	               {id:"single", label:"单项选择题", type: classCode.ExerciseType.SINGLE_OPTION},
-	               {id:"multiple", label:"多项选择题", type: classCode.ExerciseType.MULTI_OPTION}/*,
+	var courses = [{id: "essayQuestion", label: ExerciseFormMessages.essay_question, type: classCode.ExerciseType.ESSAY_QUESTION},
+	               {id:"single", label: ExerciseFormMessages.single_option, type: classCode.ExerciseType.SINGLE_OPTION},
+	               {id:"multiple", label: ExerciseFormMessages.multiple_option, type: classCode.ExerciseType.MULTI_OPTION}/*,
 	               {id:"fill", label:"填空题"}*/];
 	
 	return declare("drip.exercises.ExerciseForm", [_WidgetBase], {
@@ -99,9 +101,9 @@ define(["dojo/_base/declare",
 			
 			// 创建保存按钮
 			var actionContainer = domConstruct.create("div",{"class":"drip_form_actions"},this.leftDiv);
-			var btnSaveDraft = this.btnSaveDraft = domConstruct.place("<button class='button'>保存草稿</button>", actionContainer);
-			var btnPublish = this.btnPublish = domConstruct.place("<button class=\"button primary\">发布</button>", actionContainer);
-			domConstruct.place('<div class="drip_form_actions">发布后不能再编辑习题</div>', this.leftDiv);
+			var btnSaveDraft = this.btnSaveDraft = domConstruct.place("<button class='button'>" + ExerciseFormMessages.action_save_exercise_draft + "</button>", actionContainer);
+			var btnPublish = this.btnPublish = domConstruct.place("<button class=\"button primary\">" + ExerciseFormMessages.action_publish + "</button>", actionContainer);
+			domConstruct.place('<div class="drip_form_actions">' + ExerciseFormMessages.tip_publish + '</div>', this.leftDiv);
 			
 			on(btnSaveDraft, "click", lang.hitch(this, this.doSaveDraft));
 			on(btnPublish, "click", lang.hitch(this, this.doPublish));
@@ -149,7 +151,10 @@ define(["dojo/_base/declare",
 			//		创建习题内容输入框。
 			//		只创建一次。
 			
-			var editor = this.exerContentEditor = this._createMathInput("内容", 10, "必填");
+			var editor = this.exerContentEditor = this._createMathInput(
+				ExerciseFormMessages.label_content, 
+				10, 
+				ExerciseFormMessages.required);
 			//editor.set("value", content);
 		},
 		/*
@@ -170,7 +175,7 @@ define(["dojo/_base/declare",
 			
 			var row = domConstruct.create("div", {"class":"form clearfix"}, this.leftDiv);
 			
-			domConstruct.place('<div class="drip-title">题型</div>', row);
+			domConstruct.place('<div class="drip-title">' + ExerciseFormMessages.label_exerciseType + '</div>', row);
 			var name = this._exerciseTypeOptionName = "exerciseType";
 			var ul = domConstruct.place("<ul class=\"radio-group\"></ul>", row);
 			for(var i = 0; i < courses.length; i++){
@@ -239,6 +244,7 @@ define(["dojo/_base/declare",
 			
 			var editor = editorHelper.createEditor(parentNode, rowCount, width)
 			this._editors.push(editor);
+			return editor;
 		},
 		
 		/*
@@ -260,7 +266,7 @@ define(["dojo/_base/declare",
 			var title = domConstruct.place('<div class="drip-title" style="margin-bottom: 5px;"></div>', imagePane);
 			
 			var u = new dojox.form.Uploader({
-			    label: "上传图片",
+			    label: ExerciseFormMessages.label_image,
 			    multiple: true,
 			    type:"file",
 			    uploadOnSelect: true,
@@ -382,7 +388,7 @@ define(["dojo/_base/declare",
 				data: JSON.stringify(data)
 			}).then(lang.hitch(this,function(response){
 				// 保存成功，在界面上清除用户输入数据，使处于新增状态。在页面给出保存成功的提示，在按钮旁边显示。
-				tip.ok("保存成功！", button.parentNode, "first");
+				tip.ok(ExerciseFormMessages.tip_save_success, button.parentNode, "first");
 				this._reset();
 				domAttr.set(button,"disabled", false);
 			}),lang.hitch(this, function(error){
@@ -409,14 +415,14 @@ define(["dojo/_base/declare",
 			if(exerciseType == classCode.ExerciseType.SINGLE_OPTION || 
 			   exerciseType == classCode.ExerciseType.MULTI_OPTION){
 				if(string.trim(content) == ""){
-					this._fieldErrors["content"] = ["请输入习题内容"];
+					this._fieldErrors["content"] = [ExerciseFormMessages.tip_content_required];
 				}
 				if(options.length < 2){
-					this._fieldErrors["exerOption"] = ["请输入至少两个选项"];
+					this._fieldErrors["exerOption"] = [ExerciseFormMessages.tip_options_required];
 				}
 			}else if(exerciseType == classCode.ExerciseType.ESSAY_QUESTION){
 				if(string.trim(content) == ""){
-					this._fieldErrors["content"] = ["请输入习题内容"];
+					this._fieldErrors["content"] = [ExerciseFormMessages.tip_content_required];
 				}
 			}
 		},
@@ -502,7 +508,7 @@ define(["dojo/_base/declare",
 			
 			// 在最外围添加一个div容器
 			var optionPane = this.optionPane = domConstruct.create("div", null, this.contentPane, "after");
-			domConstruct.place('<div class="drip-title">选项和答案</div>', optionPane);
+			domConstruct.place('<div class="drip-title">' + ExerciseFormMessages.label_option + '</div>', optionPane);
 			var container = domConstruct.place('<div></div>', optionPane);
 			
 			// 创建选项
@@ -516,7 +522,7 @@ define(["dojo/_base/declare",
 			// 创建新建行按钮
 			var addContainer = domConstruct.place('<div></div>', container);
 			// TODO：添加选项时，让这个按钮不要移动。
-			var aAdd = domConstruct.place('<a href="#"><i class=\"icon-plus\"></i> 添加选项</a>', addContainer);
+			var aAdd = domConstruct.place('<a href="#"><i class=\"icon-plus\"></i> ' + ExerciseFormMessages.label_add_option + '</a>', addContainer);
 			on(aAdd, "click", lang.hitch(this, function(e){
 				this._createOption(table, this.optionLength++, type);
 				event.stop(e);
@@ -541,9 +547,9 @@ define(["dojo/_base/declare",
 			var td3 = domConstruct.place('<td></td>', tr);
 			var editor = this._createEditor(td3, 2, 490);
 			var td4 = domConstruct.place('<td></td>', tr);
-			var aDel = domConstruct.place('<a href="#" class=\"iconbutton\" title=\"删除\"><i class=\"icon-trash\"></i></a>', td4);
-			var aDown = domConstruct.place('<a href="#" class=\"iconbutton\" title=\"下移\"><i class=\"icon-arrow-down\"></i></a>', td4);
-			var aUp = domConstruct.place('<a href="#" class=\"iconbutton\" title=\"上移\"><i class=\"icon-arrow-up\"></i></a>', td4);
+			var aDel = domConstruct.place('<a href="#" class=\"iconbutton\" title=\"' + ExerciseFormMessages.label_delete_option + '\"><i class=\"icon-trash\"></i></a>', td4);
+			var aDown = domConstruct.place('<a href="#" class=\"iconbutton\" title=\"' + ExerciseFormMessages.label_move_down_option + '\"><i class=\"icon-arrow-down\"></i></a>', td4);
+			var aUp = domConstruct.place('<a href="#" class=\"iconbutton\" title=\"' + ExerciseFormMessages.label_move_up_option + '\"><i class=\"icon-arrow-up\"></i></a>', td4);
 			
 			on(aDel, "click", lang.hitch(this, function(e){
 				this.optionLength--;
