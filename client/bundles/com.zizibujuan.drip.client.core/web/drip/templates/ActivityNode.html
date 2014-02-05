@@ -1,32 +1,40 @@
 <div class="activity_wrapper">
 	<a href="#" data-dojo-attach-point="userLinkNode"><img class="activity_avatar" data-dojo-attach-point="userImageNode" src="" width="50px" height="50px"/></a>
 	<div class="activity">
-		<div>
-			<div class="activity_header">
+		<div data-dojo-attach-point="activityNode">
+			<div class="activity_header" data-dojo-attach-point="headerNode">
 				<div class="activity_header_text">
 					<a href="#" data-dojo-attach-point="userInfo"></a>
 					<span data-dojo-attach-point="action"></span>
 					<span class="time" style="margin-left: 20px;"><time title="" data-dojo-attach-point="time"></time></span>
 				</div>
 			</div>
-			<div>
-				<div>
-					<div class="exercise" data-dojo-attach-point="exerciseNode"></div>
-					<div class="answerContainer" data-dojo-attach-point="answerNode"></div>
-					<div style="float: right">
-					<!-- 
-						<a href="#">关注(100)</a>
-						<i style="margin-left:6px;margin-right:8px; color:#AEAEAE">|</i>
-						<a href="#">收藏(100)</a>
-						<i style="margin-left:6px;margin-right:8px; color:#AEAEAE">|</i>
-					 -->
-						<!-- 解答是一个按钮，数字用一个框括住。点击按钮后，隐藏；点击取消之后，再显示 -->
-						<span data-dojo-attach-point="answerAreaNode">
-							<!-- 解答 -->
-							<button data-dojo-attach-point="btnAnswer"
-							 class="minibutton"><i class="icon-comment-alt"></i> 解答</button>
-							<a href="#" data-dojo-attach-point="drip_answer_count" class="drip_answer_count">0</a>
-						</span>
+			<div class="activity_content" data-dojo-attach-point="activityContentNode">
+				<div class="edit_activity_hide">
+					<div class="activity_body markdown_body" data-dojo-attach-point="activityBodyNode">
+					
+						<!-- 
+						<div class="exercise" data-dojo-attach-point="exerciseNode"></div>
+						<div class="answerContainer" data-dojo-attach-point="answerNode"></div>
+						 
+						<div style="float: right">-->
+						<!-- 
+							<a href="#">关注(100)</a>
+							<i style="margin-left:6px;margin-right:8px; color:#AEAEAE">|</i>
+							<a href="#">收藏(100)</a>
+							<i style="margin-left:6px;margin-right:8px; color:#AEAEAE">|</i>
+						 -->
+							<!-- 解答是一个按钮，数字用一个框括住。点击按钮后，隐藏；点击取消之后，再显示 -->
+							
+							<!-- 
+							<span data-dojo-attach-point="answerAreaNode">
+								<button data-dojo-attach-point="btnAnswer"
+								 class="minibutton"><i class="icon-comment-alt"></i> 解答</button>
+								<a href="#" data-dojo-attach-point="drip_answer_count" class="drip_answer_count">0</a>
+							</span>
+						</div>
+						 -->
+						 
 					</div>
 				</div>
 			</div>

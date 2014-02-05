@@ -155,20 +155,6 @@ define(["dojo/_base/declare",
 					domProp.set(optEl, "checked", false);
 				}
 			});
-		},
-		
-		editable: function(){
-			// 删除并隐藏习题内容面板
-			domConstruct.empty(this.contentDiv);
-			if(this.optionsDiv){
-				domConstruct.empty(this.optionsDiv);
-			}
-			
-			// 显示可编辑的习题输入框
-			var exerciseInfo = this.exerciseInfo;
-			
-			// 显示保存按钮
-			
 		}
 		
 	});

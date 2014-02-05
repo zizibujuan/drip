@@ -7,6 +7,7 @@ define(["dojo/_base/declare",
         "dojo/dom-construct",
         "dojo/dom-prop",
         "dojo/dom-style",
+        "dojo/dom-class",
         "dojo/query",
         "dojo/on",
         "dojo/fx",
@@ -20,12 +21,14 @@ define(["dojo/_base/declare",
         "drip/prettyDate",
         "drip/_StoreMixin",
         "drip/view/ExerciseView",
+        "drip/view/ExerciseEdit",
         "mathEditor/Editor",
         "mathEditor/dataUtil",
         "dojo/text!./templates/ActivityNode.html",
         "dojo/text!./templates/ActivityList.html",
         "drip/MiniCard",
-        "drip/tip"], function(
+        "drip/tip",
+        "dojo/i18n!./nls/Activity"], function(
         		declare,
         		array,
         		lang,
@@ -34,6 +37,7 @@ define(["dojo/_base/declare",
         		domConstruct,
         		domProp,
         		domStyle,
+        		domClass,
         		query,
         		on,
         		coreFx,
@@ -47,12 +51,14 @@ define(["dojo/_base/declare",
         		prettyDate,
         		_StoreMixin,
         		ExerciseView,
+        		ExerciseEdit,
         		Editor,
         		dataUtil,
         		nodeTemplate,
         		listTemplate,
         		MiniCard,
-        		tip){
+        		tip,
+        		ActivityMessages){
 	
 	// TODO：用户答题前，确保没有显示答案
 	// TODO：“不做了”，恢复到答题前的状态
@@ -70,44 +76,22 @@ define(["dojo/_base/declare",
 			
 			console.log("activity node data:",this.data);
 			
-			this._showActionLabel();
+			this._createHeader();
 			
 			this.miniCard = new MiniCard();
 			
 			this._createExercise();
+			
 			this._createAnswer();
 			
+			return;
+			
 			// TODO: 每回答一次+1
-			this.drip_answer_count.innerHTML = this.data.exerAnswerCount;
+			// this.drip_answer_count.innerHTML = this.data.exerAnswerCount;
 			
 			var watchUserId = this.data.userInfo.userId;
 			
-			// TODO: 如果是自己录入的习题，并且处于草稿状态，则允许编辑
-			var exerciseInfo = this.data.exercise;
-			if(exerciseInfo.status == classCode.exerciseStatus.DRAFT && 
-					watchUserId == this.loggedUserId &&
-					exerciseInfo.version == exerciseInfo.histVersion){
-				// 改为不跳转，直接在本地编辑
-				var btnEdit = domConstruct.create("button", {
-					innerHTML: "编辑", 
-					"class": "minibutton"
-				}, this.btnAnswer, "before");
-				var btnPublish = domConstruct.create("button", {
-					innerHTML: "发布",
-					"class": "minibutton"
-				}, this.btnAnswer, "before");
-				// href: "/exercises/edit/" + exerciseInfo.id
-				on(btnEdit, "click", lang.hitch(this, this._toEditExerciseHandler))
-				on(btnPublish, "click", lang.hitch(this, this._publishExerciseHandler));
-				
-			}
-			// 处于草稿状态的习题不允许回答
-			if(exerciseInfo.status == classCode.exerciseStatus.DRAFT){
-				domStyle.set(this.btnAnswer, "display", "none");
-				domStyle.set(this.drip_answer_count, "display", "none");
-			}else{
-				on(this.btnAnswer,"click", lang.hitch(this, this._loadAnswerHandler));
-			}
+			
 			
 			
 			// 为头像和用户名绑定mouseover事件
@@ -129,9 +113,16 @@ define(["dojo/_base/declare",
 
 		},
 		
-		_showActionLabel: function(){
+		_createHeader: function(){
 			var data = this.data;
 			console.log("单条活动记录：",data);
+			
+			this._createHeaderText(data);
+			
+			this._createHeaderAction(data);
+		},
+		
+		_createHeaderText: function(data){
 			var userName = data.userInfo.nickName || data.userInfo.loginName;
 			this.userInfo.innerHTML = userName;
 			this.action.innerHTML = classCode.ActionTypeMap[data.actionType];
@@ -148,22 +139,79 @@ define(["dojo/_base/declare",
 			this.userImageNode.src = data.userInfo.smallImageUrl || classCode.avatar.smallImageUrl;
 		},
 		
+		_createHeaderAction: function(data){
+			// TODO: 如果是自己录入的习题，并且处于草稿状态，则允许编辑
+			var watchUserId = data.userInfo.userId;
+			var exerciseInfo = data.exercise;
+			var headerActionNode = domConstruct.create("div", {"class": "activity_header_actions"}, this.headerNode, "first");
+			// 如果习题是草稿，是登录人录入的，并且是最新版本，则显示编辑和发布按钮
+			if(exerciseInfo.status == classCode.exerciseStatus.DRAFT && 
+					watchUserId == this.loggedUserId &&
+					exerciseInfo.version == exerciseInfo.histVersion){
+				// 改为不跳转，直接在本地编辑
+				var btnEdit = domConstruct.create("a", {
+					href: "#",
+					"class": "a_action",
+					title: ActivityMessages.action_edit_exercise,
+					innerHTML: "<i class='icon-pencil icon-large'></i>"
+				}, headerActionNode);
+				var btnPublish = domConstruct.create("a", {
+					href: "#",
+					"class": "a_action",
+					title: ActivityMessages.action_publish_exercise,
+					innerHTML: "<i class='icon-share icon-large'></i>"
+				}, headerActionNode);
+				var btnDelete = domConstruct.create("a", {
+					href: "#",
+					"class": "a_action",
+					title: ActivityMessages.action_delete_exercise,
+					innerHTML: "<i class='icon-remove-circle icon-large'></i>"
+				}, headerActionNode);
+				// href: "/exercises/edit/" + exerciseInfo.id
+				on(btnEdit, "click", lang.hitch(this, this._toEditExerciseHandler))
+				on(btnPublish, "click", lang.hitch(this, this._publishExerciseHandler));
+				on(btnDelete, "click", lang.hitch(this, this._toDeleteExerciseHandler));
+				
+			}
+			return;
+			// 处于草稿状态的习题不允许回答
+			if(exerciseInfo.status == classCode.exerciseStatus.DRAFT){
+				domStyle.set(this.btnAnswer, "display", "none");
+				domStyle.set(this.drip_answer_count, "display", "none");
+			}else{
+				on(this.btnAnswer,"click", lang.hitch(this, this._loadAnswerHandler));
+			}
+		},
+		
+		_toDeleteExerciseHandler: function(e){
+			
+		},
+		
 		_createExercise: function(){
 			var exerciseInfo = this.data.exercise;
 			//var userInfo = this.data.userInfo;
+			var exerciseNode = domConstruct.create("div", {"class": "exercise"}, this.activityBodyNode);
 			var exerciseView = this._exerciseView = new ExerciseView({
 				parentWidgetId: this.id,
 				exerciseInfo: exerciseInfo,
-				parentNode: this.exerciseNode
+				parentNode: exerciseNode
 			});
 			exerciseView.render();
+			
+			
+			
 		},
 		
 		_createAnswer: function(){
 			var answerInfo = this.data.answer;
 			if(answerInfo){
-				var exerciseInfo = this.data.exercise;
-				var exerType = exerciseInfo.exerciseType;
+				var answerWrapper = domConstruct.create("div", {"class": "answer_wrapper"}, this.activityBodyNode);
+				var answerLabel = domConstruct.create("span", {"class": "answer_label"}, answerWrapper);
+				answerLabel.innerHTML = ActivityMessages.label_answer;
+				
+				var answerBody = domConstruct.create("div", {"class": "answer_body"}, answerWrapper);
+				
+				var exerType = this.data.exercise.exerciseType;
 				
 				// 针对不同的题型，有不同的渲染方式
 				if(this._exerciseView.isOptionExercise(exerType)){
@@ -171,18 +219,18 @@ define(["dojo/_base/declare",
 					array.forEach(answerInfo.detail, lang.hitch(this,this._setOptionAnswer));
 					// 即使是选择题，也要在答案面板中回答
 					
-					var answerDiv = this.answerDiv = domConstruct.create("div",{"class":"answer"}, this.answerNode);
+					var answerDiv = this.answerDiv = domConstruct.create("div",{"class":"answer"}, this.answerBody);
 					if(this._optionLabels.length > 0){
-						answerDiv.innerHTML = "答案："+"<span>"+ this._optionLabels.join(",") +"</span>";
+						answerDiv.innerHTML = "<span>"+ this._optionLabels.join(",") +"</span>";
 					}else{
-						answerDiv.innerHTML = "答案："+"<span>您还没有作答。</span>";
+						answerDiv.innerHTML = "<span>" + ActivityMessages.tip_no_answer+ "</span>";
 					}
 				}else if(exerType == classCode.ExerciseType.ESSAY_QUESTION){
 					// 会出现只录入习题解析，但是没有录入答案的情况
 					// 并且问答题只支持录入一个答案
 					if(answerInfo.detail.length == 1){
-						var answerDiv = this.answerDiv = domConstruct.create("div",{"class":"answer"}, this.answerNode);
-						answerDiv.innerHTML = "答案:" + dataUtil.xmlStringToHtml(answerInfo.detail[0].content);
+						var answerDiv = this.answerDiv = domConstruct.create("div",{"class":"answer"}, this.answerBody);
+						answerDiv.innerHTML = dataUtil.xmlStringToHtml(answerInfo.detail[0].content);
 					}
 				}
 				// 如果用户为该题添加了习题解析，则显示出来，如果没有则不显示
@@ -190,9 +238,15 @@ define(["dojo/_base/declare",
 				if(guide && guide != ""){
 					// 添加习题解析，只读的
 					var guideHtml = dataUtil.xmlStringToHtml(guide);
-					var guideContainerDiv = this.guideContainerDiv = domConstruct.create("div",{"class":"guide"}, this.answerNode);
-					var guideLabel = domConstruct.create("div",{innerHTML:"解析"}, guideContainerDiv);
-					var guideContentDiv = domConstruct.create("div",{innerHTML:guideHtml}, guideContainerDiv);
+					var guideWrapper = this.guideContainerDiv = domConstruct.create("div",{"class":"guide_wrapper"}, this.activityBodyNode);
+					var guideLabel = domConstruct.create("div",{
+						"class": "guide_label",
+						innerHTML: ActivityMessages.label_guide
+					}, guideWrapper);
+					var guideContentDiv = domConstruct.create("div",{
+						"class": "guide_body",
+						innerHTML: guideHtml
+					}, guideWrapper);
 				}
 			}
 		},
@@ -412,9 +466,57 @@ define(["dojo/_base/declare",
 		
 		_toEditExerciseHandler: function(e){
 			// summary:
-			//		将习题改为可编辑状态
+			//		将习题改为可编辑状态, 然后获取焦点。
 			
-			this._exerciseView.editable();
+			event.stop(e);
+			
+			if(domClass.contains(this.activityNode, "is_exercise_editing")){
+				// TODO: 如果没有获取焦点，则获取焦点
+				// 并记录最后一次失去焦点的位置
+				return;
+			}
+			
+			// 先隐藏显示面板
+			domClass.add(this.activityNode, "is_exercise_editing");
+			// 添加form容器
+			var container = domConstruct.create("div", {
+				"class": "form_content"
+			}, this.activityContentNode);
+			var editorContainer = domConstruct.create("div", {}, container);
+			
+			var exerciseEdit = new ExerciseEdit({
+				exerciseInfo: this.data.exercise
+			});
+			exerciseEdit.placeAt(editorContainer);
+			exerciseEdit.startup();
+			
+			// 显示保存按钮
+			var actionsDiv = domConstruct.create("div", {
+				"class": "form_actions"
+			}, container);
+			// 添加取消按钮
+			var btnCancel = domConstruct.create("a", {
+				innerHTML: ActivityMessages.action_cancel,
+				"class": "minibutton danger exercise_cancel_button"
+			}, actionsDiv);
+			
+			// 添加保存按钮
+			var btnSave = domConstruct.create("button", {
+				innerHTML: ActivityMessages.action_update_exercise,
+				"class": "minibutton"
+			}, actionsDiv);
+			
+			on(btnCancel, "click", lang.hitch(this, function(e){
+				event.stop(e);
+				if(domClass.contains(this.activityNode, "is_exercise_editing")){
+					// 删除form节点并删除其中的widget
+					exerciseEdit.destroyRecursive();
+					domConstruct.destroy(container);
+					
+					// 重新显示隐藏的页面
+					domClass.remove(this.activityNode, "is_exercise_editing");
+				}
+			}));
 		},
 		
 		_publishExerciseHandler: function(e){

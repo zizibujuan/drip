@@ -11,6 +11,7 @@
 
 .activities{
 	/*width: 560px;*/
+	
 }
 
 
@@ -28,21 +29,11 @@
 	padding: 1em 0 1em 0px;
 	overflow: hidden;
 	position: relative;
-	border-top: 1px solid #ddd;
 }
 
 .activities .activity_wrapper .time {
 	font-size: 12px;
 	color: #BBB;
-}
-
-.activities .activity_wrapper a{
-	text-decoration: none;
-	color: #4183C4;
-}
-
-.activities .activity_wrapper a:hover{
-	text-decoration: underline;
 }
 
 .activity_avatar{
@@ -96,4 +87,87 @@
 .activity_header_text{
 	padding-top: 10px;
 	padding-bottom: 10px;
+}
+
+.activity_header_actions{
+	float: right;
+	margin-right: -5px;
+}
+
+.activity_content{
+	
+}
+
+.activity_body{
+	width: 100%;
+	padding: 15px;
+	font-size: 14px;
+	overflow: auto;
+	
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.answer_wrapper{
+	position: relative;
+	padding-left: 66px;	
+}
+
+.answer_label{
+	
+}
+
+.answer_body{
+	
+}
+
+.guide_wrapper{
+	position: relative;
+	padding-left: 66px;	
+}
+
+.guide_label{
+	
+}
+
+.guide_body{
+	
+}
+
+.a_action{
+	text-decoration: none;
+	display: inline-block;
+	line-height: 1;
+}
+
+.activity_header_actions .a_action{
+	padding: 10px 5px;
+	color: inherit;
+	opacity: .5;
+}
+
+.activity_header_actions .a_action:hover{
+	opacity: 1;
+	color: #4183c4;
+	text-decoration: none;
+}
+
+.is_exercise_editing .edit_activity_hide{
+	display: none;
+}
+
+.form_content{
+	padding: 10px;
+}
+
+.form_actions{
+	text-align: right;
+}
+
+.form_content .form_actions{
+	margin-top: 10px;
+}
+
+.activity .exercise_cancel_button{
+	float: left;
 }
