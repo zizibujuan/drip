@@ -72,6 +72,10 @@ public class ActivityServiceImpl implements ActivityService {
 				HistExercise histExercise = getHistExercise(contentId);
 				map.put("histExercise", histExercise);
 				map.put("exerAnswerCount", answerDao.getAnswerCount(histExercise.getId()));
+			}else if(actionType.equals(ActionType.DELETE_EXERCISE_DRAFT)){
+				// 如果已经被删除，则只有历史习题表中有，习题表中已没有该记录
+				HistExercise histExercise = getHistExercise(contentId);
+				map.put("histExercise", histExercise);
 			}else if(actionType.equals(ActionType.SAVE_EXERCISE_DRAFT) || 
 					actionType.equals(ActionType.EDIT_EXERCISE_DRAFT)){
 				// 因为处于草稿状态的习题需要加载历史信息，所以从历史表中获取。

@@ -70,4 +70,11 @@ public interface ExerciseService {
 	 * @param HistExercise 历史习题信息
 	 */
 	void publish(HistExercise exercise);
+
+	/**
+	 * 删除处于草稿状态的习题
+	 * @param exerciseId 习题标识
+	 * @param userId 用户标识
+	 */
+	void delete(Long exerciseId, Long userId);
 }

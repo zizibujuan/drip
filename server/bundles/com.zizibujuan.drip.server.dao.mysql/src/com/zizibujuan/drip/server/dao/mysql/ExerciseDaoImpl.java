@@ -15,7 +15,6 @@ import com.zizibujuan.drip.server.dao.ExerciseDao;
 import com.zizibujuan.drip.server.dao.HistExerciseDao;
 import com.zizibujuan.drip.server.dao.UserDao;
 import com.zizibujuan.drip.server.dao.UserStatisticsDao;
-import com.zizibujuan.drip.server.exception.dao.DataAccessException;
 import com.zizibujuan.drip.server.model.Activity;
 import com.zizibujuan.drip.server.model.Answer;
 import com.zizibujuan.drip.server.model.AnswerDetail;
@@ -32,6 +31,7 @@ import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.DatabaseUtil;
 import com.zizibujuan.drip.server.util.dao.PreparedStatementSetter;
 import com.zizibujuan.drip.server.util.dao.RowMapper;
+import com.zizibujuan.drip.server.util.dao.exception.DataAccessException;
 
 /**
  * 维护习题 数据访问实现类
@@ -317,6 +317,50 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 		
 	}
 	
+	private static final String SQL_DELETE_EXERCISE = "DELETE FROM DRIP_EXERCISE WHERE DBID=?";
+	@Override
+	public void delete(Long exerciseId, Long userId) {
+		// 获取习题信息
+		// 在历史表中保存习题信息， 将状态设置为删除
+		// 在当前习题表中删除习题信息
+		// 在活动表中记录下删除操作
+		// 习题草稿数-1
+		
+		Connection con = null;
+		try{
+			con = getDataSource().getConnection();
+			con.setAutoCommit(false);	
+			
+			Exercise exercise = get(con, exerciseId);
+			exercise.setLastUpdateUserId(userId);
+			
+			// 删除习题
+			DatabaseUtil.update(con, SQL_DELETE_EXERCISE, exerciseId);
+
+			// 在历史习题表中记录状态
+			Long histExerId = histExerciseDao.insert(con, DBAction.DELETE, exercise);
+			
+			// 习题删除成功后，习题草稿数-1
+			userStatisticsDao.decreaseDraftExerciseCount(con, userId);
+			
+			// 在活动表中插入一条记录
+			String actionType = ActionType.DELETE_EXERCISE_DRAFT;
+			addActivity(con, userId, histExerId, actionType); // 往活动表中插入历史记录
+			
+			con.commit();
+		}catch(SQLException e){
+			DatabaseUtil.safeRollback(con);
+			logger.error("sql异常", e);
+			throw new DataAccessException(e);
+		}catch(DataAccessException e){
+			DatabaseUtil.safeRollback(con);
+			logger.error("sql异常", e);
+			throw e;
+		}finally{
+			DatabaseUtil.closeConnection(con);
+		}
+	}
+	
 
 	
 	// TODO:不在sql中联合查询编码，而是从缓存中获取编码对应的文本信息
@@ -366,16 +410,16 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			public void setValues(PreparedStatement ps) throws SQLException {
 				ps.setLong(1, exerciseId);
 			}
-		}, new RowMapper<ExerciseOption>() {
+		}, new ExerciseOptionRowMapper());
+	}
+	
+	private List<ExerciseOption> getExerciseOptions(Connection con, final Long exerciseId){
+		return DatabaseUtil.query(con, SQL_LIST_EXERCISE_OPTION, new PreparedStatementSetter() {
 			@Override
-			public ExerciseOption mapRow(ResultSet rs, int rowNum) throws SQLException {
-				ExerciseOption option = new ExerciseOption();
-				option.setId(rs.getLong(1));
-				option.setContent(rs.getString(3));
-				// seq与list中元素的顺序相同
-				return option;
+			public void setValues(PreparedStatement ps) throws SQLException {
+				ps.setLong(1, exerciseId);
 			}
-		});
+		}, new ExerciseOptionRowMapper());
 	}
 	
 	// 2. 回答习题
@@ -384,25 +428,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 	
 	@Override
 	public Exercise get(Long exerciseId) {
-		Exercise exercise = DatabaseUtil.queryForObject(getDataSource(), SQL_GET_EXERCISE, new RowMapper<Exercise>() {
-			@Override
-			public Exercise mapRow(ResultSet rs, int rowNum)
-					throws SQLException {
-				Exercise exercise = new Exercise();
-				exercise.setId(rs.getLong(1));
-				exercise.setVersion(rs.getInt(2));
-				exercise.setContent(rs.getString(3));
-				exercise.setExerciseType(rs.getString(4));
-				exercise.setCourse(rs.getString(5));
-				exercise.setImageName(rs.getString(6));
-				exercise.setStatus(rs.getString(7));
-				exercise.setCreateTime(rs.getTimestamp(8));
-				exercise.setCreateUserId(rs.getLong(9));
-				exercise.setLastUpdateTime(rs.getTimestamp(10));
-				exercise.setLastUpdateUserId(rs.getLong(11));
-				return exercise;
-			}
-		}, exerciseId);
+		Exercise exercise = DatabaseUtil.queryForObject(getDataSource(), SQL_GET_EXERCISE, new ExerciseRowMapper(), exerciseId);
 				
 		if(exercise == null){
 			return null;
@@ -413,6 +439,22 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 				|| ExerciseType.MULTI_OPTION.equals(exerType)
 				|| ExerciseType.FILL.equals(exerType)) {
 			List<ExerciseOption> options = this.getExerciseOptions(exerciseId);
+			exercise.setOptions(options);
+		}
+		return exercise;
+	}
+	
+	private Exercise get(Connection con, Long exerciseId){
+		Exercise exercise = DatabaseUtil.queryForObject(con, SQL_GET_EXERCISE, new ExerciseRowMapper(), exerciseId);
+		if(exercise == null){
+			return null;
+		}
+		
+		String exerType = exercise.getExerciseType();
+		if (ExerciseType.SINGLE_OPTION.equals(exerType)
+				|| ExerciseType.MULTI_OPTION.equals(exerType)
+				|| ExerciseType.FILL.equals(exerType)) {
+			List<ExerciseOption> options = this.getExerciseOptions(con, exerciseId);
 			exercise.setOptions(options);
 		}
 		return exercise;
@@ -479,4 +521,34 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 		}
 	}
 
+	private class ExerciseRowMapper implements RowMapper<Exercise>{
+		@Override
+		public Exercise mapRow(ResultSet rs, int rowNum)
+				throws SQLException {
+			Exercise exercise = new Exercise();
+			exercise.setId(rs.getLong(1));
+			exercise.setVersion(rs.getInt(2));
+			exercise.setContent(rs.getString(3));
+			exercise.setExerciseType(rs.getString(4));
+			exercise.setCourse(rs.getString(5));
+			exercise.setImageName(rs.getString(6));
+			exercise.setStatus(rs.getString(7));
+			exercise.setCreateTime(rs.getTimestamp(8));
+			exercise.setCreateUserId(rs.getLong(9));
+			exercise.setLastUpdateTime(rs.getTimestamp(10));
+			exercise.setLastUpdateUserId(rs.getLong(11));
+			return exercise;
+		}
+	}
+	
+	private class ExerciseOptionRowMapper implements RowMapper<ExerciseOption>{
+		@Override
+		public ExerciseOption mapRow(ResultSet rs, int rowNum) throws SQLException {
+			ExerciseOption option = new ExerciseOption();
+			option.setId(rs.getLong(1));
+			option.setContent(rs.getString(3));
+			// seq与list中元素的顺序相同
+			return option;
+		}
+	}
 }

@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.core.runtime.IPath;
 
-import com.zizibujuan.drip.server.model.Exercise;
 import com.zizibujuan.drip.server.model.HistExercise;
 import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.ExerciseService;

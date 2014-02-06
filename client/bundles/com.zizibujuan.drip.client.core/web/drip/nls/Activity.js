@@ -9,7 +9,8 @@ define({
 		
 		label_answer: "解",
 		label_guide: "解析",
-		tip_no_answer: "您还没有解答。"
+		tip_no_answer: "您还没有解答。",
+		tip_delete_exercise_success: "删除成功！"
 		
 	}),
 

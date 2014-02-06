@@ -95,6 +95,20 @@ public class ExerciseServlet extends BaseServlet{
 		}
 		super.doPost(req, resp);
 	}
+	
+	@Override
+	protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		traceRequest(req);
+		IPath path = getPath(req);
+		if(path.segmentCount() == 1){
+			Long exerciseId = Long.valueOf(path.segment(0));
+			UserInfo user = (UserInfo) UserSession.getUser(req);
+			exerciseService.delete(exerciseId, user.getId());
+			return;
+		}
+		super.doDelete(req, resp);
+	}
 
 	private void validate(Validator validator, Exercise exercise) {
 		String exerciseType = exercise.getExerciseType();

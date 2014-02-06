@@ -58,6 +58,11 @@ public class ExerciseServiceImpl implements ExerciseService {
 		exerciseDao.publish(exercise);
 	}
 	
+	@Override
+	public void delete(Long exerciseId, Long userId) {
+		exerciseDao.delete(exerciseId, userId);
+	}
+	
 	public void setExerciseDao(ExerciseDao exerciseDao) {
 		logger.info("注入exerciseDao");
 		this.exerciseDao = exerciseDao;

@@ -140,6 +140,8 @@ define(["dojo/_base/declare",
 		},
 		
 		_createHeaderAction: function(data){
+			// 注意不能从习题表中进行对比，因为如果习题被删除，则就无法获取习题信息了
+			
 			// TODO: 如果是自己录入的习题，并且处于草稿状态，则允许编辑
 			var watchUserId = data.userInfo.userId;
 			var histExercise = data.histExercise;
@@ -161,6 +163,8 @@ define(["dojo/_base/declare",
 				// 如果习题是草稿，是登录人录入的，并且是最新版本，则显示编辑和发布按钮
 				// 需要与当前版本比较
 				if(watchUserId == this.loggedUserId && 
+						// 如果习题已被删除，则data.exercise为null
+						data.exercise &&
 						data.exercise.version == data.histExercise.version && 
 						data.exercise.status == classCode.exerciseStatus.DRAFT){
 					var btnEdit = domConstruct.create("a", {
@@ -184,22 +188,9 @@ define(["dojo/_base/declare",
 					// href: "/exercises/edit/" + exerciseInfo.id
 					on(btnEdit, "click", lang.hitch(this, this._toEditExerciseHandler));
 					on(btnPublish, "click", lang.hitch(this, this._publishExerciseHandler));
-					on(btnDelete, "click", lang.hitch(this, this._toDeleteExerciseHandler));
+					on(btnDelete, "click", lang.hitch(this, this._deleteExerciseHandler));
 				}
 			}
-			
-			return;
-			// 处于草稿状态的习题不允许回答
-			if(exerciseInfo.status == classCode.exerciseStatus.DRAFT){
-				domStyle.set(this.btnAnswer, "display", "none");
-				domStyle.set(this.drip_answer_count, "display", "none");
-			}else{
-				on(this.btnAnswer,"click", lang.hitch(this, this._loadAnswerHandler));
-			}
-		},
-		
-		_toDeleteExerciseHandler: function(e){
-			
 		},
 		
 		_toAnswerExerciseHandler: function(e){
@@ -577,6 +568,47 @@ define(["dojo/_base/declare",
 				}, this.headerActionNode);
 				
 				// TODO： 刷新统计面板，或者发出通知
+				
+			}), lang.hitch(this, function(error){
+				console.error(error);
+			}));
+		},
+		
+		
+		
+		_deleteExerciseHandler: function(e){
+			event.stop(e);
+			
+			// 确认是否要删除
+			// TODO: 改为使用dijit/TooltipDialog
+			if(window.confirm("确认要删除吗?") == false){
+				return;
+			}
+			
+			var exerciseInfo = this.data.exercise;
+			xhr.del("/exercises/" + exerciseInfo.id, {
+				handleAs: "JSON",
+				data: JSON.stringify(exerciseInfo)
+			}).then(lang.hitch(this, function(data){
+				// 删除成功后，
+				// 1. 如果是编辑状态则先恢复到只读状态
+				// 2. 不再显示编辑，删除和发布按钮
+				if(domClass.contains(this.activityNode, "is_exercise_editing")){
+					// 删除form节点并删除其中的widget
+					this.exerciseEdit.destroyRecursive();
+					domConstruct.destroy(this.formContainer);
+					
+					// 重新显示隐藏的页面
+					domClass.remove(this.activityNode, "is_exercise_editing");
+				}
+				
+				domConstruct.empty(this.headerActionNode);
+				
+				// 提示操作成功
+				tip.ok(ActivityMessages.tip_delete_exercise_success, this.headerActionNode, "first");
+				// TODO: 在页面顶部显示有新的消息
+				// TODO： 刷新统计面板，或者发出通知
+				
 				
 			}), lang.hitch(this, function(error){
 				console.error(error);
