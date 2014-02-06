@@ -142,38 +142,12 @@ define(["dojo/_base/declare",
 		_createHeaderAction: function(data){
 			// TODO: 如果是自己录入的习题，并且处于草稿状态，则允许编辑
 			var watchUserId = data.userInfo.userId;
-			var exerciseInfo = data.exercise;
-			var headerActionNode = this.headerActionNode = domConstruct.create("div", {"class": "activity_header_actions"}, this.headerNode, "first");
-			// 如果习题是草稿，是登录人录入的，并且是最新版本，则显示编辑和发布按钮
-			if(exerciseInfo.status == classCode.exerciseStatus.DRAFT && 
-					watchUserId == this.loggedUserId &&
-					exerciseInfo.version == exerciseInfo.histVersion){
-				// 改为不跳转，直接在本地编辑
-				var btnEdit = domConstruct.create("a", {
-					href: "#",
-					"class": "a_action",
-					title: ActivityMessages.action_edit_exercise,
-					innerHTML: "<i class='icon-pencil icon-large'></i>"
-				}, headerActionNode);
-				var btnPublish = domConstruct.create("a", {
-					href: "#",
-					"class": "a_action",
-					title: ActivityMessages.action_publish_exercise,
-					innerHTML: "<i class='icon-share icon-large'></i>"
-				}, headerActionNode);
-				var btnDelete = domConstruct.create("a", {
-					href: "#",
-					"class": "a_action",
-					title: ActivityMessages.action_delete_exercise,
-					innerHTML: "<i class='icon-remove-circle icon-large'></i>"
-				}, headerActionNode);
-				// href: "/exercises/edit/" + exerciseInfo.id
-				on(btnEdit, "click", lang.hitch(this, this._toEditExerciseHandler));
-				on(btnPublish, "click", lang.hitch(this, this._publishExerciseHandler));
-				on(btnDelete, "click", lang.hitch(this, this._toDeleteExerciseHandler));
-			}
+			var histExercise = data.histExercise;
+			var actionType = data.actionType;
+			var headerActionNode = this.headerActionNode = 
+				domConstruct.create("div", {"class": "activity_header_actions"}, this.headerNode, "first");
 			
-			if(exerciseInfo.status == classCode.exerciseStatus.PUBLISH){
+			if(actionType == classCode.actionType.PUBLISH_EXERCISE){
 				domConstruct.empty(this.headerActionNode);
 				var btnAnswer = domConstruct.create("a", {
 					href: "#",
@@ -182,7 +156,38 @@ define(["dojo/_base/declare",
 					innerHTML: "<i class='icon-comment icon-large'></i>"
 				}, headerActionNode);
 				on(btnAnswer, "click", lang.hitch(this, this._toAnswerExerciseHandler));
+			}else if(actionType == classCode.actionType.SAVE_EXERCISE_DRAFT ||
+				actionType == classCode.actionType.EDIT_EXERCISE_DRAFT){
+				// 如果习题是草稿，是登录人录入的，并且是最新版本，则显示编辑和发布按钮
+				// 需要与当前版本比较
+				if(watchUserId == this.loggedUserId && 
+						data.exercise.version == data.histExercise.version && 
+						data.exercise.status == classCode.exerciseStatus.DRAFT){
+					var btnEdit = domConstruct.create("a", {
+						href: "#",
+						"class": "a_action",
+						title: ActivityMessages.action_edit_exercise,
+						innerHTML: "<i class='icon-pencil icon-large'></i>"
+					}, headerActionNode);
+					var btnPublish = domConstruct.create("a", {
+						href: "#",
+						"class": "a_action",
+						title: ActivityMessages.action_publish_exercise,
+						innerHTML: "<i class='icon-share icon-large'></i>"
+					}, headerActionNode);
+					var btnDelete = domConstruct.create("a", {
+						href: "#",
+						"class": "a_action",
+						title: ActivityMessages.action_delete_exercise,
+						innerHTML: "<i class='icon-remove-circle icon-large'></i>"
+					}, headerActionNode);
+					// href: "/exercises/edit/" + exerciseInfo.id
+					on(btnEdit, "click", lang.hitch(this, this._toEditExerciseHandler));
+					on(btnPublish, "click", lang.hitch(this, this._publishExerciseHandler));
+					on(btnDelete, "click", lang.hitch(this, this._toDeleteExerciseHandler));
+				}
 			}
+			
 			return;
 			// 处于草稿状态的习题不允许回答
 			if(exerciseInfo.status == classCode.exerciseStatus.DRAFT){
@@ -202,12 +207,11 @@ define(["dojo/_base/declare",
 		},
 		
 		_createExercise: function(){
-			var exerciseInfo = this.data.exercise;
 			//var userInfo = this.data.userInfo;
 			var exerciseNode = domConstruct.create("div", {"class": "exercise"}, this.activityBodyNode);
 			var exerciseView = this._exerciseView = new ExerciseView({
 				parentWidgetId: this.id,
-				exerciseInfo: exerciseInfo,
+				exerciseInfo: this.data.histExercise,
 				parentNode: exerciseNode
 			});
 			exerciseView.render();

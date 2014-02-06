@@ -47,8 +47,11 @@ public interface ActivityService {
 	 *				city：市
 	 *				county：县
 	 *			siteId:网站标识
-	 *		exercise: 习题信息
+	 *		exercise: 习题信息，只包含习题状态信息，不包含习题详情
 	 *			id: 习题标识
+	 *			
+	 *		histExercise: 历史习题信息
+	 *			id: 历史习题标识
 	 *			exerType: 题型
 	 *			exerCategory: 习题所属科目
 	 *			content: 习题内容

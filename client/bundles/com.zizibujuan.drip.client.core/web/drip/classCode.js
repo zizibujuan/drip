@@ -8,6 +8,14 @@ define({
 		ESSAY_QUESTION: "06"
 	},
 	
+	actionType: {
+		SAVE_EXERCISE_DRAFT: "0001",
+		EDIT_EXERCISE_DRAFT: "0002",
+		PUBLISH_EXERCISE: "0011",
+		ANSWER_EXERCISE: "0021",
+		EDIT_EXERCISE_ANSWER: "0022"
+	},
+	
 	ActionTypeMap: {
 		"0001": "新建习题草稿",
 		"0002": "编辑习题草稿",

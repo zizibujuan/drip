@@ -32,6 +32,7 @@ public class DashboardServlet extends BaseServlet {
 	public DashboardServlet(){
 		activityService = ServiceHolder.getDefault().getActivityService();
 	}
+	
 	/**
 	 * 获取登录用户和登录用户关注的人的最新活动列表。
 	 * <pre>

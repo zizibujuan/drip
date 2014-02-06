@@ -67,23 +67,31 @@ public class ActivityServiceImpl implements ActivityService {
 			Map<String,Object> userInfo = userService.getPublicInfo(watchUserId);
 			map.put("userInfo", userInfo);
 			
-			if(actionType.equals(ActionType.SAVE_EXERCISE_DRAFT) || 
-					actionType.equals(ActionType.EDIT_EXERCISE_DRAFT) || 
-					actionType.equals(ActionType.PUBLISH_EXERCISE)){
-				// 因为处于草稿状态的习题需要加载历史信息，所以从历史表中获取
-				HistExercise exercise = getHistExercise(contentId);
+			// 如果习题已发布，则不用加载历史版本信息
+			if(actionType.equals(ActionType.PUBLISH_EXERCISE)){
+				HistExercise histExercise = getHistExercise(contentId);
+				map.put("histExercise", histExercise);
+				map.put("exerAnswerCount", answerDao.getAnswerCount(histExercise.getId()));
+			}else if(actionType.equals(ActionType.SAVE_EXERCISE_DRAFT) || 
+					actionType.equals(ActionType.EDIT_EXERCISE_DRAFT)){
+				// 因为处于草稿状态的习题需要加载历史信息，所以从历史表中获取。
+				// contentId保存的是历史习题标识
+				HistExercise histExercise = getHistExercise(contentId);
+				Exercise exercise = exerciseDao.get(histExercise.getId());
+				map.put("histExercise", histExercise);
 				map.put("exercise", exercise);
-				map.put("exerAnswerCount", answerDao.getAnswerCount(exercise.getId()));
-			}else if(actionType.equals(ActionType.ANSWER_EXERCISE) || actionType.equals(ActionType.EDIT_EXERCISE_ANSWER)){
+				map.put("exerAnswerCount", answerDao.getAnswerCount(histExercise.getId()));
+			}else if(actionType.equals(ActionType.ANSWER_EXERCISE) || 
+					actionType.equals(ActionType.EDIT_EXERCISE_ANSWER)){
 				// 活动表中，记录的是历史表中的答案或习题标识
 				
 				// 将答案和习题解析看作一体，是用户在答题时写下的做题思路
 				HistAnswer latestAnswer = getHistAnswer(contentId);
 				Long histExerciseId = latestAnswer.getExerciseId();
-				HistExercise exercise = getHistExercise(histExerciseId);
-				map.put("exercise", exercise);
+				HistExercise histExercise = getHistExercise(histExerciseId);
+				map.put("histExercise", histExercise);
 				map.put("answer", latestAnswer);
-				map.put("exerAnswerCount", answerDao.getAnswerCount(exercise.getId()));
+				map.put("exerAnswerCount", answerDao.getAnswerCount(histExercise.getId()));
 			}else{
 				throw new UnsupportedOperationException("不支持的操作类型");
 			}
@@ -150,8 +158,6 @@ public class ActivityServiceImpl implements ActivityService {
 	private HistExercise getHistExercise(Long histExerciseId){
 		// TODO: 改为从缓存中获取。
 		HistExercise result = histExerciseDao.get(histExerciseId);
-		// TODO: 需要获取习题的最新版本号
-		result.setVersion(exerciseDao.get(result.getId()).getVersion());
 		return result;
 	}
 	
