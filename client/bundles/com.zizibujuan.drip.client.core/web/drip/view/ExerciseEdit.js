@@ -1,11 +1,13 @@
 define(["dojo/_base/declare",
         "dojo/_base/lang",
+        "dojo/request/xhr",
         "dijit/_WidgetBase",
         "mathEditor/Editor",
         "drip/editorHelper",
         "drip/classCode"], function(
         		declare,
         		lang,
+        		xhr,
         		_WidgetBase,
         		Editor,
         		editorHelper,
@@ -62,6 +64,14 @@ define(["dojo/_base/declare",
 			this.inherited(arguments);
 			
 			
+		},
+		
+		save: function(){
+			var data = this.exerciseInfo;
+			return xhr.post("/exercises/",{
+				handleAs: "json", 
+				data: JSON.stringify(data)
+			});
 		}
 		
 		/*

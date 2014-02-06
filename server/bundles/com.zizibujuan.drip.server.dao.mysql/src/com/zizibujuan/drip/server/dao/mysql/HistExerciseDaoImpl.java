@@ -11,6 +11,7 @@ import com.zizibujuan.drip.server.model.Exercise;
 import com.zizibujuan.drip.server.model.ExerciseOption;
 import com.zizibujuan.drip.server.model.HistExercise;
 import com.zizibujuan.drip.server.util.constant.DBAction;
+import com.zizibujuan.drip.server.util.constant.ExerciseStatus;
 import com.zizibujuan.drip.server.util.constant.ExerciseType;
 import com.zizibujuan.drip.server.util.dao.AbstractDao;
 import com.zizibujuan.drip.server.util.dao.BatchPreparedStatementSetter;
@@ -207,6 +208,32 @@ public class HistExerciseDaoImpl extends AbstractDao implements HistExerciseDao 
 			exercise.setCreateUserId(rs.getLong(11));
 			return exercise;
 		}
+	}
+
+	private static final String SQL_INSERT_HIST_EXERCISE_STATUS = "INSERT INTO "
+			+ "DRIP_HIST_EXERCISE "
+			+ "(EXER_ID,"
+			+ "VERSION,"
+			+ "STATUS,"
+			+ "ACTION,"
+			+ "UPT_TM,"
+			+ "UPT_USER_ID) "
+			+ "VALUES "
+			+ "(?, ?, ?, ?, now(), ?)";
+	
+	@Override
+	public Long publish(Connection con, final Exercise exercise) throws SQLException {
+		return DatabaseUtil.insert(con, SQL_INSERT_HIST_EXERCISE_STATUS, new PreparedStatementSetter() {
+			
+			@Override
+			public void setValues(PreparedStatement ps) throws SQLException {
+				ps.setLong(1, exercise.getId());
+				ps.setInt(2, exercise.getVersion());
+				ps.setString(3, ExerciseStatus.PUBLISH);
+				ps.setString(4, DBAction.UPDATE);
+				ps.setLong(5, exercise.getLastUpdateUserId());
+			}
+		});
 	}
 	
 }

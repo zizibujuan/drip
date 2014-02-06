@@ -143,7 +143,7 @@ define(["dojo/_base/declare",
 			// TODO: 如果是自己录入的习题，并且处于草稿状态，则允许编辑
 			var watchUserId = data.userInfo.userId;
 			var exerciseInfo = data.exercise;
-			var headerActionNode = domConstruct.create("div", {"class": "activity_header_actions"}, this.headerNode, "first");
+			var headerActionNode = this.headerActionNode = domConstruct.create("div", {"class": "activity_header_actions"}, this.headerNode, "first");
 			// 如果习题是草稿，是登录人录入的，并且是最新版本，则显示编辑和发布按钮
 			if(exerciseInfo.status == classCode.exerciseStatus.DRAFT && 
 					watchUserId == this.loggedUserId &&
@@ -168,10 +168,20 @@ define(["dojo/_base/declare",
 					innerHTML: "<i class='icon-remove-circle icon-large'></i>"
 				}, headerActionNode);
 				// href: "/exercises/edit/" + exerciseInfo.id
-				on(btnEdit, "click", lang.hitch(this, this._toEditExerciseHandler))
+				on(btnEdit, "click", lang.hitch(this, this._toEditExerciseHandler));
 				on(btnPublish, "click", lang.hitch(this, this._publishExerciseHandler));
 				on(btnDelete, "click", lang.hitch(this, this._toDeleteExerciseHandler));
-				
+			}
+			
+			if(exerciseInfo.status == classCode.exerciseStatus.PUBLISH){
+				domConstruct.empty(this.headerActionNode);
+				var btnAnswer = domConstruct.create("a", {
+					href: "#",
+					"class": "a_action",
+					title: ActivityMessages.action_answer_exercise,
+					innerHTML: "<i class='icon-comment icon-large'></i>"
+				}, headerActionNode);
+				on(btnAnswer, "click", lang.hitch(this, this._toAnswerExerciseHandler));
 			}
 			return;
 			// 处于草稿状态的习题不允许回答
@@ -184,6 +194,10 @@ define(["dojo/_base/declare",
 		},
 		
 		_toDeleteExerciseHandler: function(e){
+			
+		},
+		
+		_toAnswerExerciseHandler: function(e){
 			
 		},
 		
@@ -479,12 +493,12 @@ define(["dojo/_base/declare",
 			// 先隐藏显示面板
 			domClass.add(this.activityNode, "is_exercise_editing");
 			// 添加form容器
-			var container = domConstruct.create("div", {
+			var container = this.formContainer = domConstruct.create("div", {
 				"class": "form_content"
 			}, this.activityContentNode);
 			var editorContainer = domConstruct.create("div", {}, container);
 			
-			var exerciseEdit = new ExerciseEdit({
+			var exerciseEdit = this.exerciseEdit = new ExerciseEdit({
 				exerciseInfo: this.data.exercise
 			});
 			exerciseEdit.placeAt(editorContainer);
@@ -500,12 +514,6 @@ define(["dojo/_base/declare",
 				"class": "minibutton danger exercise_cancel_button"
 			}, actionsDiv);
 			
-			// 添加保存按钮
-			var btnSave = domConstruct.create("button", {
-				innerHTML: ActivityMessages.action_update_exercise,
-				"class": "minibutton"
-			}, actionsDiv);
-			
 			on(btnCancel, "click", lang.hitch(this, function(e){
 				event.stop(e);
 				if(domClass.contains(this.activityNode, "is_exercise_editing")){
@@ -517,13 +525,58 @@ define(["dojo/_base/declare",
 					domClass.remove(this.activityNode, "is_exercise_editing");
 				}
 			}));
+			
+			// 添加保存按钮
+			var btnSave = domConstruct.create("button", {
+				innerHTML: ActivityMessages.action_update_exercise,
+				"class": "minibutton"
+			}, actionsDiv);
+			on(btnSave, "click", lang.hitch(this, function(e){
+				exerciseEdit.save().then(lang.hitch(this, function(data){
+					
+				}), lang.hitch(this, function(error){
+					
+				}));
+			}));
 		},
 		
 		_publishExerciseHandler: function(e){
 			// summary:
 			//		发布习题
 			
-			// TODO: 发布习题
+			var exerciseInfo = this.data.exercise;
+			// TODO: 设置最新的值
+			xhr.put("/publishExercise/", {
+				handleAs: "JSON",
+				data: JSON.stringify(exerciseInfo)
+			}).then(lang.hitch(this, function(data){
+				// 发布成功后，
+				// 1. 如果是编辑状态则先恢复到只读状态
+				// 2. 不再显示编辑，删除和发布按钮
+				// 3. 显示解答按钮
+				
+				if(domClass.contains(this.activityNode, "is_exercise_editing")){
+					// 删除form节点并删除其中的widget
+					this.exerciseEdit.destroyRecursive();
+					domConstruct.destroy(this.formContainer);
+					
+					// 重新显示隐藏的页面
+					domClass.remove(this.activityNode, "is_exercise_editing");
+				}
+				
+				domConstruct.empty(this.headerActionNode);
+				var btnAnswer = domConstruct.create("a", {
+					href: "#",
+					"class": "a_action",
+					title: ActivityMessages.action_answer_exercise,
+					innerHTML: "<i class='icon-comment icon-large'></i>"
+				}, this.headerActionNode);
+				
+				// TODO： 刷新统计面板，或者发出通知
+				
+			}), lang.hitch(this, function(error){
+				console.error(error);
+			}));
 		},
 		
 		_disableBtnSave: function(disable/*boolean*/){

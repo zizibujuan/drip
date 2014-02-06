@@ -8,11 +8,14 @@ import org.slf4j.LoggerFactory;
 import com.zizibujuan.drip.server.dao.ExerciseDao;
 import com.zizibujuan.drip.server.model.Exercise;
 import com.zizibujuan.drip.server.model.ExerciseForm;
+import com.zizibujuan.drip.server.model.HistExercise;
 import com.zizibujuan.drip.server.service.ExerciseService;
 import com.zizibujuan.drip.server.util.PageInfo;
+import com.zizibujuan.drip.server.util.constant.ExerciseStatus;
 
 /**
  * 维护习题 服务实现类
+ * 
  * @author jinzw
  * @since 0.0.1
  */
@@ -47,6 +50,12 @@ public class ExerciseServiceImpl implements ExerciseService {
 	@Override
 	public Exercise get(Long exerciseId) {
 		return exerciseDao.get(exerciseId);
+	}
+	
+	@Override
+	public void publish(HistExercise exercise) {
+		exercise.setStatus(ExerciseStatus.PUBLISH);
+		exerciseDao.publish(exercise);
 	}
 	
 	public void setExerciseDao(ExerciseDao exerciseDao) {

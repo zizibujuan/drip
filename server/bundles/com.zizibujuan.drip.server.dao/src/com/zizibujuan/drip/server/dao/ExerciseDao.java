@@ -4,10 +4,12 @@ import java.util.List;
 
 import com.zizibujuan.drip.server.model.Exercise;
 import com.zizibujuan.drip.server.model.ExerciseForm;
+import com.zizibujuan.drip.server.model.HistExercise;
 import com.zizibujuan.drip.server.util.PageInfo;
 
 /**
  * 维护习题 数据访问接口
+ * 
  * @author jinzw
  * @since 0.0.1
  */
@@ -54,4 +56,11 @@ public interface ExerciseDao {
 	 * @return 习题信息，如果没有则返回null
 	 */
 	Exercise get(Long exerciseId);
+	
+	/**
+	 * 发布习题
+	 * 
+	 * @param exercise 历史习题信息
+	 */
+	void publish(HistExercise exercise);
 }

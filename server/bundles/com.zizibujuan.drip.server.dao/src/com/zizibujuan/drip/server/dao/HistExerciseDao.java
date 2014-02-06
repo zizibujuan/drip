@@ -10,7 +10,7 @@ import com.zizibujuan.drip.server.util.constant.DBAction;
 /**
  * 记录更新习题的历史的数据访问接口
  * 
- * @author jzw
+ * @author jinzw
  * @since 0.0.1
  */
 public interface HistExerciseDao {
@@ -41,4 +41,15 @@ public interface HistExerciseDao {
 	 * @return 习题信息，如果没有则返回null
 	 */
 	HistExercise get(Long exerciseId, Integer version);
+
+	/**
+	 * 在历史习题表中记录习题发布信息
+	 * 
+	 * @param con 数据库连接
+	 * @param exercise 习题
+	 * @return 历史习题标识
+	 * @throws SQLException 
+	 * @deprecated
+	 */
+	Long publish(Connection con, Exercise exercise) throws SQLException;
 }

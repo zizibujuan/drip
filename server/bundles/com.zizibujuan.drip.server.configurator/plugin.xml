@@ -28,6 +28,10 @@
             class="com.zizibujuan.drip.server.servlet.ExerciseServlet">
       </servlet>
       <servlet
+            alias="/publishExercise"
+            class="com.zizibujuan.drip.server.servlet.ExercisePublishServlet">
+      </servlet>
+      <servlet
             alias="/users"
             class="com.zizibujuan.drip.server.servlet.UserServlet">
       </servlet>

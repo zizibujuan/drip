@@ -22,6 +22,7 @@ import com.zizibujuan.drip.server.model.AnswerDetail;
 import com.zizibujuan.drip.server.model.Exercise;
 import com.zizibujuan.drip.server.model.ExerciseForm;
 import com.zizibujuan.drip.server.model.ExerciseOption;
+import com.zizibujuan.drip.server.model.HistExercise;
 import com.zizibujuan.drip.server.util.PageInfo;
 import com.zizibujuan.drip.server.util.constant.ActionType;
 import com.zizibujuan.drip.server.util.constant.DBAction;
@@ -275,6 +276,46 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 		return exerId;
 	}
 	
+	private static final String SQL_UPDATE_EXERCISE_STATUS = "UPDATE "
+			+ "DRIP_EXERCISE "
+			+ "SET "
+			+ "STATUS = ? "
+			+ "WHERE "
+			+ "DBID = ?";
+	@Override
+	public void publish(HistExercise exercise) {
+		Connection con = null;
+		try{
+			con = getDataSource().getConnection();
+			con.setAutoCommit(false);
+			// 修改习题状态
+			DatabaseUtil.update(con, SQL_UPDATE_EXERCISE_STATUS, ExerciseStatus.PUBLISH, exercise.getId());
+			// 在历史习题表中记录状态
+			Long histExerId = histExerciseDao.insert(con, DBAction.CREATE, exercise);
+			
+			Long userId = exercise.getLastUpdateUserId();
+			// 习题发布成功后，习题草稿数-1, 发布习题数+1
+			userStatisticsDao.decreaseDraftExerciseCount(con, userId);
+			userStatisticsDao.increasePublishExerciseCount(con, userId);
+			
+			// 在活动表中插入一条记录
+			String actionType = ActionType.PUBLISH_EXERCISE;
+			addActivity(con, userId, histExerId, actionType); // 往活动表中插入历史记录
+			
+			con.commit();
+		}catch(SQLException e){
+			DatabaseUtil.safeRollback(con);
+			logger.error("sql异常", e);
+			throw new DataAccessException(e);
+		}catch(DataAccessException e){
+			DatabaseUtil.safeRollback(con);
+			logger.error("sql异常", e);
+			throw e;
+		}finally{
+			DatabaseUtil.closeConnection(con);
+		}
+		
+	}
 	
 
 	
@@ -437,4 +478,5 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			this.histExerciseDao = null;
 		}
 	}
+
 }
