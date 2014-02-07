@@ -63,6 +63,11 @@ public class ExerciseServiceImpl implements ExerciseService {
 		exerciseDao.delete(exerciseId, userId);
 	}
 	
+	@Override
+	public void update(Long exerciseId, Exercise exercise) {
+		exerciseDao.update(exerciseId, exercise);
+	}
+	
 	public void setExerciseDao(ExerciseDao exerciseDao) {
 		logger.info("注入exerciseDao");
 		this.exerciseDao = exerciseDao;

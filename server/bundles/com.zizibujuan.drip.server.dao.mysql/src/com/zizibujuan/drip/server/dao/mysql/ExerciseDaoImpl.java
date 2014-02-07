@@ -345,7 +345,7 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			
 			// 在活动表中插入一条记录
 			String actionType = ActionType.DELETE_EXERCISE_DRAFT;
-			addActivity(con, userId, histExerId, actionType); // 往活动表中插入历史记录
+			addActivity(con, userId, histExerId, actionType);
 			
 			con.commit();
 		}catch(SQLException e){
@@ -361,7 +361,68 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 		}
 	}
 	
+	private static final String SQL_UPDATE_EXERCISE = "UPDATE "
+			+ "DRIP_EXERCISE "
+			+ "SET "
+			+ "VERSION=?,"
+			+ "CONTENT=?,"
+			+ "EXER_TYPE=?,"
+			+ "EXER_COURSE=?,"
+			+ "UPT_TM=now(),"
+			+ "UPT_USER_ID=? "
+			+ "WHERE "
+			+ "DBID=?";
+	private void update(Connection con, final Long exerciseId, final Exercise exercise) throws SQLException{
 
+		
+		DatabaseUtil.update(con, SQL_UPDATE_EXERCISE, new PreparedStatementSetter() {
+			
+			@Override
+			public void setValues(PreparedStatement ps) throws SQLException {
+				ps.setLong(1, exercise.getVersion());
+				ps.setString(2, exercise.getContent());
+				ps.setString(3, exercise.getExerciseType());
+				ps.setString(4, exercise.getCourse());
+				ps.setLong(5, exercise.getLastUpdateUserId());
+				ps.setLong(6, exerciseId);
+			}
+		});
+	}
+	
+	@Override
+	public void update(Long exerciseId, Exercise exercise) {
+		// 更新习题信息，并将版本号+1
+		// 在历史表中记录新版信息
+		// 在活动表中插入一条记录
+		
+		Connection con = null;
+		try{
+			con = getDataSource().getConnection();
+			con.setAutoCommit(false);
+			
+			Integer version = exercise.getVersion() + 1;
+			exercise.setVersion(version);
+			
+			update(con, exerciseId, exercise);
+			// 在历史习题表中记录状态
+			Long histExerId = histExerciseDao.insert(con, DBAction.UPDATE, exercise);
+			// 在活动表中插入一条记录
+			Long userId = exercise.getLastUpdateUserId();
+			String actionType = ActionType.EDIT_EXERCISE_DRAFT;
+			addActivity(con, userId, histExerId, actionType);
+			con.commit();
+		}catch(SQLException e){
+			DatabaseUtil.safeRollback(con);
+			logger.error("sql异常", e);
+			throw new DataAccessException(e);
+		}catch(DataAccessException e){
+			DatabaseUtil.safeRollback(con);
+			logger.error("sql异常", e);
+			throw e;
+		}finally{
+			DatabaseUtil.closeConnection(con);
+		}	
+	}
 	
 	// TODO:不在sql中联合查询编码，而是从缓存中获取编码对应的文本信息
 	private static final String SQL_GET_EXERCISE = "SELECT "
@@ -551,4 +612,5 @@ public class ExerciseDaoImpl extends AbstractDao implements ExerciseDao {
 			return option;
 		}
 	}
+
 }

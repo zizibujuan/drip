@@ -160,6 +160,7 @@ define(["dojo/_base/declare",
 				on(btnAnswer, "click", lang.hitch(this, this._toAnswerExerciseHandler));
 			}else if(actionType == classCode.actionType.SAVE_EXERCISE_DRAFT ||
 				actionType == classCode.actionType.EDIT_EXERCISE_DRAFT){
+				
 				// 如果习题是草稿，是登录人录入的，并且是最新版本，则显示编辑和发布按钮
 				// 需要与当前版本比较
 				if(watchUserId == this.loggedUserId && 
@@ -527,7 +528,8 @@ define(["dojo/_base/declare",
 				"class": "minibutton"
 			}, actionsDiv);
 			on(btnSave, "click", lang.hitch(this, function(e){
-				exerciseEdit.save().then(lang.hitch(this, function(data){
+				exerciseEdit.update().then(lang.hitch(this, function(data){
+					alert("更新成功")
 					
 				}), lang.hitch(this, function(error){
 					

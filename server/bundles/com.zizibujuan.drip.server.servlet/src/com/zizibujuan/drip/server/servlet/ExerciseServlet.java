@@ -97,6 +97,25 @@ public class ExerciseServlet extends BaseServlet{
 	}
 	
 	@Override
+	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		traceRequest(req);
+		IPath path = getPath(req);
+		if(path.segmentCount() == 1){
+			Long exerciseId = Long.valueOf(path.segment(0));
+			Exercise exercise = RequestUtil.fromJsonObject(req, Exercise.class);
+			
+			// TODO: 有效性校验
+			
+			UserInfo user = (UserInfo) UserSession.getUser(req);
+			exercise.setLastUpdateUserId(user.getId());
+			exerciseService.update(exerciseId, exercise);
+			return;
+		}
+		super.doPut(req, resp);
+	}
+
+	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		traceRequest(req);

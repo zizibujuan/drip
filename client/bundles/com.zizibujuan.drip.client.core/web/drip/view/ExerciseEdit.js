@@ -68,7 +68,15 @@ define(["dojo/_base/declare",
 		
 		save: function(){
 			var data = this.exerciseInfo;
-			return xhr.post("/exercises/",{
+			return xhr.post("/exercises/", {
+				handleAs: "json", 
+				data: JSON.stringify(data)
+			});
+		},
+		
+		update: function(){
+			var data = this.exerciseInfo;
+			return xhr.put("/exercises/" + data.id, {
 				handleAs: "json", 
 				data: JSON.stringify(data)
 			});

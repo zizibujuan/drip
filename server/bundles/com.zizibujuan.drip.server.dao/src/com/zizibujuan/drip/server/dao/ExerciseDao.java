@@ -71,4 +71,12 @@ public interface ExerciseDao {
 	 * @param userId 用户标识
 	 */
 	void delete(Long exerciseId, Long userId);
+	
+	/**
+	 * 更新习题
+	 * 
+	 * @param exerciseId 习题标识
+	 * @param exercise 新版习题信息
+	 */
+	void update(Long exerciseId, Exercise exercise);
 }
