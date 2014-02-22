@@ -8,7 +8,7 @@ define(["dojo/_base/declare",
         "dojo/dom-construct",
         "dijit/_WidgetBase",
         "dijit/_TemplatedMixin",
-        "dojo/text!drip/templates/Register.html"], function(
+        "dojo/text!./templates/Register.html"], function(
         		declare,
         		lang,
         		xhr,

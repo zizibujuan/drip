@@ -10,8 +10,8 @@ define(["dojo/_base/declare",
         "dojo/dom-class",
         "dijit/_WidgetBase",
         "dijit/_TemplatedMixin",
-        "dojo/text!drip/templates/Login.html",
-        "dojo/i18n!drip/nls/Login"], function(
+        "dojo/text!./templates/Login.html",
+        "dojo/i18n!./nls/Login"], function(
         		declare,
         		lang,
         		xhr,
