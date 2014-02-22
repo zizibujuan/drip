@@ -6,9 +6,12 @@ define(["dojo/_base/declare",
         "dojo/string",
         "dojo/dom-form",
         "dojo/dom-construct",
+        "dojo/dom-attr",
+        "dojo/dom-class",
         "dijit/_WidgetBase",
         "dijit/_TemplatedMixin",
-        "dojo/text!drip/templates/Login.html"], function(
+        "dojo/text!drip/templates/Login.html",
+        "dojo/i18n!drip/nls/Login"], function(
         		declare,
         		lang,
         		xhr,
@@ -17,9 +20,12 @@ define(["dojo/_base/declare",
         		string,
         		domForm,
         		domConstruct,
+        		domAttr,
+        		domClass,
         		_WidgetBase,
         		_TemplatedMixin,
-        		loginTemplate){
+        		loginTemplate,
+        		LoginMessages){
 	
 	return declare("drip.mixLogin.Login", [_WidgetBase, _TemplatedMixin], {
 		
@@ -30,6 +36,10 @@ define(["dojo/_base/declare",
 		postCreate: function(){
 			this.inherited(arguments);
 
+			domAttr.set(this.login, "placeholder", LoginMessages.placeholder_user);
+			domAttr.set(this.password, "placeholder", LoginMessages.placeholder_pwd);
+			domAttr.set(this.btnLogin, "innerHTML", LoginMessages.label_btn_login);
+			
 			on(this.btnLogin, "click", lang.hitch(this, this._login));
 			
 			on(this.login, "keydown", lang.hitch(this, function(e){
@@ -49,13 +59,17 @@ define(["dojo/_base/declare",
 			}));
 		},
 		
-		_login: function(){
+		_login: function(e){
 			this.validate();
 			if(this._hasErrors()){
 				this._showErrors();
 				return;
 			}
 			console.log("login");
+			domAttr.set(this.btnLogin, "disabled", true);
+			domClass.add(this.btnLogin, "submit_tip");
+			this.btnLogin.innerHTML = LoginMessages.label_btn_logining;
+			
 			var data = domForm.toJson(this.loginForm);
 			xhr.post("/login/form", {
 				handleAs: "json", 
@@ -70,11 +84,11 @@ define(["dojo/_base/declare",
 			
 			login = string.trim(login);
 			if(login == ""){
-				errors.push("请输入邮箱或用户名");
+				errors.push(LoginMessages.tip_user_required);
 			}
 			
 			if(password == ""){
-				errors.push("请输入密码");
+				errors.push(LoginMessages.tip_pwd_required);
 			}
 			
 			this.errors = errors;
@@ -101,6 +115,12 @@ define(["dojo/_base/declare",
 		},
 		
 		_loginError: function(error){
+			
+			domAttr.set(this.btnLogin, "disabled", false);
+			this.btnLogin.innerHTML = LoginMessages.label_btn_login;
+			domClass.remove(this.btnLogin, "submit_tip");
+			
+			
 			if(error.response.data){
 				this.errors = error.response.data;
 				this._showErrors();

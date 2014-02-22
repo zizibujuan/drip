@@ -27,3 +27,7 @@
 	cursor: pointer;
 	letter-spacing: 1em;
 }
+
+.submit_tip{
+	letter-spacing: normal;
+}
