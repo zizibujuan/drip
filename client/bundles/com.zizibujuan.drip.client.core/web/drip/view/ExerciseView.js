@@ -50,9 +50,9 @@ define(["dojo/_base/declare",
 			if(options && options.length > 0){
 				var inputType = null;
 				var exerType = exerciseInfo.exerciseType;
-				if(exerType == classCode.ExerciseType.SINGLE_OPTION){
+				if(exerType == classCode.exerciseType.SINGLE_OPTION){
 					inputType = "radio";
-				}else if(exerType == classCode.ExerciseType.MULTI_OPTION){
+				}else if(exerType == classCode.exerciseType.MULTI_OPTION){
 					inputType = "checkbox";
 				}else{
 					throw "不支持的习题类型："+exerType;
@@ -137,7 +137,7 @@ define(["dojo/_base/declare",
 			//		判断题型是不是选择题，包括多选和单选
 			
 			var exerType = this.exerciseInfo.exerciseType;
-			return exerType == classCode.ExerciseType.SINGLE_OPTION || exerType == classCode.ExerciseType.MULTI_OPTION;
+			return exerType == classCode.exerciseType.SINGLE_OPTION || exerType == classCode.exerciseType.MULTI_OPTION;
 		},
 	
 		isQuestionExercise: function(){
@@ -145,7 +145,7 @@ define(["dojo/_base/declare",
 			//		判断题型是不是问答题
 			
 			var exerType = this.exerciseInfo.exerciseType;
-			return exerType == classCode.ExerciseType.ESSAY_QUESTION;
+			return exerType == classCode.exerciseType.ESSAY_QUESTION;
 		},
 		
 		activeOptions: function(){

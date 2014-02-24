@@ -21,3 +21,25 @@
 	padding-left:3px;
 	border: dotted 1px black;
 }
+
+.drip_form_actions{
+	margin-top: 10px;
+	text-align: right;
+	margin-right: 40px; /*应该统一设置父的padding-right*/
+}
+
+.drip_form_actions input{
+	padding: 8px 15px;
+	font-weight: bold;
+	display: inline-block;
+	line-height: normal;
+}
+
+.drip_form_tip{
+	margin-top: 10px;
+	text-align: right;
+	margin-right: 40px;
+	font-style: italic;
+	color: graytext;
+	font-weight: bold;
+}

@@ -1,5 +1,5 @@
 define({
-	ExerciseType: {
+	exerciseType: {
 		SINGLE_OPTION: "01",
 		MULTI_OPTION: "02",
 		FILL: "03",

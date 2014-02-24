@@ -5,6 +5,7 @@ define(({
 	
 	action_save_exercise_draft: "保存草稿",
 	action_publish: "发布",
+	action_reset: "重置",
 	tip_publish: "发布后不能再编辑习题",
 	required: "必填",
 	label_content: "内容",

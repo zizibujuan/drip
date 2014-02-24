@@ -56,8 +56,12 @@ define(["dojo/_base/declare",
 				optionType = "checkbox";
 			}
 			if(optionType != null){
-				this._showOptionPane(optionType);
+				this._createOptions(optionType);
 			}
+		},
+		
+		_createOptions: function(optionType){
+			
 		},
 		
 		destroy: function(preserveDom){
@@ -76,6 +80,10 @@ define(["dojo/_base/declare",
 		
 		update: function(){
 			var data = this.exerciseInfo;
+			data.content = this.contentEditor.get("value");
+			// TODO: 做数据有效性校验
+			
+			// 只编辑习题内容与选项，不编辑习题类型。
 			return xhr.put("/exercises/" + data.id, {
 				handleAs: "json", 
 				data: JSON.stringify(data)

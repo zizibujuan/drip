@@ -693,20 +693,6 @@ margin-left: 25px;
 	padding-right: 10px;
 }
 
-
-.drip_form_actions{
-	margin-top: 10px;
-	text-align: right;
-	margin-right: 40px; /*应该统一设置父的padding-right*/
-}
-
-.drip_form_actions input{
-	padding: 8px 15px;
-	font-weight: bold;
-	display: inline-block;
-	line-height: normal;
-}
-
 .minicard{
 	
 }

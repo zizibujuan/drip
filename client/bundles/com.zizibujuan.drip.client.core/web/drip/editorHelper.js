@@ -4,7 +4,7 @@ define(["dojo/_base/declare",
         		Editor){
 	var editorHelper = {};
 	
-	editorHelper.createEditor = function(parentNode, rowCount, width){
+	editorHelper.createEditor = function(parentNode, rowCount, width, value){
 		// summary:
 		//		创建数学编辑器
 		// parentNode: dom node
@@ -19,9 +19,12 @@ define(["dojo/_base/declare",
 		if(width){
 			params.width = width;
 		}
+		if(value){
+			params.value = value;
+		}
 		var editor = new Editor(params);
 		editor.placeAt(parentNode);
-		editor.startup(); // 
+		// editor.startup(); // 
 		return editor;
 	};
 	

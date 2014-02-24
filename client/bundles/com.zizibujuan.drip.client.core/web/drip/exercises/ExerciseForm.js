@@ -47,9 +47,9 @@ define(["dojo/_base/declare",
 	
 	var optionLabel = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	
-	var courses = [{id: "essayQuestion", label: ExerciseFormMessages.essay_question, type: classCode.ExerciseType.ESSAY_QUESTION},
-	               {id:"single", label: ExerciseFormMessages.single_option, type: classCode.ExerciseType.SINGLE_OPTION},
-	               {id:"multiple", label: ExerciseFormMessages.multiple_option, type: classCode.ExerciseType.MULTI_OPTION}/*,
+	var courses = [{id: "essayQuestion", label: ExerciseFormMessages.essay_question, type: classCode.exerciseType.ESSAY_QUESTION},
+	               {id:"single", label: ExerciseFormMessages.single_option, type: classCode.exerciseType.SINGLE_OPTION},
+	               {id:"multiple", label: ExerciseFormMessages.multiple_option, type: classCode.exerciseType.MULTI_OPTION}/*,
 	               {id:"fill", label:"填空题"}*/];
 	
 	return declare("drip.exercises.ExerciseForm", [_WidgetBase], {
@@ -69,6 +69,18 @@ define(["dojo/_base/declare",
 		_editors: [],
 		
 		_fieldErrors: {},
+		
+		exerciseType: classCode.exerciseType.ESSAY_QUESTION,
+		
+		// 缓存
+		exerciseTypePane: null,
+		
+		// 选择题主干，也包括问答题等的主干
+		stemPane: null,
+		
+		optionsPane: null,
+		
+		imagesPane: null,
 		
 		postCreate: function(){
 			this.inherited(arguments);
@@ -97,66 +109,123 @@ define(["dojo/_base/declare",
 			var leftDiv = this.leftDiv = domConstruct.place('<div style="width: 600px; float: left;"></div>', this.domNode);
 			var rightDiv = this.rightDiv = domConstruct.place('<div style="width: 350px; float: right;"></div>', this.domNode);
 			
-			this._createForm(classCode.ExerciseType.ESSAY_QUESTION);
+			var exerciseFormDiv = domConstruct.create("div", {
+				"class": "exercise_form clearfix"
+			}, leftDiv);
+			
+			/*
+			 * exercise_form
+			 * 	exercise_wrapper
+			 * 		exerciseType
+			 * 		stem
+			 * 		options
+			 * 		images
+			 * 	actions
+			 */
+			var optionsDiv = null;
+			var exerciseWrapperDiv = domConstruct.create("div", {}, exerciseFormDiv);
+				var exerciseTypeDiv = this.exerciseTypePane = domConstruct.create("div", {"class": "form"}, exerciseWrapperDiv);
+				var stemDiv = this.stemPane = domConstruct.create("div", {"class": "form"}, exerciseWrapperDiv);
+				if(this._isMultipleChoice(this.exerciseType)){
+					optionsDiv = this.optionsPane = domConstruct.create("div", {"class": "form"}, exerciseWrapperDiv);
+				}
+				var imagesDiv = this.imagesPane = domConstruct.create("div", {"class": "form"}, exerciseWrapperDiv);
+			var actionsDiv = domConstruct.create("div", {}, exerciseFormDiv);
+			
+			
+			this._refreshForm(this.exerciseType);
+			
 			
 			// 创建保存按钮
 			var actionContainer = domConstruct.create("div",{"class":"drip_form_actions"},this.leftDiv);
+			var btnReset = this.btnReset = domConstruct.place("<button class='button'>" + ExerciseFormMessages.action_reset + "</button>", actionContainer);
 			var btnSaveDraft = this.btnSaveDraft = domConstruct.place("<button class='button'>" + ExerciseFormMessages.action_save_exercise_draft + "</button>", actionContainer);
 			var btnPublish = this.btnPublish = domConstruct.place("<button class=\"button primary\">" + ExerciseFormMessages.action_publish + "</button>", actionContainer);
-			domConstruct.place('<div class="drip_form_actions">' + ExerciseFormMessages.tip_publish + '</div>', this.leftDiv);
+			domConstruct.place('<div class="drip_form_tip">' + ExerciseFormMessages.tip_publish + '</div>', this.leftDiv);
 			
+			on(btnReset, "click", lang.hitch(this, this.doReset));
 			on(btnSaveDraft, "click", lang.hitch(this, this.doSaveDraft));
 			on(btnPublish, "click", lang.hitch(this, this.doPublish));
 		},
 		
-		_createForm: function(exerciseType){
+		_isMultipleChoice: function(type){
 			// summary:
-			//		创建习题输入界面
-			// exerciseType: String
-			//		题型
-			this._exerciseType = exerciseType;
-			// 创建题型
-			this._createExerciseTypeOptions(exerciseType);
+			//		判断是否选择题
 			
-			// 随着题型而变化的form对象为答案可选项，分为单选和多选。
-			// 而内容、图片和习题解析是每个题型都有的。
-			
-			// 题型默认选中问答题
-			//this._createSingleSelectForm();
-			//this._createEssayQuestionForm();
-			
-			// 在右侧创建图片上传功能
-			
-			// 创建习题内容输入框
-			this._createContentInput();
-			
-			// 根据题型决定是否显示可选项
-			var optionType = null;
-			if(exerciseType === classCode.ExerciseType.SINGLE_OPTION){
-				optionType = "radio";
-			}else if(exerciseType === classCode.ExerciseType.MULTI_OPTION){
-				optionType = "checkbox";
-			}
-			this._showOptionPane(optionType);
-			
-			// TODO: 通过用户自定义的科目label来添加科目
-			
-			this._createImageInput();
-			
-			this._createMathEditorHelper();
+			return type && 
+				(type == classCode.exerciseType.SINGLE_OPTION || 
+				type == classCode.exerciseType.MULTI_OPTION);
 		},
 		
-		_createContentInput: function(){
+		_refreshForm: function(exerciseType){
 			// summary:
-			//		创建习题内容输入框。
-			//		只创建一次。
+			//		根据不同的题型显示不同的输入框
 			
-			var editor = this.exerContentEditor = this._createMathInput(
-				ExerciseFormMessages.label_content, 
-				10, 
-				ExerciseFormMessages.required);
-			//editor.set("value", content);
+			// 部件只创建一次，但是部件的值可以随意刷新
+			if(!this._exerciseTypePaneCreated){
+				this._createExerciseTypeOptions(this.exerciseTypePane, exerciseType);
+				this._exerciseTypePaneCreated = true;
+			}
+			
+			if(!this._stemPaneCreated){
+				this._createStemInput(this.stemPane);
+				this._stemPaneCreated = true;
+			}
+			
+			// 如果选项没有创建
+			if(this._isMultipleChoice(exerciseType)){
+				
+				// 如果是选择题切换到问答题，则只隐藏选项，已被用户想恢复到选择题
+				// 所以在获取数据时，不要获取已经隐藏的数据
+				if(this.optionsPane && domStyle.get(this.optionsPane, "display") == "none"){
+					domStyle.set(this.optionsPane, "display", "block")
+				}
+
+				
+				var optionType = null;
+				if(exerciseType === classCode.exerciseType.SINGLE_OPTION){
+					optionType = "radio";
+				}else if(exerciseType === classCode.exerciseType.MULTI_OPTION){
+					optionType = "checkbox";
+				}
+				this.optionType = optionType;
+				// 如果没有创建
+				if(!this._optionsPaneCreated){
+					// 创建
+					if(!this.optionsPane){
+						this.optionsPane = domConstruct.create("div", {"class": "form"}, this.stemPane, "after");
+					}
+					this._createOptionPane(this.optionsPane, optionType);
+					
+					this._optionsPaneCreated = true;
+				}else{
+					// 如果已经创建， 则确认类型有没有发生变化
+					
+					if(optionType){
+						if(exerciseType != this._exerciseType){
+							// 如果不相同，则转换为参数指定的类型
+							query("input", this.optionsPane).forEach(function(el,index){
+								el.type = optionType;
+							});
+						}
+					}
+					
+				}
+			}else{
+				// 一律隐藏
+				if(this.optionsPane){
+					domStyle.set(this.optionsPane, "display", "none");
+				}
+			}
+
+			if(!this._imagePaneCreated){
+				this._createImageInput(this.imagesPane);
+				this._imagePaneCreated = true;
+			}
+			
+			this._exerciseType = exerciseType;
 		},
+		
 		/*
 		 <ul class="radio-group">
 			<li><input type="radio" name="questionType" id="essayQuestion"/><label for="essayQuestion">问答题</label></li>
@@ -167,28 +236,36 @@ define(["dojo/_base/declare",
 			 -->
 		</ul>
 		 */
-		_createExerciseTypeOptions: function(exerciseType){
+		_createExerciseTypeOptions: function(parentNode, exerciseType /*默认值*/){
 			// summary:
 			//		创建题型选择项。
-			//		只创建一次。
-			if(this.exerciseTypePane)return;
+
+			this._createLabel(parentNode, ExerciseFormMessages.label_exerciseType);
 			
-			var row = domConstruct.create("div", {"class":"form clearfix"}, this.leftDiv);
-			
-			domConstruct.place('<div class="drip-title">' + ExerciseFormMessages.label_exerciseType + '</div>', row);
+			var div = domConstruct.create("div", {"class": "clearfix"}, parentNode);
 			var name = this._exerciseTypeOptionName = "exerciseType";
-			var ul = domConstruct.place("<ul class=\"radio-group\"></ul>", row);
+			var ul = domConstruct.create("ul", {
+				"class": "radio-group"
+			}, div);
 			for(var i = 0; i < courses.length; i++){
 				var course = courses[i];
 				var checked = (course.type == exerciseType);
 				var li = domConstruct.create("li", null, ul);
-				var input = domConstruct.create("input", {type:"radio", name:name, id: course.type, checked: checked}, li);
-				var label = domConstruct.create("label", {"for":course.type, innerHTML: course.label}, li);
+				var input = domConstruct.create("input", {
+					type: "radio", 
+					name: name, 
+					id: course.type, 
+					checked: checked
+				}, li);
+				var label = domConstruct.create("label", {
+					"for": course.type, 
+					innerHTML: course.label
+				}, li);
 				on(input,"click", lang.hitch(this,function(e){
 					var target = e.target;
 					if(target.id != this.data.exerType){
 						// 只有选中的节点发生变化的时候才触发，即如果该节点之前没有选中
-						this._createForm(target.id);
+						this._refreshForm(target.id);
 						this.clearErrors();
 					}else{
 						// 如果之前已经选中，则什么也不做。
@@ -196,8 +273,247 @@ define(["dojo/_base/declare",
 					
 				}));
 			}
-			this.exerciseTypePane = row;
 		},
+		
+		_createStemInput: function(parentNode, value){
+			// summary:
+			//		创建习题内容输入框。
+			//		只创建一次。
+			
+			this._createLabel(parentNode, ExerciseFormMessages.label_content, ExerciseFormMessages.required);
+			this.exerContentEditor = this._createMathInput(parentNode, 10, value);
+		},
+		
+		/*
+		 * // 绑定事件
+			var singleEl = dom.byId("single");
+			this._toggleSelection(singleEl);
+			on(singleEl,"click",lang.hitch(this, this._showSingleSelectForm));
+			on(dom.byId("multiple"),"click",lang.hitch(this, this._showMultipleSelectForm));
+			on(dom.byId("fill"),"click",lang.hitch(this, this._showFillForm));
+			on(dom.byId("essayQuestion"),"click",lang.hitch(this, this._showEssayQuestionForm));
+		 */
+		_createImageInput: function(parentNode, value){
+			// summary:
+			//		创建图片上传输入框与图片编辑器。
+			
+			// 不需要label
+			//this._createLabel(parentNode, ExerciseFormMessages.label_content, ExerciseFormMessages.required);
+			
+			var title = domConstruct.place('<div class="drip-title" style="margin-bottom: 5px;"></div>', parentNode);
+			
+			var u = new dojox.form.Uploader({
+			    label: ExerciseFormMessages.label_image,
+			    multiple: true,
+			    type:"file",
+			    uploadOnSelect: true,
+			    url: "/uploads/exerciseImage"
+			});
+			u.placeAt(title);
+			u.startup();
+			
+			var list = this.image = new drip.widget.form.uploader.FileList({uploader:u});
+			list.placeAt(title);
+			//list.startup();
+		},
+		
+		// TODO: 重构，在ExerciseEditor中重复存在
+		_createOptionPane: function(parentNode, type){
+			// summary:
+			//		创建习题选项面板
+			// type: String
+			//		复选框类型，radio或checkbox
+			
+			// 在最外围添加一个div容器
+			
+			this._createLabel(parentNode, ExerciseFormMessages.label_option);
+			
+			var container = domConstruct.place('<div></div>', parentNode);
+			// 创建选项
+			var table = this.tblOption = domConstruct.place('<table class="drip-exercise-option"></table>', container);
+			var defaultOptionLength = this.optionLength;
+			for(var i = 0; i < defaultOptionLength; i++){
+				this._createOption(table, i, type);
+			}
+			this._refreshOption();
+			
+			// 创建新建行按钮
+			var addContainer = domConstruct.place('<div></div>', container);
+			// TODO：添加选项时，让这个按钮不要移动。
+			var aAdd = domConstruct.place('<a href="#"><i class=\"icon-plus\"></i> ' + ExerciseFormMessages.label_add_option + '</a>', addContainer);
+			on(aAdd, "click", lang.hitch(this, function(e){
+				this._createOption(table, this.optionLength++, this.optionType);
+				event.stop(e);
+			}));
+		},
+		
+		_getOptionId: function(){
+			
+			if(!this.optionId){
+				this.optionId = 0;
+			}
+			return this.optionId++;
+		},
+		
+		_createOption: function(parentNode, index, inputType){
+			var tr = domConstruct.place('<tr></tr>', parentNode);
+			var td1 = domConstruct.place('<td></td>', tr);
+			var optId = this._getOptionId();
+			var input = domConstruct.place('<input disabled type="'+inputType+'\" name="'+this._optionName+'"/>', td1);
+			var td2 = domConstruct.place('<td></td>', tr);
+			var label = domConstruct.place('<label>'+optionLabel.charAt(index)+'</label>', td2);
+			var td3 = domConstruct.place('<td></td>', tr);
+			var editor = this._createEditor(td3, 2, 490);
+			var td4 = domConstruct.place('<td></td>', tr);
+			var aDel = domConstruct.place('<a href="#" class=\"iconbutton\" title=\"' + ExerciseFormMessages.label_delete_option + '\"><i class=\"icon-trash\"></i></a>', td4);
+			var aDown = domConstruct.place('<a href="#" class=\"iconbutton\" title=\"' + ExerciseFormMessages.label_move_down_option + '\"><i class=\"icon-arrow-down\"></i></a>', td4);
+			var aUp = domConstruct.place('<a href="#" class=\"iconbutton\" title=\"' + ExerciseFormMessages.label_move_up_option + '\"><i class=\"icon-arrow-up\"></i></a>', td4);
+			
+			on(aDel, "click", lang.hitch(this, function(e){
+				this.optionLength--;
+				// 先删除tr中的所有dijit部件
+				
+				registry.findWidgets(tr).forEach(function(w,index){
+					w.destroyRecursive();
+				});
+				domConstruct.destroy(tr);
+				this._refreshOption();
+				event.stop(e);
+			}));
+			
+			on(aDown, "click", lang.hitch(this, function(e){
+				if(tr.nextSibling){
+					domConstruct.place(tr,tr.nextSibling, "after");
+				}else{
+					domConstruct.place(tr,parentNode,"first");
+				}
+				
+				this._refreshOption();
+				event.stop(e);
+			}));
+			
+			on(aUp, "click", lang.hitch(this, function(e){
+				if(tr.previousSibling){
+					domConstruct.place(tr,tr.previousSibling, "before");
+				}else{
+					domConstruct.place(tr,parentNode,"last");
+				}
+				
+				this._refreshOption();
+				event.stop(e);
+			}));
+		},
+		
+		_refreshOption: function(){
+			var trs = this.tblOption.childNodes;
+			array.forEach(trs, function(tr, index){
+				var label = optionLabel.charAt(index);
+				var inputEl = tr.cells[0].firstChild;
+				var id = "option"+(index+1);
+				domAttr.set(inputEl,"id",id);
+				inputEl.value = index;
+				
+				var labelEl = tr.cells[1].firstChild;
+				//domAttr.set(labelEl,"for",id);
+				labelEl.innerHTML = label;
+			});
+		},
+		// TODO: 删除
+		// FIXME: 这段代码在ExerciseEditor重复存在，待重构。
+//		_showOptionPane: function(optionType){
+//			// summary: 显示/创建/隐藏选项面板
+//			//		如果optionType不为null
+//			if(this.optionPane){
+//				// 如果已经创建
+//				if(optionType == null){
+//					// 如果optionType为null，则隐藏选项面板
+//					if(this.optionPane.style.display == ""){
+//						this.optionPane.style.display = "none";
+//					}
+//				}else{
+//					if(this.optionPane.style.display == "none"){
+//						this.optionPane.style.display = "";
+//					}
+//					// 获取当前选项面板的选项类型
+//					if(optionType == this._optionType){
+//						// 如果当前的选项类型与参数相同则不做处理
+//					}else{
+//						// 如果不相同，则转换为参数指定的类型
+//						query("input", this.optionPane).forEach(function(el,index){
+//							el.type = optionType;
+//						});
+//					}
+//				}
+//			}else{
+//				if(optionType != null){
+//					this._createOptionPane(optionType);
+//				}
+//			}
+//			this._optionType = optionType;// 缓存选项类型
+//		},
+		
+		_createLabel: function(parentNode, label, requireTip){
+			var _requireTip = requireTip ? "<span>(" + requireTip + ")</span>" : "";
+			domConstruct.place('<div><span class="drip-title">'+label+'</span>'+_requireTip+'</div>', parentNode);
+		},
+		
+		// TODO: 删除
+		_createMathInput: function(parentNode, rowCount, value){
+			// summary:
+			//		创建支持输入数学公式的输入框
+			// rowCount:
+			//		默认的行数，如果包含内容的高度超过这个行数，则以内容的高度为准。
+			
+			return this._createEditor(parentNode, rowCount, 550, value);
+		},
+		
+		_createEditor: function(parentNode, rowCount, width, value){
+			// rowCount支持auto，即适配内容的高度
+			
+			var editor = editorHelper.createEditor(parentNode, rowCount, width, value);
+			this._editors.push(editor);
+			return editor;
+		},
+		
+		// TODO: 删除
+//		_createForm: function(exerciseType){
+//			// summary:
+//			//		创建习题输入界面
+//			// exerciseType: String
+//			//		题型
+//			
+//			debugger;
+//			this._exerciseType = exerciseType;
+//			// 创建题型
+//			this._createExerciseTypeOptions(exerciseType);
+//			
+//			// 随着题型而变化的form对象为答案可选项，分为单选和多选。
+//			// 而内容、图片和习题解析是每个题型都有的。
+//			
+//			// 题型默认选中问答题
+//			//this._createSingleSelectForm();
+//			//this._createEssayQuestionForm();
+//			
+//			// 在右侧创建图片上传功能
+//			
+//			// 创建习题内容输入框
+//			this._createContentInput();
+//			
+//			// 根据题型决定是否显示可选项
+//			var optionType = null;
+//			if(exerciseType === classCode.exerciseType.SINGLE_OPTION){
+//				optionType = "radio";
+//			}else if(exerciseType === classCode.exerciseType.MULTI_OPTION){
+//				optionType = "checkbox";
+//			}
+//			this._showOptionPane(optionType);
+//			
+//			// TODO: 通过用户自定义的科目label来添加科目
+//			
+//			this._createImageInput();
+//			
+//			this._createMathEditorHelper();
+//		},
 		
 		
 		/*
@@ -229,57 +545,8 @@ define(["dojo/_base/declare",
 //			this.coursePane = row;
 //		},
 		
-		_createMathInput: function(label, rowCount, requireLabel){
-			// summary:
-			//		创建包含label的支持输入数学公式的输入框
-			var _requireLabel = requireLabel ? "<span>(" + requireLabel + ")</span>" : "";
-			var pane = domConstruct.create("div", {"class":"form"}, this.leftDiv);
-			domConstruct.place('<div><span class="drip-title">'+label+'</span>'+_requireLabel+'</div>', pane);
-			return this._createEditor(pane, rowCount, 550);
-			
-		},
 		
-		_createEditor: function(parentNode, rowCount, width){
-			// rowCount支持auto，即适配内容的高度
-			
-			var editor = editorHelper.createEditor(parentNode, rowCount, width)
-			this._editors.push(editor);
-			return editor;
-		},
 		
-		/*
-		 * // 绑定事件
-			var singleEl = dom.byId("single");
-			this._toggleSelection(singleEl);
-			on(singleEl,"click",lang.hitch(this, this._showSingleSelectForm));
-			on(dom.byId("multiple"),"click",lang.hitch(this, this._showMultipleSelectForm));
-			on(dom.byId("fill"),"click",lang.hitch(this, this._showFillForm));
-			on(dom.byId("essayQuestion"),"click",lang.hitch(this, this._showEssayQuestionForm));
-		 */
-		_createImageInput: function(){
-			// summary:
-			//		创建图片上传输入框与图片编辑器。
-			
-			if(this._imageInput)return;
-			
-			var imagePane = domConstruct.create("div", {"class":"form"}, this.leftDiv);
-			var title = domConstruct.place('<div class="drip-title" style="margin-bottom: 5px;"></div>', imagePane);
-			
-			var u = new dojox.form.Uploader({
-			    label: ExerciseFormMessages.label_image,
-			    multiple: true,
-			    type:"file",
-			    uploadOnSelect: true,
-			    url: "/uploads/exerciseImage"
-			});
-			u.placeAt(title);
-			u.startup();
-			
-			var list = this.image = new drip.widget.form.uploader.FileList({uploader:u});
-			list.placeAt(title);
-			//list.startup();
-			this._imageInput = true;
-		},
 		
 		_createMathEditorHelper: function(){
 			if(this._editorHelper)return;
@@ -290,39 +557,6 @@ define(["dojo/_base/declare",
 			}, this.rightDiv);
 			
 			this._editorHelper = true;
-		},
-		
-		// FIXME: 这段代码在ExerciseEditor重复存在，待重构。
-		_showOptionPane: function(optionType){
-			// summary: 显示/创建/隐藏选项面板
-			//		如果optionType不为null
-			if(this.optionPane){
-				// 如果已经创建
-				if(optionType == null){
-					// 如果optionType为null，则隐藏选项面板
-					if(this.optionPane.style.display == ""){
-						this.optionPane.style.display = "none";
-					}
-				}else{
-					if(this.optionPane.style.display == "none"){
-						this.optionPane.style.display = "";
-					}
-					// 获取当前选项面板的选项类型
-					if(optionType == this._optionType){
-						// 如果当前的选项类型与参数相同则不做处理
-					}else{
-						// 如果不相同，则转换为参数指定的类型
-						query("input", this.optionPane).forEach(function(el,index){
-							el.type = optionType;
-						});
-					}
-				}
-			}else{
-				if(optionType != null){
-					this._createOptionPane(optionType);
-				}
-			}
-			this._optionType = optionType;// 缓存选项类型
 		},
 		
 		_getFormData: function(){
@@ -336,9 +570,9 @@ define(["dojo/_base/declare",
 //				return;
 //			});
 			
-			if(this.tblOption){
+			if(this.optionsPane && domStyle.get(this.optionsPane, "display") == "block"){
 				data.options = [];
-				registry.findWidgets(this.tblOption).forEach(function(widget, index){
+				registry.findWidgets(this.optionsPane).forEach(function(widget, index){
 					console.log(widget, index, widget.get("value"));
 					// 只有当有内容时，才加入进来
 					var val = widget.get("value");
@@ -350,6 +584,19 @@ define(["dojo/_base/declare",
 			}
 			
 			return data;
+		},
+		
+		doReset: function(e){
+			// summary:
+			//		清除用户录入的数据。
+			//		并将习题类型恢复为问答题。
+			
+			// 使用习题类型作为id
+			domAttr.set(this.exerciseType, "checked", true);
+			this._refreshForm(this.exerciseType);
+			
+			// 清除所有数据
+			this._reset();
 		},
 		
 		doSaveDraft: function(e){
@@ -412,18 +659,20 @@ define(["dojo/_base/declare",
 			var exerciseType = exercise.exerciseType;
 			var content = exercise.content;
 			var options = exercise.options || [];
-			if(exerciseType == classCode.ExerciseType.SINGLE_OPTION || 
-			   exerciseType == classCode.ExerciseType.MULTI_OPTION){
+			debugger;
+			if(this._isMultipleChoice(exerciseType)){
 				if(string.trim(content) == ""){
 					this._fieldErrors["content"] = [ExerciseFormMessages.tip_content_required];
 				}
 				if(options.length < 2){
 					this._fieldErrors["exerOption"] = [ExerciseFormMessages.tip_options_required];
 				}
-			}else if(exerciseType == classCode.ExerciseType.ESSAY_QUESTION){
+			}else if(exerciseType == classCode.exerciseType.ESSAY_QUESTION){
 				if(string.trim(content) == ""){
 					this._fieldErrors["content"] = [ExerciseFormMessages.tip_content_required];
 				}
+			}else{
+				console.error("没有校验该类型习题的数据");
 			}
 		},
 		
@@ -440,15 +689,16 @@ define(["dojo/_base/declare",
 			var contentErrors = errors["content"];
 			if(contentErrors){
 				var target = this.exerContentEditor.domNode.previousSibling;
-				domConstruct.create("span", {style:{color:"red"}, innerHTML: contentErrors[0]}, target);
+				domConstruct.create("span", {"class": "drip-error", innerHTML: contentErrors[0]}, target);
 			}
 			var exerOptionErrors = errors["exerOption"];
 			if(exerOptionErrors){
 				var target = this.tblOption.parentNode.previousSibling;
-				domConstruct.create("span", {style:{color:"red"}, innerHTML: exerOptionErrors[0]}, target);
+				domConstruct.create("span", {"class": "drip-error", innerHTML: exerOptionErrors[0]}, target);
 			}
 		},
 		
+		// TODO: 测试
 		clearErrors: function(){
 			var errors = this._fieldErrors;
 			if(errors.content){
@@ -499,107 +749,7 @@ define(["dojo/_base/declare",
 			
 		 */
 		
-		// TODO: 重构，在ExerciseEditor中重复存在
-		_createOptionPane: function(type){
-			// summary:
-			//		创建习题选项面板
-			// type: String
-			//		复选框类型，radio或checkbox
-			
-			// 在最外围添加一个div容器
-			var optionPane = this.optionPane = domConstruct.create("div", null, this.contentPane, "after");
-			domConstruct.place('<div class="drip-title">' + ExerciseFormMessages.label_option + '</div>', optionPane);
-			var container = domConstruct.place('<div></div>', optionPane);
-			
-			// 创建选项
-			var table = this.tblOption = domConstruct.place('<table class="drip-exercise-option"></table>', container);
-			var defaultOptionLength = this.optionLength;
-			for(var i = 0; i < defaultOptionLength; i++){
-				this._createOption(table, i, type);
-			}
-			this._refreshOption();
-			
-			// 创建新建行按钮
-			var addContainer = domConstruct.place('<div></div>', container);
-			// TODO：添加选项时，让这个按钮不要移动。
-			var aAdd = domConstruct.place('<a href="#"><i class=\"icon-plus\"></i> ' + ExerciseFormMessages.label_add_option + '</a>', addContainer);
-			on(aAdd, "click", lang.hitch(this, function(e){
-				this._createOption(table, this.optionLength++, type);
-				event.stop(e);
-			}));
-		},
-		
-		_getOptionId: function(){
-			
-			if(!this.optionId){
-				this.optionId = 0;
-			}
-			return this.optionId++;
-		},
-		
-		_createOption: function(parentNode,index, inputType){
-			var tr = domConstruct.place('<tr></tr>', parentNode);
-			var td1 = domConstruct.place('<td></td>', tr);
-			var optId = this._getOptionId();
-			var input = domConstruct.place('<input type="'+inputType+'\" name="'+this._optionName+'"/>', td1);
-			var td2 = domConstruct.place('<td></td>', tr);
-			var label = domConstruct.place('<label>'+optionLabel.charAt(index)+'</label>', td2);
-			var td3 = domConstruct.place('<td></td>', tr);
-			var editor = this._createEditor(td3, 2, 490);
-			var td4 = domConstruct.place('<td></td>', tr);
-			var aDel = domConstruct.place('<a href="#" class=\"iconbutton\" title=\"' + ExerciseFormMessages.label_delete_option + '\"><i class=\"icon-trash\"></i></a>', td4);
-			var aDown = domConstruct.place('<a href="#" class=\"iconbutton\" title=\"' + ExerciseFormMessages.label_move_down_option + '\"><i class=\"icon-arrow-down\"></i></a>', td4);
-			var aUp = domConstruct.place('<a href="#" class=\"iconbutton\" title=\"' + ExerciseFormMessages.label_move_up_option + '\"><i class=\"icon-arrow-up\"></i></a>', td4);
-			
-			on(aDel, "click", lang.hitch(this, function(e){
-				this.optionLength--;
-				// 先删除tr中的所有dijit部件
-				
-				registry.findWidgets(tr).forEach(function(w,index){
-					w.destroyRecursive();
-				});
-				domConstruct.destroy(tr);
-				this._refreshOption();
-				event.stop(e);
-			}));
-			
-			on(aDown, "click", lang.hitch(this, function(e){
-				if(tr.nextSibling){
-					domConstruct.place(tr,tr.nextSibling, "after");
-				}else{
-					domConstruct.place(tr,parentNode,"first");
-				}
-				
-				this._refreshOption();
-				event.stop(e);
-			}));
-			
-			on(aUp, "click", lang.hitch(this, function(e){
-				if(tr.previousSibling){
-					domConstruct.place(tr,tr.previousSibling, "before");
-				}else{
-					domConstruct.place(tr,parentNode,"last");
-				}
-				
-				this._refreshOption();
-				event.stop(e);
-			}));
-		},
-		
-		_refreshOption: function(){
-			var trs = this.tblOption.childNodes;
-			array.forEach(trs, function(tr, index){
-				var label = optionLabel.charAt(index);
-				var inputEl = tr.cells[0].firstChild;
-				var id = "option"+(index+1);
-				domAttr.set(inputEl,"id",id);
-				inputEl.value = index;
-				
-				var labelEl = tr.cells[1].firstChild;
-				domAttr.set(labelEl,"for",id);
-				labelEl.innerHTML = label;
-			});
-		},
+
 		
 		_destroyForm: function(){
 			var formPanel = this.domNode;

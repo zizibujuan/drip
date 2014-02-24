@@ -76,6 +76,11 @@ ul.tabs li a .counter {
 	margin-bottom: 6px;
 }
 
+.drip-error{
+	color: red;
+	margin-left: 6px;
+}
+
 .drip-exercise-option{
 	
 }
