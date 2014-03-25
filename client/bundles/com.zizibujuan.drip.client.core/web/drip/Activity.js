@@ -125,7 +125,8 @@ define(["dojo/_base/declare",
 		_createHeaderText: function(data){
 			var userName = data.userInfo.nickName || data.userInfo.loginName;
 			this.userInfo.innerHTML = userName;
-			this.action.innerHTML = classCode.ActionTypeMap[data.actionType];
+			this.action.innerHTML = classCode.actionTypeMap[data.actionType];
+			this.exerciseTypeNode.innerHTML = classCode.exerciseTypeMap[data.histExercise.exerciseType];
 			this.time.innerHTML = prettyDate.prettyForNumber(data.createTime);
 			var _createTime = new Date(data.createTime);
 			this.time.title = locale.format(_createTime, {
@@ -157,7 +158,7 @@ define(["dojo/_base/declare",
 					title: ActivityMessages.action_answer_exercise,
 					innerHTML: "<i class='icon-comment icon-large'></i>"
 				}, headerActionNode);
-				on(btnAnswer, "click", lang.hitch(this, this._toAnswerExerciseHandler));
+				on(btnAnswer, "click", lang.hitch(this, this._loadAnswerHandler));
 			}else if(actionType == classCode.actionType.SAVE_EXERCISE_DRAFT ||
 				actionType == classCode.actionType.EDIT_EXERCISE_DRAFT){
 				
@@ -194,12 +195,11 @@ define(["dojo/_base/declare",
 			}
 		},
 		
-		_toAnswerExerciseHandler: function(e){
-			
-		},
-		
 		_createExercise: function(){
 			//var userInfo = this.data.userInfo;
+			
+			// TODO: 找合适的位置显示习题类型
+			
 			var exerciseNode = domConstruct.create("div", {"class": "exercise"}, this.activityBodyNode);
 			var exerciseView = this._exerciseView = new ExerciseView({
 				parentWidgetId: this.id,
@@ -207,9 +207,6 @@ define(["dojo/_base/declare",
 				parentNode: exerciseNode
 			});
 			exerciseView.render();
-			
-			
-			
 		},
 		
 		_createAnswer: function(){
@@ -261,9 +258,48 @@ define(["dojo/_base/declare",
 			}
 		},
 		
-		_loadAnswerHandler: function(){
-			// TODO: 先查询用户是否已经回答过，如果已经回答过了，则将答案加载过来
-			// TODO：然后编辑答案，如果没有回答过，则直接新增
+		_loadAnswerHandler: function(e){
+			event.stop(e);
+			
+			// 显示解答框:
+			//		如果是选择题，则让radio或checkbox可编辑；并添加习题解析输入框
+			//		如果是问答题，则添加答案输入框和习题解析输入框
+			
+			// 注意，如果习题没有解答过，则显示解答框;
+			// 如果登录用户已经解答过，则隐藏之前的答案，在下面添加editing，显示置为编辑状态
+			// 如果好友已经解答过，则隐藏好友的答案，显示录入习题答案的输入框
+			
+			var answerWrapper = domConstruct.create("div", {"class": "answer_wrapper"}, this.activityBodyNode);
+			var answerLabel = domConstruct.create("span", {"class": "answer_label"}, answerWrapper);
+			answerLabel.innerHTML = ActivityMessages.label_answer;
+			
+			var answerBody = domConstruct.create("div", {"class": "answer_body"}, answerWrapper);
+			var answerEditor = new Editor({rows:5, width:600});
+			answerEditor.placeAt(answerBody);
+			answerEditor.startup();
+			
+			
+			// 习题解析
+			var guideWrapper = this.guideContainerDiv = domConstruct.create("div",{"class":"guide_wrapper"}, this.activityBodyNode);
+			var guideLabel = domConstruct.create("div",{
+				"class": "guide_label",
+				innerHTML: ActivityMessages.label_guide
+			}, guideWrapper);
+			var guideContentDiv = domConstruct.create("div",{
+				"class": "guide_body",
+				innerHTML: "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+			}, guideWrapper);
+			
+			调整下面的逻辑代码
+			// TODO: 先查询用户是否已经回答过，如果已经回答过了，则将答案加载过来编辑答案，
+			// TODO： 如果没有回答过，则直接新增
+			// TODO: 先准备好输入面板，然后获取用户最近录入的答案
+			
+			// 跟之前显示的答案，并列的放一个编辑用的div
+			
+			
+			
+			
 			// 传递习题标识，然后在servlet中传递userId，注意，因为这里传过去的是习题标识，
 			// 不是答案标识，所以不能直接拼在url后面，而应该使用/?exerId=xxx的query的方式传递。
 			
@@ -274,6 +310,8 @@ define(["dojo/_base/declare",
 			//		如果存在习题解析，则删除习题解析面板
 			
 			// 隐藏只读的答案区块
+			
+			// 添加editing样式
 			if(this.answerNode){
 				domStyle.set(this.answerNode,"display", "none");
 			}
@@ -540,6 +578,8 @@ define(["dojo/_base/declare",
 		_publishExerciseHandler: function(e){
 			// summary:
 			//		发布习题
+			
+			event.stop(e);
 			
 			var exerciseInfo = this.data.exercise;
 			// TODO: 设置最新的值

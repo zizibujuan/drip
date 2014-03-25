@@ -32,8 +32,8 @@
 }
 
 .activities .activity_wrapper .time {
-	font-size: 12px;
 	color: #BBB;
+	margin-left: 10px;
 }
 
 .activity_avatar{
@@ -94,6 +94,10 @@
 	margin-right: -5px;
 }
 
+.activity_header_text .exercise_type{
+	font-weight: bold;
+}
+
 .activity_content{
 	
 }
@@ -109,29 +113,35 @@
 }
 
 .answer_wrapper{
+	margin-top: 1em;
 	position: relative;
-	padding-left: 66px;	
+	padding-left: 1em;
 }
 
 .answer_label{
-	
+	float: left;
+	font-weight: bolder;
+	width: 1em;
 }
 
 .answer_body{
-	
+	margin-left: 1.5em;
 }
 
 .guide_wrapper{
+	margin-top: 1em;
 	position: relative;
-	padding-left: 66px;	
+	padding-left: 1em;	
 }
 
 .guide_label{
-	
+	float: left;
+	font-weight: bolder;
+	width: 1em;
 }
 
 .guide_body{
-	
+	margin-left: 1.5em;
 }
 
 .a_action{
