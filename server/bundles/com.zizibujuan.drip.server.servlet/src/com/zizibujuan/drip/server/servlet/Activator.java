@@ -8,7 +8,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.zizibujuan.drip.server.service.ApplicationPropertyService;
+import com.zizibujuan.cm.server.service.ApplicationPropertyService;
 
 /**
  * 启动bundle时,注入系统属性服务

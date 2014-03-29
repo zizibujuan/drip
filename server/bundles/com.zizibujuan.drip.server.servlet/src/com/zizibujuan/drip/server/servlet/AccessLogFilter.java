@@ -15,9 +15,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.zizibujuan.cm.server.service.ApplicationPropertyService;
+import com.zizibujuan.drip.server.constant.ApplicationPropertyKey;
 import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.AccessLogService;
-import com.zizibujuan.drip.server.service.ApplicationPropertyService;
 import com.zizibujuan.drip.server.util.constant.WebConstants;
 import com.zizibujuan.drip.server.util.servlet.UserSession;
 
@@ -141,7 +142,7 @@ public class AccessLogFilter implements Filter {
 
 	private Long addCookieUserId(HttpServletResponse httpServletResponse) {
 		Long userId = null;
-		userId = applicationPropertyService.getNextAnonymouseId();
+		userId = applicationPropertyService.getNextLong(ApplicationPropertyKey.DRIP_COOKIE_MAX_USER_ID);
 		Cookie cookie = new Cookie(COKIE_NAME, userId.toString());
 		cookie.setMaxAge(365*24*60*60);//一年有效
 		httpServletResponse.addCookie(cookie);

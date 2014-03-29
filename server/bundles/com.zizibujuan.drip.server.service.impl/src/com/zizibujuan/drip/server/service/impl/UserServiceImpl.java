@@ -12,6 +12,7 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.zizibujuan.cm.server.service.ApplicationPropertyService;
 import com.zizibujuan.drip.server.dao.ConnectUserDao;
 import com.zizibujuan.drip.server.dao.UserStatisticsDao;
 import com.zizibujuan.drip.server.dao.UserAttributesDao;
@@ -22,7 +23,6 @@ import com.zizibujuan.drip.server.model.Avatar;
 import com.zizibujuan.drip.server.model.UserBindInfo;
 import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.model.UserStatistics;
-import com.zizibujuan.drip.server.service.ApplicationPropertyService;
 import com.zizibujuan.drip.server.service.EmailService;
 import com.zizibujuan.drip.server.service.UserService;
 

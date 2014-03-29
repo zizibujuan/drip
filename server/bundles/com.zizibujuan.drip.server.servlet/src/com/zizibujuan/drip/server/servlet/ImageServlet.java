@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.core.runtime.IPath;
 
-import com.zizibujuan.drip.server.service.ApplicationPropertyService;
+import com.zizibujuan.cm.server.service.ApplicationPropertyService;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 
 /**
