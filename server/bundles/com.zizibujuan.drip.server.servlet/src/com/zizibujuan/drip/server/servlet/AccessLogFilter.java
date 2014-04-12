@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.cm.server.service.ApplicationPropertyService;
+import com.zizibujuan.cm.server.servlets.CMServiceHolder;
 import com.zizibujuan.drip.server.service.AccessLogService;
 import com.zizibujuan.drip.server.util.constant.WebConstants;
 import com.zizibujuan.drip.server.util.servlet.UserSession;
@@ -45,7 +46,7 @@ public class AccessLogFilter implements Filter {
 	@Override
 	public void init(FilterConfig arg0) throws ServletException {
 		accessLogService = ServiceHolder.getDefault().getAccessLogService();
-		applicationPropertyService = ServiceHolder.getDefault().getApplicationPropertyService();
+		applicationPropertyService = CMServiceHolder.getDefault().getApplicationPropertyService();
 	}
 	
 	@Override

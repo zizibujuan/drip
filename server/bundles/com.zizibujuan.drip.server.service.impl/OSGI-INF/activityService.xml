@@ -30,7 +30,7 @@
    		bind="setUserService" 
    		unbind="unsetUserService" 
    		cardinality="0..1" 
-   		interface="com.zizibujuan.drip.server.service.UserService" 
+   		interface="com.zizibujuan.useradmin.server.service.UserService" 
    		name="userService" 
    		policy="dynamic"/>
  

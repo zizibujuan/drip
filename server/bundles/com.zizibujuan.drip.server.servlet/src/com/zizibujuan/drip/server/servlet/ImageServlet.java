@@ -12,6 +12,7 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.core.runtime.IPath;
 
 import com.zizibujuan.cm.server.service.ApplicationPropertyService;
+import com.zizibujuan.cm.server.servlets.CMServiceHolder;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 
 /**
@@ -26,7 +27,7 @@ public class ImageServlet extends BaseServlet {
 	private ApplicationPropertyService applicationPropertyService;
 	
 	public ImageServlet(){
-		applicationPropertyService = ServiceHolder.getDefault().getApplicationPropertyService();
+		applicationPropertyService = CMServiceHolder.getDefault().getApplicationPropertyService();
 	}
 
 	@Override

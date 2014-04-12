@@ -20,6 +20,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.eclipse.core.runtime.IPath;
 
 import com.zizibujuan.cm.server.service.ApplicationPropertyService;
+import com.zizibujuan.cm.server.servlets.CMServiceHolder;
 import com.zizibujuan.useradmin.server.model.UserInfo;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
@@ -39,7 +40,7 @@ public class UploadServlet extends BaseServlet {
 	private ApplicationPropertyService applicationPropertyService;
 	
 	public UploadServlet(){
-		applicationPropertyService = ServiceHolder.getDefault().getApplicationPropertyService();
+		applicationPropertyService = CMServiceHolder.getDefault().getApplicationPropertyService();
 	}
 
 	/**

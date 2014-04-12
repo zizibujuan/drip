@@ -28,6 +28,14 @@
   <logger name="com.zizibujuan.drip.server.dao.mysql" level="DEBUG"/>
   <logger name="com.zizibujuan.drip.server.service.impl" level="DEBUG"/>
   <logger name="com.zizibujuan.drip.server.configurator" level="DEBUG"/>
+  
+  <logger name="com.zizibujuan.cm.server.servlet" level="DEBUG"/>
+  <logger name="com.zizibujuan.cm.server.dao.mysql" level="DEBUG"/>
+  <logger name="com.zizibujuan.cm.server.service.impl" level="DEBUG"/>
+  
+  <logger name="com.zizibujuan.useradmin.server.servlet" level="DEBUG"/>
+  <logger name="com.zizibujuan.useradmin.server.dao.mysql" level="DEBUG"/>
+  <logger name="com.zizibujuan.useradmin.server.service.impl" level="DEBUG"/>
 
   <root level="WARN">
     <appender-ref ref="STDOUT" />
