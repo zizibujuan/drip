@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.core.runtime.IPath;
 
-import com.zizibujuan.drip.server.model.UserInfo;
+import com.zizibujuan.useradmin.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.ActivityService;
 import com.zizibujuan.drip.server.util.PageInfo;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;

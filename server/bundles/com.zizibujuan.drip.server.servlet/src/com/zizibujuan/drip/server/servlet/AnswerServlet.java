@@ -9,12 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.core.runtime.IPath;
 
 import com.zizibujuan.drip.server.model.Answer;
-import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.AnswerService;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
 import com.zizibujuan.drip.server.util.servlet.UserSession;
+import com.zizibujuan.useradmin.server.model.UserInfo;
 
 /**
  * 习题答案

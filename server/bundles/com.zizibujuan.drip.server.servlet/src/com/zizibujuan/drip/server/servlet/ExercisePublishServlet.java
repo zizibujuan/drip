@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.core.runtime.IPath;
 
 import com.zizibujuan.drip.server.model.HistExercise;
-import com.zizibujuan.drip.server.model.UserInfo;
+import com.zizibujuan.useradmin.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.ExerciseService;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.RequestUtil;

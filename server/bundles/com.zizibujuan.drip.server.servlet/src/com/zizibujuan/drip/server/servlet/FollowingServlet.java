@@ -10,8 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.core.runtime.IPath;
 
-import com.zizibujuan.drip.server.model.UserInfo;
-import com.zizibujuan.drip.server.service.UserRelationService;
+import com.zizibujuan.useradmin.server.model.UserInfo;
+import com.zizibujuan.useradmin.server.service.UserRelationService;
+import com.zizibujuan.useradmin.server.servlets.UserAdminServiceHolder;
 import com.zizibujuan.drip.server.util.PageInfo;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
@@ -29,7 +30,7 @@ public class FollowingServlet extends BaseServlet {
 	private UserRelationService userRelationService;
 	
 	public FollowingServlet(){
-		userRelationService = ServiceHolder.getDefault().getUserRelationService();
+		userRelationService = UserAdminServiceHolder.getDefault().getUserRelationService();
 	}
 	
 	/**

@@ -7,7 +7,6 @@ Bundle-Activator: com.zizibujuan.drip.server.servlet.Activator
 Bundle-Vendor: zizibujuan.com
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.zizibujuan.cm.server.service,
- com.zizibujuan.drip.server.constant,
  com.zizibujuan.drip.server.model,
  com.zizibujuan.drip.server.service,
  com.zizibujuan.drip.server.util,
@@ -15,6 +14,10 @@ Import-Package: com.zizibujuan.cm.server.service,
  com.zizibujuan.drip.server.util.io,
  com.zizibujuan.drip.server.util.model,
  com.zizibujuan.drip.server.util.servlet,
+ com.zizibujuan.useradmin.server.model,
+ com.zizibujuan.useradmin.server.model.constant,
+ com.zizibujuan.useradmin.server.service,
+ com.zizibujuan.useradmin.server.servlets,
  eu.bitwalker.useragentutils,
  javax.mail;version="1.4.0",
  javax.mail.internet;version="1.4.0",
@@ -39,10 +42,6 @@ Import-Package: com.zizibujuan.cm.server.service,
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/*.xml
 Export-Package: com.zizibujuan.drip.server.servlet,
- com.zizibujuan.drip.server.servlet.admin,
- com.zizibujuan.drip.server.servlet.connect
+ com.zizibujuan.drip.server.servlet.admin
 Bundle-ClassPath: .,
- lib/commons-fileupload-1.2.2.jar,
- lib/qq/Sdk4J.jar,
- lib/renren/commons-logging-1.1.1.jar,
- lib/renren/renren-api2-sdk-1.0-SNAPSHOT.jar
+ lib/commons-fileupload-1.2.2.jar

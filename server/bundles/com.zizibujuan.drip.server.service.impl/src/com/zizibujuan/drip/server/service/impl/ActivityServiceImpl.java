@@ -20,7 +20,7 @@ import com.zizibujuan.drip.server.model.ExerciseForm;
 import com.zizibujuan.drip.server.model.HistAnswer;
 import com.zizibujuan.drip.server.model.HistExercise;
 import com.zizibujuan.drip.server.service.ActivityService;
-import com.zizibujuan.drip.server.service.UserService;
+import com.zizibujuan.useradmin.server.service.UserService;
 import com.zizibujuan.drip.server.util.PageInfo;
 import com.zizibujuan.drip.server.util.constant.ActionType;
 

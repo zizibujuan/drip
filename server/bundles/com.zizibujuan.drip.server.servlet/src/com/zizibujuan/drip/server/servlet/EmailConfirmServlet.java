@@ -8,8 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.core.runtime.IPath;
 
-import com.zizibujuan.drip.server.model.UserInfo;
-import com.zizibujuan.drip.server.service.UserService;
+import com.zizibujuan.useradmin.server.model.UserInfo;
+import com.zizibujuan.useradmin.server.service.UserService;
+import com.zizibujuan.useradmin.server.servlets.UserAdminServiceHolder;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.UserSession;
 
@@ -25,7 +26,7 @@ public class EmailConfirmServlet extends BaseServlet {
 	private UserService userService;
 	
 	public EmailConfirmServlet(){
-		userService = ServiceHolder.getDefault().getUserService();
+		userService = UserAdminServiceHolder.getDefault().getUserService();
 	}
 
 	@Override

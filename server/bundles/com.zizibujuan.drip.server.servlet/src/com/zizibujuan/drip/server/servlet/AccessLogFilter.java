@@ -16,11 +16,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zizibujuan.cm.server.service.ApplicationPropertyService;
-import com.zizibujuan.drip.server.constant.ApplicationPropertyKey;
-import com.zizibujuan.drip.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.AccessLogService;
 import com.zizibujuan.drip.server.util.constant.WebConstants;
 import com.zizibujuan.drip.server.util.servlet.UserSession;
+import com.zizibujuan.useradmin.server.model.UserInfo;
+import com.zizibujuan.useradmin.server.model.constant.ApplicationPropertyKey;
 
 import eu.bitwalker.useragentutils.Browser;
 import eu.bitwalker.useragentutils.OperatingSystem;

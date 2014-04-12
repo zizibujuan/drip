@@ -20,7 +20,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.eclipse.core.runtime.IPath;
 
 import com.zizibujuan.cm.server.service.ApplicationPropertyService;
-import com.zizibujuan.drip.server.model.UserInfo;
+import com.zizibujuan.useradmin.server.model.UserInfo;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
 import com.zizibujuan.drip.server.util.servlet.UserSession;

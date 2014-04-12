@@ -12,7 +12,7 @@ import org.eclipse.core.runtime.IPath;
 import com.zizibujuan.drip.server.model.Exercise;
 import com.zizibujuan.drip.server.model.ExerciseForm;
 import com.zizibujuan.drip.server.model.ExerciseOption;
-import com.zizibujuan.drip.server.model.UserInfo;
+import com.zizibujuan.useradmin.server.model.UserInfo;
 import com.zizibujuan.drip.server.service.ExerciseService;
 import com.zizibujuan.drip.server.util.PageInfo;
 import com.zizibujuan.drip.server.util.constant.ExerciseType;

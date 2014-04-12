@@ -11,8 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.commons.validator.routines.RegexValidator;
 
-import com.zizibujuan.drip.server.service.UserRelationService;
-import com.zizibujuan.drip.server.service.UserService;
+import com.zizibujuan.useradmin.server.service.UserRelationService;
+import com.zizibujuan.useradmin.server.service.UserService;
+import com.zizibujuan.useradmin.server.servlets.UserAdminServiceHolder;
 import com.zizibujuan.drip.server.util.servlet.BaseServlet;
 import com.zizibujuan.drip.server.util.servlet.ResponseUtil;
 
@@ -28,8 +29,8 @@ public class UserServlet_OLD extends BaseServlet {
 	private UserRelationService userRelationService = null;
 	
 	public UserServlet_OLD() {
-		this.userService = ServiceHolder.getDefault().getUserService();
-		this.userRelationService = ServiceHolder.getDefault().getUserRelationService();
+		this.userService = UserAdminServiceHolder.getDefault().getUserService();
+		this.userRelationService = UserAdminServiceHolder.getDefault().getUserRelationService();
 	}
 
 	/**

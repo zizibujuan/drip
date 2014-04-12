@@ -17,8 +17,9 @@ import org.eclipse.core.runtime.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.zizibujuan.drip.server.model.UserInfo;
-import com.zizibujuan.drip.server.service.UserService;
+import com.zizibujuan.useradmin.server.model.UserInfo;
+import com.zizibujuan.useradmin.server.service.UserService;
+import com.zizibujuan.useradmin.server.servlets.UserAdminServiceHolder;
 import com.zizibujuan.drip.server.servlet.ServiceHolder;
 import com.zizibujuan.drip.server.util.constant.CookieConstants;
 import com.zizibujuan.drip.server.util.servlet.CookieUtil;
@@ -95,7 +96,7 @@ public class SessionFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		userService = ServiceHolder.getDefault().getUserService();
+		userService = UserAdminServiceHolder.getDefault().getUserService();
 		urlMapper = new UrlMapper();
 	}
 	

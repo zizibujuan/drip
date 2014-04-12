@@ -13,14 +13,6 @@
 		interface="com.zizibujuan.drip.server.service.ExerciseService" 
 		name="exerciseService" 
 		policy="dynamic" />
-		
-	<reference 
-		bind="setUserService" 
-		unbind="unsetUserService" 
-		cardinality="0..1" 
-		interface="com.zizibujuan.drip.server.service.UserService" 
-		name="userService" 
-		policy="dynamic" />
 	
 	<reference 
 		bind="setActivityService" 
@@ -42,7 +34,7 @@
 		bind="setApplicationPropertyService" 
 		unbind="unsetApplicationPropertyService" 
 		cardinality="0..1" 
-		interface="com.zizibujuan.drip.server.service.ApplicationPropertyService" 
+		interface="com.zizibujuan.cm.server.service.ApplicationPropertyService" 
 		name="applicationPropertyService" 
 		policy="dynamic" />
 		
@@ -52,23 +44,7 @@
 		cardinality="0..1" 
 		interface="com.zizibujuan.drip.server.service.AnswerService" 
 		name="answerService" 
-		policy="dynamic" />
-		
-	<reference 
-		bind="setUserBindService" 
-		unbind="unsetUserBindService" 
-		cardinality="0..1" 
-		interface="com.zizibujuan.drip.server.service.UserBindService" 
-		name="userBindService" 
-		policy="dynamic" />
-
-	<reference 
-		bind="setUserRelationService" 
-		unbind="unsetUserRelationService" 
-		cardinality="0..1" 
-		interface="com.zizibujuan.drip.server.service.UserRelationService" 
-		name="userRelationService" 
-		policy="dynamic" />		
+		policy="dynamic" />	
 		
 	<reference 
 		bind="setHistExerciseService" 

@@ -9,9 +9,7 @@ import com.zizibujuan.drip.server.service.ActivityService;
 import com.zizibujuan.drip.server.service.AnswerService;
 import com.zizibujuan.drip.server.service.ExerciseService;
 import com.zizibujuan.drip.server.service.HistExerciseService;
-import com.zizibujuan.drip.server.service.UserBindService;
-import com.zizibujuan.drip.server.service.UserRelationService;
-import com.zizibujuan.drip.server.service.UserService;
+
 
 /**
  * 服务容器，所有的服务实例都注入在这里，在servlet中需要引用服务时，统一通过该类调用。
@@ -57,24 +55,6 @@ public class ServiceHolder {
 
 	public ExerciseService getExerciseService() {
 		return this.exerciseService;
-	}
-
-	
-	private UserService userService;
-
-	public void setUserService(UserService userService) {
-		logger.info("注入UserService");
-		this.userService = userService;
-	}
-
-	public void unsetUserService(UserService userService) {
-		logger.info("注销UserService");
-		if (this.userService == userService) {
-			this.userService = null;
-		}
-	}
-	public UserService getUserService() {
-		return this.userService;
 	}
 	
 	private ActivityService activityService;
@@ -142,39 +122,6 @@ public class ServiceHolder {
 		if (this.answerService == answerService) {
 			this.answerService = null;
 		}
-	}
-
-	private UserBindService userBindService;
-
-	public void setUserBindService(UserBindService userBindService) {
-		logger.info("注入userBindService");
-		this.userBindService = userBindService;
-	}
-
-	public void unsetUserBindService(UserBindService userBindService) {
-		logger.info("注销userBindService");
-		if (this.userBindService == userBindService) {
-			this.userBindService = null;
-		}
-	}
-	public UserBindService getUserBindService() {
-		return userBindService;
-	}
-
-	private UserRelationService userRelationService;
-	public void setUserRelationService(UserRelationService userRelationService) {
-		logger.info("注入userRelationService");
-		this.userRelationService = userRelationService;
-	}
-
-	public void unsetUserRelationService(UserRelationService userRelationService) {
-		logger.info("注销userRelationService");
-		if (this.userRelationService == userRelationService) {
-			this.userRelationService = null;
-		}
-	}
-	public UserRelationService getUserRelationService() {
-		return userRelationService;
 	}
 
 	private HistExerciseService histExerciseService;
