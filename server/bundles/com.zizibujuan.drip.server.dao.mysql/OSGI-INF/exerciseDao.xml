@@ -7,7 +7,7 @@
    		bind="setUserDao" 
    		unbind="unsetUserDao" 
    		cardinality="0..1" 
-   		interface="com.zizibujuan.drip.server.dao.UserDao" 
+   		interface="com.zizibujuan.useradmin.server.dao.UserDao" 
    		name="userDao" 
    		policy="dynamic"/>
    		
@@ -31,7 +31,7 @@
    		bind="setUserStatisticsDao" 
    		unbind="unsetUserStatisticsDao" 
    		cardinality="0..1" 
-   		interface="com.zizibujuan.drip.server.dao.UserStatisticsDao" 
+   		interface="com.zizibujuan.useradmin.server.dao.UserStatisticsDao" 
    		name="userStatisticsDao" 
    		policy="dynamic"/>
 
